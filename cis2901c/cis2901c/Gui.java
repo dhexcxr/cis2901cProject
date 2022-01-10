@@ -6,14 +6,24 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 public class Gui extends Composite {
 	private Text roSearchBox;
 	public List listOfRos = null;
+	private Table roTable;
+	private Text customerSearchBox;
+	private Table customerTable;
 
 	/**
 	 * Create the composite.
@@ -33,44 +43,19 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrderListing);
 		
 		listOfRos = new List(repairOrderListing, SWT.BORDER);
-		listOfRos.setBounds(10, 74, 976, 631);
+		listOfRos.setBounds(10, 74, 976, 130);
+
+		roTable = new Table(repairOrderListing, SWT.BORDER | SWT.FULL_SELECTION);
+		roTable.setBounds(10, 210, 976, 495);
+		roTable.setHeaderVisible(true);
+		roTable.setLinesVisible(true);
 		
 		roSearchBox = new Text(repairOrderListing, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
-//		roSearchBox.addModifyListener(new TypingInRoSearchBox());		// typingInRoSearchBox
-		RoSearchBoxListeners roSearchBoxListeners = new RoSearchBoxListeners(roSearchBox, listOfRos);
-//		roSearchBox.addModifyListener(new ModifyListener() {
-//			
-//			@Override
-//			public void modifyText(ModifyEvent e) {
-//				Main.getGui().listOfRos.setItems("Test");
-//				
-//			}
-//		});		// typingInRoSearchBox
-		roSearchBox.addModifyListener(roSearchBoxListeners);
-		roSearchBox.addFocusListener(roSearchBoxListeners);
-		
-//		roSearchBox.addFocusListener(new FocusListener() {
-//			
-//			@Override
-//			public void focusLost(FocusEvent e) {
-//				System.out.println("Search box focused lost");
-//				if (roSearchBox.getText().equals("")) {
-//					roSearchBox.setText("Search...");
-//				}
-//				
-//			}
-//			
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				System.out.println("Search box focused gained");
-//				if (roSearchBox.getText().equals("Search...")) {
-//					roSearchBox.setText("");
-//				}
-//				
-//			}
-//		});
+		SearchBoxListeners roSearchBoxListener = new SearchBoxListeners(roSearchBox, roTable);
+		roSearchBox.addModifyListener(roSearchBoxListener);
+		roSearchBox.addFocusListener(roSearchBoxListener);
 		
 		Button btnNewRepairOrder = new Button(repairOrderListing, SWT.NONE);
 		btnNewRepairOrder.addSelectionListener(new SelectionAdapter() {
@@ -102,6 +87,34 @@ public class Gui extends Composite {
 		btnShowEstimates.setBounds(145, 42, 127, 20);
 		btnShowEstimates.setText("Show Estimates");
 		
+		TableColumn tblclmnRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnRo.setWidth(75);
+		tblclmnRo.setText("RO #");
+		
+		TableColumn tblclmnCustomer = new TableColumn(roTable, SWT.NONE);
+		tblclmnCustomer.setWidth(164);
+		tblclmnCustomer.setText("Customer");
+		
+		TableColumn tblclmnYear = new TableColumn(roTable, SWT.NONE);
+		tblclmnYear.setWidth(65);
+		tblclmnYear.setText("Year");
+		
+		TableColumn tblclmnMake = new TableColumn(roTable, SWT.NONE);
+		tblclmnMake.setWidth(109);
+		tblclmnMake.setText("Make");
+		
+		TableColumn tblclmnModel = new TableColumn(roTable, SWT.NONE);
+		tblclmnModel.setWidth(113);
+		tblclmnModel.setText("Model");
+		
+		TableColumn tblclmnVin = new TableColumn(roTable, SWT.NONE);
+		tblclmnVin.setWidth(222);
+		tblclmnVin.setText("VIN");
+		
+		TableColumn tblclmnJobs = new TableColumn(roTable, SWT.NONE);
+		tblclmnJobs.setWidth(212);
+		tblclmnJobs.setText("Jobs");
+		
 		TabItem tbtmParts = new TabItem(tabFolder, SWT.NONE);
 		tbtmParts.setText("Parts");
 		
@@ -111,8 +124,60 @@ public class Gui extends Composite {
 		TabItem tbtmCustomers = new TabItem(tabFolder, SWT.NONE);
 		tbtmCustomers.setText("Customers");
 		
-		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
-		tbtmCustomers.setControl(composite_1);
+		Composite customerListing = new Composite(tabFolder, SWT.NONE);
+		tbtmCustomers.setControl(customerListing);
+		
+		Button btnNewCustomer = new Button(customerListing, SWT.NONE);
+		btnNewCustomer.setBounds(877, 10, 109, 26);
+		btnNewCustomer.setText("New Customer");
+		
+		customerTable = new Table(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable.setBounds(10, 42, 976, 663);
+		customerTable.setHeaderVisible(true);
+		customerTable.setLinesVisible(true);
+		
+		TableColumn tblclmnFirstName = new TableColumn(customerTable, SWT.NONE);
+		tblclmnFirstName.setWidth(100);
+		tblclmnFirstName.setText("First Name");
+		
+		TableColumn tblclmnLastName = new TableColumn(customerTable, SWT.NONE);
+		tblclmnLastName.setWidth(100);
+		tblclmnLastName.setText("Last Name");
+		
+		TableColumn tblclmnAddress = new TableColumn(customerTable, SWT.NONE);
+		tblclmnAddress.setWidth(100);
+		tblclmnAddress.setText("Address");
+		
+		TableColumn tblclmnCity = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCity.setWidth(100);
+		tblclmnCity.setText("City");
+		
+		TableColumn tblclmnState = new TableColumn(customerTable, SWT.NONE);
+		tblclmnState.setWidth(100);
+		tblclmnState.setText("State");
+		
+		TableColumn tblclmnZip = new TableColumn(customerTable, SWT.NONE);
+		tblclmnZip.setWidth(100);
+		tblclmnZip.setText("Zip");
+		
+		TableColumn tblclmnHomePhone = new TableColumn(customerTable, SWT.NONE);
+		tblclmnHomePhone.setWidth(100);
+		tblclmnHomePhone.setText("Home Phone");
+		
+		TableColumn tblclmnCellPhone = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCellPhone.setWidth(100);
+		tblclmnCellPhone.setText("Cell Phone");
+		
+		TableColumn tblclmnEmail = new TableColumn(customerTable, SWT.NONE);
+		tblclmnEmail.setWidth(100);
+		tblclmnEmail.setText("E-mail");
+
+		customerSearchBox = new Text(customerListing, SWT.BORDER);
+		customerSearchBox.setText("Search...");
+		customerSearchBox.setBounds(10, 10, 861, 26);
+		SearchBoxListeners customerSearchBoxListener = new SearchBoxListeners(customerSearchBox, customerTable);
+		customerSearchBox.addModifyListener(customerSearchBoxListener);
+		customerSearchBox.addFocusListener(customerSearchBoxListener);
 		
 		TabItem tbtmUnits = new TabItem(tabFolder, SWT.NONE);
 		tbtmUnits.setText("Units");
@@ -136,4 +201,42 @@ public class Gui extends Composite {
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
+}
+
+class SearchBoxListeners implements ModifyListener, FocusListener {
+	
+	private Text searchBox;
+	private List list;
+	private Table table;
+	
+	public SearchBoxListeners(Text textBox, Table table) {
+		this.searchBox = textBox;
+//		this.list = list;
+		this.table = table;
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+//		list.setItems("Test");		
+		TableItem tableItem = new TableItem(table, SWT.NONE);
+		tableItem.setText(new String[] {"0ame", "other name", "other deets"} );
+		
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		System.out.println("Search box focused gained");
+		if (searchBox.getText().equals("Search...")) {
+			searchBox.setText("");
+		}		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		System.out.println("Search box focused lost");
+		if (searchBox.getText().equals("")) {
+			searchBox.setText("Search...");
+		}
+	}
+	
 }

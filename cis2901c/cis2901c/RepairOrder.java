@@ -17,36 +17,3 @@ public class RepairOrder {
 	Date closedDate;
 
 }
-
-class RoSearchBoxListeners implements ModifyListener, FocusListener {
-	
-	private Text searchBox;
-	private List list;
-	
-	public RoSearchBoxListeners(Text textBox, List list) {
-		this.searchBox = textBox;
-		this.list = list;
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-		list.setItems("Test");		
-	}
-
-	@Override
-	public void focusGained(FocusEvent e) {
-		System.out.println("Search box focused gained");
-		if (searchBox.getText().equals("Search...")) {
-			searchBox.setText("");
-		}		
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
-		System.out.println("Search box focused lost");
-		if (searchBox.getText().equals("")) {
-			searchBox.setText("Search...");
-		}
-	}
-	
-}
