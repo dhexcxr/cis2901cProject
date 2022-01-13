@@ -6,6 +6,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
@@ -14,10 +18,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 public class Gui extends Composite {
-	private Text roSearchBox;
+	private MyText roSearchBox;
 	public List listOfRos = null;
 	private Table roTable;
-	private Text customerSearchBox;
+	private MyText customerSearchBox;
 	private Table customerTable;
 
 	/**
@@ -45,12 +49,13 @@ public class Gui extends Composite {
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
 		
-		roSearchBox = new Text(repairOrderListing, SWT.BORDER);
+		roSearchBox = new MyText(repairOrderListing, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
 		RoSearchBoxListeners roSearchBoxListener = new RoSearchBoxListeners(roSearchBox, roTable);
+		TextBoxFocusListener testBoxFocusListener = new TextBoxFocusListener(roSearchBox);
 		roSearchBox.addModifyListener(roSearchBoxListener);
-		roSearchBox.addFocusListener(roSearchBoxListener);
+		roSearchBox.addFocusListener(testBoxFocusListener);
 		
 		Button btnNewRepairOrder = new Button(repairOrderListing, SWT.NONE);
 		btnNewRepairOrder.addSelectionListener(new SelectionAdapter() {
@@ -121,8 +126,10 @@ public class Gui extends Composite {
 		
 		Composite customerListing = new Composite(tabFolder, SWT.NONE);
 		tbtmCustomers.setControl(customerListing);
-		
+	
 		Button btnNewCustomer = new Button(customerListing, SWT.NONE);
+		NewCustomerButtonListeners newCustomerButtonListeners = new NewCustomerButtonListeners();
+		btnNewCustomer.addMouseListener(newCustomerButtonListeners);
 		btnNewCustomer.setBounds(877, 10, 109, 26);
 		btnNewCustomer.setText("New Customer");
 		
@@ -167,12 +174,13 @@ public class Gui extends Composite {
 		tblclmnEmail.setWidth(100);
 		tblclmnEmail.setText("E-mail");
 
-		customerSearchBox = new Text(customerListing, SWT.BORDER);
+		customerSearchBox = new MyText(customerListing, SWT.BORDER);
 		customerSearchBox.setText("Search...");
 		customerSearchBox.setBounds(10, 10, 861, 26);
 		CustomerSearchBoxListeners customerSearchBoxListener = new CustomerSearchBoxListeners(customerSearchBox, customerTable);
+		testBoxFocusListener = new TextBoxFocusListener(customerSearchBox);
 		customerSearchBox.addModifyListener(customerSearchBoxListener);
-		customerSearchBox.addFocusListener(customerSearchBoxListener);
+		customerSearchBox.addFocusListener(testBoxFocusListener);
 		
 		TabItem tbtmUnits = new TabItem(tabFolder, SWT.NONE);
 		tbtmUnits.setText("Units");
@@ -196,4 +204,75 @@ public class Gui extends Composite {
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
+}
+
+class TextBoxFocusListener implements FocusListener {
+	private MyText txtBox;
+	private String textBoxText;
+	
+	public TextBoxFocusListener(MyText textBox) {
+		this.txtBox = textBox;
+		this.textBoxText = textBox.getText();
+	}
+	
+	@Override
+	public void focusGained(FocusEvent e) {
+		System.out.println(textBoxText + " box focused gained");
+		if (txtBox.getText().equals(textBoxText)) {
+			txtBox.setText("");
+		}		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		System.out.println(textBoxText + " box focused lost");
+		if (txtBox.getText().equals("")) {
+			txtBox.setText(textBoxText);
+			txtBox.setModified(false);
+		} else {
+			txtBox.setModified(true);
+		}
+	}
+}
+
+class InfoTextBoxModifyListener implements ModifyListener {
+	
+	private Text text;
+	
+	public InfoTextBoxModifyListener(Text text) {
+		// TODO Auto-generated constructor stub
+		this.text = text;
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		if (text.getText().length() > 0) {
+			
+		}
+		
+	}
+	
+}
+
+class MyText extends Text {
+	
+	private boolean modified = false;
+
+	public MyText(Composite parent, int style) {
+		super(parent, style);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public boolean isModified() {
+		return modified;
+	}
+
+	public void setModified(boolean modified) {
+		this.modified = modified;
+	}
+
+	@Override
+	protected void checkSubclass() {
+		// Disable the check that prevents subclassing of SWT components
+	}	
 }
