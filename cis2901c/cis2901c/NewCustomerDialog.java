@@ -13,11 +13,14 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class NewCustomerDialog extends Dialog {
 
 	protected Object result;
 	protected Shell shell;
+//	protected Shell parent;
 	private MyText txtFirstName;
 	private MyText txtAddress;
 	private MyText txtCity;
@@ -36,7 +39,8 @@ public class NewCustomerDialog extends Dialog {
 	 */
 	public NewCustomerDialog(Shell parent, int style) {
 		super(parent, style);
-		setText("SWT Dialog");
+//		this.parent = parent;
+//		setText("SWT Dialog");
 	}
 
 	/**
@@ -60,9 +64,10 @@ public class NewCustomerDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		// TODO add function to highlight Last Name box with Red background if no text in box
+		// TODO add function to highlight Last Name box with Red background if no text in box - DONE
 		
-		shell = new Shell(getParent(), SWT.SHELL_TRIM);
+		shell = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+//		shell.setLocation(0, 0);		// TODO get the position nicer
 		shell.setSize(580, 255);
 		shell.setText(getText());
 		
@@ -71,6 +76,8 @@ public class NewCustomerDialog extends Dialog {
 		txtFirstName.setBounds(10, 10, 272, 26);
 		TextBoxFocusListener textBoxFocusListener = new TextBoxFocusListener(txtFirstName);
 		txtFirstName.addFocusListener(textBoxFocusListener);
+		InfoTextBoxModifyListener infoTextBoxModifyListener = new InfoTextBoxModifyListener(txtFirstName);
+		txtFirstName.addModifyListener(infoTextBoxModifyListener);
 		
 		txtAddress = new MyText(shell, SWT.BORDER);
 		txtAddress.setText("Address...");
@@ -97,10 +104,13 @@ public class NewCustomerDialog extends Dialog {
 		txtZipCode.addFocusListener(textBoxFocusListener);
 		
 		txtLastName = new MyText(shell, SWT.BORDER);
+		txtLastName.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtLastName.setText("Last Name/Company Name...");
 		txtLastName.setBounds(292, 10, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtLastName);
 		txtLastName.addFocusListener(textBoxFocusListener);
+		LastNameModifyListener lastNameModifyListener = new LastNameModifyListener(txtLastName);
+		txtLastName.addModifyListener(lastNameModifyListener);
 		
 		txtHomePhone = new MyText(shell, SWT.BORDER);
 		txtHomePhone.setText("Home Phone...");
@@ -127,7 +137,7 @@ public class NewCustomerDialog extends Dialog {
 		txtEmail.addFocusListener(textBoxFocusListener);
 		
 		Button btnSaveCustomerButton = new Button(shell, SWT.NONE);
-		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {
+		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
 				try {
@@ -150,10 +160,18 @@ public class NewCustomerDialog extends Dialog {
 		});
 		btnCancel.setBounds(332, 170, 181, 30);
 		btnCancel.setText("Cancel");
+		shell.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity, txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton, btnCancel});
 
 	}
 	
 	public void addNewCustomer() throws SQLException {
+		
+		boolean isAnythingModified = false;
+		
+		if (!txtLastName.isModified()) {
+			// dialog box stating last name is required
+			return;
+		}
 		
 		// TODO finish
 		
@@ -163,17 +181,55 @@ public class NewCustomerDialog extends Dialog {
 		// sanitize, regex phones to 10 digit, check email format, require at least last name
 		
 		
-		// StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer ( ) VALUES ( );");
+		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer ( ) VALUES ( );");
 		// use regex to build query
 		//	if (txtXXX.isModified() {
 		//		take queryString, find first set of parens, insert Column Name
 		//		find second set of parens, insert txtXXX.getText()
 		
-		if (txtFirstName.getText().length() > 0) {
+		if (txtFirstName.isModified()) {
+			isAnythingModified = true;
+			StringBuilder firstNameColumn  = new StringBuilder();
+			int columnInsertionPoint = queryString.indexOf(")");
+			if (queryString.charAt(columnInsertionPoint - 2) != '(') {
+				firstNameColumn.append(',');
+			}
+			firstNameColumn.append("firstName");
+			queryString.insert(columnInsertionPoint - 1, firstNameColumn);
+			
+			StringBuilder firstNameField = new StringBuilder();
+			int fieldInsertionPoint = queryString.lastIndexOf(")");
+			if (queryString.charAt(fieldInsertionPoint - 2) != '(') {
+				firstNameField.append(',');
+			}
+			firstNameField.append("'" + txtFirstName.getText() + "'");
+			queryString.insert(fieldInsertionPoint, firstNameField);
+		}
+		
+		if (txtLastName.isModified()) {
+			isAnythingModified = true;
+			StringBuilder lastNameColumn  = new StringBuilder();
+			int columnInsertionPoint = queryString.indexOf(")");
+			if (queryString.charAt(columnInsertionPoint - 2) != '(') {
+				lastNameColumn.append(',');
+			}
+			lastNameColumn.append("lastName");
+			queryString.insert(columnInsertionPoint - 1, lastNameColumn);
+			
+			StringBuilder lastNameField = new StringBuilder();
+			int fieldInsertionPoint = queryString.lastIndexOf(")");
+			if (queryString.charAt(fieldInsertionPoint - 2) != '(') {
+				lastNameField.append(',');
+			}
+			lastNameField.append("'" + txtLastName.getText() + "'");
+			queryString.insert(fieldInsertionPoint, lastNameField);
+		}
+		
+		if (isAnythingModified) {
 			Connection dbConnection = Main.getDbConnection();
 //			
-			PreparedStatement statement = dbConnection.prepareStatement("INSERT INTO cis2901c.customer (firstName, lastName, address) VALUES ('The', 'Dude', ?);");
-			statement.setString(1, txtFirstName.getText());
+			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//			statement.setString(1, txtFirstName.getText());
 //			statement.setString(2, "%" + query + "%");
 			statement.execute();
 			dbConnection.close();
@@ -187,10 +243,25 @@ public class NewCustomerDialog extends Dialog {
 }
 
 class LastNameModifyListener implements ModifyListener {
+	
+	private MyText txtBox;
+	private String textBoxText;
+	
+	public LastNameModifyListener(MyText textBox) {
+		this.txtBox = textBox;
+		this.textBoxText = textBox.getText();
+	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		// TODO if (text.length == 0)
+		System.out.println(txtBox.isModified());
+		if (txtBox.getText().length() > 0 && !txtBox.getText().equals(textBoxText)) {
+			txtBox.setModified(true);
+			txtBox.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
+		} else {
+			txtBox.setModified(false);
+			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
+		}
 		//			background = red		
 	}
 	

@@ -228,26 +228,30 @@ class TextBoxFocusListener implements FocusListener {
 		System.out.println(textBoxText + " box focused lost");
 		if (txtBox.getText().equals("")) {
 			txtBox.setText(textBoxText);
-			txtBox.setModified(false);
-		} else {
-			txtBox.setModified(true);
+//			txtBox.setModified(false);
+//		} else {
+//			txtBox.setModified(true);
 		}
 	}
 }
 
 class InfoTextBoxModifyListener implements ModifyListener {
 	
-	private Text text;
+	private MyText text;
+	private String textBoxText;
 	
-	public InfoTextBoxModifyListener(Text text) {
+	public InfoTextBoxModifyListener(MyText text) {
 		// TODO Auto-generated constructor stub
 		this.text = text;
+		this.textBoxText = text.getText();
 	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		if (text.getText().length() > 0) {
-			
+		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
+			text.setModified(true);
+		} else {
+			text.setModified(false);
 		}
 		
 	}
