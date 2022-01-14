@@ -2,6 +2,7 @@ package cis2901c;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,6 +42,11 @@ public class NewCustomerDialog extends Dialog {
 		super(parent, style);
 //		this.parent = parent;
 //		setText("SWT Dialog");
+	}
+	
+	public NewCustomerDialog(Shell parent, int style, Customer customer) {
+		super(parent, style);
+		// TODO set properties (text fields) via Customer object, for opening a current customer to edit
 	}
 
 	/**
@@ -165,80 +171,150 @@ public class NewCustomerDialog extends Dialog {
 	}
 	
 	public void addNewCustomer() throws SQLException {
-		
-		boolean isAnythingModified = false;
-		
-		if (!txtLastName.isModified()) {
+		if (txtLastName.getText().equals("Last Name/Company Name...")) {
 			// dialog box stating last name is required
+			MessageBox lastNameRequirementBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+			lastNameRequirementBox.setText("Notice");
+			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
+			lastNameRequirementBox.open();
 			return;
 		}
 		
-		// TODO finish
-		
-		System.out.println("Save New Cusrtoemr button pressed");
-		// on "Save" button press in New Customer dialog
-		// get data entered into dialog
-		// sanitize, regex phones to 10 digit, check email format, require at least last name
-		
-		
-		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer ( ) VALUES ( );");
-		// use regex to build query
-		//	if (txtXXX.isModified() {
-		//		take queryString, find first set of parens, insert Column Name
-		//		find second set of parens, insert txtXXX.getText()
-		
-		if (txtFirstName.isModified()) {
-			isAnythingModified = true;
-			StringBuilder firstNameColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 2) != '(') {
-				firstNameColumn.append(',');
-			}
-			firstNameColumn.append("firstName");
-			queryString.insert(columnInsertionPoint - 1, firstNameColumn);
-			
-			StringBuilder firstNameField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 2) != '(') {
-				firstNameField.append(',');
-			}
-			firstNameField.append("'" + txtFirstName.getText() + "'");
-			queryString.insert(fieldInsertionPoint, firstNameField);
-		}
+		Customer customer = new Customer();
 		
 		if (txtLastName.isModified()) {
-			isAnythingModified = true;
-			StringBuilder lastNameColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 2) != '(') {
-				lastNameColumn.append(',');
-			}
-			lastNameColumn.append("lastName");
-			queryString.insert(columnInsertionPoint - 1, lastNameColumn);
-			
-			StringBuilder lastNameField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 2) != '(') {
-				lastNameField.append(',');
-			}
-			lastNameField.append("'" + txtLastName.getText() + "'");
-			queryString.insert(fieldInsertionPoint, lastNameField);
+			customer.setLastName(txtLastName.getText());
 		}
 		
-		if (isAnythingModified) {
-			Connection dbConnection = Main.getDbConnection();
-//			
-			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-//			statement.setString(1, txtFirstName.getText());
-//			statement.setString(2, "%" + query + "%");
-			statement.execute();
-			dbConnection.close();
-		}
-		
-		// at the end, PreparedStatement statement = Main.getDbConnection().prepareStatement(queryString);
-		// statement.execute();
+		DbServices.saveObject(customer);
 		
 		shell.dispose();
+		
+		
+		
+		// moved to DbServices
+//		boolean isAnythingModified = false;
+//		
+//		// this will probably be mostly moved into dbServices.SaveCustomer
+//		// this dialog will only build a Customer object (only programmatic functions)
+//		//then pass the object to the dbServies class to save user input (through the Customer object) to db
+//			// this will allow us to have one overloaded dbServies.saveObject method that will do all the data storage/db operations
+//			// this allows re-usability and plug-ability
+//		
+////		if (!txtLastName.isModified()) {
+//		if (txtLastName.getText().equals("Last Name/Company Name...")) {
+//			// dialog box stating last name is required
+//			MessageBox lastNameRequirementBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+//			lastNameRequirementBox.setText("Notice");
+//			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
+//			lastNameRequirementBox.open();
+//			return;
+//		}
+//		
+//		// TODO finish
+//		
+//		System.out.println("Save New Cusrtoemr button pressed");
+//		// on "Save" button press in New Customer dialog
+//		// get data entered into dialog
+//		// sanitize, regex phones to 10 digit, check email format, require at least last name
+//		
+//		
+//		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer () VALUES ();");
+//		// use regex to build query
+//		//	if (txtXXX.isModified() {
+//		//		take queryString, find first set of parens, insert Column Name
+//		//		find second set of parens, insert txtXXX.getText()
+//		
+//		if (txtFirstName.isModified()) {
+//			isAnythingModified = true;
+//			StringBuilder firstNameColumn  = new StringBuilder();
+//			int columnInsertionPoint = queryString.indexOf(")");
+//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
+//				firstNameColumn.append(", ");
+//			}
+//			firstNameColumn.append("firstName");
+//			queryString.insert(columnInsertionPoint, firstNameColumn);
+//			
+//			StringBuilder firstNameField = new StringBuilder();
+//			int fieldInsertionPoint = queryString.lastIndexOf(")");
+//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
+//				firstNameField.append(", ");
+//			}
+//			firstNameField.append("'" + txtFirstName.getText() + "'");
+//			queryString.insert(fieldInsertionPoint, firstNameField);
+//		}
+//		
+//		if (txtLastName.isModified()) {
+//			isAnythingModified = true;
+//			StringBuilder lastNameColumn  = new StringBuilder();
+//			int columnInsertionPoint = queryString.indexOf(")");
+//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
+//				lastNameColumn.append(", ");
+//			}
+//			lastNameColumn.append("lastName");
+//			queryString.insert(columnInsertionPoint, lastNameColumn);
+//			
+//			StringBuilder lastNameField = new StringBuilder();
+//			int fieldInsertionPoint = queryString.lastIndexOf(")");
+//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
+//				lastNameField.append(", ");
+//			}
+//			lastNameField.append("'" + txtLastName.getText() + "'");
+//			queryString.insert(fieldInsertionPoint, lastNameField);
+//		}
+//		
+//		if (txtAddress.isModified()) {
+//			isAnythingModified = true;
+//			StringBuilder addressColumn  = new StringBuilder();
+//			int columnInsertionPoint = queryString.indexOf(")");
+//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
+//				addressColumn.append(", ");
+//			}
+//			addressColumn.append("address");
+//			queryString.insert(columnInsertionPoint, addressColumn);
+//			
+//			StringBuilder firstNameField = new StringBuilder();
+//			int fieldInsertionPoint = queryString.lastIndexOf(")");
+//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
+//				firstNameField.append(", ");
+//			}
+//			firstNameField.append("'" + txtAddress.getText() + "'");
+//			queryString.insert(fieldInsertionPoint, firstNameField);
+//		}
+//		
+//		if (txtCity.isModified()) {
+//			isAnythingModified = true;
+//			StringBuilder cityColumn  = new StringBuilder();
+//			int columnInsertionPoint = queryString.indexOf(")");
+//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
+//				cityColumn.append(", ");
+//			}
+//			cityColumn.append("city");
+//			queryString.insert(columnInsertionPoint, cityColumn);
+//			
+//			StringBuilder firstNameField = new StringBuilder();
+//			int fieldInsertionPoint = queryString.lastIndexOf(")");
+//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
+//				firstNameField.append(", ");
+//			}
+//			firstNameField.append("'" + txtCity.getText() + "'");
+//			queryString.insert(fieldInsertionPoint, firstNameField);
+//		}
+//		
+//		if (isAnythingModified) {
+//			Connection dbConnection = DbServices.getDbConnection();
+////			
+//			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+////			statement.setString(1, txtFirstName.getText());
+////			statement.setString(2, "%" + query + "%");
+//			statement.execute();
+////			dbConnection.close();
+//		}
+//		
+//		// at the end, PreparedStatement statement = Main.getDbConnection().prepareStatement(queryString);
+//		// statement.execute();
+//		
+//		shell.dispose();
 	}
 }
 

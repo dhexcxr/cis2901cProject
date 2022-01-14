@@ -1,9 +1,15 @@
 package cis2901c;
 
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -14,7 +20,13 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class Customer {
+	
+	// might not need this
+	
 	private long customerId;
+		// TODO need to set customerId when customer object is saved
+			// when saving new object to db get pk from db after line creation
+			// on second thought, we'll probably impliment this as dbServices.gerPrimaryKey
 	private String firstName;
 	private String lastName;
 	private String address;
@@ -124,16 +136,23 @@ public class Customer {
 	
 	// TODO look at all throws
 	protected static void searchForCustomer(Table table, String query) throws SQLException {
+		// TODO move search into DbServices
+				// searchObject(query, table (maybe? some way to decide which table to search)) will find a customer in the customer table
+				// it will return results which we'll use to populate table
 //		Statement customerQuery = Main.getDbConnection().createStatement();
 		
 //		if (query.length() != 0) {
 //			ResultSet customerQueryResults = customerQuery.executeQuery(
-		Connection dbConnection = Main.getDbConnection();
+		Connection dbConnection = DbServices.getDbConnection();
 			PreparedStatement statement = dbConnection.prepareStatement(
 					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-							+ "email FROM cis2901c.customer WHERE lastName LIKE ? OR firstName LIKE ?;");
+							+ "email FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
 			statement.setString(1, "%" + query + "%");
 			statement.setString(2, "%" + query + "%");
+			String phone = query.replaceAll("[()\\s-]+", "");
+			statement.setString(3, "%" + phone + "%");
+			statement.setString(4, "%" + phone + "%");
+			statement.setString(5, "%" + phone + "%");
 			ResultSet customerQueryResults = statement.executeQuery();
 		
 //		if (query.length() == 0) {
@@ -153,12 +172,17 @@ public class Customer {
 //			String workPhone = Integer.toString(customerQueryResults.getInt(8));
 			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
 			String email = customerQueryResults.getString(10);
-
-			TableItem tableItem = new TableItem(table, SWT.NONE);
-			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip, homePhone, cellPhone, email} );
+			
+			TableItem tableItem = new TableItem(table, SWT.NONE);																		// SWT implementation
+			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip, homePhone, cellPhone, email} );				// SWT implementation
 		}
 //		}
-		dbConnection.close();
+//		dbConnection.close();
+	}
+	
+	protected static void openCustomer() {
+		// get customer object from dbService class
+		
 	}
 }
 
@@ -174,9 +198,9 @@ class NewCustomerButtonListeners extends MouseAdapter {
 	}
 }
 
-class CustomerSearchBoxListeners implements ModifyListener {
+class CustomerSearchBoxListeners implements ModifyListener {		//SWT imple
 	
-	// TODO separate FocusListener and combine with RoSearchBox FocusListener
+	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
 	// TODO switch Text to MyText
 	
 	private Text searchBox;

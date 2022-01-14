@@ -5,15 +5,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 //import java.sql.Statement;
 
+import javax.swing.JFrame;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class Main {
 //	private static Gui gui = null;
 	private static Shell shell = null;
-//	private static Connection mainDbConnection;
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		
@@ -33,10 +35,21 @@ public class Main {
 //		gui = new Gui(shell, SWT.NONE);
 		shell.pack();
 		shell.open();
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch())
-				display.sleep();
+		DbServices.connectToDb();
+		if (DbServices.isConnected()) {
+			while (!shell.isDisposed()) {
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+		} else {
+			// error dialog box here
+			System.out.println("error dialog box here");
+			MessageBox dbConnectionError = new MessageBox(shell, SWT.ERROR);
+			dbConnectionError.setText("DB Error");
+			dbConnectionError.setMessage("Unable to connect to database");
+			dbConnectionError.open();
 		}
+		DbServices.disconnectFromDb();
 		display.dispose();
 	}
 	
@@ -62,22 +75,27 @@ public class Main {
 		
 	// TODO research if creating a new connection everytime we need one hurts performance
 	// see if I want to setAutoCommit to false before returning Connection, every call would have to connection.commit, or .rollback if an exception is caught
-	protected static Connection getDbConnection() {
-//		return mainDbConnection;
-		String url = "jdbc:mysql://localhost:3306/cis2901c";
-		String user = "TestUser";
-		String pass = "test";
-		Connection dbConnection = null;
-		try {
-			dbConnection = DriverManager.getConnection(url, user, pass);
-		} catch (SQLException e) {
-			System.out.println("Error connecting to database");
-			e.printStackTrace();
-		}
-		return dbConnection;
-	}
+//	protected static Connection getDbConnection() {
+////		return mainDbConnection;
+//		String url = "jdbc:mysql://localhost:3306/cis2901c";
+//		String user = "TestUser";
+//		String pass = "test";
+//		Connection dbConnection = null;
+//		try {
+//			dbConnection = DriverManager.getConnection(url, user, pass);
+//		} catch (SQLException e) {
+//			System.out.println("Error connecting to database");
+//			e.printStackTrace();
+//		}
+//		return dbConnection;
+//	}
+	
+//	protected static Connection getDbConnection() {
+//		return DbServices.getDbConnection();
+//	}
 	
 //	public static Statement getDbStatement() {
+//		
 //		return mainDbConnection.createStatement();
 //	}
 

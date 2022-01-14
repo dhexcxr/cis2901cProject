@@ -206,7 +206,7 @@ public class Gui extends Composite {
 	}
 }
 
-class TextBoxFocusListener implements FocusListener {
+class TextBoxFocusListener implements FocusListener {				//SWT imple
 	private MyText txtBox;
 	private String textBoxText;
 	
@@ -235,7 +235,7 @@ class TextBoxFocusListener implements FocusListener {
 	}
 }
 
-class InfoTextBoxModifyListener implements ModifyListener {
+class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
 	
 	private MyText text;
 	private String textBoxText;
@@ -252,13 +252,11 @@ class InfoTextBoxModifyListener implements ModifyListener {
 			text.setModified(true);
 		} else {
 			text.setModified(false);
-		}
-		
+		}	
 	}
-	
 }
 
-class MyText extends Text {
+class MyText extends Text {					// SWT impementation
 	
 	private boolean modified = false;
 
