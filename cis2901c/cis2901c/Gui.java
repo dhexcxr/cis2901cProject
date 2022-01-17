@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
 	private MyText roSearchBox;
@@ -134,6 +136,20 @@ public class Gui extends Composite {
 		btnNewCustomer.setText("New Customer");
 		
 		customerTable = new Table(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				// open saved customer for editing
+				System.out.println("Double click");
+				Customer customer = (Customer) customerTable.getSelection()[0].getData();
+				System.out.println(customer.getFirstName());
+				System.out.println(customer.getCustomerId());
+				
+				NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
+				modifyExistingCustomerDialog.open(customer);
+				// TODO get table to refresh on Customer Save
+			}
+		});
 		customerTable.setBounds(10, 42, 976, 663);
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
@@ -256,7 +272,7 @@ class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementat
 	}
 }
 
-class MyText extends Text {					// SWT impementation
+class MyText extends Text {
 	
 	private boolean modified = false;
 

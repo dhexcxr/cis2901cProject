@@ -4,8 +4,6 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.eclipse.swt.SWT;
@@ -20,7 +18,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 public class NewCustomerDialog extends Dialog {
 
 	protected Object result;
-	protected Shell shell;
+	protected Shell shlNewCustomer;
 //	protected Shell parent;
 	private MyText txtFirstName;
 	private MyText txtAddress;
@@ -32,6 +30,8 @@ public class NewCustomerDialog extends Dialog {
 	private MyText txtWorkPhone;
 	private MyText txtCellPhone;
 	private MyText txtEmail;
+	private long customerId = -1;
+	private Customer customer;
 
 	/**
 	 * Create the dialog.
@@ -44,21 +44,57 @@ public class NewCustomerDialog extends Dialog {
 //		setText("SWT Dialog");
 	}
 	
-	public NewCustomerDialog(Shell parent, int style, Customer customer) {
-		super(parent, style);
-		// TODO set properties (text fields) via Customer object, for opening a current customer to edit
-	}
-
 	/**
 	 * Open the dialog.
 	 * @return the result
 	 */
 	public Object open() {
 		createContents();
-		shell.open();
-		shell.layout();
+		shlNewCustomer.open();
+		shlNewCustomer.layout();
 		Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
+		while (!shlNewCustomer.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
+	
+	public Object open(Customer customer) {
+		// set properties (text fields) via Customer object, for opening a current customer to edit
+		createContents();
+		
+		if (customer.getFirstName() != null)
+			txtFirstName.setText(customer.getFirstName());
+		if (customer.getAddress() != null)
+			txtAddress.setText(customer.getAddress());
+		if (customer.getCity() != null)
+			txtCity.setText(customer.getCity());
+		if (customer.getState() != null)
+			txtState.setText(customer.getState());
+		if (customer.getZipCode() != 0)
+			txtZipCode.setText(Integer.toString(customer.getZipCode()));
+		if (customer.getLastName() != null)
+			txtLastName.setText(customer.getLastName());
+		if (customer.getHomePhone() != 0)
+			txtHomePhone.setText(Integer.toString(customer.getHomePhone()));
+		if (customer.getWorkPhone() != 0)
+			txtWorkPhone.setText(Integer.toString(customer.getWorkPhone()));
+		if (customer.getCellPhone() != 0)
+			txtCellPhone.setText(Integer.toString(customer.getCellPhone()));
+		if (customer.getEmail() != null)
+			txtEmail.setText(customer.getEmail());
+		customerId = customer.getCustomerId();
+		
+		this.customer = customer;
+		
+		shlNewCustomer.setText("Modify Customer");
+				
+		shlNewCustomer.open();
+		shlNewCustomer.layout();
+		Display display = getParent().getDisplay();
+		while (!shlNewCustomer.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -70,14 +106,13 @@ public class NewCustomerDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		// TODO add function to highlight Last Name box with Red background if no text in box - DONE
 		
-		shell = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+		shlNewCustomer = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 //		shell.setLocation(0, 0);		// TODO get the position nicer
-		shell.setSize(580, 255);
-		shell.setText(getText());
+		shlNewCustomer.setSize(580, 255);
+		shlNewCustomer.setText("New Customer");
 		
-		txtFirstName = new MyText(shell, SWT.BORDER);
+		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtFirstName.setText("First Name...");
 		txtFirstName.setBounds(10, 10, 272, 26);
 		TextBoxFocusListener textBoxFocusListener = new TextBoxFocusListener(txtFirstName);
@@ -85,31 +120,7 @@ public class NewCustomerDialog extends Dialog {
 		InfoTextBoxModifyListener infoTextBoxModifyListener = new InfoTextBoxModifyListener(txtFirstName);
 		txtFirstName.addModifyListener(infoTextBoxModifyListener);
 		
-		txtAddress = new MyText(shell, SWT.BORDER);
-		txtAddress.setText("Address...");
-		txtAddress.setBounds(10, 42, 272, 26);
-		textBoxFocusListener = new TextBoxFocusListener(txtAddress);
-		txtAddress.addFocusListener(textBoxFocusListener);
-		
-		txtCity = new MyText(shell, SWT.BORDER);
-		txtCity.setText("City...");
-		txtCity.setBounds(10, 74, 272, 26);
-		textBoxFocusListener = new TextBoxFocusListener(txtCity);
-		txtCity.addFocusListener(textBoxFocusListener);
-		
-		txtState = new MyText(shell, SWT.BORDER);
-		txtState.setText("State,..");
-		txtState.setBounds(10, 106, 272, 26);
-		textBoxFocusListener = new TextBoxFocusListener(txtState);
-		txtState.addFocusListener(textBoxFocusListener);
-		
-		txtZipCode = new MyText(shell, SWT.BORDER);
-		txtZipCode.setText("Zip Code...");
-		txtZipCode.setBounds(10, 138, 272, 26);
-		textBoxFocusListener = new TextBoxFocusListener(txtZipCode);
-		txtZipCode.addFocusListener(textBoxFocusListener);
-		
-		txtLastName = new MyText(shell, SWT.BORDER);
+		txtLastName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtLastName.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtLastName.setText("Last Name/Company Name...");
 		txtLastName.setBounds(292, 10, 272, 26);
@@ -118,36 +129,74 @@ public class NewCustomerDialog extends Dialog {
 		LastNameModifyListener lastNameModifyListener = new LastNameModifyListener(txtLastName);
 		txtLastName.addModifyListener(lastNameModifyListener);
 		
-		txtHomePhone = new MyText(shell, SWT.BORDER);
+		txtAddress = new MyText(shlNewCustomer, SWT.BORDER);
+		txtAddress.setText("Address...");
+		txtAddress.setBounds(10, 42, 272, 26);
+		textBoxFocusListener = new TextBoxFocusListener(txtAddress);
+		txtAddress.addFocusListener(textBoxFocusListener);
+		txtAddress.addModifyListener(new InfoTextBoxModifyListener(txtAddress));
+		
+		txtCity = new MyText(shlNewCustomer, SWT.BORDER);
+		txtCity.setText("City...");
+		txtCity.setBounds(10, 74, 272, 26);
+		textBoxFocusListener = new TextBoxFocusListener(txtCity);
+		txtCity.addFocusListener(textBoxFocusListener);
+		txtCity.addModifyListener(new InfoTextBoxModifyListener(txtCity));
+		
+		txtState = new MyText(shlNewCustomer, SWT.BORDER);
+		txtState.setText("State...");
+		txtState.setBounds(10, 106, 272, 26);
+		textBoxFocusListener = new TextBoxFocusListener(txtState);
+		txtState.addFocusListener(textBoxFocusListener);
+		txtState.addModifyListener(new InfoTextBoxModifyListener(txtState));
+		
+		txtZipCode = new MyText(shlNewCustomer, SWT.BORDER);
+		txtZipCode.setText("Zip Code...");
+		txtZipCode.setBounds(10, 138, 272, 26);
+		textBoxFocusListener = new TextBoxFocusListener(txtZipCode);
+		txtZipCode.addFocusListener(textBoxFocusListener);
+		txtZipCode.addModifyListener(new InfoTextBoxModifyListener(txtZipCode));
+		
+		txtHomePhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtHomePhone.setText("Home Phone...");
 		txtHomePhone.setBounds(292, 42, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtHomePhone);
 		txtHomePhone.addFocusListener(textBoxFocusListener);
+		txtHomePhone.addModifyListener(new InfoTextBoxModifyListener(txtHomePhone));
 		
-		txtWorkPhone = new MyText(shell, SWT.BORDER);
+		txtWorkPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtWorkPhone.setText("Work Phone...");
 		txtWorkPhone.setBounds(292, 74, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtWorkPhone);
 		txtWorkPhone.addFocusListener(textBoxFocusListener);
+		txtWorkPhone.addModifyListener(new InfoTextBoxModifyListener(txtWorkPhone));
 		
-		txtCellPhone = new MyText(shell, SWT.BORDER);
+		txtCellPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtCellPhone.setText("Cell Phone...");
 		txtCellPhone.setBounds(292, 106, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtCellPhone);
 		txtCellPhone.addFocusListener(textBoxFocusListener);
+		txtCellPhone.addModifyListener(new InfoTextBoxModifyListener(txtCellPhone));
 		
-		txtEmail = new MyText(shell, SWT.BORDER);
+		txtEmail = new MyText(shlNewCustomer, SWT.BORDER);
 		txtEmail.setText("E-Mail...");
 		txtEmail.setBounds(292, 138, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtEmail);
 		txtEmail.addFocusListener(textBoxFocusListener);
+		txtEmail.addModifyListener(new InfoTextBoxModifyListener(txtEmail));
 		
-		Button btnSaveCustomerButton = new Button(shell, SWT.NONE);
+		Button btnSaveCustomerButton = new Button(shlNewCustomer, SWT.NONE);
 		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
 				try {
-					addNewCustomer();
+					if (customerId == -1) {
+						addNewCustomer();
+					} else {
+						System.out.println("Save existing customer");
+						// save modifications to existing customer
+						saveCustomer(customer);
+					}
 				} catch (SQLException e1) {
 					System.out.println("Error saving new customer data to database");
 					e1.printStackTrace();
@@ -157,164 +206,104 @@ public class NewCustomerDialog extends Dialog {
 		btnSaveCustomerButton.setBounds(50, 170, 181, 30);
 		btnSaveCustomerButton.setText("Save Customer");
 		
-		Button btnCancel = new Button(shell, SWT.NONE);
+		Button btnCancel = new Button(shlNewCustomer, SWT.NONE);
 		btnCancel.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
-				shell.dispose();
+				shlNewCustomer.dispose();
 			}
 		});
 		btnCancel.setBounds(332, 170, 181, 30);
 		btnCancel.setText("Cancel");
-		shell.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity, txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton, btnCancel});
+		shlNewCustomer.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity, txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton, btnCancel});
 
 	}
 	
 	public void addNewCustomer() throws SQLException {
+		saveCustomer(new Customer());
+	}
+	
+	public void saveCustomer(Customer customer) throws SQLException {
+		
 		if (txtLastName.getText().equals("Last Name/Company Name...")) {
 			// dialog box stating last name is required
-			MessageBox lastNameRequirementBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+			MessageBox lastNameRequirementBox = new MessageBox(shlNewCustomer, SWT.ICON_INFORMATION);
 			lastNameRequirementBox.setText("Notice");
 			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
 			lastNameRequirementBox.open();
 			return;
 		}
 		
-		Customer customer = new Customer();
+		if(txtFirstName.isModified()) {
+			customer.setFirstName(txtFirstName.getText());
+		}
 		
 		if (txtLastName.isModified()) {
 			customer.setLastName(txtLastName.getText());
 		}
 		
+		if (txtAddress.isModified()) {
+			customer.setAddress(txtAddress.getText());
+		}
+
+		if (txtCity.isModified()) {
+			customer.setCity(txtCity.getText());
+		}
+		
+		if (txtState.isModified()) {
+			customer.setState(txtState.getText());
+		}
+		
+		if (txtZipCode.isModified()) {
+			try {
+				customer.setZipCode(Integer.parseInt(txtZipCode.getText()));		// maybe set zip to string in DB
+			} catch (Exception e) {				// maybe put an error dialog box here
+				System.out.println(e);
+				e.printStackTrace();
+				customer.setZipCode(0);
+			}
+		}
+		
+		
+		// for phone numbers maybe do regex that removes all non-numeric characters 
+		if (txtHomePhone.isModified()) {		// maybe set phone nums to string in DB
+			try {
+				customer.setHomePhone(Integer.parseInt(txtHomePhone.getText().replaceAll("[()\\s-]+", "")));
+			} catch (Exception e) {				// maybe put an error dialog box here
+				System.out.println(e);
+				e.printStackTrace();
+				customer.setHomePhone(0);
+			}
+		}
+		
+		if (txtWorkPhone.isModified()) {
+			try {
+				customer.setWorkPhone(Integer.parseInt(txtWorkPhone.getText().replaceAll("[()\\s-]+", "")));
+			} catch (Exception e) {				// maybe put an error dialog box here
+				System.out.println(e);
+				e.printStackTrace();
+				customer.setWorkPhone(0);
+			}
+		}
+		
+		if (txtCellPhone.isModified()) {
+			try {
+				customer.setCellPhone(Integer.parseInt(txtCellPhone.getText().replaceAll("[()\\s-]+", "")));
+			} catch (Exception e) {				// maybe put an error dialog box here
+				System.out.println(e);
+				e.printStackTrace();
+				customer.setCellPhone(0);
+			}
+		}
+		
+		if (txtEmail.isModified()) {		// make dialog box, if txtEmail.isModified, check its format
+												// vs regex to ensure (name)@(domain).(tld)
+			customer.setEmail(txtEmail.getText());
+		}
+
 		DbServices.saveObject(customer);
 		
-		shell.dispose();
-		
-		
-		
-		// moved to DbServices
-//		boolean isAnythingModified = false;
-//		
-//		// this will probably be mostly moved into dbServices.SaveCustomer
-//		// this dialog will only build a Customer object (only programmatic functions)
-//		//then pass the object to the dbServies class to save user input (through the Customer object) to db
-//			// this will allow us to have one overloaded dbServies.saveObject method that will do all the data storage/db operations
-//			// this allows re-usability and plug-ability
-//		
-////		if (!txtLastName.isModified()) {
-//		if (txtLastName.getText().equals("Last Name/Company Name...")) {
-//			// dialog box stating last name is required
-//			MessageBox lastNameRequirementBox = new MessageBox(shell, SWT.ICON_INFORMATION);
-//			lastNameRequirementBox.setText("Notice");
-//			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
-//			lastNameRequirementBox.open();
-//			return;
-//		}
-//		
-//		// TODO finish
-//		
-//		System.out.println("Save New Cusrtoemr button pressed");
-//		// on "Save" button press in New Customer dialog
-//		// get data entered into dialog
-//		// sanitize, regex phones to 10 digit, check email format, require at least last name
-//		
-//		
-//		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer () VALUES ();");
-//		// use regex to build query
-//		//	if (txtXXX.isModified() {
-//		//		take queryString, find first set of parens, insert Column Name
-//		//		find second set of parens, insert txtXXX.getText()
-//		
-//		if (txtFirstName.isModified()) {
-//			isAnythingModified = true;
-//			StringBuilder firstNameColumn  = new StringBuilder();
-//			int columnInsertionPoint = queryString.indexOf(")");
-//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-//				firstNameColumn.append(", ");
-//			}
-//			firstNameColumn.append("firstName");
-//			queryString.insert(columnInsertionPoint, firstNameColumn);
-//			
-//			StringBuilder firstNameField = new StringBuilder();
-//			int fieldInsertionPoint = queryString.lastIndexOf(")");
-//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-//				firstNameField.append(", ");
-//			}
-//			firstNameField.append("'" + txtFirstName.getText() + "'");
-//			queryString.insert(fieldInsertionPoint, firstNameField);
-//		}
-//		
-//		if (txtLastName.isModified()) {
-//			isAnythingModified = true;
-//			StringBuilder lastNameColumn  = new StringBuilder();
-//			int columnInsertionPoint = queryString.indexOf(")");
-//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-//				lastNameColumn.append(", ");
-//			}
-//			lastNameColumn.append("lastName");
-//			queryString.insert(columnInsertionPoint, lastNameColumn);
-//			
-//			StringBuilder lastNameField = new StringBuilder();
-//			int fieldInsertionPoint = queryString.lastIndexOf(")");
-//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-//				lastNameField.append(", ");
-//			}
-//			lastNameField.append("'" + txtLastName.getText() + "'");
-//			queryString.insert(fieldInsertionPoint, lastNameField);
-//		}
-//		
-//		if (txtAddress.isModified()) {
-//			isAnythingModified = true;
-//			StringBuilder addressColumn  = new StringBuilder();
-//			int columnInsertionPoint = queryString.indexOf(")");
-//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-//				addressColumn.append(", ");
-//			}
-//			addressColumn.append("address");
-//			queryString.insert(columnInsertionPoint, addressColumn);
-//			
-//			StringBuilder firstNameField = new StringBuilder();
-//			int fieldInsertionPoint = queryString.lastIndexOf(")");
-//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-//				firstNameField.append(", ");
-//			}
-//			firstNameField.append("'" + txtAddress.getText() + "'");
-//			queryString.insert(fieldInsertionPoint, firstNameField);
-//		}
-//		
-//		if (txtCity.isModified()) {
-//			isAnythingModified = true;
-//			StringBuilder cityColumn  = new StringBuilder();
-//			int columnInsertionPoint = queryString.indexOf(")");
-//			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-//				cityColumn.append(", ");
-//			}
-//			cityColumn.append("city");
-//			queryString.insert(columnInsertionPoint, cityColumn);
-//			
-//			StringBuilder firstNameField = new StringBuilder();
-//			int fieldInsertionPoint = queryString.lastIndexOf(")");
-//			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-//				firstNameField.append(", ");
-//			}
-//			firstNameField.append("'" + txtCity.getText() + "'");
-//			queryString.insert(fieldInsertionPoint, firstNameField);
-//		}
-//		
-//		if (isAnythingModified) {
-//			Connection dbConnection = DbServices.getDbConnection();
-////			
-//			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-////			statement.setString(1, txtFirstName.getText());
-////			statement.setString(2, "%" + query + "%");
-//			statement.execute();
-////			dbConnection.close();
-//		}
-//		
-//		// at the end, PreparedStatement statement = Main.getDbConnection().prepareStatement(queryString);
-//		// statement.execute();
-//		
-//		shell.dispose();
+		shlNewCustomer.dispose();
 	}
 }
 
@@ -337,8 +326,7 @@ class LastNameModifyListener implements ModifyListener {
 		} else {
 			txtBox.setModified(false);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
-		}
-		//			background = red		
+		}	
 	}
 	
 }

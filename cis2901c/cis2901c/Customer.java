@@ -1,14 +1,9 @@
 package cis2901c;
 
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.swing.JTable;
-import javax.swing.JTextField;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -23,10 +18,12 @@ public class Customer {
 	
 	// might not need this
 	
-	private long customerId;
+	private long customerId = -1;
 		// TODO need to set customerId when customer object is saved
-			// when saving new object to db get pk from db after line creation
-			// on second thought, we'll probably impliment this as dbServices.gerPrimaryKey
+			// when saving new object to DB get pk from DB after line creation
+			// on second thought, we'll probably implement this as dbServices.getPrimaryKey
+		// on third thought, there objects are not persistent, we retrieve it from DB each time we want to use it
+		// I don't think we need a getPrimaryKey
 	private String firstName;
 	private String lastName;
 	private String address;
@@ -39,6 +36,22 @@ public class Customer {
 	private String email;
 	
 	public Customer() {
+	}
+	
+	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
+			int zipCode, int homePhone, int workPhone, int cellPhone, String email) {
+		super();
+		this.customerId = customerId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zipCode = zipCode;
+		this.homePhone = homePhone;
+		this.workPhone = workPhone;
+		this.cellPhone = cellPhone;
+		this.email = email;
 	}
 	
 	public long getCustomerId() {
@@ -137,7 +150,7 @@ public class Customer {
 	// TODO look at all throws
 	protected static void searchForCustomer(Table table, String query) throws SQLException {
 		// TODO move search into DbServices
-				// searchObject(query, table (maybe? some way to decide which table to search)) will find a customer in the customer table
+				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
 				// it will return results which we'll use to populate table
 //		Statement customerQuery = Main.getDbConnection().createStatement();
 		
@@ -146,7 +159,7 @@ public class Customer {
 		Connection dbConnection = DbServices.getDbConnection();
 			PreparedStatement statement = dbConnection.prepareStatement(
 					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-							+ "email FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
+							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
 			statement.setString(1, "%" + query + "%");
 			statement.setString(2, "%" + query + "%");
 			String phone = query.replaceAll("[()\\s-]+", "");
@@ -167,17 +180,31 @@ public class Customer {
 			String address = customerQueryResults.getString(3);
 			String city = customerQueryResults.getString(4);
 			String state = customerQueryResults.getString(5);
-			String zip = Integer.toString(customerQueryResults.getInt(6));
-			String homePhone = Integer.toString(customerQueryResults.getInt(7));
-//			String workPhone = Integer.toString(customerQueryResults.getInt(8));
-			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
-			String email = customerQueryResults.getString(10);
+//			String zip = Integer.toString(customerQueryResults.getInt(6));
+//			String homePhone = Integer.toString(customerQueryResults.getInt(7));
+//			String workPhone = Integer.toString(customerQueryResults.getInt(8)); // not using this right now
+//			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
 			
-			TableItem tableItem = new TableItem(table, SWT.NONE);																		// SWT implementation
-			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip, homePhone, cellPhone, email} );				// SWT implementation
+			int zip = customerQueryResults.getInt(6);
+			int homePhone = customerQueryResults.getInt(7);
+			int workPhone = customerQueryResults.getInt(8); // not using this right now
+			int cellPhone = customerQueryResults.getInt(9);
+			
+			String email = customerQueryResults.getString(10);
+			int customerId = customerQueryResults.getInt(11);
+			
+			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+					zip, homePhone, workPhone, cellPhone, email);
+			
+			// TODO if numbers (phone, zip) == 0, do not display a 0, display a blank
+			
+			TableItem tableItem = new TableItem(table, SWT.NONE);
+					// TODO when setData called, pull tableItem.txt from object instead of manually setting
+					// we can add a method to Customer to array up fields
+			tableItem.setText(new String[] {firstName, lastName, address, city, state, Integer.toString(zip),
+					Integer.toString(homePhone), Integer.toString(cellPhone), email} );
+			tableItem.setData(customer);
 		}
-//		}
-//		dbConnection.close();
 	}
 	
 	protected static void openCustomer() {
@@ -195,6 +222,7 @@ class NewCustomerButtonListeners extends MouseAdapter {
 //		Window parent = SwingUtilities.windowForComponent(Main.getShell());
 		NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
 		addNewCustomerDialog.open();
+		
 	}
 }
 
@@ -205,12 +233,12 @@ class CustomerSearchBoxListeners implements ModifyListener {		//SWT imple
 	
 	private Text searchBox;
 	private Table table;
-	private String textBoxText;
+//	private String textBoxText;
 	
 	public CustomerSearchBoxListeners(Text textBox, Table table) {
 		this.searchBox = textBox;
 		this.table = table;
-		this.textBoxText = textBox.getText();
+//		this.textBoxText = textBox.getText();
 	}
 
 	@Override

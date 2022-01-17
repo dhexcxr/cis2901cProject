@@ -1,11 +1,7 @@
 package cis2901c;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 //import java.sql.Statement;
-
-import javax.swing.JFrame;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -19,18 +15,14 @@ public class Main {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		
-		// TODO set up connection to MariaDB
-//		Class.forName("com.mysql.cj.jdbc.Driver");
-		
-//		mainDbConnection = DriverManager.getConnection("jdbc:mysql://TestUser:test@localhost:3306/cis2901c");
-		
-//		Statement statement = mainDbConnection.createStatement();
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		
 		Display display = new Display();
 //		Shell shell = new Shell(display);
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");
+		@SuppressWarnings("unused")
 		Gui gui = new Gui(shell, SWT.NONE);
 //		gui = new Gui(shell, SWT.NONE);
 		shell.pack();
