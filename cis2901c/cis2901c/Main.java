@@ -45,7 +45,7 @@ public class Main {
 		display.dispose();
 	}
 	
-	protected static Shell getShell() {
+	public static Shell getShell() {
 //		gui = null;
 		if (shell.equals(null)) {
 			System.out.println("Error loading Gui: shell cannot be null");

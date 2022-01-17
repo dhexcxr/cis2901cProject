@@ -4,12 +4,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
+import cis2901c.listeners.CustomerSearchBoxListeners;
+import cis2901c.listeners.NewCustomerButtonListeners;
+import cis2901c.listeners.TextBoxFocusListener;
+
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.List;
@@ -222,75 +221,75 @@ public class Gui extends Composite {
 	}
 }
 
-class TextBoxFocusListener implements FocusListener {				//SWT imple
-	private MyText txtBox;
-	private String textBoxText;
-	
-	public TextBoxFocusListener(MyText textBox) {
-		this.txtBox = textBox;
-		this.textBoxText = textBox.getText();
-	}
-	
-	@Override
-	public void focusGained(FocusEvent e) {
-		System.out.println(textBoxText + " box focused gained");
-		if (txtBox.getText().equals(textBoxText)) {
-			txtBox.setText("");
-		}		
-	}
+//class TextBoxFocusListener implements FocusListener {				//SWT imple
+//	private MyText txtBox;
+//	private String textBoxText;
+//	
+//	public TextBoxFocusListener(MyText textBox) {
+//		this.txtBox = textBox;
+//		this.textBoxText = textBox.getText();
+//	}
+//	
+//	@Override
+//	public void focusGained(FocusEvent e) {
+//		System.out.println(textBoxText + " box focused gained");
+//		if (txtBox.getText().equals(textBoxText)) {
+//			txtBox.setText("");
+//		}		
+//	}
+//
+//	@Override
+//	public void focusLost(FocusEvent e) {
+//		System.out.println(textBoxText + " box focused lost");
+//		if (txtBox.getText().equals("")) {
+//			txtBox.setText(textBoxText);
+////			txtBox.setModified(false);
+////		} else {
+////			txtBox.setModified(true);
+//		}
+//	}
+//}
 
-	@Override
-	public void focusLost(FocusEvent e) {
-		System.out.println(textBoxText + " box focused lost");
-		if (txtBox.getText().equals("")) {
-			txtBox.setText(textBoxText);
-//			txtBox.setModified(false);
+//class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
+//	
+//	private MyText text;
+//	private String textBoxText;
+//	
+//	public InfoTextBoxModifyListener(MyText text) {
+//		// TODO Auto-generated constructor stub
+//		this.text = text;
+//		this.textBoxText = text.getText();
+//	}
+//
+//	@Override
+//	public void modifyText(ModifyEvent e) {
+//		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
+//			text.setModified(true);
 //		} else {
-//			txtBox.setModified(true);
-		}
-	}
-}
+//			text.setModified(false);
+//		}	
+//	}
+//}
 
-class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
-	
-	private MyText text;
-	private String textBoxText;
-	
-	public InfoTextBoxModifyListener(MyText text) {
-		// TODO Auto-generated constructor stub
-		this.text = text;
-		this.textBoxText = text.getText();
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
-			text.setModified(true);
-		} else {
-			text.setModified(false);
-		}	
-	}
-}
-
-class MyText extends Text {
-	
-	private boolean modified = false;
-
-	public MyText(Composite parent, int style) {
-		super(parent, style);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public boolean isModified() {
-		return modified;
-	}
-
-	public void setModified(boolean modified) {
-		this.modified = modified;
-	}
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}	
-}
+//class MyText extends Text {
+//	
+//	private boolean modified = false;
+//
+//	public MyText(Composite parent, int style) {
+//		super(parent, style);
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	public boolean isModified() {
+//		return modified;
+//	}
+//
+//	public void setModified(boolean modified) {
+//		this.modified = modified;
+//	}
+//
+//	@Override
+//	protected void checkSubclass() {
+//		// Disable the check that prevents subclassing of SWT components
+//	}	
+//}

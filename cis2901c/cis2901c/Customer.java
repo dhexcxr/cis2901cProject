@@ -6,13 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 
 public class Customer {
 	
@@ -148,7 +143,7 @@ public class Customer {
 	}
 	
 	// TODO look at all throws
-	protected static void searchForCustomer(Table table, String query) throws SQLException {
+	public static void searchForCustomer(Table table, String query) throws SQLException {
 		// TODO move search into DbServices
 				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
 				// it will return results which we'll use to populate table
@@ -213,49 +208,49 @@ public class Customer {
 	}
 }
 
-class NewCustomerButtonListeners extends MouseAdapter {
-	
-	public NewCustomerButtonListeners() {	
-	}
-	
-	public void mouseDown(MouseEvent e) {
-//		Window parent = SwingUtilities.windowForComponent(Main.getShell());
-		NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
-		addNewCustomerDialog.open();
-		
-	}
-}
+//class NewCustomerButtonListeners extends MouseAdapter {
+//	
+//	public NewCustomerButtonListeners() {	
+//	}
+//	
+//	public void mouseDown(MouseEvent e) {
+////		Window parent = SwingUtilities.windowForComponent(Main.getShell());
+//		NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
+//		addNewCustomerDialog.open();
+//		
+//	}
+//}
 
-class CustomerSearchBoxListeners implements ModifyListener {		//SWT imple
-	
-	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
-	// TODO switch Text to MyText
-	
-	private Text searchBox;
-	private Table table;
-//	private String textBoxText;
-	
-	public CustomerSearchBoxListeners(Text textBox, Table table) {
-		this.searchBox = textBox;
-		this.table = table;
-//		this.textBoxText = textBox.getText();
-	}
-
-	@Override
-	public void modifyText(ModifyEvent e) {
-//		list.setItems("Test");
-//		TableItem tableItem = new TableItem(table, SWT.NONE);
-//		tableItem.setText(new String[] {"0ame", "other name", "other deets"} );
-		table.removeAll();
-		int queryLength = searchBox.getText().length();
-		if (queryLength > 0) {
-			try {
-				Customer.searchForCustomer(table, searchBox.getText());
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-	}
-}
+//class CustomerSearchBoxListeners implements ModifyListener {		//SWT imple
+//	
+//	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
+//	// TODO switch Text to MyText
+//	
+//	private Text searchBox;
+//	private Table table;
+////	private String textBoxText;
+//	
+//	public CustomerSearchBoxListeners(Text textBox, Table table) {
+//		this.searchBox = textBox;
+//		this.table = table;
+////		this.textBoxText = textBox.getText();
+//	}
+//
+//	@Override
+//	public void modifyText(ModifyEvent e) {
+////		list.setItems("Test");
+////		TableItem tableItem = new TableItem(table, SWT.NONE);
+////		tableItem.setText(new String[] {"0ame", "other name", "other deets"} );
+//		table.removeAll();
+//		int queryLength = searchBox.getText().length();
+//		if (queryLength > 0) {
+//			try {
+//				Customer.searchForCustomer(table, searchBox.getText());
+//			} catch (SQLException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}
+//	}
+//}
 
