@@ -1,14 +1,25 @@
-package cis2901c;
+package cis2901c.listeners;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+
+import cis2901c.objects.Customer;
+import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
+import cis2901c.objects.Unit;
 
 public class DbServices {
 	
 	private static Connection mainDbConnection = null;
 	
+	// START General DB methods
 	public static boolean isConnected() {
 		return mainDbConnection != null;
 	}
@@ -39,6 +50,136 @@ public class DbServices {
 			mainDbConnection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void saveObject(Object object) {
+		if (object instanceof Customer) {
+			saveCustomer((Customer) object);
+		} else if (object instanceof Unit) {
+			// saveUnit((Unit) object);
+		} else if (object instanceof Part) {
+			// savePart((Part) object);
+		} else if (object instanceof RepairOrder) {
+			// saveRepariOrder((RepairOrder) object);
+		}
+	}
+	
+	public static void searchForObject(Table resultsTable, String searchQuery) throws SQLException {
+		// search for searchQueary and display in resultsTable 
+		if (resultsTable.getColumn(0).getText().equals("First Name")) {
+			searchForCustomer(resultsTable, searchQuery);
+		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
+			searchForUnit(resultsTable, searchQuery);
+		}
+	}
+	// END General DB methods
+	
+	// START Unit object methods
+	private static void searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
+		Connection dbConnection = DbServices.getDbConnection();
+		PreparedStatement statement = dbConnection.prepareStatement(
+				// change to unit query
+				"SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, c.lastName, c.firstName "
+				+ "FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
+		statement.setString(1, "%" + searchQuery + "%");
+		statement.setString(2, "%" + searchQuery + "%");
+		statement.setString(3, "%" + searchQuery + "%");
+		statement.setString(4, "%" + searchQuery + "%");
+		statement.setString(5, "%" + searchQuery + "%");
+		statement.setString(6, "%" + searchQuery + "%");
+		
+		ResultSet unitQueryResults = statement.executeQuery();
+
+		while (unitQueryResults.next()) {
+			// TODO change to Unit fields
+			long unitId = unitQueryResults.getLong(1);
+			long customerId = unitQueryResults.getLong(2);
+			String make = unitQueryResults.getString(3);
+			String model = unitQueryResults.getString(4);
+			int modelYear = unitQueryResults.getInt(5);
+			int mileage = unitQueryResults.getInt(6);
+			String color = unitQueryResults.getString(7);
+			String vin = unitQueryResults.getString(8);
+			String notes = unitQueryResults.getString(9);
+			String lastName = unitQueryResults.getString(10);
+			String firstName = unitQueryResults.getString(11);
+		
+			Unit unit = new Unit(unitId, customerId, make, model, modelYear, mileage, color, vin, notes);
+				
+			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
+				// TODO when setData called, pull tableItem.txt from object instead of manually setting
+					// we can add a method to Customer to array up fields
+					// on second thought, this would probably require too much custom object code for each result table
+					// may as well keep it with each object class, as in this code for displaying Customer objects
+					// is in the Customer class
+			tableItem.setText(new String[] {lastName + ", " + firstName, make, model, modelYear == 0 ? "" : Integer.toString(modelYear),
+				Integer.toString(mileage), color, vin, notes});
+			tableItem.setData(unit);
+		}
+	}
+	
+	
+	// START Customer object methods
+	private static void searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
+		// TODO move search into DbServices
+				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
+				// it will return results which we'll use to populate table
+//		Statement customerQuery = Main.getDbConnection().createStatement();
+		
+//		if (query.length() != 0) {
+//			ResultSet customerQueryResults = customerQuery.executeQuery(
+		Connection dbConnection = DbServices.getDbConnection();
+			PreparedStatement statement = dbConnection.prepareStatement(
+					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
+			statement.setString(1, "%" + searchQuery + "%");
+			statement.setString(2, "%" + searchQuery + "%");
+			String phone = searchQuery.replaceAll("[()\\s-]+", "");
+			statement.setString(3, "%" + phone + "%");
+			statement.setString(4, "%" + phone + "%");
+			statement.setString(5, "%" + phone + "%");
+			ResultSet customerQueryResults = statement.executeQuery();
+		
+			// shows results in table even if search box is empty
+//		if (query.length() == 0) {
+//			customerQueryResults =  customerQuery.executeQuery(
+//					"SELECT firstName, lastName, address, city, state, zipcode, "
+//							+ "homePhone, workPhone, cellPhone, email FROM cis2901c.customer;");
+//		}
+		
+		while (customerQueryResults.next()) {
+			String firstName = customerQueryResults.getString(1);
+			String lastName = customerQueryResults.getString(2);
+			String address = customerQueryResults.getString(3);
+			String city = customerQueryResults.getString(4);
+			String state = customerQueryResults.getString(5);
+//			String zip = Integer.toString(customerQueryResults.getInt(6));
+//			String homePhone = Integer.toString(customerQueryResults.getInt(7));
+//			String workPhone = Integer.toString(customerQueryResults.getInt(8)); // not using this right now
+//			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
+			
+			int zip = customerQueryResults.getInt(6);
+			int homePhone = customerQueryResults.getInt(7);
+			int workPhone = customerQueryResults.getInt(8); // not using this right now
+			int cellPhone = customerQueryResults.getInt(9);
+			
+			String email = customerQueryResults.getString(10);
+			long customerId = customerQueryResults.getLong(11);
+			
+			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+					zip, homePhone, workPhone, cellPhone, email);
+					
+			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
+					// TODO when setData called, pull tableItem.txt from object instead of manually setting
+						// we can add a method to Customer to array up fields
+						// on second thought, this would probably require too much custom object code for each result table
+						// may as well keep it with each object class, as in this code for displaying Customer objects
+						// is in the Customer class
+			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip == 0 ? "" : Integer.toString(zip),
+					homePhone == 0 ? "" : Integer.toString(homePhone), cellPhone == 0 ? "" : Integer.toString(cellPhone), email} );
+			tableItem.setData(customer);
 		}
 	}
 	
@@ -379,7 +520,7 @@ public class DbServices {
 		}
 	}
 	
-	public static void saveObject(Customer customer) {		// TODO change to Object object, we'll need object.getObjectId or something
+	public static void saveCustomer(Customer customer) {		// TODO change to Object object, we'll need object.getObjectId or something
 //boolean isAnythingModified = false;
 		
 		// this will probably be mostly moved into dbServices.SaveCustomer

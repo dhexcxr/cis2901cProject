@@ -1,18 +1,13 @@
-package cis2901c;
+package cis2901c.objects;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
+import cis2901c.listeners.DbServices;
 
 public class Customer {
 	
 	// might not need this
-	
 	private long customerId = -1;
 		// TODO need to set customerId when customer object is saved
 			// when saving new object to DB get pk from DB after line creation
@@ -139,68 +134,69 @@ public class Customer {
 
 
 	protected static void populateCustomerTable(Table table) throws SQLException {
-		searchForCustomer(table, "");
+		DbServices.searchForObject(table, "");
 	}
 	
 	// TODO look at all throws
-	public static void searchForCustomer(Table table, String query) throws SQLException {
-		// TODO move search into DbServices
-				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
-				// it will return results which we'll use to populate table
-//		Statement customerQuery = Main.getDbConnection().createStatement();
-		
-//		if (query.length() != 0) {
-//			ResultSet customerQueryResults = customerQuery.executeQuery(
-		Connection dbConnection = DbServices.getDbConnection();
-			PreparedStatement statement = dbConnection.prepareStatement(
-					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
-			statement.setString(1, "%" + query + "%");
-			statement.setString(2, "%" + query + "%");
-			String phone = query.replaceAll("[()\\s-]+", "");
-			statement.setString(3, "%" + phone + "%");
-			statement.setString(4, "%" + phone + "%");
-			statement.setString(5, "%" + phone + "%");
-			ResultSet customerQueryResults = statement.executeQuery();
-		
-//		if (query.length() == 0) {
-//			customerQueryResults =  customerQuery.executeQuery(
-//					"SELECT firstName, lastName, address, city, state, zipcode, "
-//							+ "homePhone, workPhone, cellPhone, email FROM cis2901c.customer;");
+//	public static void searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
+//		// TODO move search into DbServices
+//				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
+//				// it will return results which we'll use to populate table
+////		Statement customerQuery = Main.getDbConnection().createStatement();
+//		
+////		if (query.length() != 0) {
+////			ResultSet customerQueryResults = customerQuery.executeQuery(
+//		Connection dbConnection = DbServices.getDbConnection();
+//			PreparedStatement statement = dbConnection.prepareStatement(
+//					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+//							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
+//			statement.setString(1, "%" + searchQuery + "%");
+//			statement.setString(2, "%" + searchQuery + "%");
+//			String phone = searchQuery.replaceAll("[()\\s-]+", "");
+//			statement.setString(3, "%" + phone + "%");
+//			statement.setString(4, "%" + phone + "%");
+//			statement.setString(5, "%" + phone + "%");
+//			ResultSet customerQueryResults = statement.executeQuery();
+//		
+////		if (query.length() == 0) {
+////			customerQueryResults =  customerQuery.executeQuery(
+////					"SELECT firstName, lastName, address, city, state, zipcode, "
+////							+ "homePhone, workPhone, cellPhone, email FROM cis2901c.customer;");
+////		}
+//		
+//		while (customerQueryResults.next()) {
+//			String firstName = customerQueryResults.getString(1);
+//			String lastName = customerQueryResults.getString(2);
+//			String address = customerQueryResults.getString(3);
+//			String city = customerQueryResults.getString(4);
+//			String state = customerQueryResults.getString(5);
+////			String zip = Integer.toString(customerQueryResults.getInt(6));
+////			String homePhone = Integer.toString(customerQueryResults.getInt(7));
+////			String workPhone = Integer.toString(customerQueryResults.getInt(8)); // not using this right now
+////			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
+//			
+//			int zip = customerQueryResults.getInt(6);
+//			int homePhone = customerQueryResults.getInt(7);
+//			int workPhone = customerQueryResults.getInt(8); // not using this right now
+//			int cellPhone = customerQueryResults.getInt(9);
+//			
+//			String email = customerQueryResults.getString(10);
+//			int customerId = customerQueryResults.getInt(11);
+//			
+//			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+//					zip, homePhone, workPhone, cellPhone, email);
+//					
+//			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
+//					// TODO when setData called, pull tableItem.txt from object instead of manually setting
+//						// we can add a method to Customer to array up fields
+//						// on second thought, this would probably require too much custom object code for each result table
+//						// may as well keep it with each object class, as in this code for displaying Customer objects
+//						// is in the Customer class
+//			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip == 0 ? "" : Integer.toString(zip),
+//					homePhone == 0 ? "" : Integer.toString(homePhone), cellPhone == 0 ? "" : Integer.toString(cellPhone), email} );
+//			tableItem.setData(customer);
 //		}
-		
-		while (customerQueryResults.next()) {
-			String firstName = customerQueryResults.getString(1);
-			String lastName = customerQueryResults.getString(2);
-			String address = customerQueryResults.getString(3);
-			String city = customerQueryResults.getString(4);
-			String state = customerQueryResults.getString(5);
-//			String zip = Integer.toString(customerQueryResults.getInt(6));
-//			String homePhone = Integer.toString(customerQueryResults.getInt(7));
-//			String workPhone = Integer.toString(customerQueryResults.getInt(8)); // not using this right now
-//			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
-			
-			int zip = customerQueryResults.getInt(6);
-			int homePhone = customerQueryResults.getInt(7);
-			int workPhone = customerQueryResults.getInt(8); // not using this right now
-			int cellPhone = customerQueryResults.getInt(9);
-			
-			String email = customerQueryResults.getString(10);
-			int customerId = customerQueryResults.getInt(11);
-			
-			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
-					zip, homePhone, workPhone, cellPhone, email);
-			
-			// TODO if numbers (phone, zip) == 0, do not display a 0, display a blank
-			
-			TableItem tableItem = new TableItem(table, SWT.NONE);
-					// TODO when setData called, pull tableItem.txt from object instead of manually setting
-					// we can add a method to Customer to array up fields
-			tableItem.setText(new String[] {firstName, lastName, address, city, state, Integer.toString(zip),
-					Integer.toString(homePhone), Integer.toString(cellPhone), email} );
-			tableItem.setData(customer);
-		}
-	}
+//	}
 	
 	protected static void openCustomer() {
 		// get customer object from dbService class

@@ -3,7 +3,7 @@ package cis2901c.listeners;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 
-import cis2901c.MyText;
+import cis2901c.objects.MyText;
 
 public class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
 	

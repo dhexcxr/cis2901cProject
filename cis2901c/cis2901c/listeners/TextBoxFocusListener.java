@@ -3,7 +3,7 @@ package cis2901c.listeners;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 
-import cis2901c.MyText;
+import cis2901c.objects.MyText;
 
 public class TextBoxFocusListener implements FocusListener {				//SWT imple
 	private MyText txtBox;

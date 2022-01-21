@@ -4,14 +4,14 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import cis2901c.MyText;
+import cis2901c.objects.MyText;
 
-public class LastNameModifyListener implements ModifyListener {
+public class RequiredTextBoxModifyListener implements ModifyListener {
 	
 	private MyText txtBox;
 	private String textBoxText;
 	
-	public LastNameModifyListener(MyText textBox) {
+	public RequiredTextBoxModifyListener(MyText textBox) {
 		this.txtBox = textBox;
 		this.textBoxText = textBox.getText();
 	}

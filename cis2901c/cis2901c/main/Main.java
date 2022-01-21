@@ -1,4 +1,4 @@
-package cis2901c;
+package cis2901c.main;
 
 import java.sql.SQLException;
 //import java.sql.Statement;
@@ -8,6 +8,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+
+import cis2901c.listeners.DbServices;
 
 public class Main {
 //	private static Gui gui = null;

@@ -1,4 +1,4 @@
-package cis2901c;
+package cis2901c.objects;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;

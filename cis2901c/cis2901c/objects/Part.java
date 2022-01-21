@@ -1,4 +1,4 @@
-package cis2901c;
+package cis2901c.objects;
 
 public class Part {
 	long partNumber;

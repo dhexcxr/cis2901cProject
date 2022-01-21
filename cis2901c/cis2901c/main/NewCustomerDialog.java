@@ -1,4 +1,4 @@
-package cis2901c;
+package cis2901c.main;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
@@ -13,9 +13,12 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
-import cis2901c.listeners.LastNameModifyListener;
+import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.Customer;
+import cis2901c.objects.MyText;
 
 public class NewCustomerDialog extends Dialog {
 
@@ -32,6 +35,8 @@ public class NewCustomerDialog extends Dialog {
 	private MyText txtWorkPhone;
 	private MyText txtCellPhone;
 	private MyText txtEmail;
+	// TODO i think this is a hack way to do this, customerId is used in Mouse Down listener for Save button
+		// to determine if we need to call addNew... or saveExisting....
 	private long customerId = -1;
 	private Customer customer;
 
@@ -111,7 +116,7 @@ public class NewCustomerDialog extends Dialog {
 		
 		shlNewCustomer = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 //		shell.setLocation(0, 0);		// TODO get the position nicer
-		shlNewCustomer.setSize(580, 255);
+		shlNewCustomer.setSize(592, 255);
 		shlNewCustomer.setText("New Customer");
 		
 		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
@@ -128,8 +133,8 @@ public class NewCustomerDialog extends Dialog {
 		txtLastName.setBounds(292, 10, 272, 26);
 		textBoxFocusListener = new TextBoxFocusListener(txtLastName);
 		txtLastName.addFocusListener(textBoxFocusListener);
-		LastNameModifyListener lastNameModifyListener = new LastNameModifyListener(txtLastName);
-		txtLastName.addModifyListener(lastNameModifyListener);
+//		RequiredTextBoxModifyListener lastNameModifyListener = new RequiredTextBoxModifyListener(txtLastName);
+		txtLastName.addModifyListener(new RequiredTextBoxModifyListener(txtLastName));
 		
 		txtAddress = new MyText(shlNewCustomer, SWT.BORDER);
 		txtAddress.setText("Address...");
@@ -227,21 +232,20 @@ public class NewCustomerDialog extends Dialog {
 	
 	public void saveCustomer(Customer customer) throws SQLException {
 		
-		if (txtLastName.getText().equals("Last Name/Company Name...")) {
+//		if (txtLastName.getText().equals("Last Name/Company Name...")) {
+		if (!txtLastName.isModified()) {
 			// dialog box stating last name is required
 			MessageBox lastNameRequirementBox = new MessageBox(shlNewCustomer, SWT.ICON_INFORMATION);
 			lastNameRequirementBox.setText("Notice");
 			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
 			lastNameRequirementBox.open();
 			return;
+		} else {
+			customer.setLastName(txtLastName.getText());
 		}
 		
 		if(txtFirstName.isModified()) {
 			customer.setFirstName(txtFirstName.getText());
-		}
-		
-		if (txtLastName.isModified()) {
-			customer.setLastName(txtLastName.getText());
 		}
 		
 		if (txtAddress.isModified()) {
@@ -262,7 +266,7 @@ public class NewCustomerDialog extends Dialog {
 			} catch (Exception e) {				// maybe put an error dialog box here
 				System.out.println(e);
 				e.printStackTrace();
-				customer.setZipCode(0);
+//				customer.setZipCode(0);		// oh yeah, Object int fields default to 0
 			}
 		}
 		

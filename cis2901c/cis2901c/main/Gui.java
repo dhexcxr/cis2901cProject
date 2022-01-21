@@ -1,12 +1,17 @@
-package cis2901c;
+package cis2901c.main;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TabItem;
-import cis2901c.listeners.CustomerSearchBoxListeners;
+
+import cis2901c.listeners.RoSearchBoxListeners;
+import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.NewCustomerButtonListeners;
+import cis2901c.listeners.NewUnitButtonListener;
+import cis2901c.listeners.OpenExistingCustomerMouseListener;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.MyText;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,15 +20,16 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
+	
+	// TODO why are these out here? maybe move them into methods wehere they are used
 	private MyText roSearchBox;
 	public List listOfRos = null;
 	private Table roTable;
-	private MyText customerSearchBox;
+	private MyText customerSearchTextBox;
 	private Table customerTable;
+	private Table unitTable;
 
 	/**
 	 * Create the composite.
@@ -135,20 +141,21 @@ public class Gui extends Composite {
 		btnNewCustomer.setText("New Customer");
 		
 		customerTable = new Table(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
-		customerTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// open saved customer for editing
-				System.out.println("Double click");
-				Customer customer = (Customer) customerTable.getSelection()[0].getData();
-				System.out.println(customer.getFirstName());
-				System.out.println(customer.getCustomerId());
-				
-				NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
-				modifyExistingCustomerDialog.open(customer);
-				// TODO get table to refresh on Customer Save
-			}
-		});
+		customerTable.addMouseListener(new OpenExistingCustomerMouseListener(customerTable));
+//		new MouseAdapter() {
+//			@Override
+//			public void mouseDoubleClick(MouseEvent e) {
+//				// open saved customer for editing
+//				System.out.println("Double click");
+//				Customer customer = (Customer) customerTable.getSelection()[0].getData();
+//				System.out.println(customer.getFirstName());
+//				System.out.println(customer.getCustomerId());
+//				
+//				NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
+//				modifyExistingCustomerDialog.open(customer);
+//				// TODO get table to refresh on Customer Save
+//			}
+//		});
 		customerTable.setBounds(10, 42, 976, 663);
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
@@ -189,19 +196,75 @@ public class Gui extends Composite {
 		tblclmnEmail.setWidth(100);
 		tblclmnEmail.setText("E-mail");
 
-		customerSearchBox = new MyText(customerListing, SWT.BORDER);
-		customerSearchBox.setText("Search...");
-		customerSearchBox.setBounds(10, 10, 861, 26);
-		CustomerSearchBoxListeners customerSearchBoxListener = new CustomerSearchBoxListeners(customerSearchBox, customerTable);
-		testBoxFocusListener = new TextBoxFocusListener(customerSearchBox);
-		customerSearchBox.addModifyListener(customerSearchBoxListener);
-		customerSearchBox.addFocusListener(testBoxFocusListener);
+		customerSearchTextBox = new MyText(customerListing, SWT.BORDER);
+		customerSearchTextBox.setText("Search...");
+		customerSearchTextBox.setBounds(10, 10, 861, 26);
+//		CustomerSearchTextBoxListeners customerSearchTextBoxListener = new CustomerSearchTextBoxListeners(customerSearchTextBox, customerTable);
+//		testBoxFocusListener = new TextBoxFocusListener(customerSearchTextBox);
+//		customerSearchTextBox.addModifyListener(customerSearchTextBoxListener);
+//		customerSearchTextBox.addFocusListener(testBoxFocusListener);
+		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
+		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
 		
 		TabItem tbtmUnits = new TabItem(tabFolder, SWT.NONE);
 		tbtmUnits.setText("Units");
 		
 		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
 		tbtmUnits.setControl(composite_2);
+		
+		unitTable = new Table(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
+		unitTable.setBounds(10, 42, 976, 663);
+		unitTable.setHeaderVisible(true);
+		unitTable.setLinesVisible(true);
+		
+		TableColumn tblclmnOwner = new TableColumn(unitTable, SWT.NONE);
+		tblclmnOwner.setWidth(100);
+		tblclmnOwner.setText("Owner");
+		
+		TableColumn tblclmnMake_1 = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMake_1.setWidth(100);
+		tblclmnMake_1.setText("Make");
+		
+		TableColumn tblclmnModel_1 = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModel_1.setWidth(100);
+		tblclmnModel_1.setText("Model");
+		
+		TableColumn tblclmnModelName = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModelName.setWidth(100);
+		tblclmnModelName.setText("Model Name");
+		
+		TableColumn tblclmnYear_1 = new TableColumn(unitTable, SWT.NONE);
+		tblclmnYear_1.setWidth(100);
+		tblclmnYear_1.setText("Year");
+		
+		TableColumn tblclmnMileage = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMileage.setWidth(100);
+		tblclmnMileage.setText("Mileage");
+		
+		TableColumn tblclmnColor = new TableColumn(unitTable, SWT.NONE);
+		tblclmnColor.setWidth(100);
+		tblclmnColor.setText("Color");
+		
+		TableColumn tblclmnVin_1 = new TableColumn(unitTable, SWT.NONE);
+		tblclmnVin_1.setWidth(100);
+		tblclmnVin_1.setText("VIN");
+		
+		TableColumn tblclmnNotes = new TableColumn(unitTable, SWT.NONE);
+		tblclmnNotes.setWidth(100);
+		tblclmnNotes.setText("Notes");
+		
+		MyText unitSearchBox = new MyText(composite_2, SWT.BORDER);
+		unitSearchBox.setText("Search...");
+		unitSearchBox.setBounds(10, 10, 861, 26);
+		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable));
+		unitSearchBox.addFocusListener(new TextBoxFocusListener(unitSearchBox));
+		
+		Button btnNewUnit = new Button(composite_2, SWT.NONE);
+		btnNewUnit.setText("New Unit");
+		btnNewUnit.setBounds(877, 10, 109, 26);
+		btnNewUnit.addMouseListener(new NewUnitButtonListener());
+		
+		
 		
 		TabItem tbtmReports = new TabItem(tabFolder, SWT.NONE);
 		tbtmReports.setText("Reports");

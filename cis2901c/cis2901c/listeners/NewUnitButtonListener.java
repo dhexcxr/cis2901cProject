@@ -5,16 +5,16 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import cis2901c.main.Main;
-import cis2901c.main.NewCustomerDialog;
+import cis2901c.main.NewUnitDialog;
 
-public class NewCustomerButtonListeners extends MouseAdapter {
-	
-	public NewCustomerButtonListeners() {	
+public class NewUnitButtonListener extends MouseAdapter {
+
+	public NewUnitButtonListener() {
 	}
 	
 	public void mouseDown(MouseEvent e) {
 //		Window parent = SwingUtilities.windowForComponent(Main.getShell());
-		NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
-		addNewCustomerDialog.open();
+		NewUnitDialog addNewUnitDialog = new NewUnitDialog(Main.getShell(), SWT.NONE);
+		addNewUnitDialog.open();
 	}
 }
