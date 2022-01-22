@@ -19,12 +19,12 @@ public class RequiredTextBoxModifyListener implements ModifyListener {
 	@Override
 	public void modifyText(ModifyEvent e) {
 		System.out.println(txtBox.isModified());
-		if (txtBox.getText().length() > 0 && !txtBox.getText().equals(textBoxText)) {
-			txtBox.setModified(true);
-			txtBox.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
-		} else {
+		if (txtBox.getText().length() == 0 || txtBox.getText().equals(textBoxText)) {
 			txtBox.setModified(false);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
-		}	
+		} else {
+			txtBox.setModified(true);
+			txtBox.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
+		}
 	}
 }

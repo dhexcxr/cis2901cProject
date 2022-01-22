@@ -132,7 +132,6 @@ public class Customer {
 		this.email = email;
 	}
 
-
 	protected static void populateCustomerTable(Table table) throws SQLException {
 		DbServices.searchForObject(table, "");
 	}

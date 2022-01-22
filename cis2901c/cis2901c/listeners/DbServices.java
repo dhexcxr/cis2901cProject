@@ -57,7 +57,7 @@ public class DbServices {
 		if (object instanceof Customer) {
 			saveCustomer((Customer) object);
 		} else if (object instanceof Unit) {
-			// saveUnit((Unit) object);
+			 saveUnit((Unit) object);
 		} else if (object instanceof Part) {
 			// savePart((Part) object);
 		} else if (object instanceof RepairOrder) {
@@ -72,6 +72,34 @@ public class DbServices {
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
 			searchForUnit(resultsTable, searchQuery);
 		}
+	}
+	
+	private static void updateQueryHelper (StringBuilder queryString, String columnName, String data) {
+		StringBuilder column = new StringBuilder();
+		int columnInsertionPoint = queryString.lastIndexOf("WHERE");
+		if (queryString.charAt(columnInsertionPoint - 2) != 'T') {
+			column.append(", ");
+		}
+		column.append(columnName + " = '" + data + "'");
+		queryString.insert(columnInsertionPoint, column);		
+	}
+	
+	private static void insertQueryHelper (StringBuilder queryString, String columnName, String data) {
+		StringBuilder column = new StringBuilder();
+		int columnInsertionPoint = queryString.indexOf(")");
+		if (queryString.charAt(columnInsertionPoint - 1) != '(') {
+			column.append(", ");
+		}
+		column.append(columnName);
+		queryString.insert(columnInsertionPoint, column);
+		
+		StringBuilder field = new StringBuilder();
+		int fieldInsertionPoint = queryString.lastIndexOf(")");
+		if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
+			field.append(", ");
+		}
+		field.append("'" + data + "'");
+		queryString.insert(fieldInsertionPoint, field);
 	}
 	// END General DB methods
 	
@@ -106,7 +134,8 @@ public class DbServices {
 			String lastName = unitQueryResults.getString(10);
 			String firstName = unitQueryResults.getString(11);
 		
-			Unit unit = new Unit(unitId, customerId, make, model, modelYear, mileage, color, vin, notes);
+			// "" stub for modelName, we need to add modelName to this query
+			Unit unit = new Unit(unitId, customerId, make, model, "", modelYear, mileage, color, vin, notes, lastName + ", " + firstName);
 				
 			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
 				// TODO when setData called, pull tableItem.txt from object instead of manually setting
@@ -120,7 +149,145 @@ public class DbServices {
 		}
 	}
 	
+	public static void saveUnit(Unit unit) {
+		System.out.println("Save Unit button pressed");
+
+		StringBuilder queryString = null;
+
+		if (unit.getUnitId() == -1) {		// add new customer
+			queryString = buildAddNewUnitQuery(unit);
+		} else {							// save modifications to existing customer
+			queryString = buildModifyExistingUnitQuery(unit);
+		}
+
+		if (queryString != null) {
+			Connection dbConnection = DbServices.getDbConnection();
+			try {
+				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+				statement.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.print(queryString);
+				e.printStackTrace();
+			}
+		}
+	}
 	
+	private static StringBuilder buildModifyExistingUnitQuery(Unit unit) {
+		boolean isAnythingModified = false;
+		
+		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.unit SET WHERE unitId = " + unit.getUnitId() + ";");
+		
+		if (unit.getCustomerId() != -1) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "customerId", Long.toString(unit.getCustomerId()));
+		}
+		
+		if (unit.getMake() != null && unit.getMake().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "make", unit.getMake().trim());
+		}
+		
+		if (unit.getModel() != null && unit.getModel().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "model", unit.getModel().trim());
+		}
+		
+		if (unit.getModelName() != null && unit.getModelName().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "modelName", unit.getModelName().trim());
+		}
+		
+		if (unit.getModelYear() != 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "modelYear", Integer.toString(unit.getModelYear()));
+		}
+		
+		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "mileage", Integer.toString(unit.getMileage()));
+		}
+		
+		if (unit.getColor() != null && unit.getColor().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "color", unit.getColor().trim());
+		}
+		
+		if (unit.getVin() != null && unit.getVin().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "vin", unit.getVin().trim());
+		}
+		
+		if (unit.getNotes() != null && unit.getNotes().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "notes", unit.getNotes().trim());
+		}
+		
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return queryString;
+		}
+	}
+
+	private static StringBuilder buildAddNewUnitQuery(Unit unit) {
+		boolean isAnythingModified = false;
+		
+		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.unit () VALUES ();");
+		
+		if (unit.getCustomerId() != 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "customerId", Long.toString(unit.getCustomerId()));
+		}
+		
+		if (unit.getMake() != null && unit.getMake().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "make", unit.getMake().trim());
+		}
+		
+		if (unit.getModel() != null && unit.getModel().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "model", unit.getModel().trim());
+		}
+		
+		if (unit.getModelName() != null && unit.getModelName().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "modelName", unit.getModelName().trim());
+		}
+		
+		if (unit.getModelYear() != 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "modelYear", Integer.toString(unit.getModelYear()));
+		}
+		
+		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "mileage", Integer.toString(unit.getMileage()));
+		}
+		
+		if (unit.getColor() != null && unit.getColor().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "color", unit.getColor().trim());
+		}
+		
+		if (unit.getVin() != null && unit.getVin().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "vin", unit.getVin().trim());
+		}
+		
+		if (unit.getNotes() != null && unit.getNotes().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "notes", unit.getNotes().trim());
+		}
+		
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return queryString;
+		}
+	}
+	// END Unit object methods
+
 	// START Customer object methods
 	private static void searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
 		// TODO move search into DbServices
@@ -185,118 +352,128 @@ public class DbServices {
 	
 	private static StringBuilder buildModifyExistingCustomerQuery(Customer customer) {
 		boolean isAnythingModified = false;
-		long customerId = customer.getCustomerId();
+//		long customerId = customer.getCustomerId();
 		
-		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.customer SET WHERE customerId = " + customerId + ";");
+		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.customer SET WHERE customerId = " + customer.getCustomerId() + ";");
 		
 		if (customer.getFirstName() != null && customer.getFirstName().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder firstName = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				firstName.append(", ");
-			}
-			firstName.append("firstName = '" + customer.getFirstName().trim() + "'");
-			queryString.insert(insertionPoint, firstName);
+			updateQueryHelper(queryString, "firstName", customer.getFirstName().trim());
+//			StringBuilder firstName = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				firstName.append(", ");
+//			}
+//			firstName.append("firstName = '" + customer.getFirstName().trim() + "'");
+//			queryString.insert(insertionPoint, firstName);
 		}
 		
 		if (customer.getLastName() != null && customer.getLastName().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder lastName = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				lastName.append(", ");
-			}
-			lastName.append("lastName = '" + customer.getLastName().trim() + "'");
-			queryString.insert(insertionPoint, lastName);
+			updateQueryHelper(queryString, "lastName", customer.getLastName().trim());
+//			StringBuilder lastName = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				lastName.append(", ");
+//			}
+//			lastName.append("lastName = '" + customer.getLastName().trim() + "'");
+//			queryString.insert(insertionPoint, lastName);
 		}
 		
 		if (customer.getAddress() != null && customer.getAddress().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder address = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				address.append(", ");
-			}
-			address.append("address = '" + customer.getAddress().trim() + "'");
-			queryString.insert(insertionPoint, address);
+			updateQueryHelper(queryString, "address", customer.getAddress().trim());
+//			StringBuilder address = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				address.append(", ");
+//			}
+//			address.append("address = '" + customer.getAddress().trim() + "'");
+//			queryString.insert(insertionPoint, address);
 		}
 		
 		if (customer.getCity() != null && customer.getCity().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder city = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				city.append(", ");
-			}
-			city.append("city = '" + customer.getCity().trim() + "'");
-			queryString.insert(insertionPoint, city);
+			updateQueryHelper(queryString, "city", customer.getCity().trim());
+//			StringBuilder city = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				city.append(", ");
+//			}
+//			city.append("city = '" + customer.getCity().trim() + "'");
+//			queryString.insert(insertionPoint, city);
 		}
 		
 		if (customer.getState() != null && customer.getState().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder state = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				state.append(", ");
-			}
-			state.append("state = '" + customer.getState().trim() + "'");
-			queryString.insert(insertionPoint, state);
+			updateQueryHelper(queryString, "state", customer.getState().trim());
+//			StringBuilder state = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				state.append(", ");
+//			}
+//			state.append("state = '" + customer.getState().trim() + "'");
+//			queryString.insert(insertionPoint, state);
 		}
 		
 		if (customer.getZipCode() != 0) {
 			isAnythingModified = true;
-			StringBuilder zipCode = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				zipCode.append(", ");
-			}
-			zipCode.append("zipCode = '" + customer.getZipCode() + "'");
-			queryString.insert(insertionPoint, zipCode);
+			updateQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
+//			StringBuilder zipCode = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				zipCode.append(", ");
+//			}
+//			zipCode.append("zipCode = '" + customer.getZipCode() + "'");
+//			queryString.insert(insertionPoint, zipCode);
 		}
 		
 		if (customer.getHomePhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder homePhone = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				homePhone.append(", ");
-			}
-			homePhone.append("homePhone = '" + customer.getHomePhone() + "'");
-			queryString.insert(insertionPoint, homePhone);
+			updateQueryHelper(queryString, "homePhone", Integer.toString(customer.getHomePhone()));
+//			StringBuilder homePhone = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				homePhone.append(", ");
+//			}
+//			homePhone.append("homePhone = '" + customer.getHomePhone() + "'");
+//			queryString.insert(insertionPoint, homePhone);
 		}
 		
 		if (customer.getWorkPhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder workPhone = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				workPhone.append(", ");
-			}
-			workPhone.append("workPhone = '" + customer.getWorkPhone() + "'");
-			queryString.insert(insertionPoint, workPhone);
+			updateQueryHelper(queryString, "workPhone", Integer.toString(customer.getWorkPhone()));
+//			StringBuilder workPhone = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				workPhone.append(", ");
+//			}
+//			workPhone.append("workPhone = '" + customer.getWorkPhone() + "'");
+//			queryString.insert(insertionPoint, workPhone);
 		}
 		
 		if (customer.getCellPhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder cellPhone = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				cellPhone.append(", ");
-			}
-			cellPhone.append("cellPhone = '" + customer.getCellPhone() + "'");
-			queryString.insert(insertionPoint, cellPhone);
+			updateQueryHelper(queryString, "cellPhone", Integer.toString(customer.getCellPhone()));
+//			StringBuilder cellPhone = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				cellPhone.append(", ");
+//			}
+//			cellPhone.append("cellPhone = '" + customer.getCellPhone() + "'");
+//			queryString.insert(insertionPoint, cellPhone);
 		}
 		
 		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder email = new StringBuilder();
-			int insertionPoint = queryString.lastIndexOf("WHERE");
-			if (queryString.charAt(insertionPoint - 2) != 'T') {
-				email.append(", ");
-			}
-			email.append("email = '" + customer.getEmail().trim() + "'");
-			queryString.insert(insertionPoint, email);
+			updateQueryHelper(queryString, "email", customer.getEmail().trim());
+//			StringBuilder email = new StringBuilder();
+//			int insertionPoint = queryString.lastIndexOf("WHERE");
+//			if (queryString.charAt(insertionPoint - 2) != 'T') {
+//				email.append(", ");
+//			}
+//			email.append("email = '" + customer.getEmail().trim() + "'");
+//			queryString.insert(insertionPoint, email);
 		}
 		
 		// TODO finish modifying fields
@@ -325,192 +502,52 @@ public class DbServices {
 		
 		if (customer.getFirstName() != null && customer.getFirstName().trim().length() > 0) {		// TODO add && clause to all these
 			isAnythingModified = true;
-			StringBuilder firstNameColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				firstNameColumn.append(", ");
-			}
-			firstNameColumn.append("firstName");
-			queryString.insert(columnInsertionPoint, firstNameColumn);
-			
-			StringBuilder firstNameField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				firstNameField.append(", ");
-			}
-			firstNameField.append("'" + customer.getFirstName().trim() + "'");
-			queryString.insert(fieldInsertionPoint, firstNameField);
+			insertQueryHelper(queryString, "firstName", customer.getFirstName().trim());
 		}
 		
 		if (customer.getLastName() != null && customer.getLastName().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder lastNameColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				lastNameColumn.append(", ");
-			}
-			lastNameColumn.append("lastName");
-			queryString.insert(columnInsertionPoint, lastNameColumn);
-			
-			StringBuilder lastNameField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				lastNameField.append(", ");
-			}
-			lastNameField.append("'" + customer.getLastName().trim() + "'");
-			queryString.insert(fieldInsertionPoint, lastNameField);
+			insertQueryHelper(queryString, "lastName", customer.getLastName().trim());
 		}
 		
 		if (customer.getAddress() != null && customer.getAddress().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder addressColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				addressColumn.append(", ");
-			}
-			addressColumn.append("address");
-			queryString.insert(columnInsertionPoint, addressColumn);
-			
-			StringBuilder addressField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				addressField.append(", ");
-			}
-			addressField.append("'" + customer.getAddress().trim() + "'");
-			queryString.insert(fieldInsertionPoint, addressField);
+			insertQueryHelper(queryString, "address", customer.getAddress().trim());
 		}
 		
 		if (customer.getCity() != null && customer.getCity().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder cityColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				cityColumn.append(", ");
-			}
-			cityColumn.append("city");
-			queryString.insert(columnInsertionPoint, cityColumn);
-			
-			StringBuilder cityField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				cityField.append(", ");
-			}
-			cityField.append("'" + customer.getCity().trim() + "'");
-			queryString.insert(fieldInsertionPoint, cityField);
+			insertQueryHelper(queryString, "city", customer.getCity().trim());
 		}
 		
 		if (customer.getState() != null && customer.getState().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder stateColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				stateColumn.append(", ");
-			}
-			stateColumn.append("state");
-			queryString.insert(columnInsertionPoint, stateColumn);
-			
-			StringBuilder stateField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				stateField.append(", ");
-			}
-			stateField.append("'" + customer.getState().trim() + "'");
-			queryString.insert(fieldInsertionPoint, stateField);
+			insertQueryHelper(queryString, "state", customer.getState().trim());
 		}
 		
 		if (customer.getZipCode() != 0) {
 			isAnythingModified = true;
-			StringBuilder zipCodeColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				zipCodeColumn.append(", ");
-			}
-			zipCodeColumn.append("zipcode");
-			queryString.insert(columnInsertionPoint, zipCodeColumn);
-			
-			StringBuilder zipCodeField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				zipCodeField.append(", ");
-			}
-			zipCodeField.append("'" + customer.getZipCode() + "'");
-			queryString.insert(fieldInsertionPoint, zipCodeField);
+			insertQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
 		}
 		
 		if (customer.getHomePhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder homePhoneColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				homePhoneColumn.append(", ");
-			}
-			homePhoneColumn.append("homephone");
-			queryString.insert(columnInsertionPoint, homePhoneColumn);
-			
-			StringBuilder homePhoneField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				homePhoneField.append(", ");
-			}
-			homePhoneField.append("'" + customer.getHomePhone() + "'");
-			queryString.insert(fieldInsertionPoint, homePhoneField);
+			insertQueryHelper(queryString, "homePhone", Integer.toString(customer.getHomePhone()));
 		}
 		
 		if (customer.getWorkPhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder workPhoneColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				workPhoneColumn.append(", ");
-			}
-			workPhoneColumn.append("workphone");
-			queryString.insert(columnInsertionPoint, workPhoneColumn);
-			
-			StringBuilder workPhoneField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				workPhoneField.append(", ");
-			}
-			workPhoneField.append("'" + customer.getWorkPhone() + "'");
-			queryString.insert(fieldInsertionPoint, workPhoneField);
+			insertQueryHelper(queryString, "workPhone", Integer.toString(customer.getWorkPhone()));
 		}
 		
 		if (customer.getCellPhone() != 0) {
 			isAnythingModified = true;
-			StringBuilder cellPhoneColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				cellPhoneColumn.append(", ");
-			}
-			cellPhoneColumn.append("cellphone");
-			queryString.insert(columnInsertionPoint, cellPhoneColumn);
-			
-			StringBuilder cellPhoneField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				cellPhoneField.append(", ");
-			}
-			cellPhoneField.append("'" + customer.getCellPhone() + "'");
-			queryString.insert(fieldInsertionPoint, cellPhoneField);
+			insertQueryHelper(queryString, "cellPhone", Integer.toString(customer.getCellPhone()));
 		}
 		
 		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
 			isAnythingModified = true;
-			StringBuilder emailColumn  = new StringBuilder();
-			int columnInsertionPoint = queryString.indexOf(")");
-			if (queryString.charAt(columnInsertionPoint - 1) != '(') {
-				emailColumn.append(", ");
-			}
-			emailColumn.append("email");
-			queryString.insert(columnInsertionPoint, emailColumn);
-			
-			StringBuilder emailField = new StringBuilder();
-			int fieldInsertionPoint = queryString.lastIndexOf(")");
-			if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
-				emailField.append(", ");
-			}
-			emailField.append("'" + customer.getEmail().trim() + "'");
-			queryString.insert(fieldInsertionPoint, emailField);
+			insertQueryHelper(queryString, "email", customer.getEmail().trim());
 		}
 		
 		if (isAnythingModified == false) {

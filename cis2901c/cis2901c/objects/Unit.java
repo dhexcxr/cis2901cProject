@@ -12,21 +12,25 @@ public class Unit {
 	private String vin;
 	private String notes;
 	
+	private String owner;
+	
 	public Unit() {
 	}
 	
-	public Unit(long unitId, long customerId, String make, String model, int modelYear, int mileage, String color,
-			String vin, String notes) {
+	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear, int mileage, String color,
+			String vin, String notes, String owner) {
 		super();
 		this.unitId = unitId;
 		this.customerId = customerId;
 		this.make = make;
 		this.model = model;
+		this.modelName = modelName;
 		this.modelYear = modelYear;
 		this.mileage = mileage;
 		this.color = color;
 		this.vin = vin;
 		this.notes = notes;
+		this.owner = owner;
 	}
 
 	public long getUnitId() {
@@ -107,5 +111,13 @@ public class Unit {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+	
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 }

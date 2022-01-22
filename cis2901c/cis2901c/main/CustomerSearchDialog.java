@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
-import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -23,6 +22,7 @@ public class CustomerSearchDialog extends Dialog {
 	protected Object result;
 	protected Shell shlCustomerSearch;
 	private Table customerTable;
+	private MyText customerSearchTextBox;
 
 	/**
 	 * Create the dialog.
@@ -50,6 +50,22 @@ public class CustomerSearchDialog extends Dialog {
 		}
 		return result;
 	}
+	
+	public Object open(String owner) {
+		createContents();
+		
+		customerSearchTextBox.setText(owner);
+		
+		shlCustomerSearch.open();
+		shlCustomerSearch.layout();
+		Display display = getParent().getDisplay();
+		while (!shlCustomerSearch.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Create contents of the dialog.
@@ -63,16 +79,25 @@ public class CustomerSearchDialog extends Dialog {
 		btnSelectCustomer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				result = customerTable.getSelection()[0].getData();
-				// return selected Customer
-					// also add this listener to Double Click of Table row
-				shlCustomerSearch.dispose();
+				if (customerTable.getSelection().length > 0) {
+					result =  customerTable.getSelection()[0].getData();
+					shlCustomerSearch.dispose();
+				}
 			}
 		});
 		btnSelectCustomer.setText("Select Customer");
 		btnSelectCustomer.setBounds(10, 330, 256, 26);
 		
 		customerTable = new Table(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				if (customerTable.getSelection().length > 0) {
+					result =  customerTable.getSelection()[0].getData();
+					shlCustomerSearch.dispose();
+				}
+			}
+		});
 		customerTable.setLinesVisible(true);
 		customerTable.setHeaderVisible(true);
 		customerTable.setBounds(10, 42, 909, 282);
@@ -113,7 +138,7 @@ public class CustomerSearchDialog extends Dialog {
 		tblclmnEmail.setWidth(100);
 		tblclmnEmail.setText("E-mail");
 		
-		MyText customerSearchTextBox = new MyText(shlCustomerSearch, SWT.BORDER);
+		customerSearchTextBox = new MyText(shlCustomerSearch, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
 		customerSearchTextBox.setBounds(10, 10, 909, 26);
 		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));

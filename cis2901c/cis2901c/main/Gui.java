@@ -1,25 +1,24 @@
 package cis2901c.main;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.TabItem;
-
-import cis2901c.listeners.RoSearchBoxListeners;
-import cis2901c.listeners.SearchTextBoxListeners;
-import cis2901c.listeners.NewCustomerButtonListeners;
-import cis2901c.listeners.NewUnitButtonListener;
-import cis2901c.listeners.OpenExistingCustomerMouseListener;
-import cis2901c.listeners.TextBoxFocusListener;
-import cis2901c.objects.MyText;
-
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+
+import cis2901c.listeners.NewCustomerButtonListeners;
+import cis2901c.listeners.NewUnitButtonListener;
+import cis2901c.listeners.OpenExistingObjectMouseListener;
+import cis2901c.listeners.RoSearchBoxListeners;
+import cis2901c.listeners.SearchTextBoxListeners;
+import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.MyText;
 
 public class Gui extends Composite {
 	
@@ -141,7 +140,7 @@ public class Gui extends Composite {
 		btnNewCustomer.setText("New Customer");
 		
 		customerTable = new Table(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
-		customerTable.addMouseListener(new OpenExistingCustomerMouseListener(customerTable));
+		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable));
 //		new MouseAdapter() {
 //			@Override
 //			public void mouseDoubleClick(MouseEvent e) {
@@ -213,45 +212,42 @@ public class Gui extends Composite {
 		tbtmUnits.setControl(composite_2);
 		
 		unitTable = new Table(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
+		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);
 		unitTable.setLinesVisible(true);
 		
 		TableColumn tblclmnOwner = new TableColumn(unitTable, SWT.NONE);
-		tblclmnOwner.setWidth(100);
+		tblclmnOwner.setWidth(165);
 		tblclmnOwner.setText("Owner");
 		
 		TableColumn tblclmnMake_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMake_1.setWidth(100);
+		tblclmnMake_1.setWidth(119);
 		tblclmnMake_1.setText("Make");
 		
 		TableColumn tblclmnModel_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModel_1.setWidth(100);
+		tblclmnModel_1.setWidth(138);
 		tblclmnModel_1.setText("Model");
 		
 		TableColumn tblclmnModelName = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModelName.setWidth(100);
+		tblclmnModelName.setWidth(148);
 		tblclmnModelName.setText("Model Name");
 		
 		TableColumn tblclmnYear_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnYear_1.setWidth(100);
+		tblclmnYear_1.setWidth(50);
 		tblclmnYear_1.setText("Year");
 		
 		TableColumn tblclmnMileage = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMileage.setWidth(100);
+		tblclmnMileage.setWidth(85);
 		tblclmnMileage.setText("Mileage");
 		
 		TableColumn tblclmnColor = new TableColumn(unitTable, SWT.NONE);
-		tblclmnColor.setWidth(100);
+		tblclmnColor.setWidth(49);
 		tblclmnColor.setText("Color");
 		
 		TableColumn tblclmnVin_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnVin_1.setWidth(100);
+		tblclmnVin_1.setWidth(215);
 		tblclmnVin_1.setText("VIN");
-		
-		TableColumn tblclmnNotes = new TableColumn(unitTable, SWT.NONE);
-		tblclmnNotes.setWidth(100);
-		tblclmnNotes.setText("Notes");
 		
 		MyText unitSearchBox = new MyText(composite_2, SWT.BORDER);
 		unitSearchBox.setText("Search...");

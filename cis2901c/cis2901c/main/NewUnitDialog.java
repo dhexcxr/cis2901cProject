@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
@@ -20,6 +21,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 public class NewUnitDialog extends Dialog {
 
@@ -67,6 +70,47 @@ public class NewUnitDialog extends Dialog {
 		}
 		return result;
 	}
+	
+	public Object open(Unit unit) {
+		createContents();
+		// set txtBoxes
+		if (unit.getOwner() != null)
+			txtOwner.setText(unit.getOwner());
+		if (unit.getMake() != null)
+			txtMake.setText(unit.getMake());
+		if (unit.getModelName() != null)
+			txtModelName.setText(unit.getModelName());
+		if (unit.getMileage() != 0)
+			txtMileage.setText(Integer.toString(unit.getMileage()));
+		if (unit.getVin() != null)
+			txtVinNumber.setText(unit.getVin());
+		if (unit.getModel() != null)
+			txtModel.setText(unit.getModel());
+		if (unit.getModelYear() != 0)
+			txtYear.setText(Integer.toString(unit.getModelYear()));
+		if (unit.getColor() != null)
+			txtColor.setText(unit.getColor());
+		if (unit.getNotes() != null)
+			txtNotes.setText(unit.getNotes());
+		if (unit.getUnitId() != 0)
+			unitId = unit.getUnitId();
+		if (unit.getCustomerId() != 0)		// TODO i think this will need to be -1
+			customerId = unit.getCustomerId(); 
+		
+		this.unit = unit;
+		
+		shlNewUnit.setText("Modify Unit");
+		
+		shlNewUnit.open();
+		shlNewUnit.layout();
+		Display display = getParent().getDisplay();
+		while (!shlNewUnit.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Create contents of the dialog.
@@ -83,25 +127,32 @@ public class NewUnitDialog extends Dialog {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
-				Customer selectedCustomer = (Customer) customerSearchDialog.open();
+				Customer selectedCustomer = new Customer();
+				if (txtOwner.getText() != "Owner...") {
+					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
+				} else {
+					selectedCustomer = (Customer) customerSearchDialog.open();
+				}
 				if (selectedCustomer instanceof Customer) {
-				txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
-				customerId = selectedCustomer.getCustomerId();
+					txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
+					customerId = selectedCustomer.getCustomerId();
 				}
 				// this shoudl return a Customer object
 				// need to set FirstName and LastName and customerId from selected customer
 			}
 		});
 		txtOwner.setEditable(false);
+		txtOwner.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtOwner.setText("Owner...");
 		txtOwner.setBounds(10, 10, 554, 26);
+		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
 		
-		// TODO require Make entry/make red if empty
 		txtMake = new MyText(shlNewUnit, SWT.BORDER);
+		txtMake.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtMake.setText("Make...");
 		txtMake.setBounds(10, 42, 270, 26);
 		txtMake.addFocusListener(new TextBoxFocusListener(txtMake));
-		txtMake.addModifyListener(new InfoTextBoxModifyListener(txtMake));
+		txtMake.addModifyListener(new RequiredTextBoxModifyListener(txtMake));
 		
 		txtModelName = new MyText(shlNewUnit, SWT.BORDER);
 		txtModelName.setText("Model Name...");
@@ -120,7 +171,20 @@ public class NewUnitDialog extends Dialog {
 		txtVinNumber.setText("Vin Number...");
 		txtVinNumber.setBounds(10, 138, 554, 26);
 		txtVinNumber.addFocusListener(new TextBoxFocusListener(txtVinNumber));
-		txtVinNumber.addModifyListener(new RequiredTextBoxModifyListener(txtVinNumber));
+//		txtVinNumber.addModifyListener(new RequiredTextBoxModifyListener(txtVinNumber));
+		txtVinNumber.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				System.out.println(txtVinNumber.isModified());
+				
+				if (!txtVinNumber.getText().equals("Vin Number...") && txtVinNumber.getText().length() != 17) {
+					txtVinNumber.setModified(false);
+					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
+				} else {
+					txtVinNumber.setModified(true);
+					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
+				}
+			}
+		});
 		
 		txtModel = new MyText(shlNewUnit, SWT.BORDER);
 		txtModel.setText("Model...");
@@ -196,15 +260,26 @@ public class NewUnitDialog extends Dialog {
 		// if txt(dialog text boxes) are modified
 			// set Unit.fields
 			// (HINT, see NewCustomerDialog
-		if (!txtMake.isModified()) {
-			// dialog box stating last name is required
-			MessageBox lastNameRequirementBox = new MessageBox(shlNewUnit, SWT.ICON_INFORMATION);
-			lastNameRequirementBox.setText("Notice");
-			lastNameRequirementBox.setMessage("Please enter a Make/Manufacturer");
-			lastNameRequirementBox.open();
-			return;
+		if (customerId != -1) {
+			unit.setCustomerId(customerId);
+			unit.setOwner(txtOwner.getText());
 		} else {
+			MessageBox ownerRequirementBox = new MessageBox(shlNewUnit, SWT.ICON_INFORMATION);
+			ownerRequirementBox.setText("Notice");
+			ownerRequirementBox.setMessage("Please select an Owner");
+			ownerRequirementBox.open();
+			return;
+		}
+		
+		if (txtMake.isModified()) {
 			unit.setMake(txtMake.getText());
+		} else {
+			// dialog box stating make is required
+			MessageBox makeRequirementBox = new MessageBox(shlNewUnit, SWT.ICON_INFORMATION);
+			makeRequirementBox.setText("Notice");
+			makeRequirementBox.setMessage("Please enter a Make/Manufacturer");
+			makeRequirementBox.open();
+			return;
 		}
 		
 		if (txtModelName.isModified()) {
@@ -248,7 +323,7 @@ public class NewUnitDialog extends Dialog {
 
 		
 		
-//		DbServices.saveObject(unit);		// COMMENTED FOR TESTING
+		DbServices.saveObject(unit);		// COMMENTED FOR TESTING
 		
 		shlNewUnit.dispose();
 	}
