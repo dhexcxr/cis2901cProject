@@ -1,8 +1,5 @@
 package cis2901c.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -15,19 +12,22 @@ public class MyTable extends Table {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public <E> void paint(List<E> objects) {
-		if (objects == null) {
+	public void paint(Object[] objects) {
+		if (objects == null || objects.length == 0) {
 			return;
 		}
-		if (objects.get(0) instanceof Customer) {
-			paintCustomerTable((List<Customer>) objects);
-		} else if (objects.get(0) instanceof Unit) {
-			paintUnitTable((List<Unit>) objects);
+		if (objects instanceof Customer[]) {
+			paintCustomerTable((Customer[]) objects);
+		} else if (objects instanceof Unit[]) {
+			paintUnitTable((Unit[])objects);
 		}
 	}
 	
-	private void paintCustomerTable(List<Customer> customerResults) {
+	private void paintCustomerTable(Customer[] customerResults) {
 		for (Customer customer : customerResults) {
+			if (customer == null) {
+				break;
+			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 			tableItem.setText(new String[] {customer.getFirstName(), customer.getLastName(), customer.getAddress(), customer.getCity(),
 					customer.getState(), customer.getZipCode() == 0 ? "" : Integer.toString(customer.getZipCode()),
@@ -44,10 +44,13 @@ public class MyTable extends Table {
 
 	}
 	
-	private void paintUnitTable(List<Unit> unitResults) {
+	private void paintUnitTable(Unit[] unitResults) {
 		for (Unit unit : unitResults) {
+			if (unit == null) {
+				break;
+			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
+			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(), unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
 					Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
 				tableItem.setData(unit);
 		}

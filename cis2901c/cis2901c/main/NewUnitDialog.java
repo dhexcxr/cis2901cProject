@@ -128,7 +128,7 @@ public class NewUnitDialog extends Dialog {
 			public void mouseDoubleClick(MouseEvent e) {
 				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
 				Customer selectedCustomer = new Customer();
-				if (txtOwner.getText() != "Owner...") {
+				if (!txtOwner.getText().equals("Owner...")) {
 					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
 				} else {
 					selectedCustomer = (Customer) customerSearchDialog.open();
@@ -210,13 +210,7 @@ public class NewUnitDialog extends Dialog {
 		txtNotes.addFocusListener(new TextBoxFocusListener(txtNotes));
 		txtNotes.addModifyListener(new InfoTextBoxModifyListener(txtNotes));
 		
-		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
-		btnSaveUnit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// build Unit object, save to DB
-			}
-		});
+		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);		
 		
 		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override

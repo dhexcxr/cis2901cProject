@@ -1,7 +1,5 @@
 package cis2901c.main;
 
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,7 +9,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.NewCustomerButtonListeners;
@@ -20,10 +17,8 @@ import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
-import cis2901c.objects.Customer;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
-import cis2901c.objects.Unit;
 
 public class Gui extends Composite {
 	

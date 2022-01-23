@@ -5,13 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-
 import cis2901c.objects.Customer;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
@@ -67,12 +61,12 @@ public class DbServices {
 		}
 	}
 	
-	public static <E> List<E> searchForObject(Table resultsTable, String searchQuery) throws SQLException {
+	public static Object[] searchForObject(Table resultsTable, String searchQuery) throws SQLException {
 		// search for searchQueary and display in resultsTable 
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
-			return (List<E>) searchForCustomer(resultsTable, searchQuery);
+			return searchForCustomer(resultsTable, searchQuery);
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
-			return (List<E>) searchForUnit(resultsTable, searchQuery);
+			return searchForUnit(resultsTable, searchQuery);
 		}
 		return null;
 	}
@@ -80,7 +74,8 @@ public class DbServices {
 	private static void updateQueryHelper (StringBuilder queryString, String columnName, String data) {
 		StringBuilder column = new StringBuilder();
 		int columnInsertionPoint = queryString.lastIndexOf("WHERE");
-		if (queryString.charAt(columnInsertionPoint - 2) != 'T') {
+//		if (queryString.charAt(columnInsertionPoint - 2) != 'T' && queryString.charAt(columnInsertionPoint - 1) == '\'') {
+		if (queryString.charAt(columnInsertionPoint - 1) == '\'') {
 			column.append(", ");
 		}
 		column.append(columnName + " = '" + data + "'");
@@ -106,52 +101,47 @@ public class DbServices {
 	}
 	
 	private static String[] sanitizer(String searchQuery) {
-		return searchQuery.replaceAll("^[a-zA_Z0-9\'-]*$", "").split(" ");
+		return searchQuery.replaceAll("[^a-zA_Z0-9%'-]", "").split(" ");		// TODO ensure we strip this out of name entry on Save Customer
 	}
 	
 	private static String numberSanitizer(String searchQuery) {
 		// TODO change to phone
-		return searchQuery.replaceAll("^[0-9]*$", "");
+		return searchQuery.replaceAll("[^0-9]", "");
 //		return null;
 	}
 	
 	// END General DB methods
 	
 	// START Unit object methods
-	private static List<Unit> searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
+	private static Unit[] searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
+		int MAX_RESULTS = 255;
 		Connection dbConnection = DbServices.getDbConnection();
 		PreparedStatement statement = null;
-//		PreparedStatement statement = dbConnection.prepareStatement(
-//				// change to unit query
-//				"SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, c.lastName, c.firstName "
-//				+ "FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-//				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-//		if (searchQuery.contains(" ")) {
 			String[] wordsFromQuery = sanitizer(searchQuery);
 			if (wordsFromQuery.length == 0) {
 				return null;
 			}
-										// TODO ensure we strip this out of name entry on Save Customer
-//			statement = dbConnection.prepareStatement(
-			StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
+			
+			StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
 					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
 					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-			for (int i = 1; i <= 6; i++) {
-				// edit string with StringBuilder replace insert
-				int insertIndex = subquery.indexOf("?");
-				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");
-//				statement.setString(i, "%" + wordsFromQuery[0] + "%");
-			}
 			
-			for (int i = 1; i < wordsFromQuery.length; i++) {
-				subquery.delete(15, 115);
-				subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
-						+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-						+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
-						+ "AND unitId IN (");
-//				int removeIndex = subquery.lastIndexOf(";");
-				subquery.replace(subquery.length() - 1, subquery.length(), ");");
-				
+//			for (int i = 1; i <= 6; i++) {
+//				// edit string with StringBuilder replace insert
+//				int insertIndex = subquery.indexOf("?");
+//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");
+//			}
+			
+			for (int i = 0; i < wordsFromQuery.length; i++) {
+				if (i > 0) {
+					subquery.delete(15, 128);
+					subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
+							+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+							+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
+							+ "AND unitId IN (");
+					subquery.replace(subquery.length() - 1, subquery.length(), ");");
+				}
+								
 				for (int j = 1; j <= 6; j++) {
 					// edit string with StringBuilder replace insert
 					int insertIndex = subquery.indexOf("?");
@@ -184,25 +174,33 @@ public class DbServices {
 		
 		ResultSet unitQueryResults = statement.executeQuery();
 
-		List<Unit> unitResults = new ArrayList<>();
-		while (unitQueryResults.next()) {
+		Unit[] unitResults = new Unit[MAX_RESULTS];
+		int i = 0;
+		while (unitQueryResults.next() && i < MAX_RESULTS) {
 			// TODO change to Unit fields
 			long unitId = unitQueryResults.getLong(1);
 			long customerId = unitQueryResults.getLong(2);
 			String make = unitQueryResults.getString(3);
 			String model = unitQueryResults.getString(4);
-			int modelYear = unitQueryResults.getInt(5);
-			int mileage = unitQueryResults.getInt(6);
-			String color = unitQueryResults.getString(7);
-			String vin = unitQueryResults.getString(8);
-			String notes = unitQueryResults.getString(9);
-			String lastName = unitQueryResults.getString(10);
-			String firstName = unitQueryResults.getString(11);
+			String modelName = unitQueryResults.getString(5);
+			int modelYear = unitQueryResults.getInt(6);
+			int mileage = unitQueryResults.getInt(7);
+			String color = unitQueryResults.getString(8);
+			String vin = unitQueryResults.getString(9);
+			String notes = unitQueryResults.getString(10);
+//			String lastName = unitQueryResults.getString(11);
+			String owner = unitQueryResults.getString(11);
+			String firstName = unitQueryResults.getString(12);
+			
+			if (firstName != null && firstName.length() != 0) {
+				owner = owner + ", " + firstName;
+			}
 		
 			// "" stub for modelName, we need to add modelName to this query
-			Unit unit = new Unit(unitId, customerId, make, model, "", modelYear, mileage, color, vin, notes, lastName + ", " + firstName);
+			Unit unit = new Unit(unitId, customerId, make, model, modelName, modelYear, mileage, color, vin, notes, owner);
 			
-			unitResults.add(unit);
+			unitResults[i] = unit;
+			i++;
 //			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
 //				// TODO when setData called, pull tableItem.txt from object instead of manually setting
 //					// we can add a method to Customer to array up fields
@@ -267,7 +265,7 @@ public class DbServices {
 		
 		if (unit.getModelYear() != 0) {
 			isAnythingModified = true;
-			updateQueryHelper(queryString, "modelYear", Integer.toString(unit.getModelYear()));
+			updateQueryHelper(queryString, "year", Integer.toString(unit.getModelYear()));
 		}
 		
 		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
@@ -324,7 +322,7 @@ public class DbServices {
 		
 		if (unit.getModelYear() != 0) {
 			isAnythingModified = true;
-			insertQueryHelper(queryString, "modelYear", Integer.toString(unit.getModelYear()));
+			insertQueryHelper(queryString, "year", Integer.toString(unit.getModelYear()));
 		}
 		
 		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
@@ -356,38 +354,32 @@ public class DbServices {
 	// END Unit object methods
 
 	// START Customer object methods
-	private static List<Customer> searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
+	private static Customer[] searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
 		
 		// TODO refactor this to combine the duplicate for() loops that do the exact same thing 
 		
+		int MAX_RESULTS = 255;
 		Connection dbConnection = DbServices.getDbConnection();
 		PreparedStatement statement = null;
 		String[] wordsFromQuery = sanitizer(searchQuery);
 		if (wordsFromQuery.length == 0) {
 			return null;
 		}
-		String phone = numberSanitizer(searchQuery); 
+		String phone = numberSanitizer(searchQuery);
 		StringBuilder subquery = new StringBuilder("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
 				+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
 				+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
-		int insertIndex = 0;
-		for (int i = 1; i <= 4; i++) {
-			insertIndex = subquery.indexOf("?");
-			subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");
-			insertIndex = subquery.indexOf("?");
-			subquery.replace(insertIndex, insertIndex + 1, "'%" + phone + "%'");
-		}
-		insertIndex = subquery.indexOf("?");
-		subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");		// fill "state LIKE ?"
 		
-		for (int i = 1; i < wordsFromQuery.length; i++) {
-			subquery.delete(7, 99);
-			subquery.insert(0,"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-					+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
-					+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
-			subquery.replace(subquery.length() - 1, subquery.length(), ");");
+		for (int i = 0; i < wordsFromQuery.length; i++) {
+			if (i > 0) {
+				subquery.delete(7, 99);
+				subquery.insert(0,"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+						+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
+						+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
+				subquery.replace(subquery.length() - 1, subquery.length(), ");");
+			}
 			
-			insertIndex = subquery.indexOf("?");
+			int insertIndex = 0;
 			for (int j = 1; j <= 4; j++) {
 				insertIndex = subquery.indexOf("?");
 				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
@@ -396,55 +388,20 @@ public class DbServices {
 			}
 			insertIndex = subquery.indexOf("?");
 			subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");		// fill "state LIKE ?"
-			
-//			for (int j = 1; j <= 6; j++) {					// might be able to swap around [field] LIKE ? so it alternates text field/phone field which would allow a loop
-//				int insertIndex = subquery.indexOf("?");
-//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
-//			}
 		}
 		
 		statement = dbConnection.prepareStatement(subquery.toString());
 		ResultSet customerQueryResults = statement.executeQuery();
 		
-		// TODO move search into DbServices
-				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
-				// it will return results which we'll use to populate table
-//		Statement customerQuery = Main.getDbConnection().createStatement();
-		
-//		if (query.length() != 0) {
-//			ResultSet customerQueryResults = customerQuery.executeQuery(
-//		Connection dbConnection = DbServices.getDbConnection();
-//			PreparedStatement statement = dbConnection.prepareStatement(
-//					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-//							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
-//			statement.setString(1, "%" + searchQuery + "%");
-//			statement.setString(2, "%" + searchQuery + "%");
-//			String phone = searchQuery.replaceAll("[()\\s-]+", "");
-//			statement.setString(3, "%" + phone + "%");
-//			statement.setString(4, "%" + phone + "%");
-//			statement.setString(5, "%" + phone + "%");
-//			ResultSet customerQueryResults = statement.executeQuery();
-		
-			// shows results in table even if search box is empty
-//		if (query.length() == 0) {
-//			customerQueryResults =  customerQuery.executeQuery(
-//					"SELECT firstName, lastName, address, city, state, zipcode, "
-//							+ "homePhone, workPhone, cellPhone, email FROM cis2901c.customer;");
-//		}
-		
-		List<Customer> customerResults = new ArrayList<>();
-		
-		while (customerQueryResults.next()) {
+//		List<Customer> customerResults = new ArrayList<>();
+		Customer[] customerResults = new Customer[MAX_RESULTS];
+		int i = 0;
+		while (customerQueryResults.next() && i < MAX_RESULTS) {
 			String firstName = customerQueryResults.getString(1);
 			String lastName = customerQueryResults.getString(2);
 			String address = customerQueryResults.getString(3);
 			String city = customerQueryResults.getString(4);
-			String state = customerQueryResults.getString(5);
-//			String zip = Integer.toString(customerQueryResults.getInt(6));
-//			String homePhone = Integer.toString(customerQueryResults.getInt(7));
-//			String workPhone = Integer.toString(customerQueryResults.getInt(8)); // not using this right now
-//			String cellPhone = Integer.toString(customerQueryResults.getInt(9));
-			
+			String state = customerQueryResults.getString(5);			
 			int zip = customerQueryResults.getInt(6);
 			int homePhone = customerQueryResults.getInt(7);
 			int workPhone = customerQueryResults.getInt(8); // not using this right now
@@ -456,17 +413,8 @@ public class DbServices {
 			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
 					zip, homePhone, workPhone, cellPhone, email);
 			
-			customerResults.add(customer);
-			
-//			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
-//					// TODO when setData called, pull tableItem.txt from object instead of manually setting
-//						// we can add a method to Customer to array up fields
-//						// on second thought, this would probably require too much custom object code for each result table
-//						// may as well keep it with each object class, as in this code for displaying Customer objects
-//						// is in the Customer class
-//			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip == 0 ? "" : Integer.toString(zip),
-//					homePhone == 0 ? "" : Integer.toString(homePhone), cellPhone == 0 ? "" : Integer.toString(cellPhone), email} );
-//			tableItem.setData(customer);
+			customerResults[i] = customer;
+			i++;
 		}
 		return customerResults;
 	}
@@ -480,121 +428,51 @@ public class DbServices {
 		if (customer.getFirstName() != null && customer.getFirstName().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "firstName", customer.getFirstName().trim());
-//			StringBuilder firstName = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				firstName.append(", ");
-//			}
-//			firstName.append("firstName = '" + customer.getFirstName().trim() + "'");
-//			queryString.insert(insertionPoint, firstName);
 		}
 		
 		if (customer.getLastName() != null && customer.getLastName().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "lastName", customer.getLastName().trim());
-//			StringBuilder lastName = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				lastName.append(", ");
-//			}
-//			lastName.append("lastName = '" + customer.getLastName().trim() + "'");
-//			queryString.insert(insertionPoint, lastName);
 		}
 		
 		if (customer.getAddress() != null && customer.getAddress().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "address", customer.getAddress().trim());
-//			StringBuilder address = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				address.append(", ");
-//			}
-//			address.append("address = '" + customer.getAddress().trim() + "'");
-//			queryString.insert(insertionPoint, address);
 		}
 		
 		if (customer.getCity() != null && customer.getCity().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "city", customer.getCity().trim());
-//			StringBuilder city = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				city.append(", ");
-//			}
-//			city.append("city = '" + customer.getCity().trim() + "'");
-//			queryString.insert(insertionPoint, city);
 		}
 		
 		if (customer.getState() != null && customer.getState().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "state", customer.getState().trim());
-//			StringBuilder state = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				state.append(", ");
-//			}
-//			state.append("state = '" + customer.getState().trim() + "'");
-//			queryString.insert(insertionPoint, state);
 		}
 		
 		if (customer.getZipCode() != 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
-//			StringBuilder zipCode = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				zipCode.append(", ");
-//			}
-//			zipCode.append("zipCode = '" + customer.getZipCode() + "'");
-//			queryString.insert(insertionPoint, zipCode);
 		}
 		
 		if (customer.getHomePhone() != 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "homePhone", Integer.toString(customer.getHomePhone()));
-//			StringBuilder homePhone = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				homePhone.append(", ");
-//			}
-//			homePhone.append("homePhone = '" + customer.getHomePhone() + "'");
-//			queryString.insert(insertionPoint, homePhone);
 		}
 		
 		if (customer.getWorkPhone() != 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "workPhone", Integer.toString(customer.getWorkPhone()));
-//			StringBuilder workPhone = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				workPhone.append(", ");
-//			}
-//			workPhone.append("workPhone = '" + customer.getWorkPhone() + "'");
-//			queryString.insert(insertionPoint, workPhone);
 		}
 		
 		if (customer.getCellPhone() != 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "cellPhone", Integer.toString(customer.getCellPhone()));
-//			StringBuilder cellPhone = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				cellPhone.append(", ");
-//			}
-//			cellPhone.append("cellPhone = '" + customer.getCellPhone() + "'");
-//			queryString.insert(insertionPoint, cellPhone);
 		}
 		
 		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
 			isAnythingModified = true;
 			updateQueryHelper(queryString, "email", customer.getEmail().trim());
-//			StringBuilder email = new StringBuilder();
-//			int insertionPoint = queryString.lastIndexOf("WHERE");
-//			if (queryString.charAt(insertionPoint - 2) != 'T') {
-//				email.append(", ");
-//			}
-//			email.append("email = '" + customer.getEmail().trim() + "'");
-//			queryString.insert(insertionPoint, email);
 		}
 		
 		// TODO finish modifying fields

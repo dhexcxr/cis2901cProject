@@ -4,10 +4,8 @@ import java.sql.SQLException;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
-import cis2901c.main.Main;
 import cis2901c.objects.MyTable;
 
 public class SearchTextBoxListeners implements ModifyListener {		//SWT imple
