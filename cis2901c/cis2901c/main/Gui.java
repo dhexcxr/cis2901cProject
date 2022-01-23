@@ -22,13 +22,13 @@ import cis2901c.objects.MyText;
 
 public class Gui extends Composite {
 	
-	// TODO why are these out here? maybe move them into methods wehere they are used
+	// TODO why are these out here? maybe move them into methods where they are used
 	private MyText roSearchBox;
-	public List listOfRos = null;
 	private MyTable roTable;
 	private MyText customerSearchTextBox;
 	private MyTable customerTable;
 	private MyTable unitTable;
+	public List listOfRos = null;
 
 	/**
 	 * Create the composite.
@@ -38,240 +38,232 @@ public class Gui extends Composite {
 	public Gui(Composite parent, int style) {
 		super(parent, style);
 		
+		// Tab control widget
 		TabFolder tabFolder = new TabFolder(this, SWT.NONE);
 		tabFolder.setBounds(10, 10, 1004, 748);
 		
+		// RO tab
 		TabItem tbtmRepairOrders = new TabItem(tabFolder, SWT.NONE);
 		tbtmRepairOrders.setText("Repair Orders");
 		
-		Composite repairOrderListing = new Composite(tabFolder, SWT.NONE);
-		tbtmRepairOrders.setControl(repairOrderListing);
+		Composite repairOrdersComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmRepairOrders.setControl(repairOrdersComposite);
 		
-		listOfRos = new List(repairOrderListing, SWT.BORDER);
-		listOfRos.setBounds(10, 74, 976, 130);
-
-		roTable = new MyTable(repairOrderListing, SWT.BORDER | SWT.FULL_SELECTION);
-		roTable.setBounds(10, 210, 976, 495);
-		roTable.setHeaderVisible(true);
-		roTable.setLinesVisible(true);
-		
-		roSearchBox = new MyText(repairOrderListing, SWT.BORDER);
+		// RO controls
+		roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
-		RoSearchBoxListeners roSearchBoxListener = new RoSearchBoxListeners(roSearchBox, roTable);
-		TextBoxFocusListener testBoxFocusListener = new TextBoxFocusListener(roSearchBox);
-		roSearchBox.addModifyListener(roSearchBoxListener);
-		roSearchBox.addFocusListener(testBoxFocusListener);
+		roSearchBox.addModifyListener(new RoSearchBoxListeners(roSearchBox, roTable));
+		roSearchBox.addFocusListener(new TextBoxFocusListener(roSearchBox));
 		
-		Button btnNewRepairOrder = new Button(repairOrderListing, SWT.NONE);
+		Button btnNewRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
+		btnNewRepairOrder.setBounds(846, 10, 140, 26);
+		btnNewRepairOrder.setText("New Repair Order");
 		btnNewRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// create new Repair Order
 			}
 		});
-		btnNewRepairOrder.setBounds(846, 10, 140, 26);
-		btnNewRepairOrder.setText("New Repair Order");
 		
-		Button btnNewEstimate = new Button(repairOrderListing, SWT.NONE);
-		btnNewEstimate.setBounds(846, 42, 140, 26);
+		Button btnNewEstimate = new Button(repairOrdersComposite, SWT.NONE);
 		btnNewEstimate.setText("New Estimate");
-		
-		Button btnDeleteRepairOrder = new Button(repairOrderListing, SWT.NONE);
+		btnNewEstimate.setBounds(846, 42, 140, 26);
+				
+		Button btnDeleteRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
+		btnDeleteRepairOrder.setText("Delete Repair Order");
+		btnDeleteRepairOrder.setBounds(700, 42, 140, 26);
 		btnDeleteRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// delete Repair Order
 			}
 		});
-		btnDeleteRepairOrder.setText("Delete Repair Order");
-		btnDeleteRepairOrder.setBounds(700, 42, 140, 26);
 		
-		Button btnShowCashiered = new Button(repairOrderListing, SWT.CHECK);
-		btnShowCashiered.setBounds(10, 42, 129, 20);
+		Button btnShowCashiered = new Button(repairOrdersComposite, SWT.CHECK);
 		btnShowCashiered.setText("Show Cashiered");
+		btnShowCashiered.setBounds(10, 42, 129, 20);
 		
-		Button btnShowEstimates = new Button(repairOrderListing, SWT.CHECK);
-		btnShowEstimates.setBounds(145, 42, 127, 20);
+		Button btnShowEstimates = new Button(repairOrdersComposite, SWT.CHECK);
 		btnShowEstimates.setText("Show Estimates");
+		btnShowEstimates.setBounds(145, 42, 127, 20);
 		
-		TableColumn tblclmnRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnRo.setWidth(75);
-		tblclmnRo.setText("RO #");
+		// Table for RO search results
+		roTable = new MyTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		roTable.setBounds(10, 74, 976, 631);
+		roTable.setHeaderVisible(true);
+		roTable.setLinesVisible(true);
 		
-		TableColumn tblclmnCustomer = new TableColumn(roTable, SWT.NONE);
-		tblclmnCustomer.setWidth(164);
-		tblclmnCustomer.setText("Customer");
+		TableColumn tblclmnRo_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnRo_Ro.setText("RO #");
+		tblclmnRo_Ro.setWidth(75);
 		
-		TableColumn tblclmnYear = new TableColumn(roTable, SWT.NONE);
-		tblclmnYear.setWidth(65);
-		tblclmnYear.setText("Year");
+		TableColumn tblclmnCustomer_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnCustomer_Ro.setText("Customer");
+		tblclmnCustomer_Ro.setWidth(164);
 		
-		TableColumn tblclmnMake = new TableColumn(roTable, SWT.NONE);
-		tblclmnMake.setWidth(109);
-		tblclmnMake.setText("Make");
+		TableColumn tblclmnYear_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnYear_Ro.setText("Year");
+		tblclmnYear_Ro.setWidth(65);
 		
-		TableColumn tblclmnModel = new TableColumn(roTable, SWT.NONE);
-		tblclmnModel.setWidth(113);
-		tblclmnModel.setText("Model");
+		TableColumn tblclmnMake_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnMake_Ro.setText("Make");
+		tblclmnMake_Ro.setWidth(109);
 		
-		TableColumn tblclmnVin = new TableColumn(roTable, SWT.NONE);
-		tblclmnVin.setWidth(222);
-		tblclmnVin.setText("VIN");
+		TableColumn tblclmnModel_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnModel_Ro.setText("Model");
+		tblclmnModel_Ro.setWidth(113);
 		
-		TableColumn tblclmnJobs = new TableColumn(roTable, SWT.NONE);
-		tblclmnJobs.setWidth(212);
-		tblclmnJobs.setText("Jobs");
+		TableColumn tblclmnVin_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnVin_Ro.setText("VIN");
+		tblclmnVin_Ro.setWidth(222);
 		
+		TableColumn tblclmnJobs_Ro = new TableColumn(roTable, SWT.NONE);
+		tblclmnJobs_Ro.setText("Jobs");
+		tblclmnJobs_Ro.setWidth(212);
+		// END RO Tab
+		
+		// Parts Tab
 		TabItem tbtmParts = new TabItem(tabFolder, SWT.NONE);
 		tbtmParts.setText("Parts");
 		
-		Composite composite = new Composite(tabFolder, SWT.NONE);
-		tbtmParts.setControl(composite);
+		Composite partsComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmParts.setControl(partsComposite);
+		// END Parts Tab
 		
+		// Customers Tab
 		TabItem tbtmCustomers = new TabItem(tabFolder, SWT.NONE);
 		tbtmCustomers.setText("Customers");
 		
-		Composite customerListing = new Composite(tabFolder, SWT.NONE);
-		tbtmCustomers.setControl(customerListing);
+		Composite customerComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmCustomers.setControl(customerComposite);
 	
-		Button btnNewCustomer = new Button(customerListing, SWT.NONE);
-		NewCustomerButtonListeners newCustomerButtonListeners = new NewCustomerButtonListeners();
-		btnNewCustomer.addMouseListener(newCustomerButtonListeners);
-		btnNewCustomer.setBounds(877, 10, 109, 26);
-		btnNewCustomer.setText("New Customer");
-		
-		customerTable = new MyTable(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
-		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable));
-//		new MouseAdapter() {
-//			@Override
-//			public void mouseDoubleClick(MouseEvent e) {
-//				// open saved customer for editing
-//				System.out.println("Double click");
-//				Customer customer = (Customer) customerTable.getSelection()[0].getData();
-//				System.out.println(customer.getFirstName());
-//				System.out.println(customer.getCustomerId());
-//				
-//				NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
-//				modifyExistingCustomerDialog.open(customer);
-//				// TODO get table to refresh on Customer Save
-//			}
-//		});
-		customerTable.setBounds(10, 42, 976, 663);
-		customerTable.setHeaderVisible(true);
-		customerTable.setLinesVisible(true);
-		
-		TableColumn tblclmnFirstName = new TableColumn(customerTable, SWT.NONE);
-		tblclmnFirstName.setWidth(100);
-		tblclmnFirstName.setText("First Name");
-		
-		TableColumn tblclmnLastName = new TableColumn(customerTable, SWT.NONE);
-		tblclmnLastName.setWidth(100);
-		tblclmnLastName.setText("Last Name");
-		
-		TableColumn tblclmnAddress = new TableColumn(customerTable, SWT.NONE);
-		tblclmnAddress.setWidth(100);
-		tblclmnAddress.setText("Address");
-		
-		TableColumn tblclmnCity = new TableColumn(customerTable, SWT.NONE);
-		tblclmnCity.setWidth(100);
-		tblclmnCity.setText("City");
-		
-		TableColumn tblclmnState = new TableColumn(customerTable, SWT.NONE);
-		tblclmnState.setWidth(100);
-		tblclmnState.setText("State");
-		
-		TableColumn tblclmnZip = new TableColumn(customerTable, SWT.NONE);
-		tblclmnZip.setWidth(100);
-		tblclmnZip.setText("Zip");
-		
-		TableColumn tblclmnHomePhone = new TableColumn(customerTable, SWT.NONE);
-		tblclmnHomePhone.setWidth(100);
-		tblclmnHomePhone.setText("Home Phone");
-		
-		TableColumn tblclmnCellPhone = new TableColumn(customerTable, SWT.NONE);
-		tblclmnCellPhone.setWidth(100);
-		tblclmnCellPhone.setText("Cell Phone");
-		
-		TableColumn tblclmnEmail = new TableColumn(customerTable, SWT.NONE);
-		tblclmnEmail.setWidth(100);
-		tblclmnEmail.setText("E-mail");
-
-		customerSearchTextBox = new MyText(customerListing, SWT.BORDER);
+		// Customer controls
+		customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
 		customerSearchTextBox.setBounds(10, 10, 861, 26);
-//		CustomerSearchTextBoxListeners customerSearchTextBoxListener = new CustomerSearchTextBoxListeners(customerSearchTextBox, customerTable);
-//		testBoxFocusListener = new TextBoxFocusListener(customerSearchTextBox);
-//		customerSearchTextBox.addModifyListener(customerSearchTextBoxListener);
-//		customerSearchTextBox.addFocusListener(testBoxFocusListener);
 		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
 		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
 		
+		Button btnNewCustomer = new Button(customerComposite, SWT.NONE);
+		btnNewCustomer.setText("New Customer");
+		btnNewCustomer.setBounds(877, 10, 109, 26);
+		btnNewCustomer.addMouseListener(new NewCustomerButtonListeners());
+		
+		// Table for Customer search results
+		customerTable = new MyTable(customerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable.setBounds(10, 42, 976, 663);
+		customerTable.setHeaderVisible(true);
+		customerTable.setLinesVisible(true);
+		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable));
+		
+		TableColumn tblclmnFirstName_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnFirstName_Customer.setText("First Name");
+		tblclmnFirstName_Customer.setWidth(100);
+		
+		TableColumn tblclmnLastName_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnLastName_Customer.setText("Last Name");
+		tblclmnLastName_Customer.setWidth(100);
+		
+		TableColumn tblclmnAddress_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnAddress_Customer.setText("Address");
+		tblclmnAddress_Customer.setWidth(100);
+		
+		TableColumn tblclmnCity_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCity_Customer.setText("City");
+		tblclmnCity_Customer.setWidth(100);
+		
+		TableColumn tblclmnState_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnState_Customer.setText("State");
+		tblclmnState_Customer.setWidth(100);
+		
+		TableColumn tblclmnZip_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnZip_Customer.setText("Zip");
+		tblclmnZip_Customer.setWidth(100);
+		
+		TableColumn tblclmnHomePhone_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnHomePhone_Customer.setText("Home Phone");
+		tblclmnHomePhone_Customer.setWidth(100);
+		
+		TableColumn tblclmnCellPhone_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCellPhone_Customer.setText("Cell Phone");
+		tblclmnCellPhone_Customer.setWidth(100);
+		
+		TableColumn tblclmnEmail_Customer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnEmail_Customer.setText("E-mail");
+		tblclmnEmail_Customer.setWidth(100);
+		// END Customer Tab
+		
+		// Units Tab
 		TabItem tbtmUnits = new TabItem(tabFolder, SWT.NONE);
 		tbtmUnits.setText("Units");
 		
-		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
-		tbtmUnits.setControl(composite_2);
+		Composite unitsComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmUnits.setControl(unitsComposite);
 		
-		unitTable = new MyTable(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
-		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable));
-		unitTable.setBounds(10, 42, 976, 663);
-		unitTable.setHeaderVisible(true);
-		unitTable.setLinesVisible(true);
-		
-		TableColumn tblclmnOwner = new TableColumn(unitTable, SWT.NONE);
-		tblclmnOwner.setWidth(165);
-		tblclmnOwner.setText("Owner");
-		
-		TableColumn tblclmnMake_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMake_1.setWidth(119);
-		tblclmnMake_1.setText("Make");
-		
-		TableColumn tblclmnModel_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModel_1.setWidth(138);
-		tblclmnModel_1.setText("Model");
-		
-		TableColumn tblclmnModelName = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModelName.setWidth(148);
-		tblclmnModelName.setText("Model Name");
-		
-		TableColumn tblclmnYear_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnYear_1.setWidth(50);
-		tblclmnYear_1.setText("Year");
-		
-		TableColumn tblclmnMileage = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMileage.setWidth(85);
-		tblclmnMileage.setText("Mileage");
-		
-		TableColumn tblclmnColor = new TableColumn(unitTable, SWT.NONE);
-		tblclmnColor.setWidth(49);
-		tblclmnColor.setText("Color");
-		
-		TableColumn tblclmnVin_1 = new TableColumn(unitTable, SWT.NONE);
-		tblclmnVin_1.setWidth(215);
-		tblclmnVin_1.setText("VIN");
-		
-		MyText unitSearchBox = new MyText(composite_2, SWT.BORDER);
+		// Unit controls
+		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
 		unitSearchBox.setText("Search...");
 		unitSearchBox.setBounds(10, 10, 861, 26);
 		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable));
 		unitSearchBox.addFocusListener(new TextBoxFocusListener(unitSearchBox));
 		
-		Button btnNewUnit = new Button(composite_2, SWT.NONE);
+		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);
 		btnNewUnit.setText("New Unit");
 		btnNewUnit.setBounds(877, 10, 109, 26);
 		btnNewUnit.addMouseListener(new NewUnitButtonListener());
 		
+		// Table for Unit search results
+		unitTable = new MyTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable));
+		unitTable.setBounds(10, 42, 976, 663);
+		unitTable.setHeaderVisible(true);
+		unitTable.setLinesVisible(true);
 		
+		TableColumn tblclmnOwner_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnOwner_Unit.setText("Owner");
+		tblclmnOwner_Unit.setWidth(165);
 		
+		TableColumn tblclmnMake_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMake_Unit.setText("Make");
+		tblclmnMake_Unit.setWidth(119);
+		
+		TableColumn tblclmnModel_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModel_Unit.setText("Model");
+		tblclmnModel_Unit.setWidth(138);
+		
+		TableColumn tblclmnModelName_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModelName_Unit.setText("Model Name");
+		tblclmnModelName_Unit.setWidth(148);
+		
+		TableColumn tblclmnYear_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnYear_Unit.setText("Year");
+		tblclmnYear_Unit.setWidth(50);
+		
+		TableColumn tblclmnMileage_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMileage_Unit.setText("Mileage");
+		tblclmnMileage_Unit.setWidth(85);
+		
+		TableColumn tblclmnColor_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnColor_Unit.setText("Color");
+		tblclmnColor_Unit.setWidth(49);
+		
+		TableColumn tblclmnVin_Unit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnVin_Unit.setText("VIN");
+		tblclmnVin_Unit.setWidth(215);
+		// END Units Tab
+		
+		// Reports Tab	
 		TabItem tbtmReports = new TabItem(tabFolder, SWT.NONE);
 		tbtmReports.setText("Reports");
 		
-		Composite composite_3 = new Composite(tabFolder, SWT.NONE);
-		tbtmReports.setControl(composite_3);
+		Composite reportsComposite = new Composite(tabFolder, SWT.NONE);
+		tbtmReports.setControl(reportsComposite);
 		
-		Label lblNotImplimentedYet = new Label(composite_3, SWT.NONE);
-		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
+		Label lblNotImplimentedYet = new Label(reportsComposite, SWT.NONE);
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
-
+		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
+		// END Reports Tab
 	}
 
 	@Override
@@ -279,76 +271,3 @@ public class Gui extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 }
-
-//class TextBoxFocusListener implements FocusListener {				//SWT imple
-//	private MyText txtBox;
-//	private String textBoxText;
-//	
-//	public TextBoxFocusListener(MyText textBox) {
-//		this.txtBox = textBox;
-//		this.textBoxText = textBox.getText();
-//	}
-//	
-//	@Override
-//	public void focusGained(FocusEvent e) {
-//		System.out.println(textBoxText + " box focused gained");
-//		if (txtBox.getText().equals(textBoxText)) {
-//			txtBox.setText("");
-//		}		
-//	}
-//
-//	@Override
-//	public void focusLost(FocusEvent e) {
-//		System.out.println(textBoxText + " box focused lost");
-//		if (txtBox.getText().equals("")) {
-//			txtBox.setText(textBoxText);
-////			txtBox.setModified(false);
-////		} else {
-////			txtBox.setModified(true);
-//		}
-//	}
-//}
-
-//class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
-//	
-//	private MyText text;
-//	private String textBoxText;
-//	
-//	public InfoTextBoxModifyListener(MyText text) {
-//		// TODO Auto-generated constructor stub
-//		this.text = text;
-//		this.textBoxText = text.getText();
-//	}
-//
-//	@Override
-//	public void modifyText(ModifyEvent e) {
-//		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
-//			text.setModified(true);
-//		} else {
-//			text.setModified(false);
-//		}	
-//	}
-//}
-
-//class MyText extends Text {
-//	
-//	private boolean modified = false;
-//
-//	public MyText(Composite parent, int style) {
-//		super(parent, style);
-//		// TODO Auto-generated constructor stub
-//	}
-//	
-//	public boolean isModified() {
-//		return modified;
-//	}
-//
-//	public void setModified(boolean modified) {
-//		this.modified = modified;
-//	}
-//
-//	@Override
-//	protected void checkSubclass() {
-//		// Disable the check that prevents subclassing of SWT components
-//	}	
-//}

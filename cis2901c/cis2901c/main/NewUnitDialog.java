@@ -14,8 +14,6 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Unit;
 
-import java.sql.SQLException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
@@ -37,8 +35,7 @@ public class NewUnitDialog extends Dialog {
 	private MyText txtYear;
 	private MyText txtColor;
 	private MyText txtNotes;
-	
-	// TODO i think this is a hack way to do this, customerId is used in Mouse Down listener for Save button
+	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
 		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
 	private long customerId = -1;
@@ -51,7 +48,7 @@ public class NewUnitDialog extends Dialog {
 	 */
 	public NewUnitDialog(Shell parent, int style) {
 		super(parent, style);
-		setText("SWT Dialog");
+//		setText("SWT Dialog");
 	}
 
 	/**
@@ -73,7 +70,8 @@ public class NewUnitDialog extends Dialog {
 	
 	public Object open(Unit unit) {
 		createContents();
-		// set txtBoxes
+
+		// set txtBoxes when opening a current Unit for editing
 		if (unit.getOwner() != null)
 			txtOwner.setText(unit.getOwner());
 		if (unit.getMake() != null)
@@ -94,13 +92,12 @@ public class NewUnitDialog extends Dialog {
 			txtNotes.setText(unit.getNotes());
 		if (unit.getUnitId() != 0)
 			unitId = unit.getUnitId();
-		if (unit.getCustomerId() != 0)		// TODO i think this will need to be -1
+		if (unit.getCustomerId() != -1)
 			customerId = unit.getCustomerId(); 
-		
 		this.unit = unit;
 		
-		shlNewUnit.setText("Modify Unit");
-		
+		// open Edit Unit dialog, customized for editing a current Unit
+		shlNewUnit.setText("Edit Unit Details");
 		shlNewUnit.open();
 		shlNewUnit.layout();
 		Display display = getParent().getDisplay();
@@ -117,35 +114,63 @@ public class NewUnitDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlNewUnit = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-		shlNewUnit.setSize(592, 348);
 		shlNewUnit.setText("Add Unit");
+		shlNewUnit.setSize(592, 348);
 		
-		// TODO require Owner entry/make red if empty
-		// TODO double click to search owners
+		// Unit dialog controls
+		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
+		btnSaveUnit.setText("Save Unit");
+		btnSaveUnit.setBounds(10, 268, 413, 26);
+		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (unitId == -1) {
+					// save new Unit with current text boxes
+					addNewUnit();
+				} else {
+					System.out.println("Save existing unit");
+					// save modifications to existing customer
+					saveUnit(unit);
+				}
+			}
+		});
+		
+		Button btnCancel = new Button(shlNewUnit, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(429, 268, 135, 26);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				shlNewUnit.dispose();
+			}
+		});
+		
+		// Unit text boxes
 		txtOwner = new MyText(shlNewUnit, SWT.BORDER);
+		txtOwner.setBackground(SWTResourceManager.getColor(255, 102, 102));
+		txtOwner.setText("Owner...");
+		txtOwner.setBounds(10, 10, 554, 26);
+		txtOwner.setEditable(false);
+		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
 		txtOwner.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
+				// open Customer Search dialog with Owner text box double click
 				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
 				Customer selectedCustomer = new Customer();
 				if (!txtOwner.getText().equals("Owner...")) {
+					// if we're editing a current unit, pass Owner name to Customer Search Dialog
 					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
 				} else {
+					// open normal, empty Customer Search Dialog
 					selectedCustomer = (Customer) customerSearchDialog.open();
 				}
 				if (selectedCustomer instanceof Customer) {
 					txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
 					customerId = selectedCustomer.getCustomerId();
 				}
-				// this shoudl return a Customer object
-				// need to set FirstName and LastName and customerId from selected customer
 			}
 		});
-		txtOwner.setEditable(false);
-		txtOwner.setBackground(SWTResourceManager.getColor(255, 102, 102));
-		txtOwner.setText("Owner...");
-		txtOwner.setBounds(10, 10, 554, 26);
-		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
 		
 		txtMake = new MyText(shlNewUnit, SWT.BORDER);
 		txtMake.setBackground(SWTResourceManager.getColor(255, 102, 102));
@@ -166,16 +191,15 @@ public class NewUnitDialog extends Dialog {
 		txtMileage.addFocusListener(new TextBoxFocusListener(txtMileage));
 		txtMileage.addModifyListener(new InfoTextBoxModifyListener(txtMileage));
 		
-		// TODO require 17 chars
 		txtVinNumber = new MyText(shlNewUnit, SWT.BORDER);
 		txtVinNumber.setText("Vin Number...");
 		txtVinNumber.setBounds(10, 138, 554, 26);
 		txtVinNumber.addFocusListener(new TextBoxFocusListener(txtVinNumber));
-//		txtVinNumber.addModifyListener(new RequiredTextBoxModifyListener(txtVinNumber));
 		txtVinNumber.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
+				// VIN txt box, make red if VIN isn't 17 digits long
+					// we still allow user to make shorter VINs to accommodate VINs from the '60s etc
 				System.out.println(txtVinNumber.isModified());
-				
 				if (!txtVinNumber.getText().equals("Vin Number...") && txtVinNumber.getText().length() != 17) {
 					txtVinNumber.setModified(false);
 					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
@@ -210,59 +234,25 @@ public class NewUnitDialog extends Dialog {
 		txtNotes.addFocusListener(new TextBoxFocusListener(txtNotes));
 		txtNotes.addModifyListener(new InfoTextBoxModifyListener(txtNotes));
 		
-		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);		
-		
-		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
-			@Override
-			public void mouseDown(MouseEvent e) {
-				try {
-					if (unitId == -1) {
-						addNewUnit();
-					} else {
-						System.out.println("Save existing unit");
-						// save modifications to existing customer
-						saveUnit(unit);
-					}
-				} catch (SQLException e1) {
-					System.out.println("Error saving new unit data to database");
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		btnSaveUnit.setBounds(10, 268, 413, 26);
-		btnSaveUnit.setText("Save Unit");
-		
-		Button btnCancel = new Button(shlNewUnit, SWT.NONE);
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				shlNewUnit.dispose();
-			}
-		});
-		btnCancel.setBounds(429, 268, 135, 26);
-		btnCancel.setText("Cancel");
 		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear, txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
 
 	}
 
-	protected void addNewUnit() throws SQLException {
+	protected void addNewUnit() {
 		saveUnit(new Unit());	
 	}
 	
-	protected void saveUnit(Unit unit) throws SQLException {
-		// if txt(dialog text boxes) are modified
-			// set Unit.fields
-			// (HINT, see NewCustomerDialog
-		if (customerId != -1) {
-			unit.setCustomerId(customerId);
-			unit.setOwner(txtOwner.getText());
-		} else {
+	protected void saveUnit(Unit unit) {
+		if (customerId == -1) {
+			// if we haven't selected an Owner, complain - a Unit Owner is required
 			MessageBox ownerRequirementBox = new MessageBox(shlNewUnit, SWT.ICON_INFORMATION);
 			ownerRequirementBox.setText("Notice");
 			ownerRequirementBox.setMessage("Please select an Owner");
 			ownerRequirementBox.open();
 			return;
+		} else {
+			unit.setCustomerId(customerId);
+			unit.setOwner(txtOwner.getText());			
 		}
 		
 		if (txtMake.isModified()) {
@@ -286,7 +276,6 @@ public class NewUnitDialog extends Dialog {
 			} catch (Exception e) {
 				System.out.println(e);
 				e.printStackTrace();
-//				unit.setMileage(0);		// oh yeah, Object int fields default to 0
 			}
 		}
 		
@@ -313,12 +302,9 @@ public class NewUnitDialog extends Dialog {
 		
 		if (txtNotes.isModified()) {
 			unit.setNotes(txtNotes.getText());
-		}
-
-		
-		
-		DbServices.saveObject(unit);		// COMMENTED FOR TESTING
-		
+				
+		DbServices.saveObject(unit);
 		shlNewUnit.dispose();
+		}
 	}
 }
