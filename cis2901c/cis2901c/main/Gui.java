@@ -1,5 +1,7 @@
 package cis2901c.main;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,17 +20,20 @@ import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.Customer;
+import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
+import cis2901c.objects.Unit;
 
 public class Gui extends Composite {
 	
 	// TODO why are these out here? maybe move them into methods wehere they are used
 	private MyText roSearchBox;
 	public List listOfRos = null;
-	private Table roTable;
+	private MyTable roTable;
 	private MyText customerSearchTextBox;
-	private Table customerTable;
-	private Table unitTable;
+	private MyTable customerTable;
+	private MyTable unitTable;
 
 	/**
 	 * Create the composite.
@@ -50,7 +55,7 @@ public class Gui extends Composite {
 		listOfRos = new List(repairOrderListing, SWT.BORDER);
 		listOfRos.setBounds(10, 74, 976, 130);
 
-		roTable = new Table(repairOrderListing, SWT.BORDER | SWT.FULL_SELECTION);
+		roTable = new MyTable(repairOrderListing, SWT.BORDER | SWT.FULL_SELECTION);
 		roTable.setBounds(10, 210, 976, 495);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
@@ -139,7 +144,7 @@ public class Gui extends Composite {
 		btnNewCustomer.setBounds(877, 10, 109, 26);
 		btnNewCustomer.setText("New Customer");
 		
-		customerTable = new Table(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable = new MyTable(customerListing, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable));
 //		new MouseAdapter() {
 //			@Override
@@ -211,7 +216,7 @@ public class Gui extends Composite {
 		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
 		tbtmUnits.setControl(composite_2);
 		
-		unitTable = new Table(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
+		unitTable = new MyTable(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
 		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);

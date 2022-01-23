@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -21,7 +22,7 @@ public class CustomerSearchDialog extends Dialog {
 
 	protected Object result;
 	protected Shell shlCustomerSearch;
-	private Table customerTable;
+	private MyTable customerTable;
 	private MyText customerSearchTextBox;
 
 	/**
@@ -88,7 +89,7 @@ public class CustomerSearchDialog extends Dialog {
 		btnSelectCustomer.setText("Select Customer");
 		btnSelectCustomer.setBounds(10, 330, 256, 26);
 		
-		customerTable = new Table(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable = new MyTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {

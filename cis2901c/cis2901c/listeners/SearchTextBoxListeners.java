@@ -7,16 +7,19 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import cis2901c.main.Main;
+import cis2901c.objects.MyTable;
+
 public class SearchTextBoxListeners implements ModifyListener {		//SWT imple
 	
 	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
 	// TODO switch Text to MyText
 	
 	private Text searchBox;
-	private Table table;
+	private MyTable table;
 //	private String textBoxText;
 	
-	public SearchTextBoxListeners(Text textBox, Table table) {
+	public SearchTextBoxListeners(Text textBox, MyTable table) {
 		this.searchBox = textBox;
 		this.table = table;
 //		this.textBoxText = textBox.getText();
@@ -31,7 +34,7 @@ public class SearchTextBoxListeners implements ModifyListener {		//SWT imple
 		int queryLength = searchBox.getText().length();
 		if (queryLength > 0) {
 			try {
-				DbServices.searchForObject(table, searchBox.getText());
+				table.paint(DbServices.searchForObject(table, searchBox.getText()));
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

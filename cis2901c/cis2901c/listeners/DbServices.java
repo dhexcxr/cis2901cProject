@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
@@ -65,13 +67,14 @@ public class DbServices {
 		}
 	}
 	
-	public static void searchForObject(Table resultsTable, String searchQuery) throws SQLException {
+	public static <E> List<E> searchForObject(Table resultsTable, String searchQuery) throws SQLException {
 		// search for searchQueary and display in resultsTable 
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
-			searchForCustomer(resultsTable, searchQuery);
+			return (List<E>) searchForCustomer(resultsTable, searchQuery);
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
-			searchForUnit(resultsTable, searchQuery);
+			return (List<E>) searchForUnit(resultsTable, searchQuery);
 		}
+		return null;
 	}
 	
 	private static void updateQueryHelper (StringBuilder queryString, String columnName, String data) {
@@ -115,7 +118,7 @@ public class DbServices {
 	// END General DB methods
 	
 	// START Unit object methods
-	private static void searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
+	private static List<Unit> searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
 		Connection dbConnection = DbServices.getDbConnection();
 		PreparedStatement statement = null;
 //		PreparedStatement statement = dbConnection.prepareStatement(
@@ -125,6 +128,9 @@ public class DbServices {
 //				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
 //		if (searchQuery.contains(" ")) {
 			String[] wordsFromQuery = sanitizer(searchQuery);
+			if (wordsFromQuery.length == 0) {
+				return null;
+			}
 										// TODO ensure we strip this out of name entry on Save Customer
 //			statement = dbConnection.prepareStatement(
 			StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
@@ -178,6 +184,7 @@ public class DbServices {
 		
 		ResultSet unitQueryResults = statement.executeQuery();
 
+		List<Unit> unitResults = new ArrayList<>();
 		while (unitQueryResults.next()) {
 			// TODO change to Unit fields
 			long unitId = unitQueryResults.getLong(1);
@@ -194,17 +201,19 @@ public class DbServices {
 		
 			// "" stub for modelName, we need to add modelName to this query
 			Unit unit = new Unit(unitId, customerId, make, model, "", modelYear, mileage, color, vin, notes, lastName + ", " + firstName);
-				
-			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
-				// TODO when setData called, pull tableItem.txt from object instead of manually setting
-					// we can add a method to Customer to array up fields
-					// on second thought, this would probably require too much custom object code for each result table
-					// may as well keep it with each object class, as in this code for displaying Customer objects
-					// is in the Customer class
-			tableItem.setText(new String[] {lastName + ", " + firstName, make, model, modelYear == 0 ? "" : Integer.toString(modelYear),
-				Integer.toString(mileage), color, vin, notes});
-			tableItem.setData(unit);
+			
+			unitResults.add(unit);
+//			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
+//				// TODO when setData called, pull tableItem.txt from object instead of manually setting
+//					// we can add a method to Customer to array up fields
+//					// on second thought, this would probably require too much custom object code for each result table
+//					// may as well keep it with each object class, as in this code for displaying Customer objects
+//					// is in the Customer class
+//			tableItem.setText(new String[] {lastName + ", " + firstName, make, model, modelYear == 0 ? "" : Integer.toString(modelYear),
+//				Integer.toString(mileage), color, vin, notes});
+//			tableItem.setData(unit);
 		}
+		return unitResults;
 	}
 	
 	public static void saveUnit(Unit unit) {
@@ -347,13 +356,16 @@ public class DbServices {
 	// END Unit object methods
 
 	// START Customer object methods
-	private static void searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
+	private static List<Customer> searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
 		
 		// TODO refactor this to combine the duplicate for() loops that do the exact same thing 
 		
 		Connection dbConnection = DbServices.getDbConnection();
 		PreparedStatement statement = null;
 		String[] wordsFromQuery = sanitizer(searchQuery);
+		if (wordsFromQuery.length == 0) {
+			return null;
+		}
 		String phone = numberSanitizer(searchQuery); 
 		StringBuilder subquery = new StringBuilder("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
 				+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
@@ -420,6 +432,8 @@ public class DbServices {
 //							+ "homePhone, workPhone, cellPhone, email FROM cis2901c.customer;");
 //		}
 		
+		List<Customer> customerResults = new ArrayList<>();
+		
 		while (customerQueryResults.next()) {
 			String firstName = customerQueryResults.getString(1);
 			String lastName = customerQueryResults.getString(2);
@@ -441,17 +455,20 @@ public class DbServices {
 			
 			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
 					zip, homePhone, workPhone, cellPhone, email);
-					
-			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
-					// TODO when setData called, pull tableItem.txt from object instead of manually setting
-						// we can add a method to Customer to array up fields
-						// on second thought, this would probably require too much custom object code for each result table
-						// may as well keep it with each object class, as in this code for displaying Customer objects
-						// is in the Customer class
-			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip == 0 ? "" : Integer.toString(zip),
-					homePhone == 0 ? "" : Integer.toString(homePhone), cellPhone == 0 ? "" : Integer.toString(cellPhone), email} );
-			tableItem.setData(customer);
+			
+			customerResults.add(customer);
+			
+//			TableItem tableItem = new TableItem(resultsTable, SWT.NONE);
+//					// TODO when setData called, pull tableItem.txt from object instead of manually setting
+//						// we can add a method to Customer to array up fields
+//						// on second thought, this would probably require too much custom object code for each result table
+//						// may as well keep it with each object class, as in this code for displaying Customer objects
+//						// is in the Customer class
+//			tableItem.setText(new String[] {firstName, lastName, address, city, state, zip == 0 ? "" : Integer.toString(zip),
+//					homePhone == 0 ? "" : Integer.toString(homePhone), cellPhone == 0 ? "" : Integer.toString(cellPhone), email} );
+//			tableItem.setData(customer);
 		}
+		return customerResults;
 	}
 	
 	private static StringBuilder buildModifyExistingCustomerQuery(Customer customer) {
