@@ -101,22 +101,80 @@ public class DbServices {
 		field.append("'" + data + "'");
 		queryString.insert(fieldInsertionPoint, field);
 	}
+	
+	private static String[] sanitizer(String searchQuery) {
+		return searchQuery.replaceAll("^[a-zA_Z0-9\'-]*$", "").split(" ");
+	}
+	
+	private static String numberSanitizer(String searchQuery) {
+		// TODO change to phone
+		return searchQuery.replaceAll("^[0-9]*$", "");
+//		return null;
+	}
+	
 	// END General DB methods
 	
 	// START Unit object methods
 	private static void searchForUnit(Table resultsTable, String searchQuery) throws SQLException {
 		Connection dbConnection = DbServices.getDbConnection();
-		PreparedStatement statement = dbConnection.prepareStatement(
-				// change to unit query
-				"SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, c.lastName, c.firstName "
-				+ "FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-		statement.setString(1, "%" + searchQuery + "%");
-		statement.setString(2, "%" + searchQuery + "%");
-		statement.setString(3, "%" + searchQuery + "%");
-		statement.setString(4, "%" + searchQuery + "%");
-		statement.setString(5, "%" + searchQuery + "%");
-		statement.setString(6, "%" + searchQuery + "%");
+		PreparedStatement statement = null;
+//		PreparedStatement statement = dbConnection.prepareStatement(
+//				// change to unit query
+//				"SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, c.lastName, c.firstName "
+//				+ "FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+//				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
+//		if (searchQuery.contains(" ")) {
+			String[] wordsFromQuery = sanitizer(searchQuery);
+										// TODO ensure we strip this out of name entry on Save Customer
+//			statement = dbConnection.prepareStatement(
+			StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
+					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
+			for (int i = 1; i <= 6; i++) {
+				// edit string with StringBuilder replace insert
+				int insertIndex = subquery.indexOf("?");
+				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");
+//				statement.setString(i, "%" + wordsFromQuery[0] + "%");
+			}
+			
+			for (int i = 1; i < wordsFromQuery.length; i++) {
+				subquery.delete(15, 115);
+				subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
+						+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+						+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
+						+ "AND unitId IN (");
+//				int removeIndex = subquery.lastIndexOf(";");
+				subquery.replace(subquery.length() - 1, subquery.length(), ");");
+				
+				for (int j = 1; j <= 6; j++) {
+					// edit string with StringBuilder replace insert
+					int insertIndex = subquery.indexOf("?");
+					subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
+//					statement.setString(i, "%" + wordsFromQuery[0] + "%");
+				}
+			}
+			
+			
+			
+			// finished statement
+			statement = dbConnection.prepareStatement(subquery.toString());
+//		} else {
+//			statement = dbConnection.prepareStatement(
+//					"SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, c.lastName, c.firstName "
+//					+ "FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+//					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
+//			for (int i = 1; i <= 6; i++) {
+//				statement.setString(i, "%" + searchQuery + "%");
+//			}
+//		}
+		
+		
+//		statement.setString(1, "%" + searchQuery + "%");
+//		statement.setString(2, "%" + searchQuery + "%");
+//		statement.setString(3, "%" + searchQuery + "%");
+//		statement.setString(4, "%" + searchQuery + "%");
+//		statement.setString(5, "%" + searchQuery + "%");
+//		statement.setString(6, "%" + searchQuery + "%");
 		
 		ResultSet unitQueryResults = statement.executeQuery();
 
@@ -290,6 +348,52 @@ public class DbServices {
 
 	// START Customer object methods
 	private static void searchForCustomer(Table resultsTable, String searchQuery) throws SQLException {
+		
+		// TODO refactor this to combine the duplicate for() loops that do the exact same thing 
+		
+		Connection dbConnection = DbServices.getDbConnection();
+		PreparedStatement statement = null;
+		String[] wordsFromQuery = sanitizer(searchQuery);
+		String phone = numberSanitizer(searchQuery); 
+		StringBuilder subquery = new StringBuilder("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+				+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
+				+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
+		int insertIndex = 0;
+		for (int i = 1; i <= 4; i++) {
+			insertIndex = subquery.indexOf("?");
+			subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");
+			insertIndex = subquery.indexOf("?");
+			subquery.replace(insertIndex, insertIndex + 1, "'%" + phone + "%'");
+		}
+		insertIndex = subquery.indexOf("?");
+		subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[0] + "%'");		// fill "state LIKE ?"
+		
+		for (int i = 1; i < wordsFromQuery.length; i++) {
+			subquery.delete(7, 99);
+			subquery.insert(0,"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+					+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
+					+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
+			subquery.replace(subquery.length() - 1, subquery.length(), ");");
+			
+			insertIndex = subquery.indexOf("?");
+			for (int j = 1; j <= 4; j++) {
+				insertIndex = subquery.indexOf("?");
+				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
+				insertIndex = subquery.indexOf("?");
+				subquery.replace(insertIndex, insertIndex + 1, "'%" + phone + "%'");
+			}
+			insertIndex = subquery.indexOf("?");
+			subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");		// fill "state LIKE ?"
+			
+//			for (int j = 1; j <= 6; j++) {					// might be able to swap around [field] LIKE ? so it alternates text field/phone field which would allow a loop
+//				int insertIndex = subquery.indexOf("?");
+//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
+//			}
+		}
+		
+		statement = dbConnection.prepareStatement(subquery.toString());
+		ResultSet customerQueryResults = statement.executeQuery();
+		
 		// TODO move search into DbServices
 				// searchObject(query, table (maybe? we need some way to decide which table to search)) will find a customer in the customer table
 				// it will return results which we'll use to populate table
@@ -297,17 +401,17 @@ public class DbServices {
 		
 //		if (query.length() != 0) {
 //			ResultSet customerQueryResults = customerQuery.executeQuery(
-		Connection dbConnection = DbServices.getDbConnection();
-			PreparedStatement statement = dbConnection.prepareStatement(
-					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
-			statement.setString(1, "%" + searchQuery + "%");
-			statement.setString(2, "%" + searchQuery + "%");
-			String phone = searchQuery.replaceAll("[()\\s-]+", "");
-			statement.setString(3, "%" + phone + "%");
-			statement.setString(4, "%" + phone + "%");
-			statement.setString(5, "%" + phone + "%");
-			ResultSet customerQueryResults = statement.executeQuery();
+//		Connection dbConnection = DbServices.getDbConnection();
+//			PreparedStatement statement = dbConnection.prepareStatement(
+//					"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+//							+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR lastName LIKE ? OR homePhone LIKE ? OR workPhone LIKE ? OR cellPhone LIKE ?;");
+//			statement.setString(1, "%" + searchQuery + "%");
+//			statement.setString(2, "%" + searchQuery + "%");
+//			String phone = searchQuery.replaceAll("[()\\s-]+", "");
+//			statement.setString(3, "%" + phone + "%");
+//			statement.setString(4, "%" + phone + "%");
+//			statement.setString(5, "%" + phone + "%");
+//			ResultSet customerQueryResults = statement.executeQuery();
 		
 			// shows results in table even if search box is empty
 //		if (query.length() == 0) {
