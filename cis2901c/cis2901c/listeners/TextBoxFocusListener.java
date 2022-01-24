@@ -5,7 +5,7 @@ import org.eclipse.swt.events.FocusListener;
 
 import cis2901c.objects.MyText;
 
-public class TextBoxFocusListener implements FocusListener {				//SWT imple
+public class TextBoxFocusListener implements FocusListener {
 	private MyText txtBox;
 	private String textBoxText;
 	
@@ -17,6 +17,7 @@ public class TextBoxFocusListener implements FocusListener {				//SWT imple
 	@Override
 	public void focusGained(FocusEvent e) {
 		System.out.println(textBoxText + " box focused gained");
+		// enable "flashy" text box effects
 		if (txtBox.getText().equals(textBoxText)) {
 			txtBox.setText("");
 		}		
@@ -25,11 +26,9 @@ public class TextBoxFocusListener implements FocusListener {				//SWT imple
 	@Override
 	public void focusLost(FocusEvent e) {
 		System.out.println(textBoxText + " box focused lost");
+		// enable "flashy" text box effects
 		if (txtBox.getText().equals("")) {
 			txtBox.setText(textBoxText);
-//			txtBox.setModified(false);
-//		} else {
-//			txtBox.setModified(true);
 		}
 	}
 }

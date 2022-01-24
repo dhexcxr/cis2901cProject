@@ -8,12 +8,12 @@ import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
 
 public class NewCustomerButtonListeners extends MouseAdapter {
+	// TODO maybe in-line this listener
 	
 	public NewCustomerButtonListeners() {	
 	}
 	
 	public void mouseDown(MouseEvent e) {
-//		Window parent = SwingUtilities.windowForComponent(Main.getShell());
 		NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
 		addNewCustomerDialog.open();
 	}

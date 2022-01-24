@@ -12,7 +12,7 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.Unit;
 
 public class OpenExistingObjectMouseListener extends MouseAdapter {
-	
+
 	Table table = null;
 
 
@@ -22,8 +22,10 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
-		// open saved customer or unit for editing
+		// open saved object for editing
 		System.out.println("Double click");
+		// TODO there might be a better way to check what type we're searching
+			// just like in DbServices.searchForObject
 		if (table.getColumn(0).getText().equals("First Name") && table.getSelection().length > 0) {
 			openCustomer(table);
 		} else if (table.getColumn(0).getText().equals("Owner") && table.getSelection().length > 0) {
@@ -31,27 +33,27 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		}
 		// TODO get table to refresh on Save
 	}
-	
-	private void openCustomer(Table table) {
-//		if (table.getSelection().length > 0) {
-			Customer customer = (Customer) table.getSelection()[0].getData();
-			System.out.println(customer.getFirstName());
-			System.out.println(customer.getCustomerId());
 
-			NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
-			modifyExistingCustomerDialog.open(customer);
-//		}
+	// TODO take out print statements, combine openCustomer and openUnit
+	private void openCustomer(Table table) {
+		// get object saved in TableItem Data
+		Customer customer = (Customer) table.getSelection()[0].getData();
+		System.out.println(customer.getFirstName());
+		System.out.println(customer.getCustomerId());
+
+		// open customer for editing
+		NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
+		modifyExistingCustomerDialog.open(customer);
 	}
-	
+
 	private void openUnit(Table table) {
+		// get object saved in TableItem Data
 		Unit unit = (Unit) table.getSelection()[0].getData();
 		System.out.println(unit.getMake());
 		System.out.println(unit.getModel());
 		System.out.println(unit.getVin());
-		
+
 		NewUnitDialog modifyExistingUnitDialog = new NewUnitDialog(Main.getShell(), SWT.NONE);
 		modifyExistingUnitDialog.open(unit);
 	}
-
-
 }

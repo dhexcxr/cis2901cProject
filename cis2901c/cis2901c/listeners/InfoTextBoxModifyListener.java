@@ -5,19 +5,19 @@ import org.eclipse.swt.events.ModifyListener;
 
 import cis2901c.objects.MyText;
 
-public class InfoTextBoxModifyListener implements ModifyListener {			// SWT implementation
+public class InfoTextBoxModifyListener implements ModifyListener {
 	
 	private MyText text;
 	private String textBoxText;
 	
 	public InfoTextBoxModifyListener(MyText text) {
-		// TODO Auto-generated constructor stub
 		this.text = text;
 		this.textBoxText = text.getText();
 	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
+		// help track if text box has been modified
 		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
 			text.setModified(true);
 		} else {

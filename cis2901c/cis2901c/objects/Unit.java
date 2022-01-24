@@ -1,6 +1,8 @@
 package cis2901c.objects;
 
 public class Unit {
+	
+	// might not need this
 	private long unitId = -1;
 	private long customerId;
 	private String make;

@@ -11,28 +11,27 @@ import org.eclipse.swt.widgets.Text;
 
 public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 	
+	// TODO combine with SearchBoxListener
+	
 	private Text searchBox;
-//	private List list;
 	private Table table;
 	
 	public RoSearchBoxListeners(Text textBox, Table table) {
 		this.searchBox = textBox;
-//		this.list = list;
 		this.table = table;
 	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-//		list.setItems("Test");
+		// TODO stub, waiting for RO Tab implementation
 		table.removeAll();
-//		if (table.get)
 		TableItem tableItem = new TableItem(table, SWT.NONE);
 		tableItem.setText(new String[] {"0ame", "other name", "other deets"} );
-		
 	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
+		// TODO stub, waiting for RO Tab implementation
 		System.out.println("Search box focused gained");
 		if (searchBox.getText().equals("Search...")) {
 			searchBox.setText("");
@@ -41,6 +40,7 @@ public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 
 	@Override
 	public void focusLost(FocusEvent e) {
+		// TODO stub, waiting for RO Tab implementation
 		System.out.println("Search box focused lost");
 		if (searchBox.getText().equals("")) {
 			searchBox.setText("Search...");

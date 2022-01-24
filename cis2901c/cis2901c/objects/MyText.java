@@ -4,12 +4,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 public class MyText extends Text {
+	// extend Text widget class to add isModified to enable "fancy" test box effects
 	
 	private boolean modified = false;
 
 	public MyText(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public boolean isModified() {

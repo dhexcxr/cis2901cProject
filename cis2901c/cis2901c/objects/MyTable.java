@@ -9,7 +9,6 @@ public class MyTable extends Table {
 
 	public MyTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public void paint(Object[] objects) {
@@ -24,6 +23,7 @@ public class MyTable extends Table {
 	}
 	
 	private void paintCustomerTable(Customer[] customerResults) {
+		// build each TableItem to fill Customer Table
 		for (Customer customer : customerResults) {
 			if (customer == null) {
 				break;
@@ -35,16 +35,10 @@ public class MyTable extends Table {
 							customer.getCellPhone() == 0 ? "" : Integer.toString(customer.getCellPhone()), customer.getEmail()} );
 			tableItem.setData(customer);
 		}
-		
-		// TODO when setData called, pull tableItem.txt from object instead of manually setting
-			// we can add a method to Customer to array up fields
-			// on second thought, this would probably require too much custom object code for each result table
-			// may as well keep it with each object class, as in this code for displaying Customer objects
-			// is in the Customer class
-
 	}
 	
 	private void paintUnitTable(Unit[] unitResults) {
+		// build each TableItem to fill Unit Table
 		for (Unit unit : unitResults) {
 			if (unit == null) {
 				break;
@@ -52,20 +46,12 @@ public class MyTable extends Table {
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(), unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
 					Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
-				tableItem.setData(unit);
+			tableItem.setData(unit);
 		}
-		
-		// TODO when setData called, pull tableItem.txt from object instead of manually setting
-			// we can add a method to Customer to array up fields
-			// on second thought, this would probably require too much custom object code for each result table
-			// may as well keep it with each object class, as in this code for displaying Customer objects
-			// is in the Customer class
-	
 	}
 	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
-
 }
