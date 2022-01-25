@@ -57,6 +57,7 @@ public class CustomerSearchDialog extends Dialog {
 		customerSearchTextBox.setText(owner);
 		shlCustomerSearch.open();
 		shlCustomerSearch.layout();
+//		customerTable.paint(DbServices.searchForObject(customerTable, owner));
 		Display display = getParent().getDisplay();
 		while (!shlCustomerSearch.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -73,32 +74,7 @@ public class CustomerSearchDialog extends Dialog {
 		shlCustomerSearch = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlCustomerSearch.setText("Customer Search");
 		shlCustomerSearch.setSize(946, 410);
-		
-		// dialog  controls
-		Button btnSelectCustomer = new Button(shlCustomerSearch, SWT.NONE);
-		btnSelectCustomer.setText("Select Customer");
-		btnSelectCustomer.setBounds(10, 330, 256, 26);
-		btnSelectCustomer.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (customerTable.getSelection().length > 0) {
-					result =  customerTable.getSelection()[0].getData();
-					shlCustomerSearch.dispose();
-				}
-			}
-		});
-		
-		Button btnCancel = new Button(shlCustomerSearch, SWT.NONE);
-		btnCancel.setText("Cancel");
-		btnCancel.setBounds(662, 330, 256, 26);
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				// close dialog
-				shlCustomerSearch.close();
-			}
-		});
-				
+						
 		// search results table
 		customerTable = new MyTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.setBounds(10, 42, 909, 282);
@@ -157,5 +133,30 @@ public class CustomerSearchDialog extends Dialog {
 		customerSearchTextBox.setFocus();
 		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
 		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
+		
+		// dialog  controls
+				Button btnSelectCustomer = new Button(shlCustomerSearch, SWT.NONE);
+				btnSelectCustomer.setText("Select Customer");
+				btnSelectCustomer.setBounds(10, 330, 256, 26);
+				btnSelectCustomer.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseDown(MouseEvent e) {
+						if (customerTable.getSelection().length > 0) {
+							result =  customerTable.getSelection()[0].getData();
+							shlCustomerSearch.dispose();
+						}
+					}
+				});
+				
+				Button btnCancel = new Button(shlCustomerSearch, SWT.NONE);
+				btnCancel.setText("Cancel");
+				btnCancel.setBounds(662, 330, 256, 26);
+				btnCancel.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseDown(MouseEvent e) {
+						// close dialog
+						shlCustomerSearch.close();
+					}
+				});
 	}
 }

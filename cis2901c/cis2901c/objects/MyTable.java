@@ -19,6 +19,8 @@ public class MyTable extends Table {
 			paintCustomerTable((Customer[]) objects);
 		} else if (objects instanceof Unit[]) {
 			paintUnitTable((Unit[])objects);
+		} else if (objects instanceof Part[]) {
+			paintPartTable((Part[]) objects);
 		}
 	}
 	
@@ -44,9 +46,23 @@ public class MyTable extends Table {
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(), unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
+			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(),
+					unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
 					Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
 			tableItem.setData(unit);
+		}
+	}
+	
+	private void paintPartTable(Part[] partResults) {
+		// build each TableItem to fill Unit Table
+		for (Part part : partResults) {
+			if (part == null) {
+				break;
+			}
+			TableItem tableItem = new TableItem(this, SWT.NONE);
+			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(part.getOnHand()),
+					part.getSupplier(), part.getCategory(), part.getCost().toString(), part.getRetail().toString()});
+			tableItem.setData(part);
 		}
 	}
 	

@@ -1,11 +1,13 @@
 package cis2901c.listeners;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.swt.widgets.Table;
+
 import cis2901c.objects.Customer;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
@@ -51,12 +53,13 @@ public class DbServices {
 	
 	public static void saveObject(Object object) {
 		// public Save Object interface
+		// TODO have these specific save... methods return the DB query string, and this method will execute the statement
 		if (object instanceof Customer) {
 			saveCustomer((Customer) object);
 		} else if (object instanceof Unit) {
 			 saveUnit((Unit) object);
 		} else if (object instanceof Part) {
-			// savePart((Part) object);
+			savePart((Part) object);
 		} else if (object instanceof RepairOrder) {
 			// saveRepariOrder((RepairOrder) object);
 		}
@@ -70,6 +73,8 @@ public class DbServices {
 			return searchForCustomer(resultsTable, searchQuery);
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
 			return searchForUnit(resultsTable, searchQuery);
+		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
+			return searchForPart(resultsTable, searchQuery);
 		}
 		return null;
 	}
@@ -107,7 +112,7 @@ public class DbServices {
 	private static String[] sanitizer(String searchQuery) {
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection proof
-		return searchQuery.replaceAll("[^a-zA_Z0-9%'-]", "").split(" ");
+		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
 	}
 	
 	private static String numberSanitizer(String searchQuery) {
@@ -187,7 +192,7 @@ public class DbServices {
 		return unitResults;
 	}
 	
-	public static void saveUnit(Unit unit) {
+	private static void saveUnit(Unit unit) {
 		System.out.println("Save Unit button pressed");
 
 		StringBuilder queryString = null;
@@ -399,7 +404,7 @@ public class DbServices {
 		return customerResults;
 	}
 	
-	public static void saveCustomer(Customer customer) {
+	private static void saveCustomer(Customer customer) {
 		System.out.println("Save Customer button pressed");
 		// TODO finalize sanitization, regex phones to 10 digit, check email format, require at least last name
 
@@ -548,5 +553,197 @@ public class DbServices {
 		} else {
 			return queryString;
 		}
-	} 
+	}
+	// END Customer methods
+	
+	// Part methods
+	private static Part[] searchForPart(Table resultsTable, String searchQuery) {
+		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
+
+		// setup search
+		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
+
+		Connection dbConnection = DbServices.getDbConnection();	// connect to DB
+		// build query string
+		StringBuilder subquery = new StringBuilder("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
+				+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;");
+
+		for (int i = 0; i < wordsFromQuery.length; i++) {
+			if (i > 0) {
+				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
+				// TODO set correct queries
+				subquery.delete(27, 79);
+				subquery.insert(0, "SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
+						+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? "
+						+ "AND (partNumber, supplier) IN (");
+				subquery.replace(subquery.length() - 1, subquery.length(), ");");
+			}
+
+			for (int j = 1; j <= 4; j++) {
+				// fill search fields in queryString
+				int insertIndex = subquery.indexOf("?");
+				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
+			}
+		}
+
+		// build Unit[] to return DB search results
+		Part[] partResults = new Part[MAX_RESULTS];
+		try {
+			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
+			ResultSet partQueryResults = statement.executeQuery();
+			int i = 0;
+			while (partQueryResults.next() && i < MAX_RESULTS) {
+				int partId = partQueryResults.getInt(1);
+				String partNumber = partQueryResults.getString(2);
+				String supplier = partQueryResults.getString(3);
+				String category = partQueryResults.getString(4);
+				String description = partQueryResults.getString(5);
+				String notes = partQueryResults.getString(6);
+				BigDecimal cost = new BigDecimal(partQueryResults.getInt(7));
+				BigDecimal retail = new BigDecimal(partQueryResults.getInt(8));
+				int onHand = partQueryResults.getInt(9);
+
+				Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand, false);
+				partResults[i] = part;
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return partResults;
+	}
+	
+	private static void savePart(Part part) {
+		System.out.println("Save Part button pressed");
+
+		StringBuilder queryString = null;
+		if (part.getPartId() == -1) {		// save a new Part
+			queryString = buildAddNewPartQuery(part);
+		} else {							// save modifications to existing Part
+			queryString = buildModifyExistingPartQuery(part);
+		}
+
+		if (queryString != null) {
+			Connection dbConnection = DbServices.getDbConnection();
+			try {
+				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+				statement.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.print(queryString);
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static StringBuilder buildModifyExistingPartQuery(Part part) {
+		// save modifications to existing part 
+		boolean isAnythingModified = false;
+		
+		// build query out of Customer customer
+		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.part SET WHERE partId = " + part.getPartId() + ";");		
+				
+		if (part.getPartNumber() != null && part.getPartNumber().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "partNumber", part.getPartNumber().trim());
+		}
+		
+		if (part.getSupplier() != null && part.getPartNumber().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "supplier", part.getSupplier().trim());
+		}
+		
+		if (part.getCategory() != null && part.getCategory().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "category", part.getCategory().trim());
+		}
+		
+		if (part.getDescription() != null && part.getDescription().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "description", part.getDescription().trim());
+		}
+		
+		if (part.getNotes() != null && part.getNotes().trim().length() > 0) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "notes", part.getNotes().trim());
+		}
+		
+		if (!part.getRetail().equals(new BigDecimal(0))) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "retail", part.getRetail().toString());
+		}
+		
+		if (!part.getCost().equals(new BigDecimal(0))) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "cost", part.getCost().toString());
+		}
+		
+		if (part.getOnHand() != -1) {
+			isAnythingModified = true;
+			updateQueryHelper(queryString, "onHand", Integer.toString(part.getOnHand()));
+		}
+		
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return queryString;
+		}
+	}
+	
+	private static StringBuilder buildAddNewPartQuery(Part part) {
+		// add new part
+		boolean isAnythingModified = false;
+		
+		// build query out of Customer customer
+		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.part () VALUES ();");		
+		if (part.getPartNumber() != null && part.getPartNumber().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "partNumber", part.getPartNumber());
+		}
+		
+		if (part.getSupplier() != null && part.getSupplier().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "supplier", part.getSupplier().trim());
+		}
+		
+		if (part.getCategory() != null && part.getCategory().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "category", part.getCategory().trim());
+		}
+		
+		if (part.getDescription() != null && part.getDescription().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "description", part.getDescription().trim());
+		}
+		
+		if (part.getNotes() != null && part.getNotes().trim().length() > 0) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "notes", part.getNotes().trim());
+		}
+		
+		if (!part.getRetail().equals(new BigDecimal(0))) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "retail", part.getRetail().toString());
+		}
+		
+		if (!part.getCost().equals(new BigDecimal(0))) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "cost", part.getCost().toString());
+		}
+		
+		if (part.getOnHand() != -1) {
+			isAnythingModified = true;
+			insertQueryHelper(queryString, "onHand", Integer.toString(part.getOnHand()));
+		}
+		
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return queryString;
+		}
+	}
+	
+	
+	// END Part Methods
 }

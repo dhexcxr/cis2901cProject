@@ -116,35 +116,7 @@ public class NewUnitDialog extends Dialog {
 		shlNewUnit = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlNewUnit.setText("Add Unit");
 		shlNewUnit.setSize(592, 348);
-		
-		// Unit dialog controls
-		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
-		btnSaveUnit.setText("Save Unit");
-		btnSaveUnit.setBounds(10, 268, 413, 26);
-		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (unitId == -1) {
-					// save new Unit with current text boxes
-					addNewUnit();
-				} else {
-					System.out.println("Save existing unit");
-					// save modifications to existing customer
-					saveUnit(unit);
-				}
-			}
-		});
-		
-		Button btnCancel = new Button(shlNewUnit, SWT.NONE);
-		btnCancel.setText("Cancel");
-		btnCancel.setBounds(429, 268, 135, 26);
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				shlNewUnit.dispose();
-			}
-		});
-		
+				
 		// Unit text boxes
 		txtOwner = new MyText(shlNewUnit, SWT.BORDER);
 		txtOwner.setBackground(SWTResourceManager.getColor(255, 102, 102));
@@ -233,6 +205,34 @@ public class NewUnitDialog extends Dialog {
 		txtNotes.setBounds(10, 170, 554, 92);
 		txtNotes.addFocusListener(new TextBoxFocusListener(txtNotes));
 		txtNotes.addModifyListener(new InfoTextBoxModifyListener(txtNotes));
+
+		// Unit dialog controls
+		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
+		btnSaveUnit.setText("Save Unit");
+		btnSaveUnit.setBounds(10, 268, 413, 26);
+		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (unitId == -1) {
+					// save new Unit with current text boxes
+					addNewUnit();
+				} else {
+					System.out.println("Save existing unit");
+					// save modifications to existing customer
+					saveUnit(unit);
+				}
+			}
+		});
+		
+		Button btnCancel = new Button(shlNewUnit, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(429, 268, 135, 26);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				shlNewUnit.close();
+			}
+		});
 		
 		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear, txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
 
@@ -243,16 +243,16 @@ public class NewUnitDialog extends Dialog {
 	}
 	
 	protected void saveUnit(Unit unit) {
-		if (customerId == -1) {
+		if (customerId != -1) {
+			unit.setCustomerId(customerId);
+			unit.setOwner(txtOwner.getText());
+		} else {
 			// if we haven't selected an Owner, complain - a Unit Owner is required
 			MessageBox ownerRequirementBox = new MessageBox(shlNewUnit, SWT.ICON_INFORMATION);
 			ownerRequirementBox.setText("Notice");
 			ownerRequirementBox.setMessage("Please select an Owner");
 			ownerRequirementBox.open();
-			return;
-		} else {
-			unit.setCustomerId(customerId);
-			unit.setOwner(txtOwner.getText());			
+			return;			
 		}
 		
 		if (txtMake.isModified()) {

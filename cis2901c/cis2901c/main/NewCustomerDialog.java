@@ -111,34 +111,6 @@ public class NewCustomerDialog extends Dialog {
 		shlNewCustomer.setSize(592, 255);
 		shlNewCustomer.setText("New Customer");
 		
-		// New Customer dialog controls
-		Button btnSaveCustomerButton = new Button(shlNewCustomer, SWT.NONE);
-		btnSaveCustomerButton.setText("Save Customer");
-		btnSaveCustomerButton.setBounds(50, 170, 181, 30);
-		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {		// in-line listener
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (customerId == -1) {
-					// create a new Customer
-					addNewCustomer();
-				} else {
-					System.out.println("Save existing customer");
-					// save modifications to existing customer
-					saveCustomer(customer);
-				}
-			}
-		});
-		
-		Button btnCancel = new Button(shlNewCustomer, SWT.NONE);
-		btnCancel.setText("Cancel");
-		btnCancel.setBounds(332, 170, 181, 30);
-		btnCancel.addMouseListener(new MouseAdapter() {		// in-line listener
-			@Override
-			public void mouseDown(MouseEvent e) {
-				shlNewCustomer.dispose();
-			}
-		});
-		
 		// customer detail text boxes
 		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtFirstName.setText("First Name...");
@@ -200,9 +172,35 @@ public class NewCustomerDialog extends Dialog {
 		txtEmail.setBounds(292, 138, 272, 26);
 		txtEmail.addFocusListener(new TextBoxFocusListener(txtEmail));
 		txtEmail.addModifyListener(new InfoTextBoxModifyListener(txtEmail));
-		
-		shlNewCustomer.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity,
-				txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton, btnCancel});
+
+		// New Customer dialog controls
+		Button btnSaveCustomerButton = new Button(shlNewCustomer, SWT.NONE);
+		btnSaveCustomerButton.setText("Save Customer");
+		btnSaveCustomerButton.setBounds(50, 170, 181, 30);
+		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {		// in-line listener
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (customerId == -1) {
+					// create a new Customer
+					addNewCustomer();
+				} else {
+					System.out.println("Save existing customer");
+					// save modifications to existing customer
+					saveCustomer(customer);
+				}
+			}
+		});
+
+		Button btnCancel = new Button(shlNewCustomer, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(332, 170, 181, 30);
+		shlNewCustomer.setTabList(new Control[]{btnCancel, txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity, txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton});
+		btnCancel.addMouseListener(new MouseAdapter() {		// in-line listener
+			@Override
+			public void mouseDown(MouseEvent e) {
+				shlNewCustomer.close();
+			}
+		});
 	}
 	
 	public void addNewCustomer() {
@@ -211,15 +209,15 @@ public class NewCustomerDialog extends Dialog {
 	
 	public void saveCustomer(Customer customer) {
 		
-		if (!txtLastName.isModified()) {
+		if (txtLastName.isModified()) {
+			customer.setLastName(txtLastName.getText());
+		} else {
 			// dialog box stating last name is required
 			MessageBox lastNameRequirementBox = new MessageBox(shlNewCustomer, SWT.ICON_INFORMATION);
 			lastNameRequirementBox.setText("Notice");
 			lastNameRequirementBox.setMessage("Please enter a Last Name or Company Name");
 			lastNameRequirementBox.open();
 			return;
-		} else {
-			customer.setLastName(txtLastName.getText());
 		}
 		
 		if(txtFirstName.isModified()) {
@@ -287,6 +285,6 @@ public class NewCustomerDialog extends Dialog {
 
 		DbServices.saveObject(customer);
 		
-		shlNewCustomer.dispose();
+		shlNewCustomer.close();
 	}
 }

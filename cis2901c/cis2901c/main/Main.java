@@ -1,7 +1,5 @@
 package cis2901c.main;
 
-import java.sql.SQLException;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
@@ -13,9 +11,14 @@ import cis2901c.listeners.DbServices;
 public class Main {
 	private static Shell shell = null;
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+	public static void main(String[] args) {
 		
-		Class.forName("com.mysql.cj.jdbc.Driver");
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Start GUI
 		Display display = new Display();
@@ -44,16 +47,16 @@ public class Main {
 		
 		// disconnect from SQL DB before close
 		DbServices.disconnectFromDb();
-		display.dispose();
+		display.close();
 	}
 	
-	public static Shell getShell() {
-		// TODO see if we can provide shell some way other than a Main class getter (follow where this method is called)
-		if (shell.equals(null)) {
-			System.out.println("Error loading Gui: shell cannot be null");
-			System.out.println(new Throwable().getStackTrace());
-			System.exit(-1);
-		}
-		return shell;
-	}
+//	public static Shell getShell() {
+//		// TODO see if we can provide shell some way other than a Main class getter (follow where this method is called)
+//		if (shell.equals(null)) {
+//			System.out.println("Error loading Gui: shell cannot be null");
+//			System.out.println(new Throwable().getStackTrace());
+//			System.exit(-1);
+//		}
+//		return shell;
+//	}
 }

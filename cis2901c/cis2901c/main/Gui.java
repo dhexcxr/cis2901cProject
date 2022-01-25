@@ -6,30 +6,30 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.TableColumn;
 
-import cis2901c.listeners.NewCustomerButtonListeners;
-import cis2901c.listeners.NewUnitButtonListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
 
 	// TODO why are these out here? maybe move them into methods where they are used
+	private Shell shell;
 	private MyText roSearchBox;
 	private MyTable roTable;
 	private MyText customerSearchTextBox;
 	private MyTable customerTable;
 	private MyTable unitTable;
-	public List listOfRos = null;
-
+	
 	/**
 	 * Create the composite.
 	 * @param parent
@@ -37,12 +37,21 @@ public class Gui extends Composite {
 	 */
 	public Gui(Composite parent, int style) {
 		super(parent, style);
+		
+		this.shell = (Shell) parent;
 
 		// Tab control widget
-		TabFolder tabFolder = new TabFolder(this, SWT.NONE);
-		tabFolder.setBounds(10, 10, 1004, 748);
+		TabFolder tabFolder_Gui = new TabFolder(this, SWT.NONE);
+		tabFolder_Gui.setBounds(10, 10, 1004, 748);
 
-		// RO tab
+		rosTab(tabFolder_Gui);
+		partsTab(tabFolder_Gui);
+		customersTab(tabFolder_Gui);
+		unitsTab(tabFolder_Gui);
+		reportsTab(tabFolder_Gui);
+	}
+	
+	private void rosTab(TabFolder tabFolder) {
 		TabItem tbtmRepairOrders = new TabItem(tabFolder, SWT.NONE);
 		tbtmRepairOrders.setText("Repair Orders");
 
@@ -121,17 +130,92 @@ public class Gui extends Composite {
 		Button btnShowEstimates = new Button(repairOrdersComposite, SWT.CHECK);
 		btnShowEstimates.setText("Show Estimates");
 		btnShowEstimates.setBounds(145, 42, 127, 20);
-		// END RO Tab
-
-		// Parts Tab
+	}
+	
+	private void partsTab(TabFolder tabFolder) {
 		TabItem tbtmParts = new TabItem(tabFolder, SWT.NONE);
 		tbtmParts.setText("Parts");
 
 		Composite partsComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmParts.setControl(partsComposite);
-		// END Parts Tab
-
-		// Customers Tab
+		
+		TabFolder tabFolder_Parts = new TabFolder(partsComposite, SWT.NONE);
+		tabFolder_Parts.setBounds(10, 10, 976, 695);
+		
+		// Inventory Tab
+		TabItem tbtmInventory = new TabItem(tabFolder_Parts, SWT.NONE);
+		tbtmInventory.setText("Inventory");
+		
+		Composite inventoryComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		tbtmInventory.setControl(inventoryComposite);
+		
+		MyTable partTable = new MyTable(inventoryComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		partTable.setLinesVisible(true);
+		partTable.setHeaderVisible(true);
+		partTable.setBounds(10, 42, 948, 610);
+		partTable.addMouseListener(new OpenExistingObjectMouseListener(partTable, shell));
+		
+		TableColumn tblclmnPartNumber_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnPartNumber_Parts.setWidth(126);
+		tblclmnPartNumber_Parts.setText("Part Number");
+		
+		TableColumn tblclmnDescription_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnDescription_Parts.setWidth(275);
+		tblclmnDescription_Parts.setText("Description");
+		
+		TableColumn tblclmnOnHand_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnOnHand_Parts.setWidth(100);
+		tblclmnOnHand_Parts.setText("On Hand");
+		
+		TableColumn tblclmnSupplier_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnSupplier_Parts.setWidth(109);
+		tblclmnSupplier_Parts.setText("Supplier");
+		
+		TableColumn tblclmnCategory_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnCategory_Parts.setWidth(115);
+		tblclmnCategory_Parts.setText("Category");
+		
+		TableColumn tblclmnCost_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnCost_Parts.setWidth(100);
+		tblclmnCost_Parts.setText("Cost");
+		
+		TableColumn tblclmnRetailPrice_Parts = new TableColumn(partTable, SWT.NONE);
+		tblclmnRetailPrice_Parts.setWidth(110);
+		tblclmnRetailPrice_Parts.setText("Retail Price");
+		
+		// Inventory controls
+		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
+		partSearchTextBox.setText("Search...");
+		partSearchTextBox.setBounds(10, 10, 861, 26);
+		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTable));
+		partSearchTextBox.addFocusListener(new TextBoxFocusListener(partSearchTextBox));
+		
+		Button btnNewPart = new Button(inventoryComposite, SWT.NONE);
+		btnNewPart.setText("New Part");
+		btnNewPart.setBounds(877, 10, 81, 26);
+		btnNewPart.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
+				addNewPartDialog.open();
+			}
+		});
+		// END Inventory tab
+		
+		TabItem tbtmInvoice = new TabItem(tabFolder_Parts, SWT.NONE);
+		tbtmInvoice.setText("Invoice");
+		
+		Composite invoiceComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		tbtmInvoice.setControl(invoiceComposite);
+		
+		TabItem tbtmOrder = new TabItem(tabFolder_Parts, SWT.NONE);
+		tbtmOrder.setText("Order");
+		
+		Composite orderComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		tbtmOrder.setControl(orderComposite);
+	}
+	
+	private void customersTab(TabFolder tabFolder) {
 		TabItem tbtmCustomers = new TabItem(tabFolder, SWT.NONE);
 		tbtmCustomers.setText("Customers");
 
@@ -143,7 +227,7 @@ public class Gui extends Composite {
 		customerTable.setBounds(10, 42, 976, 663);
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
-		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable));
+		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable, shell));
 
 		TableColumn tblclmnFirstName_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnFirstName_Customer.setText("First Name");
@@ -191,24 +275,26 @@ public class Gui extends Composite {
 		Button btnNewCustomer = new Button(customerComposite, SWT.NONE);
 		btnNewCustomer.setText("New Customer");
 		btnNewCustomer.setBounds(877, 10, 109, 26);
-		btnNewCustomer.addMouseListener(new NewCustomerButtonListeners());
-		// END Customer Tab
-
-		// Units Tab
+//		btnNewCustomer.addMouseListener(new NewCustomerButtonListeners());
+		btnNewCustomer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
+				addNewCustomerDialog.open();
+			}
+		});
+	}
+	
+	private void unitsTab(TabFolder tabFolder) {
 		TabItem tbtmUnits = new TabItem(tabFolder, SWT.NONE);
 		tbtmUnits.setText("Units");
 
 		Composite unitsComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmUnits.setControl(unitsComposite);
 
-		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);
-		btnNewUnit.setText("New Unit");
-		btnNewUnit.setBounds(877, 10, 109, 26);
-		btnNewUnit.addMouseListener(new NewUnitButtonListener());
-
 		// Table for Unit search results
 		unitTable = new MyTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable));
+		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);
 		unitTable.setLinesVisible(true);
@@ -251,9 +337,21 @@ public class Gui extends Composite {
 		unitSearchBox.setBounds(10, 10, 861, 26);
 		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable));
 		unitSearchBox.addFocusListener(new TextBoxFocusListener(unitSearchBox));
-		// END Units Tab
-
-		// Reports Tab	
+		
+		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);
+		btnNewUnit.setText("New Unit");
+		btnNewUnit.setBounds(877, 10, 109, 26);
+//		btnNewUnit.addMouseListener(new NewUnitButtonListener());
+		btnNewUnit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
+				addNewUnitDialog.open();
+			}
+		});
+	}
+	
+	private void reportsTab(TabFolder tabFolder) {
 		TabItem tbtmReports = new TabItem(tabFolder, SWT.NONE);
 		tbtmReports.setText("Reports");
 
@@ -263,9 +361,8 @@ public class Gui extends Composite {
 		Label lblNotImplimentedYet = new Label(reportsComposite, SWT.NONE);
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
-		// END Reports Tab
 	}
-
+	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

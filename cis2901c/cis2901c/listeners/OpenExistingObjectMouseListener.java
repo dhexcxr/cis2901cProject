@@ -3,21 +3,26 @@ package cis2901c.listeners;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
-import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
+import cis2901c.main.NewPartDialog;
 import cis2901c.main.NewUnitDialog;
 import cis2901c.objects.Customer;
+import cis2901c.objects.MyTable;
+import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
 public class OpenExistingObjectMouseListener extends MouseAdapter {
 
-	Table table = null;
+	MyTable table = null;
+	Shell shell;
 
 
-	public OpenExistingObjectMouseListener(Table customerTable) {
+	public OpenExistingObjectMouseListener(MyTable customerTable, Shell shell) {
 		this.table = customerTable;
+		this.shell = shell;
 	}
 
 	@Override
@@ -30,6 +35,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 			openCustomer(table);
 		} else if (table.getColumn(0).getText().equals("Owner") && table.getSelection().length > 0) {
 			openUnit(table);
+		} else if (table.getColumn(0).getText().equals("Part Number") && table.getSelection().length > 0) {
+			openPart(table);
 		}
 		// TODO get table to refresh on Save
 	}
@@ -42,7 +49,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		System.out.println(customer.getCustomerId());
 
 		// open customer for editing
-		NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(Main.getShell(), SWT.NONE);
+		NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
 		modifyExistingCustomerDialog.open(customer);
 	}
 
@@ -53,7 +60,17 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		System.out.println(unit.getModel());
 		System.out.println(unit.getVin());
 
-		NewUnitDialog modifyExistingUnitDialog = new NewUnitDialog(Main.getShell(), SWT.NONE);
+		NewUnitDialog modifyExistingUnitDialog = new NewUnitDialog(shell, SWT.NONE);
 		modifyExistingUnitDialog.open(unit);
+	}
+	
+	private void openPart(Table table) {
+		// get object saved in TableItem Data
+		Part part= (Part) table.getSelection()[0].getData();
+		System.out.println(part.getPartNumber());
+		System.out.println(part.getDescription());
+		
+		NewPartDialog modifyExistingPartDialog = new NewPartDialog(shell, SWT.NONE);
+		modifyExistingPartDialog.open(part);
 	}
 }

@@ -1,7 +1,5 @@
 package cis2901c.objects;
 
-import java.sql.SQLException;
-
 import org.eclipse.swt.widgets.Table;
 import cis2901c.listeners.DbServices;
 
