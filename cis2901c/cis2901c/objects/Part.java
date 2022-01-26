@@ -15,6 +15,7 @@ public class Part {
 	private BigDecimal retail = new BigDecimal(0);
 	private int onHand = -1;
 	
+	// TODO remove newPart
 	private boolean newPart = true;
 	
 	public Part() {

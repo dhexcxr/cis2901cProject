@@ -12,3 +12,5 @@
 /RequiredTextBoxModifyListener.class
 /OpenExistingObjectMouseListener.class
 /NewItemDialog.class
+/NewObjectListener.class
+/CreateNewObjectListener.class

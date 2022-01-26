@@ -15,16 +15,19 @@ public class MyTable extends Table {
 		if (objects == null || objects.length == 0) {
 			return;
 		}
+//		this.clearAll();
+		this.removeAll();
 		if (objects instanceof Customer[]) {
 			paintCustomerTable((Customer[]) objects);
 		} else if (objects instanceof Unit[]) {
-			paintUnitTable((Unit[])objects);
+			paintUnitTable((Unit[]) objects);
 		} else if (objects instanceof Part[]) {
 			paintPartTable((Part[]) objects);
 		}
 	}
 	
 	private void paintCustomerTable(Customer[] customerResults) {
+		// TODO probably add sorting here
 		// build each TableItem to fill Customer Table
 		for (Customer customer : customerResults) {
 			if (customer == null) {

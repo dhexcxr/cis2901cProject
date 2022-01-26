@@ -53,15 +53,27 @@ public class DbServices {
 	
 	public static void saveObject(Object object) {
 		// public Save Object interface
-		// TODO have these specific save... methods return the DB query string, and this method will execute the statement
+		String queryString = null;
 		if (object instanceof Customer) {
-			saveCustomer((Customer) object);
+			queryString = saveCustomer((Customer) object);
 		} else if (object instanceof Unit) {
-			 saveUnit((Unit) object);
+			 queryString = saveUnit((Unit) object);
 		} else if (object instanceof Part) {
-			savePart((Part) object);
+			queryString = savePart((Part) object);
 		} else if (object instanceof RepairOrder) {
 			// saveRepariOrder((RepairOrder) object);
+		}
+		
+		if (queryString != null) {
+			Connection dbConnection = DbServices.getDbConnection();
+			try {
+				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+				statement.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.print(queryString);
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -192,30 +204,32 @@ public class DbServices {
 		return unitResults;
 	}
 	
-	private static void saveUnit(Unit unit) {
+	private static String saveUnit(Unit unit) {
 		System.out.println("Save Unit button pressed");
 
-		StringBuilder queryString = null;
+		String queryString = null;
 		if (unit.getUnitId() == -1) {		// add new customer
 			queryString = buildAddNewUnitQuery(unit);
 		} else {							// save modifications to existing customer
 			queryString = buildModifyExistingUnitQuery(unit);
 		}
+		
+		return queryString;
 
-		if (queryString != null) {
-			Connection dbConnection = DbServices.getDbConnection();
-			try {
-				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-				statement.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.print(queryString);
-				e.printStackTrace();
-			}
-		}
+//		if (queryString != null) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			try {
+//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//				statement.execute();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				System.out.print(queryString);
+//				e.printStackTrace();
+//			}
+//		}
 	}
 	
-	private static StringBuilder buildModifyExistingUnitQuery(Unit unit) {
+	private static String buildModifyExistingUnitQuery(Unit unit) {
 		// save modifications to existing unit
 		boolean isAnythingModified = false;
 		
@@ -270,11 +284,11 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 
-	private static StringBuilder buildAddNewUnitQuery(Unit unit) {
+	private static String buildAddNewUnitQuery(Unit unit) {
 		// add new unit
 		boolean isAnythingModified = false;
 		
@@ -328,7 +342,7 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 	// END Unit object methods
@@ -404,31 +418,33 @@ public class DbServices {
 		return customerResults;
 	}
 	
-	private static void saveCustomer(Customer customer) {
+	private static String saveCustomer(Customer customer) {
 		System.out.println("Save Customer button pressed");
 		// TODO finalize sanitization, regex phones to 10 digit, check email format, require at least last name
 
-		StringBuilder queryString = null;
+		String queryString = null;
 		if (customer.getCustomerId() == -1) {		// add new customer
 			queryString = buildAddNewCustomerQuery(customer);
 		} else {							// save modifications to existing customer
 			queryString = buildModifyExistingCustomerQuery(customer);
 		}
+		
+		return queryString;
 
-		if (queryString != null) {
-			Connection dbConnection = DbServices.getDbConnection();
-			try {
-				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-				statement.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.print(queryString);
-				e.printStackTrace();
-			}
-		}
+//		if (queryString != null) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			try {
+//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//				statement.execute();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				System.out.print(queryString);
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
-	private static StringBuilder buildModifyExistingCustomerQuery(Customer customer) {
+	private static String buildModifyExistingCustomerQuery(Customer customer) {
 		// save modifications to existing customer
 		boolean isAnythingModified = false;
 		
@@ -488,11 +504,11 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 	
-	private static StringBuilder buildAddNewCustomerQuery(Customer customer) {
+	private static String buildAddNewCustomerQuery(Customer customer) {
 		// add new customer
 		boolean isAnythingModified = false;
 		
@@ -551,7 +567,7 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 	// END Customer methods
@@ -614,30 +630,32 @@ public class DbServices {
 		return partResults;
 	}
 	
-	private static void savePart(Part part) {
+	private static String savePart(Part part) {
 		System.out.println("Save Part button pressed");
 
-		StringBuilder queryString = null;
+		String queryString = null;
 		if (part.getPartId() == -1) {		// save a new Part
 			queryString = buildAddNewPartQuery(part);
 		} else {							// save modifications to existing Part
 			queryString = buildModifyExistingPartQuery(part);
 		}
+		
+		return queryString;
 
-		if (queryString != null) {
-			Connection dbConnection = DbServices.getDbConnection();
-			try {
-				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-				statement.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.print(queryString);
-				e.printStackTrace();
-			}
-		}
+//		if (queryString != null) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			try {
+//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//				statement.execute();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				System.out.print(queryString);
+//				e.printStackTrace();
+//			}
+//		}
 	}
 	
-	private static StringBuilder buildModifyExistingPartQuery(Part part) {
+	private static String buildModifyExistingPartQuery(Part part) {
 		// save modifications to existing part 
 		boolean isAnythingModified = false;
 		
@@ -687,11 +705,11 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 	
-	private static StringBuilder buildAddNewPartQuery(Part part) {
+	private static String buildAddNewPartQuery(Part part) {
 		// add new part
 		boolean isAnythingModified = false;
 		
@@ -740,7 +758,7 @@ public class DbServices {
 		if (isAnythingModified == false) {
 			return null;
 		} else {
-			return queryString;
+			return queryString.toString();
 		}
 	}
 	

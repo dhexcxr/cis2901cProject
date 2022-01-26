@@ -10,7 +10,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
+import com.mysql.cj.xdevapi.TableImpl;
+
+import cis2901c.listeners.CreateNewObjectListener;
+import cis2901c.listeners.DbServices;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
@@ -193,13 +198,27 @@ public class Gui extends Composite {
 		Button btnNewPart = new Button(inventoryComposite, SWT.NONE);
 		btnNewPart.setText("New Part");
 		btnNewPart.setBounds(877, 10, 81, 26);
-		btnNewPart.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
-				addNewPartDialog.open();
-			}
-		});
+		btnNewPart.addMouseListener(new CreateNewObjectListener(partTable, partSearchTextBox, shell));
+//		btnNewPart.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
+//				addNewPartDialog.open();
+//				// TODO add repainting to new object saves, probably put in external listener like OpenExistingObject
+//				
+////				partTable.removeAll();												// later attempt
+////				int queryLength = partSearchTextBox.getText().trim().length();
+////				if (queryLength > 0) {
+////					partTable.paint(DbServices.searchForObject(partTable, partSearchTextBox.getText()));
+////				}	
+//				
+////				Object[] partTableObjects = new Object[partTable.getItems().length];		// earlier attempt
+////				for (int i = 0; i < partTable.getItems().length; i++) {
+////					partTableObjects[i] = partTable.getItems()[i].getData();
+////				}
+////				partTable.paint(partTableObjects);
+//			}
+//		});
 		// END Inventory tab
 		
 		TabItem tbtmInvoice = new TabItem(tabFolder_Parts, SWT.NONE);

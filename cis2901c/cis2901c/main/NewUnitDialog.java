@@ -302,9 +302,9 @@ public class NewUnitDialog extends Dialog {
 		
 		if (txtNotes.isModified()) {
 			unit.setNotes(txtNotes.getText());
-				
-		DbServices.saveObject(unit);
-		shlNewUnit.dispose();
 		}
+		
+		DbServices.saveObject(unit);
+		shlNewUnit.close();
 	}
 }

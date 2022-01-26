@@ -37,7 +37,7 @@ public class NewPartDialog extends Dialog {
 	
 	private int partId = -1;
 	private Part part;
-	private boolean newPart;
+//	private boolean newPart;
 
 	/**
 	 * Create the dialog.
@@ -88,7 +88,7 @@ public class NewPartDialog extends Dialog {
 		if (part.getRetail() != null && !part.getRetail().equals(new BigDecimal(0)))
 			this.txtRetail.setText(part.getRetail().toString());
 		
-		this.newPart = part.isNewPart();
+//		this.newPart = part.isNewPart();
 		this.part = part;
 		
 		// open new New Part dialog, customize for editing current customer

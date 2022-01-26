@@ -20,8 +20,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	Shell shell;
 
 
-	public OpenExistingObjectMouseListener(MyTable customerTable, Shell shell) {
-		this.table = customerTable;
+	public OpenExistingObjectMouseListener(MyTable table, Shell shell) {
+		this.table = table;
 		this.shell = shell;
 	}
 
@@ -29,15 +29,27 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	public void mouseDoubleClick(MouseEvent e) {
 		// open saved object for editing
 		System.out.println("Double click");
+		Object[] tableObjects = null;
 		// TODO there might be a better way to check what type we're searching
 			// just like in DbServices.searchForObject
 		if (table.getColumn(0).getText().equals("First Name") && table.getSelection().length > 0) {
 			openCustomer(table);
+			tableObjects = new Customer[table.getItems().length];
 		} else if (table.getColumn(0).getText().equals("Owner") && table.getSelection().length > 0) {
 			openUnit(table);
+			tableObjects = new Unit[table.getItems().length];
 		} else if (table.getColumn(0).getText().equals("Part Number") && table.getSelection().length > 0) {
 			openPart(table);
+			tableObjects = new Part[table.getItems().length];
+		} else {		// if nothing is selected return, i'd like to find a better way to do this than
+			return;			// checking for all other conditions first, like if (selection == null)
 		}
+//		Object[] tableObjects = new Object[table.getItems().length];
+		// here, we repaint table with objects that are currently in it so we don't have to go out to the DB
+		for (int i = 0; i < table.getItems().length; i++) {
+			tableObjects[i] = table.getItems()[i].getData();
+		}
+		table.paint(tableObjects);
 		// TODO get table to refresh on Save
 	}
 
