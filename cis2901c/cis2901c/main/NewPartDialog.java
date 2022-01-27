@@ -260,7 +260,7 @@ public class NewPartDialog extends Dialog {
 		}
 		
 		DbServices.saveObject(part);
-		
+		result = part;
 		shlAddPart.close();
 	}
 }

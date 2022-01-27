@@ -44,13 +44,12 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		} else {		// if nothing is selected return, i'd like to find a better way to do this than
 			return;			// checking for all other conditions first, like if (selection == null)
 		}
-//		Object[] tableObjects = new Object[table.getItems().length];
+
 		// here, we repaint table with objects that are currently in it so we don't have to go out to the DB
 		for (int i = 0; i < table.getItems().length; i++) {
 			tableObjects[i] = table.getItems()[i].getData();
 		}
 		table.paint(tableObjects);
-		// TODO get table to refresh on Save
 	}
 
 	// TODO take out print statements, combine openCustomer and openUnit

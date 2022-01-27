@@ -79,12 +79,12 @@ public class NewCustomerDialog extends Dialog {
 			txtZipCode.setText(Integer.toString(customer.getZipCode()));
 		if (customer.getLastName() != null)
 			txtLastName.setText(customer.getLastName());
-		if (customer.getHomePhone() != 0)
-			txtHomePhone.setText(Integer.toString(customer.getHomePhone()));
-		if (customer.getWorkPhone() != 0)
-			txtWorkPhone.setText(Integer.toString(customer.getWorkPhone()));
-		if (customer.getCellPhone() != 0)
-			txtCellPhone.setText(Integer.toString(customer.getCellPhone()));
+		if (customer.getHomePhone() != null)
+			txtHomePhone.setText(customer.getHomePhone());
+		if (customer.getWorkPhone() != null)
+			txtWorkPhone.setText(customer.getWorkPhone());
+		if (customer.getCellPhone() != null)
+			txtCellPhone.setText(customer.getCellPhone());
 		if (customer.getEmail() != null)
 			txtEmail.setText(customer.getEmail());
 		this.customerId = customer.getCustomerId();
@@ -249,42 +249,42 @@ public class NewCustomerDialog extends Dialog {
 		
 		// for phone numbers maybe do regex that removes all non-numeric characters 
 		if (txtHomePhone.isModified()) {		// maybe set phone nums to string in DB
-			try {
-				customer.setHomePhone(Integer.parseInt(txtHomePhone.getText().replaceAll("[()\\s-]+", "")));
-			} catch (Exception e) {				// maybe put an error dialog box here
-				System.out.println(e);
-				e.printStackTrace();
-				customer.setHomePhone(0);
-			}
+//			try {
+				customer.setHomePhone(txtHomePhone.getText().replaceAll("[^0-9]", ""));
+//			} catch (Exception e) {				// maybe put an error dialog box here
+//				System.out.println(e);
+//				e.printStackTrace();
+//				customer.setHomePhone();
+//			}
 		}
 		
 		if (txtWorkPhone.isModified()) {
-			try {
-				customer.setWorkPhone(Integer.parseInt(txtWorkPhone.getText().replaceAll("[()\\s-]+", "")));
-			} catch (Exception e) {				// maybe put an error dialog box here
-				System.out.println(e);
-				e.printStackTrace();
-				customer.setWorkPhone(0);
-			}
+//			try {
+				customer.setWorkPhone(txtWorkPhone.getText().replaceAll("[^0-9]", ""));
+//			} catch (Exception e) {				// maybe put an error dialog box here
+//				System.out.println(e);
+//				e.printStackTrace();
+//				customer.setWorkPhone(0);
+//			}
 		}
 		
 		if (txtCellPhone.isModified()) {
-			try {
-				customer.setCellPhone(Integer.parseInt(txtCellPhone.getText().replaceAll("[()\\s-]+", "")));
-			} catch (Exception e) {				// maybe put an error dialog box here
-				System.out.println(e);
-				e.printStackTrace();
-				customer.setCellPhone(0);
-			}
+//			try {
+				customer.setCellPhone(txtCellPhone.getText().replaceAll("[^0-9]", ""));
+//			} catch (Exception e) {				// maybe put an error dialog box here
+//				System.out.println(e);
+//				e.printStackTrace();
+//				customer.setCellPhone(0);
+//			}
 		}
 		
-		if (txtEmail.isModified()) {		// make dialog box, if txtEmail.isModified, check its format
+		if (txtEmail.isModified()) {		// TODO make dialog box, if txtEmail.isModified, check its format
 												// vs regex to ensure (name)@(domain).(tld)
 			customer.setEmail(txtEmail.getText());
 		}
 
 		DbServices.saveObject(customer);
-		
+		result = customer;
 		shlNewCustomer.close();
 	}
 }

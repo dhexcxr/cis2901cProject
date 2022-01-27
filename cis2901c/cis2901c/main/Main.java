@@ -49,14 +49,4 @@ public class Main {
 		DbServices.disconnectFromDb();
 		display.close();
 	}
-	
-//	public static Shell getShell() {
-//		// TODO see if we can provide shell some way other than a Main class getter (follow where this method is called)
-//		if (shell.equals(null)) {
-//			System.out.println("Error loading Gui: shell cannot be null");
-//			System.out.println(new Throwable().getStackTrace());
-//			System.exit(-1);
-//		}
-//		return shell;
-//	}
 }

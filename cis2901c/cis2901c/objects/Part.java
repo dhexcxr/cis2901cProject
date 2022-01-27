@@ -16,13 +16,13 @@ public class Part {
 	private int onHand = -1;
 	
 	// TODO remove newPart
-	private boolean newPart = true;
+//	private boolean newPart = true;
 	
 	public Part() {
 	}
 	
 	public Part(int partId, String partNumber, String supplier, String category, String description, String notes, BigDecimal cost,
-			BigDecimal retail, int onHand, boolean newPart) {
+			BigDecimal retail, int onHand) {
 		super();
 		this.partId = partId;
 		this.partNumber = partNumber;
@@ -33,7 +33,7 @@ public class Part {
 		this.cost = cost;
 		this.retail = retail;
 		this.onHand = onHand;
-		this.newPart = newPart;
+//		this.newPart = newPart;
 	}
 	
 	public int getPartId() {
@@ -108,13 +108,13 @@ public class Part {
 		this.onHand = onHand;
 	}
 	
-	public boolean isNewPart() {
-		return newPart;
-	}
-	
-	public void setNewPart(boolean newPart) {
-		this.newPart = newPart;
-	}
+//	public boolean isNewPart() {
+//		return newPart;
+//	}
+//	
+//	public void setNewPart(boolean newPart) {
+//		this.newPart = newPart;
+//	}
 	
 	
 }

@@ -10,20 +10,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-
-import com.mysql.cj.xdevapi.TableImpl;
 
 import cis2901c.listeners.CreateNewObjectListener;
-import cis2901c.listeners.DbServices;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
 
@@ -294,14 +288,15 @@ public class Gui extends Composite {
 		Button btnNewCustomer = new Button(customerComposite, SWT.NONE);
 		btnNewCustomer.setText("New Customer");
 		btnNewCustomer.setBounds(877, 10, 109, 26);
+		btnNewCustomer.addMouseListener(new CreateNewObjectListener(customerTable, customerSearchTextBox, shell));
 //		btnNewCustomer.addMouseListener(new NewCustomerButtonListeners());
-		btnNewCustomer.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
-				addNewCustomerDialog.open();
-			}
-		});
+//		btnNewCustomer.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
+//				addNewCustomerDialog.open();
+//			}
+//		});
 	}
 	
 	private void unitsTab(TabFolder tabFolder) {
@@ -360,14 +355,15 @@ public class Gui extends Composite {
 		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);
 		btnNewUnit.setText("New Unit");
 		btnNewUnit.setBounds(877, 10, 109, 26);
+		btnNewUnit.addMouseListener(new CreateNewObjectListener(unitTable, unitSearchBox, shell));
 //		btnNewUnit.addMouseListener(new NewUnitButtonListener());
-		btnNewUnit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
-				addNewUnitDialog.open();
-			}
-		});
+//		btnNewUnit.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
+//				addNewUnitDialog.open();
+//			}
+//		});
 	}
 	
 	private void reportsTab(TabFolder tabFolder) {

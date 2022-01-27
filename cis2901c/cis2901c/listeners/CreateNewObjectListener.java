@@ -5,7 +5,9 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Shell;
 
+import cis2901c.main.NewCustomerDialog;
 import cis2901c.main.NewPartDialog;
+import cis2901c.main.NewUnitDialog;
 import cis2901c.objects.Customer;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
@@ -27,38 +29,29 @@ public class CreateNewObjectListener extends MouseAdapter{
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
-		// TODO finish this for other objects and add this listener to the New buttons
 		System.out.println(table.getColumn(0).getText());
 		
+		Object newObject = null;
+		Object newTableContents[] =  null;
 		if (table.getColumn(0).getText().equals("First Name")) {
-//			openCustomer(table);
-//			tableObjects = new Customer[table.getItems().length];
+			NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
+			newObject = (Customer) addNewCustomerDialog.open();
+			newTableContents = new Customer[table.getItems().length + 1];
 		} else if (table.getColumn(0).getText().equals("Owner")) {
-//			openUnit(table);
-//			tableObjects = new Unit[table.getItems().length];
+			NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
+			newObject = (Unit) addNewUnitDialog.open();
+			newTableContents = new Unit[table.getItems().length + 1];
 		} else if (table.getColumn(0).getText().equals("Part Number")) {
 			NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
-			addNewPartDialog.open();
+			newObject = (Part) addNewPartDialog.open();
+			newTableContents = new Part[table.getItems().length + 1];
 		} 
 		
-		table.removeAll();
-		int queryLength = searchBox.getText().trim().length();
-		if (queryLength > 0) {
-			table.paint(DbServices.searchForObject(table, searchBox.getText()));
+		// repaint table - get current data in TableItems, insert the new data at the end, then call table.paint
+		for (int i = 0; i < table.getItems().length; i++) {
+			newTableContents[i] = table.getItems()[i].getData();
 		}
-		// TODO add repainting to new object saves, probably put in external listener like OpenExistingObject
-		
-//		table.removeAll();
-//		int queryLength = partSearchTextBox.getText().trim().length();
-//		if (queryLength > 0) {
-//			partTable.paint(DbServices.searchForObject(table, partSearchTextBox.getText()));
-//		}
-		
-//		Object[] partTableObjects = new Object[partTable.getItems().length];
-//		for (int i = 0; i < partTable.getItems().length; i++) {
-//			partTableObjects[i] = partTable.getItems()[i].getData();
-//		}
-//		partTable.paint(partTableObjects);
-	}
-	
+		newTableContents[table.getItems().length] = newObject;
+		table.paint(newTableContents);
+	}	
 }

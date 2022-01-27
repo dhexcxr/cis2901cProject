@@ -305,6 +305,7 @@ public class NewUnitDialog extends Dialog {
 		}
 		
 		DbServices.saveObject(unit);
+		result = unit;
 		shlNewUnit.close();
 	}
 }

@@ -86,7 +86,7 @@ public class CustomerSearchDialog extends Dialog {
 				if (customerTable.getSelection().length > 0) {
 					// return Customer selected from Customer Search Dialog table on double click
 					result =  customerTable.getSelection()[0].getData();
-					shlCustomerSearch.dispose();
+					shlCustomerSearch.close();
 				}
 			}
 		});
@@ -143,7 +143,7 @@ public class CustomerSearchDialog extends Dialog {
 					public void mouseDown(MouseEvent e) {
 						if (customerTable.getSelection().length > 0) {
 							result =  customerTable.getSelection()[0].getData();
-							shlCustomerSearch.dispose();
+							shlCustomerSearch.close();
 						}
 					}
 				});

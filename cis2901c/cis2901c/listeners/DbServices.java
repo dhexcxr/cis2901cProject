@@ -140,11 +140,8 @@ public class DbServices {
 
 		// setup search
 		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
-//		if (wordsFromQuery.length == 0) {	// if there is no search term, return without searching DB
-//			return null;
-//		}
 
-		Connection dbConnection = DbServices.getDbConnection();	// connect to DB
+		Connection dbConnection = DbServices.getDbConnection();	// get connection to DB
 		// build query string
 		StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
 				+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
@@ -215,19 +212,7 @@ public class DbServices {
 		}
 		
 		return queryString;
-
-//		if (queryString != null) {
-//			Connection dbConnection = DbServices.getDbConnection();
-//			try {
-//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-//				statement.execute();
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				System.out.print(queryString);
-//				e.printStackTrace();
-//			}
-//		}
-	}
+	}	
 	
 	private static String buildModifyExistingUnitQuery(Unit unit) {
 		// save modifications to existing unit
@@ -400,9 +385,9 @@ public class DbServices {
 			String city = customerQueryResults.getString(4);
 			String state = customerQueryResults.getString(5);			
 			int zip = customerQueryResults.getInt(6);
-			int homePhone = customerQueryResults.getInt(7);
-			int workPhone = customerQueryResults.getInt(8);
-			int cellPhone = customerQueryResults.getInt(9);
+			String homePhone = customerQueryResults.getString(7);
+			String workPhone = customerQueryResults.getString(8);
+			String cellPhone = customerQueryResults.getString(9);
 			String email = customerQueryResults.getString(10);
 			long customerId = customerQueryResults.getLong(11);
 			
@@ -430,18 +415,6 @@ public class DbServices {
 		}
 		
 		return queryString;
-
-//		if (queryString != null) {
-//			Connection dbConnection = DbServices.getDbConnection();
-//			try {
-//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-//				statement.execute();
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				System.out.print(queryString);
-//				e.printStackTrace();
-//			}
-//		}
 	}
 
 	private static String buildModifyExistingCustomerQuery(Customer customer) {
@@ -481,19 +454,19 @@ public class DbServices {
 			updateQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
 		}
 		
-		if (customer.getHomePhone() != 0) {
+		if (customer.getHomePhone() != null && customer.getHomePhone().trim().length() > 0) {
 			isAnythingModified = true;
-			updateQueryHelper(queryString, "homePhone", Integer.toString(customer.getHomePhone()));
+			updateQueryHelper(queryString, "homePhone", customer.getHomePhone());
 		}
 		
-		if (customer.getWorkPhone() != 0) {
+		if (customer.getWorkPhone() != null && customer.getWorkPhone().trim().length() > 0) {
 			isAnythingModified = true;
-			updateQueryHelper(queryString, "workPhone", Integer.toString(customer.getWorkPhone()));
+			updateQueryHelper(queryString, "workPhone", customer.getWorkPhone());
 		}
 		
-		if (customer.getCellPhone() != 0) {
+		if (customer.getCellPhone() != null && customer.getCellPhone().trim().length() > 0) {
 			isAnythingModified = true;
-			updateQueryHelper(queryString, "cellPhone", Integer.toString(customer.getCellPhone()));
+			updateQueryHelper(queryString, "cellPhone", customer.getCellPhone());
 		}
 		
 		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
@@ -544,19 +517,19 @@ public class DbServices {
 			insertQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
 		}
 		
-		if (customer.getHomePhone() != 0) {
+		if (customer.getHomePhone() != null && customer.getHomePhone().trim().length() > 0) {
 			isAnythingModified = true;
-			insertQueryHelper(queryString, "homePhone", Integer.toString(customer.getHomePhone()));
+			insertQueryHelper(queryString, "homePhone", customer.getHomePhone());
 		}
 		
-		if (customer.getWorkPhone() != 0) {
+		if (customer.getWorkPhone() != null && customer.getWorkPhone().trim().length() > 0) {
 			isAnythingModified = true;
-			insertQueryHelper(queryString, "workPhone", Integer.toString(customer.getWorkPhone()));
+			insertQueryHelper(queryString, "workPhone", customer.getWorkPhone());
 		}
 		
-		if (customer.getCellPhone() != 0) {
+		if (customer.getCellPhone() != null && customer.getCellPhone().trim().length() > 0) {
 			isAnythingModified = true;
-			insertQueryHelper(queryString, "cellPhone", Integer.toString(customer.getCellPhone()));
+			insertQueryHelper(queryString, "cellPhone", customer.getCellPhone());
 		}
 		
 		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
@@ -619,7 +592,7 @@ public class DbServices {
 				BigDecimal retail = new BigDecimal(partQueryResults.getInt(8));
 				int onHand = partQueryResults.getInt(9);
 
-				Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand, false);
+				Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
 				partResults[i] = part;
 				i++;
 			}

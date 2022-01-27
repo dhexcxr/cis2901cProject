@@ -13,16 +13,16 @@ public class Customer {
 	private String city;
 	private String state;
 	private int zipCode;
-	private int homePhone;
-	private int workPhone;
-	private int cellPhone;
+	private String homePhone;
+	private String workPhone;
+	private String cellPhone;
 	private String email;
 	
 	public Customer() {
 	}
 	
 	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
-			int zipCode, int homePhone, int workPhone, int cellPhone, String email) {
+			int zipCode, String homePhone, String workPhone, String cellPhone, String email) {
 		super();
 		this.customerId = customerId;
 		this.firstName = firstName;
@@ -93,27 +93,27 @@ public class Customer {
 		this.zipCode = zipCode;
 	}
 
-	public int getHomePhone() {
+	public String getHomePhone() {
 		return homePhone;
 	}
 
-	public void setHomePhone(int homePhone) {
+	public void setHomePhone(String homePhone) {
 		this.homePhone = homePhone;
 	}
 
-	public int getWorkPhone() {
+	public String getWorkPhone() {
 		return workPhone;
 	}
 
-	public void setWorkPhone(int workPhone) {
+	public void setWorkPhone(String workPhone) {
 		this.workPhone = workPhone;
 	}
 
-	public int getCellPhone() {
+	public String getCellPhone() {
 		return cellPhone;
 	}
 
-	public void setCellPhone(int cellPhone) {
+	public void setCellPhone(String cellPhone) {
 		this.cellPhone = cellPhone;
 	}
 
