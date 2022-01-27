@@ -22,6 +22,6 @@ public class InfoTextBoxModifyListener implements ModifyListener {
 			text.setModified(true);
 		} else {
 			text.setModified(false);
-		}	
+		}
 	}
 }

@@ -13,6 +13,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
+import cis2901c.listeners.PhoneNumberTextBoxModifyListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
@@ -153,19 +154,22 @@ public class NewCustomerDialog extends Dialog {
 		txtHomePhone.setText("Home Phone...");
 		txtHomePhone.setBounds(292, 42, 272, 26);
 		txtHomePhone.addFocusListener(new TextBoxFocusListener(txtHomePhone));
-		txtHomePhone.addModifyListener(new InfoTextBoxModifyListener(txtHomePhone));
+//		txtHomePhone.addModifyListener(new InfoTextBoxModifyListener(txtHomePhone));
+		txtHomePhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtHomePhone));
 		
 		txtWorkPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtWorkPhone.setText("Work Phone...");
 		txtWorkPhone.setBounds(292, 74, 272, 26);
 		txtWorkPhone.addFocusListener(new TextBoxFocusListener(txtWorkPhone));
-		txtWorkPhone.addModifyListener(new InfoTextBoxModifyListener(txtWorkPhone));
+//		txtWorkPhone.addModifyListener(new InfoTextBoxModifyListener(txtWorkPhone));
+		txtWorkPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtWorkPhone));
 		
 		txtCellPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtCellPhone.setText("Cell Phone...");
 		txtCellPhone.setBounds(292, 106, 272, 26);
 		txtCellPhone.addFocusListener(new TextBoxFocusListener(txtCellPhone));
-		txtCellPhone.addModifyListener(new InfoTextBoxModifyListener(txtCellPhone));
+//		txtCellPhone.addModifyListener(new InfoTextBoxModifyListener(txtCellPhone));
+		txtCellPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtCellPhone));
 		
 		txtEmail = new MyText(shlNewCustomer, SWT.BORDER);
 		txtEmail.setText("E-Mail...");
@@ -250,7 +254,8 @@ public class NewCustomerDialog extends Dialog {
 		// for phone numbers maybe do regex that removes all non-numeric characters 
 		if (txtHomePhone.isModified()) {		// maybe set phone nums to string in DB
 //			try {
-				customer.setHomePhone(txtHomePhone.getText().replaceAll("[^0-9]", ""));
+//				customer.setHomePhone(txtHomePhone.getText().replaceAll("[^0-9]", ""));
+				customer.setHomePhone(txtHomePhone.getText());
 //			} catch (Exception e) {				// maybe put an error dialog box here
 //				System.out.println(e);
 //				e.printStackTrace();
@@ -260,7 +265,8 @@ public class NewCustomerDialog extends Dialog {
 		
 		if (txtWorkPhone.isModified()) {
 //			try {
-				customer.setWorkPhone(txtWorkPhone.getText().replaceAll("[^0-9]", ""));
+//				customer.setWorkPhone(txtWorkPhone.getText().replaceAll("[^0-9]", ""));
+			customer.setWorkPhone(txtWorkPhone.getText());
 //			} catch (Exception e) {				// maybe put an error dialog box here
 //				System.out.println(e);
 //				e.printStackTrace();
@@ -270,7 +276,8 @@ public class NewCustomerDialog extends Dialog {
 		
 		if (txtCellPhone.isModified()) {
 //			try {
-				customer.setCellPhone(txtCellPhone.getText().replaceAll("[^0-9]", ""));
+//				customer.setCellPhone(txtCellPhone.getText().replaceAll("[^0-9]", ""));
+			customer.setCellPhone(txtCellPhone.getText());
 //			} catch (Exception e) {				// maybe put an error dialog box here
 //				System.out.println(e);
 //				e.printStackTrace();
