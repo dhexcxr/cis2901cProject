@@ -1,8 +1,10 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Part {
+public class Part implements DbObject{
 	private int partId = -1;
 	private String partNumber;
 //	private long supplierId;		// supplier table needed
@@ -34,6 +36,18 @@ public class Part {
 		this.retail = retail;
 		this.onHand = onHand;
 //		this.newPart = newPart;
+	}
+	
+	public long getDbPk() {
+		return partId;
+	}
+	
+	public String getPkName() {
+		return "partId";
+	}
+	
+	public String getTableName() {
+		return "part";
 	}
 	
 	public int getPartId() {
@@ -106,6 +120,26 @@ public class Part {
 
 	public void setOnHand(int onHand) {
 		this.onHand = onHand;
+	}
+
+	public Map<String, String> getDataMap() {
+		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
+			// to see how to treat it when building PreparedStatements with setParameter
+		Map<String, String> dataMap = new HashMap<>();
+		
+		if (partId != -1) {
+			dataMap.put("partId", Integer.toString(partId));
+		}
+		dataMap.put("partNumber", partNumber);
+		dataMap.put("supplier", supplier);
+		dataMap.put("category", category);
+		dataMap.put("description", description);
+		dataMap.put("notes", notes);
+		dataMap.put("cost", cost.toString());
+		dataMap.put("retail", retail.toString());
+		dataMap.put("onHand", Integer.toString(onHand));
+		
+		return dataMap;
 	}
 	
 //	public boolean isNewPart() {

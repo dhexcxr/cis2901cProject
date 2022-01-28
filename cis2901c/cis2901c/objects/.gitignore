@@ -4,3 +4,6 @@
 /RepairOrder.class
 /Unit.class
 /MyTable.class
+/ObjectMap.class
+/Mappable.class
+/DbObject.class

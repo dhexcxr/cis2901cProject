@@ -3,14 +3,21 @@ package cis2901c.listeners;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.swt.widgets.Table;
 
 import cis2901c.objects.Customer;
+import cis2901c.objects.DbObject;
 import cis2901c.objects.Part;
-import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class DbServices {
@@ -51,35 +58,90 @@ public class DbServices {
 		}
 	}
 	
-	public static void saveObject(Object object) {
+	public static void saveObject(DbObject dbObject) {
 		// public Save Object interface
-		String queryString = null;
-		if (object instanceof Customer) {
-			queryString = saveCustomer((Customer) object);
-		} else if (object instanceof Unit) {
-			 queryString = saveUnit((Unit) object);
-		} else if (object instanceof Part) {
-			queryString = savePart((Part) object);
-		} else if (object instanceof RepairOrder) {
-			// saveRepariOrder((RepairOrder) object);
+		StringBuilder queryString = new StringBuilder();
+		List<String> fields = null;
+	
+		if (dbObject.getDbPk() == -1) {
+			queryString.append("INSERT INTO cis2901c." + dbObject.getTableName() + " () VALUES ();" );
+			fields = buildAddNewObjectQuery(dbObject, queryString);
+		} else {
+			queryString.append("UPDATE cis2901c." + dbObject.getTableName() + " SET WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk() + ";");
+			fields = buildModifyExistingObjectQuery(dbObject, queryString);
 		}
 		
 		if (queryString != null) {
 			Connection dbConnection = DbServices.getDbConnection();
 			try {
 				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+				
+				int parameterIndex = 1;
+				for(String fieldData : fields) {
+					statement.setString(parameterIndex, fieldData);
+					parameterIndex++;
+				}
+				
 				statement.execute();
+				System.out.println("Update Count: " + statement.getUpdateCount());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.print(queryString);
+				System.out.println(queryString);
 				e.printStackTrace();
 			}
 		}
 	}
 	
+	private static List<String> buildAddNewObjectQuery(DbObject dbObject, StringBuilder queryString) {
+		// add new object
+		boolean isAnythingModified = false;
+		
+		// build query out of DbObject
+		
+		Map<String, String> dataMap = dbObject.getDataMap();
+		List<String> fields = new ArrayList<>();
+				
+		for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+			if (entry.getValue() != null) {
+				isAnythingModified = true;
+				insertQueryHelper(queryString, entry.getKey(), "?");
+				fields.add(entry.getValue().trim());
+			}
+		}
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return fields;
+		}
+	}
+	
+	
+	private static List<String> buildModifyExistingObjectQuery(DbObject dbObject, StringBuilder queryString) {
+		// save modifications to existing unit
+		boolean isAnythingModified = false;
+		
+		Map<String, String> dataMap = dbObject.getDataMap();
+		List<String> fields = new ArrayList<>();
+
+		for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+			if (entry.getValue() != null) {
+				isAnythingModified = true;
+				updateQueryHelper(queryString, entry.getKey(), "?");
+				fields.add(entry.getValue().trim());
+			}
+		}
+		if (isAnythingModified == false) {
+			return null;
+		} else {
+			return fields;
+		}
+	}
+	
+	
+	
 	public static Object[] searchForObject(Table resultsTable, String searchQuery) {
 		// public search interface
-			// search for searchQueary and display in resultsTable
+			// search for searchQuery and display in resultsTable
 			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
 			return searchForCustomer(resultsTable, searchQuery);
@@ -95,10 +157,10 @@ public class DbServices {
 		// build Edit Current Object SQL query
 		StringBuilder column = new StringBuilder();
 		int columnInsertionPoint = queryString.lastIndexOf("WHERE");
-		if (queryString.charAt(columnInsertionPoint - 1) == '\'') {
+		if (queryString.charAt(columnInsertionPoint - 2) == '?') {
 			column.append(", ");
 		}
-		column.append(columnName + " = '" + data + "'");
+		column.append(columnName + " = " + data + " ");
 		queryString.insert(columnInsertionPoint, column);		
 	}
 	
@@ -117,19 +179,19 @@ public class DbServices {
 		if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
 			field.append(", ");
 		}
-		field.append("'" + data + "'");
+		field.append(data);
 		queryString.insert(fieldInsertionPoint, field);
 	}
 	
 	private static String[] sanitizer(String searchQuery) {
 		// simple regex to remove chars i don't want to search for
-			// !!!! this is not to be taken as SQL Injection proof
+			// !!!! this is not to be taken as SQL Injection protection
 		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
 	}
 	
 	private static String numberSanitizer(String searchQuery) {
 		// simple regex to remove chars i don't want to search for
-			// !!!! this is not to be taken as SQL Injection proof
+			// !!!! this is not to be taken as SQL Injection protection
 		return searchQuery.replaceAll("[^0-9]", "");
 	}
 	// END General DB methods
@@ -139,7 +201,7 @@ public class DbServices {
 		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
 
 		// setup search
-		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
+		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));	// remove most non-alphanumerics
 
 		Connection dbConnection = DbServices.getDbConnection();	// get connection to DB
 		// build query string
@@ -147,21 +209,15 @@ public class DbServices {
 				+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
 				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
 
-		for (int i = 0; i < wordsFromQuery.length; i++) {
+		for (int i = 0; i < wordsFromQuery.size(); i++) {
 			if (i > 0) {
 				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
 				subquery.delete(15, 128);
-				subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.year, u.mileage, u.color, u.vin, u.notes, "
+				subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
 						+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
 						+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
 						+ "AND unitId IN (");
 				subquery.replace(subquery.length() - 1, subquery.length(), ");");
-			}
-
-			for (int j = 1; j <= 6; j++) {
-				// fill search fields in queryString
-				int insertIndex = subquery.indexOf("?");
-				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
 			}
 		}
 
@@ -169,6 +225,26 @@ public class DbServices {
 		Unit[] unitResults = new Unit[MAX_RESULTS];
 		try {
 			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
+			
+			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+			
+			Collections.reverse(wordsFromQuery);
+			
+			int queryWord = 0;
+			
+			// TODO it might be better to fill the parameters from the back/from the last
+				// one, this way we wouldn't have to make wordsFromQuery an ArrayList
+				// and reverse it
+			
+			for (int j = 1; j <= parameterMetaData.getParameterCount(); j++) {
+				// fill search fields in queryString
+				
+				statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
+				if (j % 6 == 0) {
+					queryWord++;
+				}
+			}
+			
 			ResultSet unitQueryResults = statement.executeQuery();
 			int i = 0;
 			while (unitQueryResults.next() && i < MAX_RESULTS) {
@@ -177,7 +253,7 @@ public class DbServices {
 				String make = unitQueryResults.getString(3);
 				String model = unitQueryResults.getString(4);
 				String modelName = unitQueryResults.getString(5);
-				int modelYear = unitQueryResults.getInt(6);
+				int year = unitQueryResults.getInt(6);
 				int mileage = unitQueryResults.getInt(7);
 				String color = unitQueryResults.getString(8);
 				String vin = unitQueryResults.getString(9);
@@ -190,7 +266,7 @@ public class DbServices {
 					owner = lastName + ", " + firstName;
 				}
 
-				Unit unit = new Unit(unitId, customerId, make, model, modelName, modelYear, mileage, color, vin, notes, owner);
+				Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
 				unitResults[i] = unit;
 				i++;
 			}
@@ -200,147 +276,16 @@ public class DbServices {
 		}
 		return unitResults;
 	}
-	
-	private static String saveUnit(Unit unit) {
-		System.out.println("Save Unit button pressed");
-
-		String queryString = null;
-		if (unit.getUnitId() == -1) {		// add new customer
-			queryString = buildAddNewUnitQuery(unit);
-		} else {							// save modifications to existing customer
-			queryString = buildModifyExistingUnitQuery(unit);
-		}
-		
-		return queryString;
-	}	
-	
-	private static String buildModifyExistingUnitQuery(Unit unit) {
-		// save modifications to existing unit
-		boolean isAnythingModified = false;
-		
-		// build query out of Unit unit
-		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.unit SET WHERE unitId = " + unit.getUnitId() + ";");
-		
-		if (unit.getCustomerId() != -1) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "customerId", Long.toString(unit.getCustomerId()));
-		}
-		
-		if (unit.getMake() != null && unit.getMake().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "make", unit.getMake().trim());
-		}
-		
-		if (unit.getModel() != null && unit.getModel().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "model", unit.getModel().trim());
-		}
-		
-		if (unit.getModelName() != null && unit.getModelName().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "modelName", unit.getModelName().trim());
-		}
-		
-		if (unit.getModelYear() != 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "year", Integer.toString(unit.getModelYear()));
-		}
-		
-		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "mileage", Integer.toString(unit.getMileage()));
-		}
-		
-		if (unit.getColor() != null && unit.getColor().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "color", unit.getColor().trim());
-		}
-		
-		if (unit.getVin() != null && unit.getVin().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "vin", unit.getVin().trim());
-		}
-		
-		if (unit.getNotes() != null && unit.getNotes().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "notes", unit.getNotes().trim());
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
-
-	private static String buildAddNewUnitQuery(Unit unit) {
-		// add new unit
-		boolean isAnythingModified = false;
-		
-		// build query out of Unit unit
-		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.unit () VALUES ();");
-		if (unit.getCustomerId() != 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "customerId", Long.toString(unit.getCustomerId()));
-		}
-		
-		if (unit.getMake() != null && unit.getMake().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "make", unit.getMake().trim());
-		}
-		
-		if (unit.getModel() != null && unit.getModel().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "model", unit.getModel().trim());
-		}
-		
-		if (unit.getModelName() != null && unit.getModelName().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "modelName", unit.getModelName().trim());
-		}
-		
-		if (unit.getModelYear() != 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "year", Integer.toString(unit.getModelYear()));
-		}
-		
-		if (unit.getMileage() != 0) {		// I think this is silly because mileage will always be 0 in a new object
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "mileage", Integer.toString(unit.getMileage()));
-		}
-		
-		if (unit.getColor() != null && unit.getColor().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "color", unit.getColor().trim());
-		}
-		
-		if (unit.getVin() != null && unit.getVin().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "vin", unit.getVin().trim());
-		}
-		
-		if (unit.getNotes() != null && unit.getNotes().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "notes", unit.getNotes().trim());
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
 	// END Unit object methods
 
 	// START Customer object methods
 	private static Customer[] searchForCustomer(Table resultsTable, String searchQuery) {		
 		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
-//		PreparedStatement statement = null;
+			// TODO this is do-able with the statement.SetMaxRows or somthing like that
+
 		// setup search
-		String[] wordsFromQuery = sanitizer(searchQuery);
-//		if (wordsFromQuery.length == 0) {
-//			return null;
-//		}
+		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));
+
 		
 		Connection dbConnection = DbServices.getDbConnection();
 		// build query string
@@ -348,7 +293,7 @@ public class DbServices {
 				+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
 				+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
 		
-		for (int i = 0; i < wordsFromQuery.length; i++) {
+		for (int i = 0; i < wordsFromQuery.size(); i++) {
 			if (i > 0) {
 				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
 				subquery.delete(7, 99);
@@ -357,25 +302,41 @@ public class DbServices {
 						+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
 				subquery.replace(subquery.length() - 1, subquery.length(), ");");
 			}
-			
-			int insertIndex = 0;
-			for (int j = 1; j <= 4; j++) {
-				// fill search fields in queryString
-				String number = numberSanitizer(wordsFromQuery[i]);
-				number = number.equals("") ? "-1" : number;
-				insertIndex = subquery.indexOf("?");
-				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
-				insertIndex = subquery.indexOf("?");
-				subquery.replace(insertIndex, insertIndex + 1, "'%" + number + "%'");
-			}
-			insertIndex = subquery.indexOf("?");
-			subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");		// fill "state LIKE ?"
 		}
 		
 		
 		Customer[] customerResults = new Customer[MAX_RESULTS];
 		try {
-			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
+		PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
+		
+		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+		
+		Collections.reverse(wordsFromQuery);
+		
+		int queryWord = 0;
+		
+		// TODO it might be better to fill the parameters from the back/from the last
+			// one, this way we wouldn't have to make wordsFromQuery an ArrayList
+			// and reverse it
+		
+		for (int j = 1; j <= parameterMetaData.getParameterCount() - 1; j++) {
+			String number = numberSanitizer(wordsFromQuery.get(queryWord));
+			number = number.equals("") ? "-1" : number;
+			
+			statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
+			j++;
+			statement.setString(j, "%" + number + "%");
+			// TODO i still want to refactor this, this statement building is identical
+				// in all versions of this, it can return the ResultSet, then each object
+				// method can build and prep objects like in below WHILE statement
+				// need to pass in outer query, subquery, how much to delete for subquery
+				// search term, below condition checker for j = parameterCount / wordsFromQuery.size()
+			if (j % 9 == 0) {
+				queryWord++;
+			}
+		}
+		statement.setString(9, "%" + wordsFromQuery.get(queryWord) + "%");
+		
 		ResultSet customerQueryResults = statement.executeQuery();
 		int i = 0;
 		while (customerQueryResults.next() && i < MAX_RESULTS) {
@@ -384,7 +345,7 @@ public class DbServices {
 			String address = customerQueryResults.getString(3);
 			String city = customerQueryResults.getString(4);
 			String state = customerQueryResults.getString(5);			
-			int zip = customerQueryResults.getInt(6);
+			String zip = customerQueryResults.getString(6);
 			String homePhone = customerQueryResults.getString(7);
 			String workPhone = customerQueryResults.getString(8);
 			String cellPhone = customerQueryResults.getString(9);
@@ -402,147 +363,6 @@ public class DbServices {
 		}
 		return customerResults;
 	}
-	
-	private static String saveCustomer(Customer customer) {
-		System.out.println("Save Customer button pressed");
-		// TODO finalize sanitization, regex phones to 10 digit, check email format, require at least last name
-
-		String queryString = null;
-		if (customer.getCustomerId() == -1) {		// add new customer
-			queryString = buildAddNewCustomerQuery(customer);
-		} else {							// save modifications to existing customer
-			queryString = buildModifyExistingCustomerQuery(customer);
-		}
-		
-		return queryString;
-	}
-
-	private static String buildModifyExistingCustomerQuery(Customer customer) {
-		// save modifications to existing customer
-		boolean isAnythingModified = false;
-		
-		// build query out of Customer customer
-		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.customer SET WHERE customerId = " + customer.getCustomerId() + ";");
-		
-		if (customer.getFirstName() != null && customer.getFirstName().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "firstName", customer.getFirstName().trim());
-		}
-		
-		if (customer.getLastName() != null && customer.getLastName().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "lastName", customer.getLastName().trim());
-		}
-		
-		if (customer.getAddress() != null && customer.getAddress().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "address", customer.getAddress().trim());
-		}
-		
-		if (customer.getCity() != null && customer.getCity().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "city", customer.getCity().trim());
-		}
-		
-		if (customer.getState() != null && customer.getState().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "state", customer.getState().trim());
-		}
-		
-		if (customer.getZipCode() != 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
-		}
-		
-		if (customer.getHomePhone() != null && customer.getHomePhone().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "homePhone", customer.getHomePhone());
-		}
-		
-		if (customer.getWorkPhone() != null && customer.getWorkPhone().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "workPhone", customer.getWorkPhone());
-		}
-		
-		if (customer.getCellPhone() != null && customer.getCellPhone().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "cellPhone", customer.getCellPhone());
-		}
-		
-		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "email", customer.getEmail().trim());
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
-	
-	private static String buildAddNewCustomerQuery(Customer customer) {
-		// add new customer
-		boolean isAnythingModified = false;
-		
-		// build query out of Customer customer
-		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.customer () VALUES ();");		
-		if (customer.getFirstName() != null && customer.getFirstName().trim().length() > 0) {		// TODO add && clause to all these
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "firstName", customer.getFirstName().trim());
-		}
-		
-		if (customer.getLastName() != null && customer.getLastName().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "lastName", customer.getLastName().trim());
-		}
-		
-		if (customer.getAddress() != null && customer.getAddress().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "address", customer.getAddress().trim());
-		}
-		
-		if (customer.getCity() != null && customer.getCity().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "city", customer.getCity().trim());
-		}
-		
-		if (customer.getState() != null && customer.getState().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "state", customer.getState().trim());
-		}
-		
-		if (customer.getZipCode() != 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "zipCode", Integer.toString(customer.getZipCode()));
-		}
-		
-		if (customer.getHomePhone() != null && customer.getHomePhone().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "homePhone", customer.getHomePhone());
-		}
-		
-		if (customer.getWorkPhone() != null && customer.getWorkPhone().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "workPhone", customer.getWorkPhone());
-		}
-		
-		if (customer.getCellPhone() != null && customer.getCellPhone().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "cellPhone", customer.getCellPhone());
-		}
-		
-		if (customer.getEmail() != null && customer.getEmail().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "email", customer.getEmail().trim());
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
 	// END Customer methods
 	
 	// Part methods
@@ -550,35 +370,54 @@ public class DbServices {
 		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
 
 		// setup search
-		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
+//		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
+		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));
 
 		Connection dbConnection = DbServices.getDbConnection();	// connect to DB
 		// build query string
 		StringBuilder subquery = new StringBuilder("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
 				+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;");
 
-		for (int i = 0; i < wordsFromQuery.length; i++) {
+		for (int i = 0; i < wordsFromQuery.size(); i++) {
 			if (i > 0) {
 				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
 				// TODO set correct queries
-				subquery.delete(27, 79);
+				subquery.delete(13, 87);
 				subquery.insert(0, "SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
 						+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? "
-						+ "AND (partNumber, supplier) IN (");
+						+ "AND partId IN (");
 				subquery.replace(subquery.length() - 1, subquery.length(), ");");
 			}
 
-			for (int j = 1; j <= 4; j++) {
-				// fill search fields in queryString
-				int insertIndex = subquery.indexOf("?");
-				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
-			}
+//			for (int j = 1; j <= 4; j++) {
+//				// fill search fields in queryString
+//				int insertIndex = subquery.indexOf("?");
+//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
+//			}
 		}
 
 		// build Unit[] to return DB search results
 		Part[] partResults = new Part[MAX_RESULTS];
 		try {
 			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
+			
+			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+			
+			Collections.reverse(wordsFromQuery);
+			
+			int queryWord = 0;
+			
+			for (int j = 1; j <= parameterMetaData.getParameterCount(); j++) {
+				// fill search fields in queryString
+				
+				statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
+//				int insertIndex = subquery.indexOf("?");
+//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[queryWord] + "%'");
+				if (j % 4 == 0) {
+					queryWord++;
+				}
+			}
+			
 			ResultSet partQueryResults = statement.executeQuery();
 			int i = 0;
 			while (partQueryResults.next() && i < MAX_RESULTS) {
@@ -602,139 +441,5 @@ public class DbServices {
 		}
 		return partResults;
 	}
-	
-	private static String savePart(Part part) {
-		System.out.println("Save Part button pressed");
-
-		String queryString = null;
-		if (part.getPartId() == -1) {		// save a new Part
-			queryString = buildAddNewPartQuery(part);
-		} else {							// save modifications to existing Part
-			queryString = buildModifyExistingPartQuery(part);
-		}
-		
-		return queryString;
-
-//		if (queryString != null) {
-//			Connection dbConnection = DbServices.getDbConnection();
-//			try {
-//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-//				statement.execute();
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				System.out.print(queryString);
-//				e.printStackTrace();
-//			}
-//		}
-	}
-	
-	private static String buildModifyExistingPartQuery(Part part) {
-		// save modifications to existing part 
-		boolean isAnythingModified = false;
-		
-		// build query out of Customer customer
-		StringBuilder queryString = new StringBuilder("UPDATE cis2901c.part SET WHERE partId = " + part.getPartId() + ";");		
-				
-		if (part.getPartNumber() != null && part.getPartNumber().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "partNumber", part.getPartNumber().trim());
-		}
-		
-		if (part.getSupplier() != null && part.getPartNumber().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "supplier", part.getSupplier().trim());
-		}
-		
-		if (part.getCategory() != null && part.getCategory().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "category", part.getCategory().trim());
-		}
-		
-		if (part.getDescription() != null && part.getDescription().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "description", part.getDescription().trim());
-		}
-		
-		if (part.getNotes() != null && part.getNotes().trim().length() > 0) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "notes", part.getNotes().trim());
-		}
-		
-		if (!part.getRetail().equals(new BigDecimal(0))) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "retail", part.getRetail().toString());
-		}
-		
-		if (!part.getCost().equals(new BigDecimal(0))) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "cost", part.getCost().toString());
-		}
-		
-		if (part.getOnHand() != -1) {
-			isAnythingModified = true;
-			updateQueryHelper(queryString, "onHand", Integer.toString(part.getOnHand()));
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
-	
-	private static String buildAddNewPartQuery(Part part) {
-		// add new part
-		boolean isAnythingModified = false;
-		
-		// build query out of Customer customer
-		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.part () VALUES ();");		
-		if (part.getPartNumber() != null && part.getPartNumber().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "partNumber", part.getPartNumber());
-		}
-		
-		if (part.getSupplier() != null && part.getSupplier().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "supplier", part.getSupplier().trim());
-		}
-		
-		if (part.getCategory() != null && part.getCategory().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "category", part.getCategory().trim());
-		}
-		
-		if (part.getDescription() != null && part.getDescription().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "description", part.getDescription().trim());
-		}
-		
-		if (part.getNotes() != null && part.getNotes().trim().length() > 0) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "notes", part.getNotes().trim());
-		}
-		
-		if (!part.getRetail().equals(new BigDecimal(0))) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "retail", part.getRetail().toString());
-		}
-		
-		if (!part.getCost().equals(new BigDecimal(0))) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "cost", part.getCost().toString());
-		}
-		
-		if (part.getOnHand() != -1) {
-			isAnythingModified = true;
-			insertQueryHelper(queryString, "onHand", Integer.toString(part.getOnHand()));
-		}
-		
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return queryString.toString();
-		}
-	}
-	
-	
 	// END Part Methods
 }

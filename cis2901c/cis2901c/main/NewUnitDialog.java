@@ -84,8 +84,8 @@ public class NewUnitDialog extends Dialog {
 			txtVinNumber.setText(unit.getVin());
 		if (unit.getModel() != null)
 			txtModel.setText(unit.getModel());
-		if (unit.getModelYear() != 0)
-			txtYear.setText(Integer.toString(unit.getModelYear()));
+		if (unit.getYear() != 0)
+			txtYear.setText(Integer.toString(unit.getYear()));
 		if (unit.getColor() != null)
 			txtColor.setText(unit.getColor());
 		if (unit.getNotes() != null)
@@ -289,7 +289,7 @@ public class NewUnitDialog extends Dialog {
 		
 		if (txtYear.isModified()) {
 			try {
-				unit.setModelYear(Integer.parseInt(txtYear.getText()));
+				unit.setYear(Integer.parseInt(txtYear.getText()));
 			} catch (Exception e) {
 				System.out.println(e);
 				e.printStackTrace();

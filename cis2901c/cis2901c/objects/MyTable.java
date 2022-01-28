@@ -35,8 +35,8 @@ public class MyTable extends Table {
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 			tableItem.setText(new String[] {customer.getFirstName(), customer.getLastName(), customer.getAddress(), customer.getCity(),
-					customer.getState(), customer.getZipCode() == 0 ? "" : Integer.toString(customer.getZipCode()),
-					customer.getHomePhone(), customer.getCellPhone(), customer.getEmail()} );
+					customer.getState(), customer.getZipCode(),	customer.setPhoneNumberFormat(customer.getHomePhone()),
+						customer.setPhoneNumberFormat(customer.getCellPhone()), customer.getEmail()} );
 //							customer.getHomePhone() == 0 ? "" : Integer.toString(customer.getHomePhone()),
 //							customer.getCellPhone() == 0 ? "" : Integer.toString(customer.getCellPhone()), customer.getEmail()} );
 			tableItem.setData(customer);
@@ -51,7 +51,7 @@ public class MyTable extends Table {
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(),
-					unit.getModelYear() == 0 ? "" : Integer.toString(unit.getModelYear()),
+					unit.getYear() == 0 ? "" : Integer.toString(unit.getYear()),
 					Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
 			tableItem.setData(unit);
 		}

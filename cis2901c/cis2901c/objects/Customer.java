@@ -1,9 +1,12 @@
 package cis2901c.objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.widgets.Table;
 import cis2901c.listeners.DbServices;
 
-public class Customer {
+public class Customer implements DbObject{
 	
 	// might not need this
 	private long customerId = -1;
@@ -12,7 +15,7 @@ public class Customer {
 	private String address;
 	private String city;
 	private String state;
-	private int zipCode;
+	private String zipCode;
 	private String homePhone;
 	private String workPhone;
 	private String cellPhone;
@@ -22,7 +25,7 @@ public class Customer {
 	}
 	
 	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
-			int zipCode, String homePhone, String workPhone, String cellPhone, String email) {
+			String zipCode, String homePhone, String workPhone, String cellPhone, String email) {
 		super();
 		this.customerId = customerId;
 		this.firstName = firstName;
@@ -35,6 +38,18 @@ public class Customer {
 		this.workPhone = workPhone;
 		this.cellPhone = cellPhone;
 		this.email = email;
+	}
+	
+	public long getDbPk() {
+		return customerId;
+	}
+	
+	public String getPkName() {
+		return "customerId";
+	}
+	
+	public String getTableName() {
+		return "customer";
 	}
 	
 	public long getCustomerId() {
@@ -85,11 +100,11 @@ public class Customer {
 		this.state = state;
 	}
 
-	public int getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(int zipCode) {
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
@@ -124,9 +139,48 @@ public class Customer {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public Map<String, String> getDataMap() {
+		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
+			// to see how to treat it when building PreparedStatements with setParameter (of course I already changed all Customer fields to String)
+		Map<String, String> dataMap = new HashMap<>();
+		if (customerId != -1) {
+			dataMap.put("customerId", Long.toString(customerId));
+		}
+		dataMap.put("firstName", firstName);
+		dataMap.put("lastName", lastName);
+		dataMap.put("address", address);
+		dataMap.put("city", city);
+		dataMap.put("state", state);
+		dataMap.put("zipCode", zipCode);
+		dataMap.put("homePhone", homePhone);
+		dataMap.put("workPhone", workPhone);
+		dataMap.put("cellPhone", cellPhone);
+		dataMap.put("email", email);
+				
+		return dataMap;
+	}
 
 	protected static void populateCustomerTable(Table table) {
 		// not yet used, could populate "" in searchForObject call with current txtSearchBox.getText()
 		DbServices.searchForObject(table, "");
+	}
+	
+	public String setPhoneNumberFormat(String inputNumber) {
+		if (inputNumber != null) {
+			inputNumber = (inputNumber.replaceAll("[^0-9]", ""));
+			if (inputNumber.length() >= 7 && inputNumber.length() < 10) {
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d+)", "$1-$2"));
+			} else if (inputNumber.length() < 11) {
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"));
+			} else if (inputNumber.length() == 11) {
+				inputNumber = (inputNumber.replaceFirst("(\\d{1})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+			} else if (inputNumber.length() == 12) {
+				inputNumber = (inputNumber.replaceFirst("(\\d{2})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+			} else if (inputNumber.length() == 13) {
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+			}
+		}
+		return inputNumber;
 	}
 }

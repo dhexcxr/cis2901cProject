@@ -1,6 +1,9 @@
 package cis2901c.objects;
 
-public class Unit {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Unit implements DbObject{
 	
 	// might not need this
 	private long unitId = -1;
@@ -8,7 +11,7 @@ public class Unit {
 	private String make;
 	private String model;
 	private String modelName;
-	private int modelYear;
+	private int year;
 	private int mileage;
 	private String color;
 	private String vin;
@@ -27,12 +30,24 @@ public class Unit {
 		this.make = make;
 		this.model = model;
 		this.modelName = modelName;
-		this.modelYear = modelYear;
+		this.year = modelYear;
 		this.mileage = mileage;
 		this.color = color;
 		this.vin = vin;
 		this.notes = notes;
 		this.owner = owner;
+	}
+	
+	public long getDbPk() {
+		return unitId;
+	}
+	
+	public String getPkName() {
+		return "unitId";
+	}
+	
+	public String getTableName() {
+		return "unit";
 	}
 
 	public long getUnitId() {
@@ -75,12 +90,12 @@ public class Unit {
 		this.model = model;
 	}
 
-	public int getModelYear() {
-		return modelYear;
+	public int getYear() {
+		return year;
 	}
 
-	public void setModelYear(int modelYear) {
-		this.modelYear = modelYear;
+	public void setYear(int modelYear) {
+		this.year = modelYear;
 	}
 
 	public int getMileage() {
@@ -121,5 +136,26 @@ public class Unit {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	@Override
+	public Map<String, String> getDataMap() {
+		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
+			// to see how to treat it when building PreparedStatements with setParameter
+		Map<String, String> dataMap = new HashMap<>();
+		if (unitId != -1) {
+			dataMap.put("unitId", Long.toString(unitId));
+		}
+		dataMap.put("customerId", Long.toString(customerId));
+		dataMap.put("make", make);
+		dataMap.put("model", model);
+		dataMap.put("modelName", modelName);
+		dataMap.put("year", Integer.toString(year));
+		dataMap.put("mileage", Integer.toString(mileage));
+		dataMap.put("color", color);
+		dataMap.put("vin", vin);
+		dataMap.put("notes", notes);
+		
+		return dataMap;
 	}
 }

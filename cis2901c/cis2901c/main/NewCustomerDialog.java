@@ -76,8 +76,8 @@ public class NewCustomerDialog extends Dialog {
 			txtCity.setText(customer.getCity());
 		if (customer.getState() != null)
 			txtState.setText(customer.getState());
-		if (customer.getZipCode() != 0)
-			txtZipCode.setText(Integer.toString(customer.getZipCode()));
+		if (customer.getZipCode() != null)
+			txtZipCode.setText(customer.getZipCode());
 		if (customer.getLastName() != null)
 			txtLastName.setText(customer.getLastName());
 		if (customer.getHomePhone() != null)
@@ -241,13 +241,13 @@ public class NewCustomerDialog extends Dialog {
 		}
 		
 		if (txtZipCode.isModified()) {
-			try {
-				customer.setZipCode(Integer.parseInt(txtZipCode.getText()));		// maybe set zip to string in DB
-			} catch (Exception e) {				// maybe put an error dialog box here
-				System.out.println(e);
-				e.printStackTrace();
-				customer.setZipCode(0);
-			}
+//			try {
+				customer.setZipCode(txtZipCode.getText());
+//			} catch (Exception e) {				// maybe put an error dialog box here
+//				System.out.println(e);
+//				e.printStackTrace();
+//				customer.setZipCode(0);
+//			}
 		}
 		
 		
