@@ -8,8 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -61,27 +59,38 @@ public class DbServices {
 	public static void saveObject(DbObject dbObject) {
 		// public Save Object interface
 		StringBuilder queryString = new StringBuilder();
-		List<String> fields = null;
-	
-		if (dbObject.getDbPk() == -1) {
+		boolean creatingNewObject = (dbObject.getDbPk() == -1);
+		// start building query string
+		if (creatingNewObject) {
 			queryString.append("INSERT INTO cis2901c." + dbObject.getTableName() + " () VALUES ();" );
-			fields = buildAddNewObjectQuery(dbObject, queryString);
 		} else {
 			queryString.append("UPDATE cis2901c." + dbObject.getTableName() + " SET WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk() + ";");
-			fields = buildModifyExistingObjectQuery(dbObject, queryString);
 		}
-		
-		if (queryString != null) {
+		// check which object data is present and add those fields to query string
+		Map<String, String> objectDataMap = dbObject.getDataMap();
+		List<String> fields = new ArrayList<>();
+		boolean isAnythingModified = false;		
+		for (Map.Entry<String, String> entry : objectDataMap.entrySet()) {
+			if (entry.getValue() != null) {
+				isAnythingModified = true;
+				if (creatingNewObject) {
+					insertQueryHelper(queryString, entry.getKey(), "?");
+				} else {
+					updateQueryHelper(queryString, entry.getKey(), "?");
+				}
+				fields.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+			}
+		}
+		// build query Statement and fill parameters
+		if (isAnythingModified) {
 			Connection dbConnection = DbServices.getDbConnection();
 			try {
 				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-				
 				int parameterIndex = 1;
 				for(String fieldData : fields) {
 					statement.setString(parameterIndex, fieldData);
 					parameterIndex++;
 				}
-				
 				statement.execute();
 				System.out.println("Update Count: " + statement.getUpdateCount());
 			} catch (SQLException e) {
@@ -90,91 +99,28 @@ public class DbServices {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	private static List<String> buildAddNewObjectQuery(DbObject dbObject, StringBuilder queryString) {
-		// add new object
-		boolean isAnythingModified = false;
-		
-		// build query out of DbObject
-		
-		Map<String, String> dataMap = dbObject.getDataMap();
-		List<String> fields = new ArrayList<>();
-				
-		for (Map.Entry<String, String> entry : dataMap.entrySet()) {
-			if (entry.getValue() != null) {
-				isAnythingModified = true;
-				insertQueryHelper(queryString, entry.getKey(), "?");
-				fields.add(entry.getValue().trim());
-			}
-		}
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return fields;
-		}
-	}
-	
-	
-	private static List<String> buildModifyExistingObjectQuery(DbObject dbObject, StringBuilder queryString) {
-		// save modifications to existing unit
-		boolean isAnythingModified = false;
-		
-		Map<String, String> dataMap = dbObject.getDataMap();
-		List<String> fields = new ArrayList<>();
-
-		for (Map.Entry<String, String> entry : dataMap.entrySet()) {
-			if (entry.getValue() != null) {
-				isAnythingModified = true;
-				updateQueryHelper(queryString, entry.getKey(), "?");
-				fields.add(entry.getValue().trim());
-			}
-		}
-		if (isAnythingModified == false) {
-			return null;
-		} else {
-			return fields;
-		}
-	}
-	
-	
-	
-	public static Object[] searchForObject(Table resultsTable, String searchQuery) {
-		// public search interface
-			// search for searchQuery and display in resultsTable
-			// TODO there might be a better way to check what type we're searching
-		if (resultsTable.getColumn(0).getText().equals("First Name")) {
-			return searchForCustomer(resultsTable, searchQuery);
-		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
-			return searchForUnit(resultsTable, searchQuery);
-		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
-			return searchForPart(resultsTable, searchQuery);
-		}
-		return null;
-	}
+	}	
 	
 	private static void updateQueryHelper(StringBuilder queryString, String columnName, String data) {
-		// build Edit Current Object SQL query
 		StringBuilder column = new StringBuilder();
-		int columnInsertionPoint = queryString.lastIndexOf("WHERE");
-		if (queryString.charAt(columnInsertionPoint - 2) == '?') {
-			column.append(", ");
+		int columnInsertionPoint = queryString.lastIndexOf("WHERE");	// find where to insert fields and data
+		if (queryString.charAt(columnInsertionPoint - 2) == '?') {		// see if there are already other data
+			column.append(", ");											// and we need to add a comma
 		}
 		column.append(columnName + " = " + data + " ");
-		queryString.insert(columnInsertionPoint, column);		
+		queryString.insert(columnInsertionPoint, column);		// insert into query
 	}
 	
 	private static void insertQueryHelper(StringBuilder queryString, String columnName, String data) {
-		// build New Object SQL query
 		StringBuilder column = new StringBuilder();
-		int columnInsertionPoint = queryString.indexOf(")");
+		int columnInsertionPoint = queryString.indexOf(")");		// find where to insert field
 		if (queryString.charAt(columnInsertionPoint - 1) != '(') {
 			column.append(", ");
 		}
 		column.append(columnName);
 		queryString.insert(columnInsertionPoint, column);
 		
-		StringBuilder field = new StringBuilder();
+		StringBuilder field = new StringBuilder();		// find where to insert data
 		int fieldInsertionPoint = queryString.lastIndexOf(")");
 		if (queryString.charAt(fieldInsertionPoint - 1) != '(') {
 			field.append(", ");
@@ -189,257 +135,157 @@ public class DbServices {
 		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
 	}
 	
-	private static String numberSanitizer(String searchQuery) {
+	@SuppressWarnings("unused")		// TODO see if we need this anywhere
+	private static String numberSanitizer(String searchQuery) {		// originally used in searchForCustomer, refactoring may have made it unnecessary
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection protection
 		return searchQuery.replaceAll("[^0-9]", "");
-	}
-	// END General DB methods
+	}	
 	
-	// START Unit object methods
-	private static Unit[] searchForUnit(Table resultsTable, String searchQuery) {
-		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
-
-		// setup search
-		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));	// remove most non-alphanumerics
-
-		Connection dbConnection = DbServices.getDbConnection();	// get connection to DB
-		// build query string
-		StringBuilder subquery = new StringBuilder("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-				+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-				+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-
-		for (int i = 0; i < wordsFromQuery.size(); i++) {
-			if (i > 0) {
-				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
-				subquery.delete(15, 128);
-				subquery.insert(0, "SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-						+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-						+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
-						+ "AND unitId IN (");
-				subquery.replace(subquery.length() - 1, subquery.length(), ");");
-			}
-		}
-
-		// build Unit[] to return DB search results
-		Unit[] unitResults = new Unit[MAX_RESULTS];
-		try {
-			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
-			
-			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
-			
-			Collections.reverse(wordsFromQuery);
-			
-			int queryWord = 0;
-			
-			// TODO it might be better to fill the parameters from the back/from the last
-				// one, this way we wouldn't have to make wordsFromQuery an ArrayList
-				// and reverse it
-			
-			for (int j = 1; j <= parameterMetaData.getParameterCount(); j++) {
-				// fill search fields in queryString
-				
-				statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
-				if (j % 6 == 0) {
-					queryWord++;
-				}
-			}
-			
-			ResultSet unitQueryResults = statement.executeQuery();
-			int i = 0;
-			while (unitQueryResults.next() && i < MAX_RESULTS) {
-				long unitId = unitQueryResults.getLong(1);
-				long customerId = unitQueryResults.getLong(2);
-				String make = unitQueryResults.getString(3);
-				String model = unitQueryResults.getString(4);
-				String modelName = unitQueryResults.getString(5);
-				int year = unitQueryResults.getInt(6);
-				int mileage = unitQueryResults.getInt(7);
-				String color = unitQueryResults.getString(8);
-				String vin = unitQueryResults.getString(9);
-				String notes = unitQueryResults.getString(10);
-				String lastName = unitQueryResults.getString(11);
-				String firstName = unitQueryResults.getString(12);
-				String owner = lastName;
-
-				if (firstName != null && firstName.length() != 0) {
-					owner = lastName + ", " + firstName;
-				}
-
-				Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
-				unitResults[i] = unit;
-				i++;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return unitResults;
-	}
-	// END Unit object methods
-
-	// START Customer object methods
-	private static Customer[] searchForCustomer(Table resultsTable, String searchQuery) {		
-		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
-			// TODO this is do-able with the statement.SetMaxRows or somthing like that
-
-		// setup search
-		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));
-
+	public static Object[] searchForObject(Table resultsTable, String searchQuery) {
+		// public search interface
 		
-		Connection dbConnection = DbServices.getDbConnection();
-		// build query string
-		StringBuilder subquery = new StringBuilder("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-				+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
-				+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
+		StringBuilder query = new StringBuilder();
+		StringBuilder outerQuery = new StringBuilder();
+		int deleteStart = 0;
+		int deleteEnd = 0;
+		boolean isCustomerSearch = false;
+		boolean isUnitSearch = false;
+		boolean isPartSearch = false;
 		
-		for (int i = 0; i < wordsFromQuery.size(); i++) {
-			if (i > 0) {
-				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
-				subquery.delete(7, 99);
-				subquery.insert(0,"SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-						+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? "
-						+ "OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
-				subquery.replace(subquery.length() - 1, subquery.length(), ");");
-			}
-		}
-		
-		
-		Customer[] customerResults = new Customer[MAX_RESULTS];
-		try {
-		PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
-		
-		ParameterMetaData parameterMetaData = statement.getParameterMetaData();
-		
-		Collections.reverse(wordsFromQuery);
-		
-		int queryWord = 0;
-		
-		// TODO it might be better to fill the parameters from the back/from the last
-			// one, this way we wouldn't have to make wordsFromQuery an ArrayList
-			// and reverse it
-		
-		for (int j = 1; j <= parameterMetaData.getParameterCount() - 1; j++) {
-			String number = numberSanitizer(wordsFromQuery.get(queryWord));
-			number = number.equals("") ? "-1" : number;
-			
-			statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
-			j++;
-			statement.setString(j, "%" + number + "%");
-			// TODO i still want to refactor this, this statement building is identical
-				// in all versions of this, it can return the ResultSet, then each object
-				// method can build and prep objects like in below WHILE statement
-				// need to pass in outer query, subquery, how much to delete for subquery
-				// search term, below condition checker for j = parameterCount / wordsFromQuery.size()
-			if (j % 9 == 0) {
-				queryWord++;
-			}
-		}
-		statement.setString(9, "%" + wordsFromQuery.get(queryWord) + "%");
-		
-		ResultSet customerQueryResults = statement.executeQuery();
-		int i = 0;
-		while (customerQueryResults.next() && i < MAX_RESULTS) {
-			String firstName = customerQueryResults.getString(1);
-			String lastName = customerQueryResults.getString(2);
-			String address = customerQueryResults.getString(3);
-			String city = customerQueryResults.getString(4);
-			String state = customerQueryResults.getString(5);			
-			String zip = customerQueryResults.getString(6);
-			String homePhone = customerQueryResults.getString(7);
-			String workPhone = customerQueryResults.getString(8);
-			String cellPhone = customerQueryResults.getString(9);
-			String email = customerQueryResults.getString(10);
-			long customerId = customerQueryResults.getLong(11);
-			
-			Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
-					zip, homePhone, workPhone, cellPhone, email);
-			customerResults[i] = customer;
-			i++;
-		}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return customerResults;
-	}
-	// END Customer methods
-	
-	// Part methods
-	private static Part[] searchForPart(Table resultsTable, String searchQuery) {
-		final int MAX_RESULTS = 255;		// max search return results, could set limit at DB query level to lessen load on DB server
-
-		// setup search
-//		String[] wordsFromQuery = sanitizer(searchQuery);	// remove most non-alphanumerics
-		List<String> wordsFromQuery = Arrays.asList(sanitizer(searchQuery));
-
-		Connection dbConnection = DbServices.getDbConnection();	// connect to DB
-		// build query string
-		StringBuilder subquery = new StringBuilder("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
+			// search for searchQuery and display in resultsTable
+			// TODO there might be a better way to check what type we're searching
+		if (resultsTable.getColumn(0).getText().equals("First Name")) {
+			isCustomerSearch = true;
+			query.append("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
+					+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? "
+					+ "OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
+			outerQuery.append("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, email, "
+					+ "customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? "
+					+ "OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
+			deleteStart = 7;
+			deleteEnd = 99;
+		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
+			isUnitSearch = true;
+			query.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
+					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
+			outerQuery.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
+					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
+					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
+					+ "AND unitId IN (");
+			deleteStart = 15;
+			deleteEnd = 128;
+		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
+			isPartSearch = true;
+			query.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
 				+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;");
-
-		for (int i = 0; i < wordsFromQuery.size(); i++) {
-			if (i > 0) {
-				// if we're looping through multiple search terms, modify query string to add multi-row  Subquery using WHERE ... IN
-				// TODO set correct queries
-				subquery.delete(13, 87);
-				subquery.insert(0, "SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
+			outerQuery.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
 						+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? "
 						+ "AND partId IN (");
-				subquery.replace(subquery.length() - 1, subquery.length(), ");");
-			}
-
-//			for (int j = 1; j <= 4; j++) {
-//				// fill search fields in queryString
-//				int insertIndex = subquery.indexOf("?");
-//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[i] + "%'");
-//			}
+			deleteStart = 13;
+			deleteEnd = 87;
 		}
-
-		// build Unit[] to return DB search results
-		Part[] partResults = new Part[MAX_RESULTS];
+		
+		// build sub-queries if we have more than one search term
+		String[] wordsFromQuery = sanitizer(searchQuery);
+		for (int i = 1; i < wordsFromQuery.length; i++) {
+			query.delete(deleteStart, deleteEnd);
+			query.insert(0, outerQuery);
+			query.replace(query.length() - 1, query.length(), ");");
+		}
+		
+		// prep DB Statement, fill Statement Parameters
+		final int MAX_RESULTS = 255;		// max search return results
+		Object[] results = null;
+		ResultSet queryResultSet = null;
 		try {
-			PreparedStatement statement = dbConnection.prepareStatement(subquery.toString());
-			
+			Connection dbConnection = DbServices.getDbConnection();
+			PreparedStatement statement = dbConnection.prepareStatement(query.toString());
+			statement.setMaxRows(MAX_RESULTS);
 			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
-			
-			Collections.reverse(wordsFromQuery);
-			
-			int queryWord = 0;
-			
-			for (int j = 1; j <= parameterMetaData.getParameterCount(); j++) {
+			int parameterCount = parameterMetaData.getParameterCount();
+			int queryWord = wordsFromQuery.length - 1;
+			for (int j = 1; j <= parameterCount; j++) {
 				// fill search fields in queryString
-				
-				statement.setString(j, "%" + wordsFromQuery.get(queryWord) + "%");
-//				int insertIndex = subquery.indexOf("?");
-//				subquery.replace(insertIndex, insertIndex + 1, "'%" + wordsFromQuery[queryWord] + "%'");
-				if (j % 4 == 0) {
-					queryWord++;
+				statement.setString(j, "%" + wordsFromQuery[queryWord] + "%");
+				int parametersPerQuery = parameterCount / wordsFromQuery.length; 
+				if (j % parametersPerQuery == 0) {
+					queryWord--;
 				}
 			}
+			queryResultSet = statement.executeQuery();
 			
-			ResultSet partQueryResults = statement.executeQuery();
-			int i = 0;
-			while (partQueryResults.next() && i < MAX_RESULTS) {
-				int partId = partQueryResults.getInt(1);
-				String partNumber = partQueryResults.getString(2);
-				String supplier = partQueryResults.getString(3);
-				String category = partQueryResults.getString(4);
-				String description = partQueryResults.getString(5);
-				String notes = partQueryResults.getString(6);
-				BigDecimal cost = new BigDecimal(partQueryResults.getInt(7));
-				BigDecimal retail = new BigDecimal(partQueryResults.getInt(8));
-				int onHand = partQueryResults.getInt(9);
+			// build objects from results and return them
+			if (isCustomerSearch) {
+				results = new Customer[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					String firstName = queryResultSet.getString(1);
+					String lastName = queryResultSet.getString(2);
+					String address = queryResultSet.getString(3);
+					String city = queryResultSet.getString(4);
+					String state = queryResultSet.getString(5);			
+					String zip = queryResultSet.getString(6);
+					String homePhone = queryResultSet.getString(7);
+					String workPhone = queryResultSet.getString(8);
+					String cellPhone = queryResultSet.getString(9);
+					String email = queryResultSet.getString(10);
+					long customerId = queryResultSet.getLong(11);
+					
+					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+							zip, homePhone, workPhone, cellPhone, email);
+					results[i] = customer;
+					i++;
+				}
+			} else if (isUnitSearch) {
+				results = new Unit[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					long unitId = queryResultSet.getLong(1);
+					long customerId = queryResultSet.getLong(2);
+					String make = queryResultSet.getString(3);
+					String model = queryResultSet.getString(4);
+					String modelName = queryResultSet.getString(5);
+					int year = queryResultSet.getInt(6);
+					int mileage = queryResultSet.getInt(7);
+					String color = queryResultSet.getString(8);
+					String vin = queryResultSet.getString(9);
+					String notes = queryResultSet.getString(10);
+					String lastName = queryResultSet.getString(11);
+					String firstName = queryResultSet.getString(12);
+					String owner = lastName;
+					if (firstName != null && firstName.length() != 0) {
+						owner = lastName + ", " + firstName;
+					}
+					
+					Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
+					results[i] = unit;
+					i++;
+				}
+			} else if (isPartSearch) {
+				results = new Part[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					int partId = queryResultSet.getInt(1);
+					String partNumber = queryResultSet.getString(2);
+					String supplier = queryResultSet.getString(3);
+					String category = queryResultSet.getString(4);
+					String description = queryResultSet.getString(5);
+					String notes = queryResultSet.getString(6);
+					BigDecimal cost = new BigDecimal(queryResultSet.getInt(7));
+					BigDecimal retail = new BigDecimal(queryResultSet.getInt(8));
+					int onHand = queryResultSet.getInt(9);
 
-				Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
-				partResults[i] = part;
-				i++;
+					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
+					results[i] = part;
+					i++;
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return partResults;
+		}		
+		return results;
 	}
-	// END Part Methods
 }

@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Control;
 
 public class NewPartDialog extends Dialog {
 
@@ -187,6 +188,7 @@ public class NewPartDialog extends Dialog {
 		});
 		btnCancel.setText("Cancel");
 		btnCancel.setBounds(429, 216, 135, 26);
+		shlAddPart.setTabList(new Control[]{txtPartNumber, txtSupplier, txtCategory, txtDescription, txtOnHand, txtCost, txtRetail, txtNotes, btnSavePart, btnCancel});
 	}
 
 	protected void addNewPart() {

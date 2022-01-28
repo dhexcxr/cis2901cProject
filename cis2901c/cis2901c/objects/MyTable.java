@@ -15,7 +15,6 @@ public class MyTable extends Table {
 		if (objects == null || objects.length == 0) {
 			return;
 		}
-//		this.clearAll();
 		this.removeAll();
 		if (objects instanceof Customer[]) {
 			paintCustomerTable((Customer[]) objects);
@@ -37,8 +36,6 @@ public class MyTable extends Table {
 			tableItem.setText(new String[] {customer.getFirstName(), customer.getLastName(), customer.getAddress(), customer.getCity(),
 					customer.getState(), customer.getZipCode(),	customer.setPhoneNumberFormat(customer.getHomePhone()),
 						customer.setPhoneNumberFormat(customer.getCellPhone()), customer.getEmail()} );
-//							customer.getHomePhone() == 0 ? "" : Integer.toString(customer.getHomePhone()),
-//							customer.getCellPhone() == 0 ? "" : Integer.toString(customer.getCellPhone()), customer.getEmail()} );
 			tableItem.setData(customer);
 		}
 	}
@@ -64,7 +61,7 @@ public class MyTable extends Table {
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(part.getOnHand()),
+			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(part.getOnHand() == -1 ? 0 : part.getOnHand()),
 					part.getSupplier(), part.getCategory(), part.getCost().toString(), part.getRetail().toString()});
 			tableItem.setData(part);
 		}
