@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
@@ -19,10 +20,10 @@ import org.eclipse.swt.events.MouseEvent;
 
 public class CustomerSearchDialog extends Dialog {
 
-	protected Object result;
+	protected Object result;		// TODO probably change this to Customer, wouldn't need cast for results
 	protected Shell shlCustomerSearch;
-	private MyTable customerTable;
-	private MyText customerSearchTextBox;
+	private MyCustomerTable customerTable;
+	private MyText customerSearchTextBox;		// TODO see if we need to change this to MyCustomerSearchTable
 
 	/**
 	 * Create the dialog.
@@ -76,7 +77,7 @@ public class CustomerSearchDialog extends Dialog {
 		shlCustomerSearch.setSize(946, 410);
 						
 		// search results table
-		customerTable = new MyTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable = new MyCustomerTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.setBounds(10, 42, 909, 282);
 		customerTable.setLinesVisible(true);
 		customerTable.setHeaderVisible(true);

@@ -52,6 +52,7 @@ public class CreateNewObjectListener extends MouseAdapter{
 			newTableContents[i] = table.getItems()[i].getData();
 		}
 		newTableContents[table.getItems().length] = newObject;
+		table.removeAll();
 		table.paint(newTableContents);
 	}	
 }

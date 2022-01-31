@@ -19,9 +19,10 @@ public class SearchTextBoxListeners implements ModifyListener {
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		table.removeAll();
+//		table.removeAll();
 		int queryLength = searchBox.getText().trim().length();
 		if (queryLength > 0) {
+			table.removeAll();
 			table.paint(DbServices.searchForObject(table, searchBox.getText()));
 		}
 	}

@@ -49,6 +49,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		for (int i = 0; i < table.getItems().length; i++) {
 			tableObjects[i] = table.getItems()[i].getData();
 		}
+		table.removeAll();
 		table.paint(tableObjects);
 	}
 
