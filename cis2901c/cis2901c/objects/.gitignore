@@ -7,3 +7,7 @@
 /ObjectMap.class
 /Mappable.class
 /DbObject.class
+/MyPartInvoiceTable.class
+/MyPartInventoryTable.class
+/MyUnitTable.class
+/MyCustomerTable.class
