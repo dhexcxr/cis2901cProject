@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
@@ -124,25 +125,26 @@ public class NewUnitDialog extends Dialog {
 		txtOwner.setBounds(10, 10, 554, 26);
 		txtOwner.setEditable(false);
 		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
-		txtOwner.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				// open Customer Search dialog with Owner text box double click
-				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
-				Customer selectedCustomer = new Customer();
-				if (!txtOwner.getText().equals("Owner...")) {
-					// if we're editing a current unit, pass Owner name to Customer Search Dialog
-					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
-				} else {
-					// open normal, empty Customer Search Dialog
-					selectedCustomer = (Customer) customerSearchDialog.open();
-				}
-				if (selectedCustomer instanceof Customer) {
-					txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
-					customerId = selectedCustomer.getCustomerId();
-				}
-			}
-		});
+//		txtOwner.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDoubleClick(MouseEvent e) {
+//				// open Customer Search dialog with Owner text box double click
+//				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
+//				Customer selectedCustomer = new Customer();
+//				if (!txtOwner.getText().equals("Owner...")) {
+//					// if we're editing a current unit, pass Owner name to Customer Search Dialog
+//					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
+//				} else {
+//					// open normal, empty Customer Search Dialog
+//					selectedCustomer = (Customer) customerSearchDialog.open();
+//				}
+//				if (selectedCustomer instanceof Customer) {
+//					txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
+//					customerId = selectedCustomer.getCustomerId();
+//				}
+//			}
+//		});
+		txtOwner.addMouseListener(new CustomerSearchListener(txtOwner));
 		
 		txtMake = new MyText(shlNewUnit, SWT.BORDER);
 		txtMake.setBackground(SWTResourceManager.getColor(255, 102, 102));
@@ -243,8 +245,10 @@ public class NewUnitDialog extends Dialog {
 	}
 	
 	protected void saveUnit(Unit unit) {
-		if (customerId != -1) {
-			unit.setCustomerId(customerId);
+		if (txtOwner.getData() != null && ((Customer) txtOwner.getData()).getCustomerId() != -1) {
+			unit.setCustomerId(((Customer) txtOwner.getData()).getCustomerId());
+//		if (customerId != -1) {
+//			unit.setCustomerId(customerId);
 			unit.setOwner(txtOwner.getText());
 		} else {
 			// if we haven't selected an Owner, complain - a Unit Owner is required

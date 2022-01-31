@@ -11,11 +11,21 @@ public class MyTable extends Table {
 		super(parent, style);
 	}
 	
+	public void paint(Object object) {
+		if (object instanceof Customer) {
+			paintCustomerTable((Customer[]) object);
+		} else if (object instanceof Unit) {
+			paintUnitTable((Unit[]) object);
+		} else if (object instanceof Part) {
+			paint(new Part[] {(Part) object});
+		}
+	}
+	
 	public void paint(Object[] objects) {
 		if (objects == null || objects.length == 0) {
 			return;
 		}
-		this.removeAll();
+		this.removeAll();		// TODO i don't want to do this for part invoice, maybe move this to search listeners only
 		if (objects instanceof Customer[]) {
 			paintCustomerTable((Customer[]) objects);
 		} else if (objects instanceof Unit[]) {

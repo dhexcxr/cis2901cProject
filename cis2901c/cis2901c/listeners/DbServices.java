@@ -35,6 +35,8 @@ public class DbServices {
 	}
 	
 	public static void connectToDb() {
+		// TODO decide if I want to setAutoCommit to false before returning Connection, every call would have to connection.commit
+			// or rollback if an exception is caught
 		// TODO offer some customization options in application like actual DB options
 		String url = "jdbc:mysql://localhost:3306/cis2901c";
 		String user = "TestUser";
@@ -67,39 +69,75 @@ public class DbServices {
 			queryString.append("UPDATE cis2901c." + dbObject.getTableName() + " SET WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk() + ";");
 		}
 		// check which object data is present and add those fields to query string
-		Map<String, String> objectDataMap = dbObject.getDataMap();
-		List<String> fields = new ArrayList<>();
-		boolean isAnythingModified = false;		
-		for (Map.Entry<String, String> entry : objectDataMap.entrySet()) {
+		List<String> dbFields = insertFieldsIntoQuery(queryString, dbObject, creatingNewObject);
+		
+//		boolean isAnythingModified = false;		
+//		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
+//			if (entry.getValue() != null) {
+//				isAnythingModified = true;
+//				if (creatingNewObject) {
+//					insertQueryHelper(queryString, entry.getKey(), "?");
+//				} else {
+//					updateQueryHelper(queryString, entry.getKey(), "?");
+//				}
+//				dbFields.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+//			}
+//		}
+		// build query Statement and fill parameters
+		sendQueryToDb(queryString, dbFields);
+//		if (isAnythingModified) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			try {
+//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//				int parameterIndex = 1;
+//				for(String fieldData : dbFields) {
+//					statement.setString(parameterIndex, fieldData);
+//					parameterIndex++;
+//				}
+//				statement.execute();
+//				System.out.println("Update Count: " + statement.getUpdateCount());
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				System.out.println(queryString);
+//				e.printStackTrace();
+//			}
+//		}
+	}
+	
+	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
+		Connection dbConnection = DbServices.getDbConnection();
+		try {
+			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+			int parameterIndex = 1;
+			for(String fieldData : dbFields) {
+				statement.setString(parameterIndex, fieldData);
+				parameterIndex++;
+			}
+			statement.execute();
+			System.out.println("Update Count: " + statement.getUpdateCount());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println(queryString);
+			e.printStackTrace();
+		}
+	}
+	
+	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, DbObject dbObject, boolean creatingNewObject) {
+		List<String> results = new ArrayList<>();
+//		boolean isAnythingModified = false;
+		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
 			if (entry.getValue() != null) {
-				isAnythingModified = true;
+//				isAnythingModified = true;
 				if (creatingNewObject) {
 					insertQueryHelper(queryString, entry.getKey(), "?");
 				} else {
 					updateQueryHelper(queryString, entry.getKey(), "?");
 				}
-				fields.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+				results.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
 			}
 		}
-		// build query Statement and fill parameters
-		if (isAnythingModified) {
-			Connection dbConnection = DbServices.getDbConnection();
-			try {
-				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-				int parameterIndex = 1;
-				for(String fieldData : fields) {
-					statement.setString(parameterIndex, fieldData);
-					parameterIndex++;
-				}
-				statement.execute();
-				System.out.println("Update Count: " + statement.getUpdateCount());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println(queryString);
-				e.printStackTrace();
-			}
-		}
-	}	
+		return results;
+	}
 	
 	private static void updateQueryHelper(StringBuilder queryString, String columnName, String data) {
 		StringBuilder column = new StringBuilder();

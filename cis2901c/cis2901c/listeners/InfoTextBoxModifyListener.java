@@ -7,21 +7,21 @@ import cis2901c.objects.MyText;
 
 public class InfoTextBoxModifyListener implements ModifyListener {
 	
-	private MyText text;
-	private String textBoxText;
+	private MyText txtBox;
+	private String txtBoxStartingText;
 	
 	public InfoTextBoxModifyListener(MyText text) {
-		this.text = text;
-		this.textBoxText = text.getText();
+		this.txtBox = text;
+		this.txtBoxStartingText = text.getText();
 	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// help track if text box has been modified
-		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
-			text.setModified(true);
+		if (txtBox.getText().length() > 0 && !txtBox.getText().equals(txtBoxStartingText)) {
+			txtBox.setModified(true);
 		} else {
-			text.setModified(false);
+			txtBox.setModified(false);
 		}
 	}
 }
