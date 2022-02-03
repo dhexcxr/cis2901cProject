@@ -311,8 +311,8 @@ public class DbServices {
 					String category = queryResultSet.getString(4);
 					String description = queryResultSet.getString(5);
 					String notes = queryResultSet.getString(6);
-					BigDecimal cost = new BigDecimal(queryResultSet.getInt(7));
-					BigDecimal retail = new BigDecimal(queryResultSet.getInt(8));
+					BigDecimal cost = queryResultSet.getBigDecimal(7);
+					BigDecimal retail = queryResultSet.getBigDecimal(8);
 					int onHand = queryResultSet.getInt(9);
 
 					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);

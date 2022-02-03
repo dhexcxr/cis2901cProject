@@ -32,8 +32,8 @@ public class Part implements DbObject{
 		this.category = category;
 		this.description = description;
 		this.notes = notes;
-		this.cost = cost;
-		this.retail = retail;
+		this.cost = cost == (null) ? new BigDecimal(0) : cost;
+		this.retail = retail == (null) ? new BigDecimal(0) : retail;
 		this.onHand = onHand;
 //		this.newPart = newPart;
 	}
@@ -59,7 +59,7 @@ public class Part implements DbObject{
 	}
 
 	public String getPartNumber() {
-		return partNumber;
+		return partNumber == null ? "error" : partNumber;
 	}
 
 	public void setPartNumber(String partNumber) {
@@ -67,7 +67,7 @@ public class Part implements DbObject{
 	}
 
 	public String getSupplier() {
-		return supplier;
+		return supplier == null ? "" : supplier;
 	}
 
 	public void setSupplier(String supplier) {
@@ -75,7 +75,7 @@ public class Part implements DbObject{
 	}
 
 	public String getCategory() {
-		return category;
+		return category == null ? "" : category;
 	}
 
 	public void setCategory(String category) {
@@ -83,7 +83,7 @@ public class Part implements DbObject{
 	}
 
 	public String getDescription() {
-		return description;
+		return description == null ? "error" : description;
 	}
 
 	public void setDescription(String description) {
@@ -91,7 +91,7 @@ public class Part implements DbObject{
 	}
 
 	public String getNotes() {
-		return notes;
+		return notes == null ? "" : notes;
 	}
 
 	public void setNotes(String notes) {
