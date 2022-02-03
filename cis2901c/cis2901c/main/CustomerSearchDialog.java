@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyCustomerTable;
-import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -23,8 +22,8 @@ public class CustomerSearchDialog extends Dialog {
 	protected Object result;		// TODO probably change this to Customer, wouldn't need cast for results
 	protected Shell shlCustomerSearch;
 	private MyCustomerTable customerTable;
-	private MyText customerSearchTextBox;		// TODO see if we need to change this to MyCustomerSearchTable
-
+	private MyText customerSearchTextBox;
+	
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -58,7 +57,6 @@ public class CustomerSearchDialog extends Dialog {
 		customerSearchTextBox.setText(owner);
 		shlCustomerSearch.open();
 		shlCustomerSearch.layout();
-//		customerTable.paint(DbServices.searchForObject(customerTable, owner));
 		Display display = getParent().getDisplay();
 		while (!shlCustomerSearch.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -75,6 +73,8 @@ public class CustomerSearchDialog extends Dialog {
 		shlCustomerSearch = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlCustomerSearch.setText("Customer Search");
 		shlCustomerSearch.setSize(946, 410);
+		
+		Gui.setDialogAtCenter(shlCustomerSearch);
 						
 		// search results table
 		customerTable = new MyCustomerTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
@@ -134,30 +134,30 @@ public class CustomerSearchDialog extends Dialog {
 		customerSearchTextBox.setFocus();
 		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
 		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
-		
+
 		// dialog  controls
-				Button btnSelectCustomer = new Button(shlCustomerSearch, SWT.NONE);
-				btnSelectCustomer.setText("Select Customer");
-				btnSelectCustomer.setBounds(10, 330, 256, 26);
-				btnSelectCustomer.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						if (customerTable.getSelection().length > 0) {
-							result =  customerTable.getSelection()[0].getData();
-							shlCustomerSearch.close();
-						}
-					}
-				});
-				
-				Button btnCancel = new Button(shlCustomerSearch, SWT.NONE);
-				btnCancel.setText("Cancel");
-				btnCancel.setBounds(662, 330, 256, 26);
-				btnCancel.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// close dialog
-						shlCustomerSearch.close();
-					}
-				});
+		Button btnSelectCustomer = new Button(shlCustomerSearch, SWT.NONE);
+		btnSelectCustomer.setText("Select Customer");
+		btnSelectCustomer.setBounds(10, 330, 256, 26);
+		btnSelectCustomer.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (customerTable.getSelection().length > 0) {
+					result =  customerTable.getSelection()[0].getData();
+					shlCustomerSearch.close();
+				}
+			}
+		});
+
+		Button btnCancel = new Button(shlCustomerSearch, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(662, 330, 256, 26);
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// close dialog
+				shlCustomerSearch.close();
+			}
+		});
 	}
 }

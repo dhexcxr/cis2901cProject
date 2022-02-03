@@ -22,8 +22,8 @@ public class Unit implements DbObject{
 	public Unit() {
 	}
 	
-	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear, int mileage, String color,
-			String vin, String notes, String owner) {
+	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear,
+										int mileage, String color, String vin, String notes, String owner) {
 		super();
 		this.unitId = unitId;
 		this.customerId = customerId;

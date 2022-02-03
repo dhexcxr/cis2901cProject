@@ -3,13 +3,11 @@ package cis2901c.listeners;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import cis2901c.objects.MyPartInvoiceTable;
 import cis2901c.objects.MyTable;
 
 public class DeleteLineItemListener extends MouseAdapter{
@@ -30,7 +28,8 @@ public class DeleteLineItemListener extends MouseAdapter{
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
-		if (partTable_Invoice.getSelectionIndex() >= 0 && partTable_Invoice.getSelectionIndex() < partTable_Invoice.getItemCount() && partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData() != null) {
+		if (partTable_Invoice.getSelectionIndex() >= 0 && partTable_Invoice.getSelectionIndex() < partTable_Invoice.getItemCount() &&
+													partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData() != null) {
 			partTable_Invoice.remove(partTable_Invoice.getSelectionIndex());
 			
 			// the following copied from PartInvoiceEditorEventListener, need to find a better way to calc invoice total
@@ -50,7 +49,8 @@ public class DeleteLineItemListener extends MouseAdapter{
 			}
 			txtPartsTotal_Invoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());
 			txtTax_Invoice.setText("$" + taxRate.multiply(total).setScale(2, RoundingMode.CEILING).toString());
-			txtFinalTotal.setText("$" + taxRate.multiply(total).add(total).setScale(2, RoundingMode.CEILING).toString());	
+			txtFinalTotal.setText("$" + taxRate.multiply(total).add(total).setScale(2, RoundingMode.CEILING).toString());
+			// END copied section
 		}
 	}
 }

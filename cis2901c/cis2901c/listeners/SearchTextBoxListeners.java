@@ -8,7 +8,6 @@ import cis2901c.objects.MyText;
 public class SearchTextBoxListeners implements ModifyListener {
 	
 	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
-	
 	private MyText searchBox;
 	private MyTable table;
 	
@@ -19,11 +18,12 @@ public class SearchTextBoxListeners implements ModifyListener {
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-//		table.removeAll();
 		int queryLength = searchBox.getText().trim().length();
 		if (queryLength > 0) {
 			table.removeAll();
 			table.paint(DbServices.searchForObject(table, searchBox.getText()));
+		} else if (queryLength == 0) {
+			table.removeAll();
 		}
 	}
 }

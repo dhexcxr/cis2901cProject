@@ -7,8 +7,6 @@ import java.util.Map;
 public class Part implements DbObject{
 	private int partId = -1;
 	private String partNumber;
-//	private long supplierId;		// supplier table needed
-//	private long categoryId;		// category table needed
 	private String supplier;
 	private String category;
 	private String description;
@@ -17,14 +15,11 @@ public class Part implements DbObject{
 	private BigDecimal retail = new BigDecimal(0);
 	private int onHand = -1;
 	
-	// TODO remove newPart
-//	private boolean newPart = true;
-	
 	public Part() {
 	}
 	
-	public Part(int partId, String partNumber, String supplier, String category, String description, String notes, BigDecimal cost,
-			BigDecimal retail, int onHand) {
+	public Part(int partId, String partNumber, String supplier, String category, String description,
+										String notes, BigDecimal cost, BigDecimal retail, int onHand) {
 		super();
 		this.partId = partId;
 		this.partNumber = partNumber;
@@ -35,7 +30,6 @@ public class Part implements DbObject{
 		this.cost = cost == (null) ? new BigDecimal(0) : cost;
 		this.retail = retail == (null) ? new BigDecimal(0) : retail;
 		this.onHand = onHand;
-//		this.newPart = newPart;
 	}
 	
 	public long getDbPk() {
@@ -140,15 +134,5 @@ public class Part implements DbObject{
 		dataMap.put("onHand", Integer.toString(onHand));
 		
 		return dataMap;
-	}
-	
-//	public boolean isNewPart() {
-//		return newPart;
-//	}
-//	
-//	public void setNewPart(boolean newPart) {
-//		this.newPart = newPart;
-//	}
-	
-	
+	}	
 }

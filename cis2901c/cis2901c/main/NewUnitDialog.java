@@ -1,11 +1,5 @@
 package cis2901c.main;
 
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wb.swt.SWTResourceManager;
-
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
@@ -22,6 +16,11 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class NewUnitDialog extends Dialog {
 
@@ -39,7 +38,7 @@ public class NewUnitDialog extends Dialog {
 	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
 		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
-	private long customerId = -1;
+//	private long customerId = -1;
 	private Unit unit;
 
 	/**
@@ -49,7 +48,6 @@ public class NewUnitDialog extends Dialog {
 	 */
 	public NewUnitDialog(Shell parent, int style) {
 		super(parent, style);
-//		setText("SWT Dialog");
 	}
 
 	/**
@@ -93,8 +91,8 @@ public class NewUnitDialog extends Dialog {
 			txtNotes.setText(unit.getNotes());
 		if (unit.getUnitId() != 0)
 			unitId = unit.getUnitId();
-		if (unit.getCustomerId() != -1)
-			customerId = unit.getCustomerId(); 
+//		if (unit.getCustomerId() != -1)
+//			customerId = unit.getCustomerId(); 
 		this.unit = unit;
 		
 		// open Edit Unit dialog, customized for editing a current Unit
@@ -117,6 +115,8 @@ public class NewUnitDialog extends Dialog {
 		shlNewUnit = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlNewUnit.setText("Add Unit");
 		shlNewUnit.setSize(592, 348);
+		
+		Gui.setDialogAtCenter(shlNewUnit);
 				
 		// Unit text boxes
 		txtOwner = new MyText(shlNewUnit, SWT.BORDER);
@@ -125,25 +125,6 @@ public class NewUnitDialog extends Dialog {
 		txtOwner.setBounds(10, 10, 554, 26);
 		txtOwner.setEditable(false);
 		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
-//		txtOwner.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseDoubleClick(MouseEvent e) {
-//				// open Customer Search dialog with Owner text box double click
-//				CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(shlNewUnit, getStyle());
-//				Customer selectedCustomer = new Customer();
-//				if (!txtOwner.getText().equals("Owner...")) {
-//					// if we're editing a current unit, pass Owner name to Customer Search Dialog
-//					selectedCustomer = (Customer) customerSearchDialog.open(txtOwner.getText());
-//				} else {
-//					// open normal, empty Customer Search Dialog
-//					selectedCustomer = (Customer) customerSearchDialog.open();
-//				}
-//				if (selectedCustomer instanceof Customer) {
-//					txtOwner.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
-//					customerId = selectedCustomer.getCustomerId();
-//				}
-//			}
-//		});
 		txtOwner.addMouseListener(new CustomerSearchListener(txtOwner));
 		
 		txtMake = new MyText(shlNewUnit, SWT.BORDER);
@@ -236,7 +217,8 @@ public class NewUnitDialog extends Dialog {
 			}
 		});
 		
-		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear, txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
+		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear,
+								txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
 
 	}
 

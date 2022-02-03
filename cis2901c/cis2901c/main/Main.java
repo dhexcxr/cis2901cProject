@@ -5,6 +5,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+//import org.eclipse.swt.graphics.DeviceData;		// Sleak
 
 import cis2901c.listeners.DbServices;
 
@@ -21,7 +22,15 @@ public class Main {
 		}
 
 		// Start GUI
-		Display display = new Display();
+		
+//		DeviceData data = new DeviceData();		// Sleak
+//	    data.tracking = true;					// Sleak
+//		Display display = new Display(data);	// "data" parameter is Sleak
+//		Sleak sleak = new Sleak();				// Sleak
+//	    sleak.open();							// Sleak
+	    
+	    
+	    Display display = new Display();
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");

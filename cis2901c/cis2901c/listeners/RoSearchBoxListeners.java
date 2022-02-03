@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Text;
 public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 	
 	// TODO combine with SearchBoxListener
-	
 	private Text searchBox;
 	private Table table;
 	

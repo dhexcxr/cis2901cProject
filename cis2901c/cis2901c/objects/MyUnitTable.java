@@ -19,9 +19,9 @@ public class MyUnitTable extends MyTable{
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(), unit.getModelName(),
-					unit.getYear() == 0 ? "" : Integer.toString(unit.getYear()),
-					Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
+			tableItem.setText(new String[] {unit.getOwner(), unit.getMake(), unit.getModel(),
+				unit.getModelName(), unit.getYear() == 0 ? "" : Integer.toString(unit.getYear()),
+						Integer.toString(unit.getMileage()), unit.getColor(), unit.getVin(), unit.getNotes()});
 			tableItem.setData(unit);
 		}
 	}

@@ -13,17 +13,16 @@ public class MyPartInvoiceTable extends MyTable{
 
 	public void paint(Object object) {
 		// build each TableItem to fill Unit Table
-//		for (Part part : partResults) {
 			if (object == null) {
 				return;
 			}
 			Part part = (Part) object;
 			TableItem tableItem = this.getItem(this.getSelectionIndex());
 				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
-			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1), Integer.toString(part.getOnHand()),
-					part.getCost().toString(), part.getRetail().toString(), part.getRetail().toString()});
+			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
+					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
+							part.getRetail().toString()});
 			tableItem.setData(part);
-//		}
 	}
 	
 	@Override
@@ -35,8 +34,9 @@ public class MyPartInvoiceTable extends MyTable{
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 				// TODO break out all tables into classes so we can correctly paint all without conditional paint
-			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1), Integer.toString(part.getOnHand()),
-					part.getCost().toString(), part.getRetail().toString(), part.getRetail().toString()});
+			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
+													Integer.toString(part.getOnHand()), part.getCost().toString(),
+														part.getRetail().toString(), part.getRetail().toString()});
 			tableItem.setData(part);
 		}
 	}

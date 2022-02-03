@@ -1,11 +1,10 @@
 package cis2901c.main;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -219,26 +218,6 @@ public class Gui extends Composite {
 		btnNewPart.setText("New Part");
 		btnNewPart.setBounds(877, 10, 81, 26);
 		btnNewPart.addMouseListener(new CreateNewObjectListener(partTable_inventory, partSearchTextBox, shell));
-//		btnNewPart.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseDown(MouseEvent e) {
-//				NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
-//				addNewPartDialog.open();
-//				// TODO add repainting to new object saves, probably put in external listener like OpenExistingObject
-//				
-////				partTable.removeAll();												// later attempt
-////				int queryLength = partSearchTextBox.getText().trim().length();
-////				if (queryLength > 0) {
-////					partTable.paint(DbServices.searchForObject(partTable, partSearchTextBox.getText()));
-////				}	
-//				
-////				Object[] partTableObjects = new Object[partTable.getItems().length];		// earlier attempt
-////				for (int i = 0; i < partTable.getItems().length; i++) {
-////					partTableObjects[i] = partTable.getItems()[i].getData();
-////				}
-////				partTable.paint(partTableObjects);
-//			}
-//		});
 		// END Inventory tab
 		
 		// START Invoice tab
@@ -298,8 +277,6 @@ public class Gui extends Composite {
 		grpSelectedPart.setText("Selected Part");
 		grpSelectedPart.setBounds(10, 484, 469, 168);
 		
-		// TODO, show on hand, supplier, catagory, notes
-		
 		Button btnDeleteLineItem = new Button(grpSelectedPart, SWT.NONE);
 		btnDeleteLineItem.setBounds(333, 106, 126, 52);
 		btnDeleteLineItem.setText("Delete Line Item");
@@ -335,7 +312,9 @@ public class Gui extends Composite {
 			public void mouseDown(MouseEvent e) {
 				partTable_Invoice.getItemCount();
 				partTable_Invoice.getSelectionIndex();
-				if (partTable_Invoice.getSelectionIndex() >= 0 && partTable_Invoice.getSelectionIndex() < partTable_Invoice.getItemCount() && partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData() != null) {
+				if (partTable_Invoice.getSelectionIndex() >= 0 &&
+						partTable_Invoice.getSelectionIndex() < partTable_Invoice.getItemCount() &&
+							partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData() != null) {
 					Part selectedPart = (Part) partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData();
 					textCategory_Invoice.setText(selectedPart.getCategory());
 					textSupplier_Invoice.setText(selectedPart.getSupplier());
@@ -347,13 +326,12 @@ public class Gui extends Composite {
 				}
 			}
 		});
-//		partTable_Invoice.addMouseListener(new PartInvoiceEditorMouseListener(partTable_Invoice));
 		
-		final TableEditor editor = new TableEditor(partTable_Invoice);		// TODO why am I building this out here		
+		final TableEditor editor = new TableEditor(partTable_Invoice);		// TODO why am I building this out here
 	    editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
-	    partTable_Invoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(partTable_Invoice, editor, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
-//	    partTable_Invoice.addListener(SWT.Modify, new PartInvoiceTotaler(partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+	    partTable_Invoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(	// and passing it in here
+	    		partTable_Invoice, editor, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
 	    
 		partTable_Invoice.setLinesVisible(true);
 		partTable_Invoice.setHeaderVisible(true);
@@ -362,7 +340,6 @@ public class Gui extends Composite {
 		TableColumn tblclmnPartNumber_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
 		tblclmnPartNumber_Invoice.setWidth(126);
 		tblclmnPartNumber_Invoice.setText("Part Number");
-//		tblclmnPartNumber_Invoice.addListener(SWT.Modify, new PartInvoiceTotaler(partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
 		
 		TableColumn tblclmnDescription_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
 		tblclmnDescription_Invoice.setWidth(275);
@@ -388,8 +365,8 @@ public class Gui extends Composite {
 		tblclmnExtendedPrice_Invoice.setWidth(114);
 		tblclmnExtendedPrice_Invoice.setText("Extended Price");
 		
-		TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);
-//		tableItem.addListener(SWT.Modify, new PartInvoiceTotaler(partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+		TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
 		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
 		btnCashier.setBounds(596, 501, 126, 100);
@@ -410,13 +387,15 @@ public class Gui extends Composite {
 				textSupplier_Invoice.setText("");
 				textNotes_Invoice.setText("");
 				partTable_Invoice.removeAll();
-				TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);
+				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+				TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
 			}
 		});
 		btnCancel.setBounds(596, 607, 126, 45);
 		btnCancel.setText("Cancel");
 		
-		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(
+				partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
 		// END Invoice Tab
 		
 		// START Order tab
@@ -548,14 +527,6 @@ public class Gui extends Composite {
 		btnNewUnit.setText("New Unit");
 		btnNewUnit.setBounds(877, 10, 109, 26);
 		btnNewUnit.addMouseListener(new CreateNewObjectListener(unitTable, unitSearchBox, shell));
-//		btnNewUnit.addMouseListener(new NewUnitButtonListener());
-//		btnNewUnit.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseDown(MouseEvent e) {
-//				NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
-//				addNewUnitDialog.open();
-//			}
-//		});
 	}
 	
 	private void reportsTab(TabFolder tabFolder) {
@@ -569,9 +540,16 @@ public class Gui extends Composite {
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
-	
+		
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+
+	public static void setDialogAtCenter(Shell dialogShell) {
+		Rectangle parentRec = dialogShell.getParent().getBounds();
+		Point parentCenter = new Point(parentRec.x + parentRec.width / 2, parentRec.y + parentRec.height / 2);
+		dialogShell.setLocation(parentCenter.x - dialogShell.getBounds().width / 2,
+				parentCenter.y - dialogShell.getBounds().height / 2);
 	}
 }

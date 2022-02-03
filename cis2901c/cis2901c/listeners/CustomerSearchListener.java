@@ -34,7 +34,6 @@ public class CustomerSearchListener extends MouseAdapter{
 		if (selectedCustomer instanceof Customer) {
 			txtBox.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
 			txtBox.setData(selectedCustomer);
-//			customerId = selectedCustomer.getCustomerId();
 		}
 	}
 

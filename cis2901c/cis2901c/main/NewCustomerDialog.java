@@ -112,6 +112,8 @@ public class NewCustomerDialog extends Dialog {
 		shlNewCustomer.setSize(592, 255);
 		shlNewCustomer.setText("New Customer");
 		
+		Gui.setDialogAtCenter(shlNewCustomer);
+		
 		// customer detail text boxes
 		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtFirstName.setText("First Name...");
@@ -154,21 +156,18 @@ public class NewCustomerDialog extends Dialog {
 		txtHomePhone.setText("Home Phone...");
 		txtHomePhone.setBounds(292, 42, 272, 26);
 		txtHomePhone.addFocusListener(new TextBoxFocusListener(txtHomePhone));
-//		txtHomePhone.addModifyListener(new InfoTextBoxModifyListener(txtHomePhone));
 		txtHomePhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtHomePhone));
 		
 		txtWorkPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtWorkPhone.setText("Work Phone...");
 		txtWorkPhone.setBounds(292, 74, 272, 26);
 		txtWorkPhone.addFocusListener(new TextBoxFocusListener(txtWorkPhone));
-//		txtWorkPhone.addModifyListener(new InfoTextBoxModifyListener(txtWorkPhone));
 		txtWorkPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtWorkPhone));
 		
 		txtCellPhone = new MyText(shlNewCustomer, SWT.BORDER);
 		txtCellPhone.setText("Cell Phone...");
 		txtCellPhone.setBounds(292, 106, 272, 26);
 		txtCellPhone.addFocusListener(new TextBoxFocusListener(txtCellPhone));
-//		txtCellPhone.addModifyListener(new InfoTextBoxModifyListener(txtCellPhone));
 		txtCellPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtCellPhone));
 		
 		txtEmail = new MyText(shlNewCustomer, SWT.BORDER);
@@ -241,53 +240,24 @@ public class NewCustomerDialog extends Dialog {
 		}
 		
 		if (txtZipCode.isModified()) {
-//			try {
 				customer.setZipCode(txtZipCode.getText());
-//			} catch (Exception e) {				// maybe put an error dialog box here
-//				System.out.println(e);
-//				e.printStackTrace();
-//				customer.setZipCode(0);
-//			}
 		}
 		
-		
-		// for phone numbers maybe do regex that removes all non-numeric characters 
+		 
 		if (txtHomePhone.isModified()) {		// maybe set phone nums to string in DB
-//			try {
-//				customer.setHomePhone(txtHomePhone.getText().replaceAll("[^0-9]", ""));
 				customer.setHomePhone(txtHomePhone.getText());
-//			} catch (Exception e) {				// maybe put an error dialog box here
-//				System.out.println(e);
-//				e.printStackTrace();
-//				customer.setHomePhone();
-//			}
 		}
 		
 		if (txtWorkPhone.isModified()) {
-//			try {
-//				customer.setWorkPhone(txtWorkPhone.getText().replaceAll("[^0-9]", ""));
 			customer.setWorkPhone(txtWorkPhone.getText());
-//			} catch (Exception e) {				// maybe put an error dialog box here
-//				System.out.println(e);
-//				e.printStackTrace();
-//				customer.setWorkPhone(0);
-//			}
 		}
 		
 		if (txtCellPhone.isModified()) {
-//			try {
-//				customer.setCellPhone(txtCellPhone.getText().replaceAll("[^0-9]", ""));
 			customer.setCellPhone(txtCellPhone.getText());
-//			} catch (Exception e) {				// maybe put an error dialog box here
-//				System.out.println(e);
-//				e.printStackTrace();
-//				customer.setCellPhone(0);
-//			}
 		}
 		
-		if (txtEmail.isModified()) {		// TODO make dialog box, if txtEmail.isModified, check its format
-												// vs regex to ensure (name)@(domain).(tld)
-			customer.setEmail(txtEmail.getText());
+		if (txtEmail.isModified()) {	// TODO make dialog box, if txtEmail.isModified, check its format
+			customer.setEmail(txtEmail.getText());					// vs regex to ensure (name)@(domain).(tld)
 		}
 
 		DbServices.saveObject(customer);

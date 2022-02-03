@@ -89,7 +89,6 @@ public class NewPartDialog extends Dialog {
 		if (part.getRetail() != null && !part.getRetail().equals(new BigDecimal(0)))
 			this.txtRetail.setText(part.getRetail().toString());
 		
-//		this.newPart = part.isNewPart();
 		this.part = part;
 		
 		// open new New Part dialog, customize for editing current customer
@@ -112,6 +111,8 @@ public class NewPartDialog extends Dialog {
 		shlAddPart = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlAddPart.setSize(592, 300);
 		shlAddPart.setText("Add Part");
+		
+		Gui.setDialogAtCenter(shlAddPart);
 		
 		txtPartNumber = new MyText(shlAddPart, SWT.BORDER);
 		txtPartNumber.setBackground(SWTResourceManager.getColor(255, 102, 102));
@@ -188,7 +189,8 @@ public class NewPartDialog extends Dialog {
 		});
 		btnCancel.setText("Cancel");
 		btnCancel.setBounds(429, 216, 135, 26);
-		shlAddPart.setTabList(new Control[]{txtPartNumber, txtSupplier, txtCategory, txtDescription, txtOnHand, txtCost, txtRetail, txtNotes, btnSavePart, btnCancel});
+		shlAddPart.setTabList(new Control[]{txtPartNumber, txtSupplier, txtCategory, txtDescription,
+										txtOnHand, txtCost, txtRetail, txtNotes, btnSavePart, btnCancel});
 	}
 
 	protected void addNewPart() {
