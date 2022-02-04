@@ -14,6 +14,7 @@ import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
+// TODO rename this something better (or refactor more), 'cause we're not just creating objects here
 public class CreateNewObjectListener extends MouseAdapter{
 	
 	MyTable table = null;

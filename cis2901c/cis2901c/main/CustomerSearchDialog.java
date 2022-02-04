@@ -13,6 +13,7 @@ import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Control;
 
 // TODO copy most of Customer tab into here, i.e. search and table display, when a selection is made in table
 		// return Customer object to insert data into RO or unit info 
@@ -152,6 +153,7 @@ public class CustomerSearchDialog extends Dialog {
 		Button btnCancel = new Button(shlCustomerSearch, SWT.NONE);
 		btnCancel.setText("Cancel");
 		btnCancel.setBounds(662, 330, 256, 26);
+		shlCustomerSearch.setTabList(new Control[]{customerSearchTextBox, customerTable, btnSelectCustomer, btnCancel});
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {

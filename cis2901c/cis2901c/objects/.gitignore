@@ -11,3 +11,6 @@
 /MyPartInventoryTable.class
 /MyUnitTable.class
 /MyCustomerTable.class
+/Invoice.class
+/MyInvoiceTable.class
+/MyInvoiceTableItem.class

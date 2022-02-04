@@ -1,5 +1,12 @@
 package cis2901c.main;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -7,6 +14,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -16,6 +24,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.CreateNewObjectListener;
 import cis2901c.listeners.CustomerSearchListener;
+import cis2901c.listeners.DbServices;
 import cis2901c.listeners.DeleteLineItemListener;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
@@ -24,7 +33,10 @@ import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.Customer;
+import cis2901c.objects.Invoice;
 import cis2901c.objects.MyCustomerTable;
+import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.MyPartInventoryTable;
 import cis2901c.objects.MyPartInvoiceTable;
 import cis2901c.objects.MyTable;
@@ -227,12 +239,13 @@ public class Gui extends Composite {
 		Composite invoiceComposite = new Composite(tabFolder_Parts, SWT.NONE);
 		tbtmInvoice.setControl(invoiceComposite);
 		
-		MyText txtCustomer_invoice = new MyText(invoiceComposite, SWT.BORDER);
+		MyText txtCustomer_invoice = new MyText(invoiceComposite, SWT.BORDER | SWT.WRAP);
 		txtCustomer_invoice.setText("Customer...");
 		txtCustomer_invoice.setEditable(false);
 		txtCustomer_invoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtCustomer_invoice.setBounds(10, 10, 554, 128);
 		txtCustomer_invoice.addModifyListener(new RequiredTextBoxModifyListener(txtCustomer_invoice));
+			// TODO if double clicking to search, trim just first name, we'll hafta refacter CustomerSearchListener
 		txtCustomer_invoice.addMouseListener(new CustomerSearchListener(txtCustomer_invoice));
 		
 		txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
@@ -330,8 +343,8 @@ public class Gui extends Composite {
 		final TableEditor editor = new TableEditor(partTable_Invoice);		// TODO why am I building this out here
 	    editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
-	    partTable_Invoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(	// and passing it in here
-	    		partTable_Invoice, editor, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+	    partTable_Invoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(partTable_Invoice, editor, // and passing it in here
+	    		txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal, textCategory_Invoice, textSupplier_Invoice, textNotes_Invoice));
 	    
 		partTable_Invoice.setLinesVisible(true);
 		partTable_Invoice.setHeaderVisible(true);
@@ -366,9 +379,33 @@ public class Gui extends Composite {
 		tblclmnExtendedPrice_Invoice.setText("Extended Price");
 		
 		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-		TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
+		TableItem tableItem = new MyInvoiceTableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
 		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
+		btnCashier.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// spawn amount due dialog box
+				// TODO don't do anything if there are not items on invoice
+				AmountDueDialog amountDueDialog = new AmountDueDialog(shell, getStyle());
+				boolean cashiered = amountDueDialog.open(txtFinalTotal.getText());
+				
+				if (cashiered) {
+					Invoice cashieredInvoice = new Invoice();
+					cashieredInvoice.setCustomerId(((Customer) txtCustomer_invoice.getData()).getCustomerId());
+//					cashieredInvoice.setCustomerName(null, null);		// get name from txtCustomer_invoice
+					cashieredInvoice.setCustomerData(txtCustomer_invoice.getText());
+					cashieredInvoice.setNotes(textNotes_Invoice.getText());
+					cashieredInvoice.setTax(new BigDecimal(txtTax_Invoice.getText().replace("$", "")));
+					cashieredInvoice.setCashiereDateTime(Timestamp.from(Instant.now()));
+					cashieredInvoice.setCashiered(true);
+					cashieredInvoice.setTableLineItems(partTable_Invoice.getItems());
+					// send invoice obj to DbServices
+					DbServices.saveObject(cashieredInvoice);
+					// TODO clear invoice tab
+				}
+			}
+		});
 		btnCashier.setBounds(596, 501, 126, 100);
 		btnCashier.setText("Cashier");
 		
@@ -396,6 +433,19 @@ public class Gui extends Composite {
 		
 		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(
 				partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+		
+		Button btnSearchForInvoice = new Button(invoiceComposite, SWT.NONE);
+		btnSearchForInvoice.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// open invoice search dialog
+				InvoiceSearchDialog invoiceSearchDialog = new InvoiceSearchDialog(Display.getDefault().getActiveShell(), SWT.NONE);
+				Invoice invoiceToEdit = (Invoice) invoiceSearchDialog.open();		// TODO check all casts
+				// populate all invoice tab fields with data from invoice to edit
+			}
+		});
+		btnSearchForInvoice.setBounds(485, 607, 105, 45);
+		btnSearchForInvoice.setText("Invoice Search");
 		// END Invoice Tab
 		
 		// START Order tab

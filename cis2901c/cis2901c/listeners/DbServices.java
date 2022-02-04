@@ -7,14 +7,20 @@ import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObject;
+import cis2901c.objects.Invoice;
+import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
@@ -58,8 +64,23 @@ public class DbServices {
 		}
 	}
 	
+//	public static void saveObject(Invoice cashieredInvoice) {
+//		saveInvoice(cashieredInvoice);
+//	}
+//	
+//	private static void saveInvoice(Invoice cashieredInvoice) {
+//		// insert data into invoice table
+//		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.invoice () VALUES ();" );
+//		
+//		// insert individual part invoice line items into invoicepart table
+//			// in invoicepart section, update onHand of part table
+//	}
+	
 	public static void saveObject(DbObject dbObject) {
 		// public Save Object interface
+		if (dbObject == null) {
+			return;
+		}
 		StringBuilder queryString = new StringBuilder();
 		boolean creatingNewObject = (dbObject.getDbPk() == -1);
 		// start building query string
@@ -70,40 +91,44 @@ public class DbServices {
 		}
 		// check which object data is present and add those fields to query string
 		List<String> dbFields = insertFieldsIntoQuery(queryString, dbObject, creatingNewObject);
-		
-//		boolean isAnythingModified = false;		
-//		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
-//			if (entry.getValue() != null) {
-//				isAnythingModified = true;
-//				if (creatingNewObject) {
-//					insertQueryHelper(queryString, entry.getKey(), "?");
-//				} else {
-//					updateQueryHelper(queryString, entry.getKey(), "?");
-//				}
-//				dbFields.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
-//			}
-//		}
+
 		// build query Statement and fill parameters
 		sendQueryToDb(queryString, dbFields);
-//		if (isAnythingModified) {
-//			Connection dbConnection = DbServices.getDbConnection();
-//			try {
-//				PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
-//				int parameterIndex = 1;
-//				for(String fieldData : dbFields) {
-//					statement.setString(parameterIndex, fieldData);
-//					parameterIndex++;
-//				}
-//				statement.execute();
-//				System.out.println("Update Count: " + statement.getUpdateCount());
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				System.out.println(queryString);
-//				e.printStackTrace();
-//			}
-//		}
+		
+		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
+//			saveInvoiceParts(dbObject);
+			// TODO get invoicenum, SELECT MAX(invoicenum) FROM cis2901c.invoice;
+			int invoicenum = getLastInvoicenum();
+			// insert individual part invoice line items into invoicepart table
+				// in invoicepart section, update onHand of part table
+			TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
+			for (TableItem invoiceLineItem : invoiceLineItems) {
+				if (invoiceLineItem.getData() == null) {
+					return;
+				}
+				MyInvoiceTableItem myInvoiceLineItem = (MyInvoiceTableItem) invoiceLineItem;
+				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoicenum));
+				saveObject(myInvoiceLineItem);
+			}
+		}
 	}
 	
+	private static int getLastInvoicenum() {
+		final int SQL_FAILURE = -1;
+		ResultSet results = null;
+		try {
+			PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;");
+			results = lastInvoiceNumStatement.executeQuery();
+			while (results.next()) {
+				return results.getInt(1);	
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return SQL_FAILURE;
+	}
+
 	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
 		Connection dbConnection = DbServices.getDbConnection();
 		try {
@@ -167,6 +192,14 @@ public class DbServices {
 		queryString.insert(fieldInsertionPoint, field);
 	}
 	
+	private static void saveInvoiceParts(DbObject dbObject) {
+		TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
+		StringBuilder queryString = new StringBuilder();
+		for (TableItem invoiceLineItem : invoiceLineItems) {
+			queryString.append("INSERT INTO cis2901c.invoicepart () VALUES ();" );
+		}
+	}
+	
 	private static String[] sanitizer(String searchQuery) {
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection protection
@@ -190,6 +223,9 @@ public class DbServices {
 		boolean isCustomerSearch = false;
 		boolean isUnitSearch = false;
 		boolean isPartSearch = false;
+		boolean isInvoiceSearch = false;
+// TODO break these up into searchFor[eachIndividualObject] so we only hafta condition check this once
+		// each searchFor[eachIndividualObject] can then call buildSearchQuery method I'll refactor out 
 		
 			// search for searchQuery and display in resultsTable
 			// TODO there might be a better way to check what type we're searching
@@ -223,8 +259,26 @@ public class DbServices {
 						+ "AND partId IN (");
 			deleteStart = 13;
 			deleteEnd = 87;
+		} else if (resultsTable.getColumn(0).getText().equals("Invoice #")) {
+			// TODO build invoice search results
+			isInvoiceSearch = true;
+//			query.append("SELECT i.invoicenum, c.lastname, c.firstname, i.cashiereddate, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
+//					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
+//					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
+			query.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, "
+					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
+					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
+					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
+			outerQuery.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, \"\r\n"
+					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM \"\r\n"
+					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON \"\r\n"
+					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? AND i.invoicenum IN (;");
+			deleteStart = 19;
+			deleteEnd = 218;
 		}
+
 		
+// TODO refactor to buildSearchQuery method here 
 		// build sub-queries if we have more than one search term
 		String[] wordsFromQuery = sanitizer(searchQuery);
 		for (int i = 1; i < wordsFromQuery.length; i++) {
@@ -253,6 +307,8 @@ public class DbServices {
 				}
 			}
 			queryResultSet = statement.executeQuery();
+// TODO refactor to buildSearchQuery method here END
+			
 			
 			// build objects from results and return them
 			if (isCustomerSearch) {
@@ -317,6 +373,29 @@ public class DbServices {
 
 					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
 					results[i] = part;
+					i++;
+				}
+			} else if (isInvoiceSearch) {
+				results = new Invoice[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					int invoiceNum = queryResultSet.getInt(1);
+					long customerId = queryResultSet.getLong(2);
+					String lastname = queryResultSet.getString(3);
+					String firstname = queryResultSet.getString(4);
+					String customerData = new String(queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
+							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
+								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11));
+					String notes = queryResultSet.getString(12);
+					BigDecimal tax = queryResultSet.getBigDecimal(13);
+					Timestamp cashieredDateTime = queryResultSet.getTimestamp(14);
+					boolean cashiered = queryResultSet.getBoolean(15);
+					int lineItemCount = queryResultSet.getInt(16);
+					BigDecimal finalTotal = queryResultSet.getBigDecimal(17); 
+					
+					Invoice invoice = new Invoice(invoiceNum, customerId, lastname, firstname, customerData, notes, tax, cashieredDateTime, cashiered, new Part[lineItemCount]);
+					// TODO populate invoice.parts[]
+					results[i] = invoice;
 					i++;
 				}
 			}

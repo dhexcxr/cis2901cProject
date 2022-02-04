@@ -32,7 +32,19 @@ public class CustomerSearchListener extends MouseAdapter{
 			selectedCustomer = (Customer) customerSearchDialog.open();
 		}
 		if (selectedCustomer instanceof Customer) {
-			txtBox.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
+			if (txtBoxStartingText.equals("Owner...")) {		// Owner text box in New Unit dialog
+				txtBox.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
+			} else if (txtBoxStartingText.equals("Customer...")) {		// Customer text box in Part Invoice tab	
+				StringBuilder customerName = new StringBuilder(selectedCustomer.getLastName());
+				if (selectedCustomer.getFirstName() != null) {
+					customerName.append(selectedCustomer.getFirstName().equals("") ?
+							selectedCustomer.getFirstName() :", " + selectedCustomer.getFirstName());
+				}
+				// TODO fix null display on null Strings
+				txtBox.setText(customerName + "\n" + selectedCustomer.getAddress() + "\n" + selectedCustomer.getCity() + ", " +
+						selectedCustomer.getState() + " " + selectedCustomer.getZipCode() + "\n" + selectedCustomer.getHomePhone() + "\n" + 
+						selectedCustomer.getCellPhone() + "\n" + selectedCustomer.getEmail());
+			}
 			txtBox.setData(selectedCustomer);
 		}
 	}

@@ -23,5 +23,5 @@ public class MyText extends Text {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
-	}	
+	}
 }
