@@ -21,15 +21,7 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		// Start GUI
-		
-//		DeviceData data = new DeviceData();		// Sleak
-//	    data.tracking = true;					// Sleak
-//		Display display = new Display(data);	// "data" parameter is Sleak
-//		Sleak sleak = new Sleak();				// Sleak
-//	    sleak.open();							// Sleak
-	    
-	    
+		// Start GUI	    
 	    Display display = new Display();
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));

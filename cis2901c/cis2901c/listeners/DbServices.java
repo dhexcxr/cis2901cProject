@@ -1,26 +1,18 @@
 package cis2901c.listeners;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-
 import cis2901c.objects.Customer;
 import cis2901c.objects.SavableDbObject;
-import cis2901c.objects.Invoice;
-import cis2901c.objects.MyInvoiceTableItem;
-import cis2901c.objects.Part;
-import cis2901c.objects.Unit;
 
 public class DbServices {
 	// TODO add status icon somewhere to show when we're connected to DB
@@ -62,18 +54,6 @@ public class DbServices {
 		}
 	}
 	
-//	public static void saveObject(Invoice cashieredInvoice) {
-//		saveInvoice(cashieredInvoice);
-//	}
-//	
-//	private static void saveInvoice(Invoice cashieredInvoice) {
-//		// insert data into invoice table
-//		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.invoice () VALUES ();" );
-//		
-//		// insert individual part invoice line items into invoicepart table
-//			// in invoicepart section, update onHand of part table
-//	}
-	
 	public static void saveObject(SavableDbObject dbObject) {
 		// public Save Object interface
 		if (dbObject == null) {
@@ -92,41 +72,8 @@ public class DbServices {
 
 		// build query Statement and fill parameters
 		sendQueryToDb(queryString, dbFields);
-		
-		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
-//			saveInvoiceParts(dbObject);
-			// TODO get invoicenum, SELECT MAX(invoicenum) FROM cis2901c.invoice;
-			int invoicenum = getLastInvoicenum();
-			// insert individual part invoice line items into invoicepart table
-				// in invoicepart section, update onHand of part table
-			TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
-			for (TableItem invoiceLineItem : invoiceLineItems) {
-				if (invoiceLineItem.getData() == null) {
-					return;
-				}
-				MyInvoiceTableItem myInvoiceLineItem = (MyInvoiceTableItem) invoiceLineItem;
-				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoicenum));
-				saveObject(myInvoiceLineItem);
-			}
-		}
 	}
 	
-	private static int getLastInvoicenum() {
-		final int SQL_FAILURE = -1;
-		ResultSet results = null;
-		try {
-			PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;");
-			results = lastInvoiceNumStatement.executeQuery();
-			while (results.next()) {
-				return results.getInt(1);	
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return SQL_FAILURE;
-	}
-
 	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
 		Connection dbConnection = DbServices.getDbConnection();
 		try {
@@ -211,13 +158,7 @@ public class DbServices {
 		int deleteStart = 0;
 		int deleteEnd = 0;
 		boolean isCustomerSearch = false;
-		boolean isUnitSearch = false;
-		boolean isPartSearch = false;
-		boolean isInvoiceSearch = false;
-// TODO break these up into searchFor[eachIndividualObject] so we only hafta condition check this once
-		// each searchFor[eachIndividualObject] can then call buildSearchQuery method I'll refactor out 
-		
-			// search for searchQuery and display in resultsTable
+		// search for searchQuery and display in resultsTable
 			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
 			isCustomerSearch = true;
@@ -229,42 +170,6 @@ public class DbServices {
 					+ "OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
 			deleteStart = 7;
 			deleteEnd = 99;
-		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
-			isUnitSearch = true;
-			query.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-			outerQuery.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
-					+ "AND unitId IN (");
-			deleteStart = 15;
-			deleteEnd = 128;
-		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
-			isPartSearch = true;
-			query.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
-				+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;");
-			outerQuery.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
-						+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? "
-						+ "AND partId IN (");
-			deleteStart = 13;
-			deleteEnd = 87;
-		} else if (resultsTable.getColumn(0).getText().equals("Invoice #")) {
-			// TODO build invoice search results
-			isInvoiceSearch = true;
-//			query.append("SELECT i.invoicenum, c.lastname, c.firstname, i.cashiereddate, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
-//					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
-//					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
-			query.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, "
-					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
-					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
-					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
-			outerQuery.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, \"\r\n"
-					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM \"\r\n"
-					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON \"\r\n"
-					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? AND i.invoicenum IN (;");
-			deleteStart = 19;
-			deleteEnd = 218;
 		}
 
 		
@@ -320,72 +225,6 @@ public class DbServices {
 					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
 							zip, homePhone, workPhone, cellPhone, email);
 					results[i] = customer;
-					i++;
-				}
-			} else if (isUnitSearch) {
-				results = new Unit[MAX_RESULTS];
-				int i = 0;
-				while (queryResultSet.next() && i < MAX_RESULTS) {
-					long unitId = queryResultSet.getLong(1);
-					long customerId = queryResultSet.getLong(2);
-					String make = queryResultSet.getString(3);
-					String model = queryResultSet.getString(4);
-					String modelName = queryResultSet.getString(5);
-					int year = queryResultSet.getInt(6);
-					int mileage = queryResultSet.getInt(7);
-					String color = queryResultSet.getString(8);
-					String vin = queryResultSet.getString(9);
-					String notes = queryResultSet.getString(10);
-					String lastName = queryResultSet.getString(11);
-					String firstName = queryResultSet.getString(12);
-					String owner = lastName;
-					if (firstName != null && firstName.length() != 0) {
-						owner = lastName + ", " + firstName;
-					}
-					
-					Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
-					results[i] = unit;
-					i++;
-				}
-			} else if (isPartSearch) {
-				results = new Part[MAX_RESULTS];
-				int i = 0;
-				while (queryResultSet.next() && i < MAX_RESULTS) {
-					int partId = queryResultSet.getInt(1);
-					String partNumber = queryResultSet.getString(2);
-					String supplier = queryResultSet.getString(3);
-					String category = queryResultSet.getString(4);
-					String description = queryResultSet.getString(5);
-					String notes = queryResultSet.getString(6);
-					BigDecimal cost = queryResultSet.getBigDecimal(7);
-					BigDecimal retail = queryResultSet.getBigDecimal(8);
-					int onHand = queryResultSet.getInt(9);
-
-					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
-					results[i] = part;
-					i++;
-				}
-			} else if (isInvoiceSearch) {
-				results = new Invoice[MAX_RESULTS];
-				int i = 0;
-				while (queryResultSet.next() && i < MAX_RESULTS) {
-					int invoiceNum = queryResultSet.getInt(1);
-					long customerId = queryResultSet.getLong(2);
-					String lastname = queryResultSet.getString(3);
-					String firstname = queryResultSet.getString(4);
-					String customerData = new String(queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
-							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
-								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11));
-					String notes = queryResultSet.getString(12);
-					BigDecimal tax = queryResultSet.getBigDecimal(13);
-					Timestamp cashieredDateTime = queryResultSet.getTimestamp(14);
-					boolean cashiered = queryResultSet.getBoolean(15);
-					int lineItemCount = queryResultSet.getInt(16);
-					BigDecimal finalTotal = queryResultSet.getBigDecimal(17); 
-					
-					Invoice invoice = new Invoice(invoiceNum, customerId, lastname, firstname, customerData, notes, tax, cashieredDateTime, cashiered, new Part[lineItemCount]);
-					// TODO populate invoice.parts[]
-					results[i] = invoice;
 					i++;
 				}
 			}
