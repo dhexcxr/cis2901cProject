@@ -40,7 +40,7 @@ public class MyCustomerTable extends MyTable{
 			tableItem.setData(customer);
 		}
 		
-		initialSortOnPaint(LAST_NAME_INDEX, currentSortDirection);
+		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
 	
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
