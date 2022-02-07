@@ -19,8 +19,6 @@ import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class Gui extends Composite {
 
