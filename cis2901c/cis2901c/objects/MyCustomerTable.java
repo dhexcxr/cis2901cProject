@@ -57,7 +57,17 @@ public class MyCustomerTable extends MyTable{
 					String[] values = { items[i].getText(FIRST_NAME_INDEX), items[i].getText(LAST_NAME_INDEX),
 							items[i].getText(ADDRESS_INDEX), items[i].getText(CITY_INDEX), items[i].getText(STATE_INDEX),
 								items[i].getText(ZIP_INDEX), items[i].getText(HOME_PHONE_INDEX),
-									items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
+								items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
+					items[i].dispose();
+					TableItem item = new TableItem(this, SWT.NONE, j);
+					item.setText(values);
+					items = this.getItems();
+					break;
+				} else if (sortDirection ==  SWT.DOWN && collator.compare(value1, value2) > 0) {
+					String[] values = { items[i].getText(FIRST_NAME_INDEX), items[i].getText(LAST_NAME_INDEX),
+							items[i].getText(ADDRESS_INDEX), items[i].getText(CITY_INDEX), items[i].getText(STATE_INDEX),
+								items[i].getText(ZIP_INDEX), items[i].getText(HOME_PHONE_INDEX),
+								items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
 					items[i].dispose();
 					TableItem item = new TableItem(this, SWT.NONE, j);
 					item.setText(values);
@@ -70,14 +80,17 @@ public class MyCustomerTable extends MyTable{
 		this.setSortDirection(sortDirection);
 	}
 	
+	@Override
 	public void sort(int sortColumn) {
 		if (currentSortedColumn == sortColumn && currentSortDirection == SWT.UP) {
-			initialSortOnPaint(sortColumn, SWT.DOWN);
+			currentSortDirection = SWT.DOWN;
 		} else if (currentSortedColumn == sortColumn && currentSortDirection == SWT.DOWN) {
-			initialSortOnPaint(sortColumn, SWT.UP);
+			currentSortDirection = SWT.UP;
 		} else {
-			initialSortOnPaint(sortColumn, SWT.UP);
+			currentSortedColumn = sortColumn;
+			currentSortDirection = SWT.UP;
 		}
+		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
 
 }

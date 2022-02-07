@@ -14,10 +14,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import cis2901c.listeners.CreateNewObjectListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.SearchTextBoxListeners;
+import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class Gui extends Composite {
 
@@ -81,38 +84,48 @@ public class Gui extends Composite {
 		TableColumn tblclmnFirstName_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnFirstName_Customer.setText("First Name");
 		tblclmnFirstName_Customer.setWidth(100);
+		tblclmnFirstName_Customer.addSelectionListener(new TableColumnSortListener(tblclmnFirstName_Customer));
 
 		TableColumn tblclmnLastName_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnLastName_Customer.setText("Last Name");
 		tblclmnLastName_Customer.setWidth(100);
+		tblclmnLastName_Customer.addSelectionListener(new TableColumnSortListener(tblclmnLastName_Customer));
 
 		TableColumn tblclmnAddress_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnAddress_Customer.setText("Address");
 		tblclmnAddress_Customer.setWidth(100);
+		tblclmnAddress_Customer.addSelectionListener(new TableColumnSortListener(tblclmnAddress_Customer));
+		
 
 		TableColumn tblclmnCity_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnCity_Customer.setText("City");
 		tblclmnCity_Customer.setWidth(100);
+		tblclmnCity_Customer.addSelectionListener(new TableColumnSortListener(tblclmnCity_Customer));
 
 		TableColumn tblclmnState_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnState_Customer.setText("State");
 		tblclmnState_Customer.setWidth(100);
+		tblclmnState_Customer.addSelectionListener(new TableColumnSortListener(tblclmnState_Customer));
 
 		TableColumn tblclmnZip_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnZip_Customer.setText("Zip");
 		tblclmnZip_Customer.setWidth(100);
+		tblclmnZip_Customer.addSelectionListener(new TableColumnSortListener(tblclmnZip_Customer));
 
 		TableColumn tblclmnHomePhone_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnHomePhone_Customer.setText("Home Phone");
 		tblclmnHomePhone_Customer.setWidth(100);
+		tblclmnHomePhone_Customer.addSelectionListener(new TableColumnSortListener(tblclmnHomePhone_Customer));
 
 		TableColumn tblclmnCellPhone_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnCellPhone_Customer.setText("Cell Phone");
 		tblclmnCellPhone_Customer.setWidth(100);
+		tblclmnCellPhone_Customer.addSelectionListener(new TableColumnSortListener(tblclmnCellPhone_Customer));
 
 		TableColumn tblclmnEmail_Customer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnEmail_Customer.setText("E-mail");
 		tblclmnEmail_Customer.setWidth(100);
+		tblclmnEmail_Customer.addSelectionListener(new TableColumnSortListener(tblclmnEmail_Customer));
 
 		// Customer controls
 		customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
