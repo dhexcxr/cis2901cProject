@@ -3,12 +3,8 @@ package cis2901c.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.swt.widgets.Table;
-import cis2901c.listeners.DbServices;
-
 public class Customer implements SavableDbObject{
 	
-	// might not need this
 	private long customerId = -1;
 	private String firstName;
 	private String lastName;
@@ -141,8 +137,6 @@ public class Customer implements SavableDbObject{
 	}
 	
 	public Map<String, String> getDataMap() {
-		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
-			// to see how to treat it when building PreparedStatements with setParameter (of course I already changed all Customer fields to String)
 		Map<String, String> dataMap = new HashMap<>();
 		if (customerId != -1) {
 			dataMap.put("customerId", Long.toString(customerId));
@@ -159,11 +153,6 @@ public class Customer implements SavableDbObject{
 		dataMap.put("email", email);
 				
 		return dataMap;
-	}
-
-	protected static void populateCustomerTable(Table table) {
-		// not yet used, could populate "" in searchForObject call with current txtSearchBox.getText()
-		DbServices.searchForObject(table, "");
 	}
 	
 	public String setPhoneNumberFormat(String inputNumber) {

@@ -40,7 +40,6 @@ public class CustomerSearchListener extends MouseAdapter{
 					customerName.append(selectedCustomer.getFirstName().equals("") ?
 							selectedCustomer.getFirstName() :", " + selectedCustomer.getFirstName());
 				}
-				// TODO fix null display on null Strings
 				txtBox.setText(customerName + "\n" + selectedCustomer.getAddress() + "\n" + selectedCustomer.getCity() + ", " +
 						selectedCustomer.getState() + " " + selectedCustomer.getZipCode() + "\n" + selectedCustomer.getHomePhone() + "\n" + 
 						selectedCustomer.getCellPhone() + "\n" + selectedCustomer.getEmail());

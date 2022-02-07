@@ -33,24 +33,14 @@ public class NewCustomerDialog extends Dialog {
 	private MyText txtWorkPhone;
 	private MyText txtCellPhone;
 	private MyText txtEmail;
-	// TODO i think this is a hack way to do this, customerId is used in Mouse Down listener for Save button
-		// to determine if we need to call addNew... or saveExisting....
+	
 	private long customerId = -1;
 	private Customer customer;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public NewCustomerDialog(Shell parent, int style) {
 		super(parent, style);
 	}
-	
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
+
 	public Object open() {
 		createContents();
 		shlNewCustomer.open();
@@ -104,9 +94,6 @@ public class NewCustomerDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlNewCustomer = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlNewCustomer.setSize(592, 255);
@@ -256,8 +243,8 @@ public class NewCustomerDialog extends Dialog {
 			customer.setCellPhone(txtCellPhone.getText());
 		}
 		
-		if (txtEmail.isModified()) {	// TODO make dialog box, if txtEmail.isModified, check its format
-			customer.setEmail(txtEmail.getText());					// vs regex to ensure (name)@(domain).(tld)
+		if (txtEmail.isModified()) {
+			customer.setEmail(txtEmail.getText());
 		}
 
 		DbServices.saveObject(customer);

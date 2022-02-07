@@ -21,22 +21,15 @@ import cis2901c.objects.MyText;
 
 public class Gui extends Composite {
 
-	// TODO why are these out here? maybe move them into methods where they are used
 	private Shell shell;
 	private MyText customerSearchTextBox;
 	private MyTable customerTable;
 	
-	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
-	 */
 	public Gui(Composite parent, int style) {
 		super(parent, style);
 		
 		this.shell = (Shell) parent;
 
-		// Tab control widget
 		TabFolder tabFolder_Gui = new TabFolder(this, SWT.NONE);
 		tabFolder_Gui.setBounds(10, 10, 1004, 748);
 
@@ -69,7 +62,6 @@ public class Gui extends Composite {
 		Label lblNotImplimentedYet = new Label(partsComposite, SWT.NONE);
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
-		// END Order Tab
 	}
 	
 	private void customersTab(TabFolder tabFolder) {

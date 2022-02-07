@@ -15,10 +15,7 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.SavableDbObject;
 
 public class DbServices {
-	// TODO add status icon somewhere to show when we're connected to DB
-		// set icon in initial connectToDb method call
-		// maybe check isConnected before every getDbConnection call, and set icon then too
-	
+
 	private static Connection mainDbConnection = null;
 	
 	// START General DB methods
@@ -31,9 +28,6 @@ public class DbServices {
 	}
 	
 	public static void connectToDb() {
-		// TODO decide if I want to setAutoCommit to false before returning Connection, every call would have to connection.commit
-			// or rollback if an exception is caught
-		// TODO offer some customization options in application like actual DB options
 		String url = "jdbc:mysql://localhost:3306/cis2901c";
 		String user = "TestUser";
 		String pass = "test";
@@ -71,10 +65,10 @@ public class DbServices {
 		List<String> dbFields = insertFieldsIntoQuery(queryString, dbObject, creatingNewObject);
 
 		// build query Statement and fill parameters
-		sendQueryToDb(queryString, dbFields);
+		sendSaveQueryToDb(queryString, dbFields);
 	}
 	
-	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
+	private static void sendSaveQueryToDb(StringBuilder queryString, List<String> dbFields) {
 		Connection dbConnection = DbServices.getDbConnection();
 		try {
 			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
@@ -86,7 +80,6 @@ public class DbServices {
 			statement.execute();
 			System.out.println("Update Count: " + statement.getUpdateCount());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			System.out.println(queryString);
 			e.printStackTrace();
 		}
@@ -94,16 +87,14 @@ public class DbServices {
 	
 	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, SavableDbObject dbObject, boolean creatingNewObject) {
 		List<String> results = new ArrayList<>();
-//		boolean isAnythingModified = false;
 		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
 			if (entry.getValue() != null) {
-//				isAnythingModified = true;
 				if (creatingNewObject) {
 					insertQueryHelper(queryString, entry.getKey(), "?");
 				} else {
 					updateQueryHelper(queryString, entry.getKey(), "?");
 				}
-				results.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+				results.add(entry.getValue().trim());
 			}
 		}
 		return results;
@@ -143,8 +134,8 @@ public class DbServices {
 		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
 	}
 	
-	@SuppressWarnings("unused")		// TODO see if we need this anywhere
-	private static String numberSanitizer(String searchQuery) {		// originally used in searchForCustomer, refactoring may have made it unnecessary
+	@SuppressWarnings("unused")
+	private static String numberSanitizer(String searchQuery) {
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection protection
 		return searchQuery.replaceAll("[^0-9]", "");
@@ -159,7 +150,6 @@ public class DbServices {
 		int deleteEnd = 0;
 		boolean isCustomerSearch = false;
 		// search for searchQuery and display in resultsTable
-			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
 			isCustomerSearch = true;
 			query.append("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
@@ -172,8 +162,6 @@ public class DbServices {
 			deleteEnd = 99;
 		}
 
-		
-// TODO refactor to buildSearchQuery method here 
 		// build sub-queries if we have more than one search term
 		String[] wordsFromQuery = sanitizer(searchQuery);
 		for (int i = 1; i < wordsFromQuery.length; i++) {
@@ -202,8 +190,6 @@ public class DbServices {
 				}
 			}
 			queryResultSet = statement.executeQuery();
-// TODO refactor to buildSearchQuery method here END
-			
 			
 			// build objects from results and return them
 			if (isCustomerSearch) {
@@ -229,7 +215,6 @@ public class DbServices {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		return results;

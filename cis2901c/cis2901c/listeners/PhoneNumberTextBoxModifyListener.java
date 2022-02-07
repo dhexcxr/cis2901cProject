@@ -25,6 +25,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 		}
 		
 		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
+			// format text in text box, account for different length county codes
 			text.setModified(true);
 			ignore = true;
 			text.setText(text.getText().replaceAll("[^0-9]", ""));

@@ -8,7 +8,6 @@ public class MyCustomerTable extends MyTable{
 
 	public MyCustomerTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
