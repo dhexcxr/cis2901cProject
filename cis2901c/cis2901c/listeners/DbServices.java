@@ -8,8 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.objects.Customer;
-import cis2901c.objects.DbObject;
+import cis2901c.objects.SavableDbObject;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.Part;
@@ -76,7 +74,7 @@ public class DbServices {
 //			// in invoicepart section, update onHand of part table
 //	}
 	
-	public static void saveObject(DbObject dbObject) {
+	public static void saveObject(SavableDbObject dbObject) {
 		// public Save Object interface
 		if (dbObject == null) {
 			return;
@@ -147,7 +145,7 @@ public class DbServices {
 		}
 	}
 	
-	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, DbObject dbObject, boolean creatingNewObject) {
+	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, SavableDbObject dbObject, boolean creatingNewObject) {
 		List<String> results = new ArrayList<>();
 //		boolean isAnythingModified = false;
 		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
@@ -190,14 +188,6 @@ public class DbServices {
 		}
 		field.append(data);
 		queryString.insert(fieldInsertionPoint, field);
-	}
-	
-	private static void saveInvoiceParts(DbObject dbObject) {
-		TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
-		StringBuilder queryString = new StringBuilder();
-		for (TableItem invoiceLineItem : invoiceLineItems) {
-			queryString.append("INSERT INTO cis2901c.invoicepart () VALUES ();" );
-		}
 	}
 	
 	private static String[] sanitizer(String searchQuery) {

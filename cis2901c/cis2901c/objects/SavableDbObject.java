@@ -2,7 +2,7 @@ package cis2901c.objects;
 
 import java.util.Map;
 
-public interface DbObject {
+public interface SavableDbObject {
 	
 	public long getDbPk();
 	
