@@ -23,4 +23,8 @@ public class MyTable extends Table {
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
+
+	public void sort(int i) {
+		// TODO Auto-generated method stub
+	}
 }
