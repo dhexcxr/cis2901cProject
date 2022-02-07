@@ -1,5 +1,7 @@
 package cis2901c.listeners;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -8,6 +10,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+
+import cis2901c.main.Main;
 
 public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 	
@@ -31,7 +35,7 @@ public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO stub, waiting for RO Tab implementation
-		System.out.println("Search box focused gained");
+		Main.log(Level.INFO, "Search box focused gained");
 		if (searchBox.getText().equals("Search...")) {
 			searchBox.setText("");
 		}		
@@ -40,7 +44,7 @@ public class RoSearchBoxListeners implements ModifyListener, FocusListener {
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO stub, waiting for RO Tab implementation
-		System.out.println("Search box focused lost");
+		Main.log(Level.INFO, "Search box focused lost");
 		if (searchBox.getText().equals("")) {
 			searchBox.setText("Search...");
 		}

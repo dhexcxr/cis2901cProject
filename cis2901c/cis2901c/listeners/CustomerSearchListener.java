@@ -23,7 +23,7 @@ public class CustomerSearchListener extends MouseAdapter{
 	public void mouseDoubleClick(MouseEvent e) {
 		// open Customer Search dialog with Owner text box double click
 		CustomerSearchDialog customerSearchDialog = new CustomerSearchDialog(Display.getDefault().getActiveShell(), SWT.NONE);
-		Customer selectedCustomer = new Customer();
+		Customer selectedCustomer;
 		if (!txtBox.getText().equals(txtBoxStartingText)) {
 			// if we're editing a current unit, pass Owner name to Customer Search Dialog
 			selectedCustomer = (Customer) customerSearchDialog.open(txtBox.getText());

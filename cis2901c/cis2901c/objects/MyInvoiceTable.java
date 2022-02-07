@@ -6,7 +6,12 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class MyInvoiceTable extends MyTable {
 
-	public MyInvoiceTable(Composite parent, int style) {
+	public static final int PART_NUMBER_COLUMN = 0;
+	public static final int QUANTITY_COLUMN = 2;
+	public static final int PART_PRICE_COLUMN = 5;
+	public static final int EXTENDED_PRICE_COLUMN = 6;
+	
+	public MyInvoiceTable(Composite parent, int style) {	
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

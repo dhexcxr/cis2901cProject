@@ -9,6 +9,12 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 	private MyText text;
 	private String textBoxText;
 	
+	// this is now used here and in PartInvoiceEditorEventListener
+	private static final String NOT_NUMBERS = "[^0-9]";		// find a better name
+	private static final String SEVEN_DIGIT_PHONE = "$1-$2";
+	private static final String TEN_DIGIT_PHONE = "$1-$2-$3";
+	private static final String INTERNATIONAL_PHONE = "$1-$2-$3-$4";
+	
 	// allow us to ignore modify events inside listener
 	boolean ignore = false;
 	
@@ -27,17 +33,17 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
 			text.setModified(true);
 			ignore = true;
-			text.setText(text.getText().replaceAll("[^0-9]", ""));
-			if (text.getText().replaceAll("[^0-9]", "").length() >= 7 && text.getText().replaceAll("[^0-9]", "").length() < 10) {
-				text.setText(text.getText().replaceFirst("(\\d{3})(\\d+)", "$1-$2"));
-			} else if (text.getText().replaceAll("[^0-9]", "").length() < 11) {
-				text.setText(text.getText().replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"));
-			} else if (text.getText().replaceAll("[^0-9]", "").length() == 11) {
-				text.setText(text.getText().replaceFirst("(\\d{1})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
-			} else if (text.getText().replaceAll("[^0-9]", "").length() == 12) {
-				text.setText(text.getText().replaceFirst("(\\d{2})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
-			} else if (text.getText().replaceAll("[^0-9]", "").length() == 13) {
-				text.setText(text.getText().replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+			text.setText(text.getText().replaceAll(NOT_NUMBERS, ""));
+			if (text.getText().replaceAll(NOT_NUMBERS, "").length() >= 7 && text.getText().replaceAll(NOT_NUMBERS, "").length() < 10) {
+				text.setText(text.getText().replaceFirst("(\\d{3})(\\d+)", SEVEN_DIGIT_PHONE));
+			} else if (text.getText().replaceAll(NOT_NUMBERS, "").length() < 11) {
+				text.setText(text.getText().replaceFirst("(\\d{3})(\\d{3})(\\d+)", TEN_DIGIT_PHONE));
+			} else if (text.getText().replaceAll(NOT_NUMBERS, "").length() == 11) {
+				text.setText(text.getText().replaceFirst("(\\d{1})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
+			} else if (text.getText().replaceAll(NOT_NUMBERS, "").length() == 12) {
+				text.setText(text.getText().replaceFirst("(\\d{2})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
+			} else if (text.getText().replaceAll(NOT_NUMBERS, "").length() == 13) {
+				text.setText(text.getText().replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
 			}
 			ignore = false;
 			text.setSelection(text.getText().length());

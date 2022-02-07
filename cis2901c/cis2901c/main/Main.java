@@ -1,5 +1,8 @@
 package cis2901c.main;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
@@ -10,7 +13,8 @@ import org.eclipse.swt.widgets.Shell;
 import cis2901c.listeners.DbServices;
 
 public class Main {
-	private static Shell shell = null;
+	
+	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	public static void main(String[] args) {
 		
@@ -31,7 +35,7 @@ public class Main {
 	    
 	    
 	    Display display = new Display();
-		shell = new Shell(display);
+		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");
 		@SuppressWarnings("unused")
@@ -47,7 +51,7 @@ public class Main {
 					display.sleep();
 			}
 		} else {
-			System.out.println("DB Connection error dialog box");
+			getLogger().log(Level.SEVERE, "DB Connection error dialog box");
 			MessageBox dbConnectionError = new MessageBox(shell, SWT.ERROR);
 			dbConnectionError.setText("DB Error");
 			dbConnectionError.setMessage("Unable to connect to database");
@@ -57,5 +61,13 @@ public class Main {
 		// disconnect from SQL DB before close
 		DbServices.disconnectFromDb();
 		display.close();
+	}
+
+	public static Logger getLogger() {
+		return LOGGER;
+	}
+	
+	public static void log(Level level, String msg) {
+		LOGGER.log(level, msg);
 	}
 }

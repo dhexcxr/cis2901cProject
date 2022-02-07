@@ -1,11 +1,14 @@
 package cis2901c.listeners;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
+import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
 import cis2901c.main.NewPartDialog;
 import cis2901c.main.NewUnitDialog;
@@ -28,7 +31,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
 		// open saved object for editing
-		System.out.println("Double click");
+		Main.log(Level.INFO, "Double click to open an existing object");
 		Object[] tableObjects = null;
 		// TODO there might be a better way to check what type we're searching
 			// just like in DbServices.searchForObject
@@ -57,8 +60,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openCustomer(Table table) {
 		// get object saved in TableItem Data
 		Customer customer = (Customer) table.getSelection()[0].getData();
-		System.out.println(customer.getFirstName());
-		System.out.println(customer.getCustomerId());
+		Main.log(Level.INFO, "Opened: " + customer.getFirstName());
+		Main.log(Level.INFO, Long.toString(customer.getCustomerId()));
 
 		// open customer for editing
 		NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
@@ -68,9 +71,9 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openUnit(Table table) {
 		// get object saved in TableItem Data
 		Unit unit = (Unit) table.getSelection()[0].getData();
-		System.out.println(unit.getMake());
-		System.out.println(unit.getModel());
-		System.out.println(unit.getVin());
+		Main.log(Level.INFO, "Open unit: " + unit.getMake());
+		Main.log(Level.INFO, unit.getModel());
+		Main.log(Level.INFO, unit.getVin());
 
 		NewUnitDialog modifyExistingUnitDialog = new NewUnitDialog(shell, SWT.NONE);
 		modifyExistingUnitDialog.open(unit);
@@ -79,8 +82,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openPart(Table table) {
 		// get object saved in TableItem Data
 		Part part= (Part) table.getSelection()[0].getData();
-		System.out.println(part.getPartNumber());
-		System.out.println(part.getDescription());
+		Main.log(Level.INFO, "Open part: " + part.getPartNumber());
+		Main.log(Level.INFO, part.getDescription());
 		
 		NewPartDialog modifyExistingPartDialog = new NewPartDialog(shell, SWT.NONE);
 		modifyExistingPartDialog.open(part);

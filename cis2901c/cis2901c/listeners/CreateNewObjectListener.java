@@ -1,10 +1,13 @@
 package cis2901c.listeners;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Shell;
 
+import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
 import cis2901c.main.NewPartDialog;
 import cis2901c.main.NewUnitDialog;
@@ -30,21 +33,21 @@ public class CreateNewObjectListener extends MouseAdapter{
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
-		System.out.println(table.getColumn(0).getText());
+		Main.log(Level.INFO, "Mouse down event on a table, first column: " + table.getColumn(0).getText());
 		
 		Object newObject = null;
-		Object newTableContents[] =  null;
+		Object[] newTableContents =  new Object[0];
 		if (table.getColumn(0).getText().equals("First Name")) {
 			NewCustomerDialog addNewCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
-			newObject = (Customer) addNewCustomerDialog.open();
+			newObject = addNewCustomerDialog.open();
 			newTableContents = new Customer[table.getItems().length + 1];
 		} else if (table.getColumn(0).getText().equals("Owner")) {
 			NewUnitDialog addNewUnitDialog = new NewUnitDialog(shell, SWT.NONE);
-			newObject = (Unit) addNewUnitDialog.open();
+			newObject = addNewUnitDialog.open();
 			newTableContents = new Unit[table.getItems().length + 1];
 		} else if (table.getColumn(0).getText().equals("Part Number")) {
 			NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
-			newObject = (Part) addNewPartDialog.open();
+			newObject = addNewPartDialog.open();
 			newTableContents = new Part[table.getItems().length + 1];
 		} 
 		

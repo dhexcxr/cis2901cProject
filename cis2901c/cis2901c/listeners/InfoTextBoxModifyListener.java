@@ -18,10 +18,6 @@ public class InfoTextBoxModifyListener implements ModifyListener {
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// help track if text box has been modified
-		if (txtBox.getText().length() > 0 && !txtBox.getText().equals(txtBoxStartingText)) {
-			txtBox.setModified(true);
-		} else {
-			txtBox.setModified(false);
-		}
+		txtBox.setModified(txtBox.getText().length() > 0 && !txtBox.getText().equals(txtBoxStartingText));
 	}
 }

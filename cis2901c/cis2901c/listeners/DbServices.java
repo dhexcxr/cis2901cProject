@@ -8,15 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import cis2901c.main.Main;
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObject;
 import cis2901c.objects.Invoice;
@@ -28,6 +28,9 @@ public class DbServices {
 	// TODO add status icon somewhere to show when we're connected to DB
 		// set icon in initial connectToDb method call
 		// maybe check isConnected before every getDbConnection call, and set icon then too
+	
+	private DbServices() {
+	}
 	
 	private static Connection mainDbConnection = null;
 	
@@ -50,7 +53,7 @@ public class DbServices {
 		try {
 			mainDbConnection = DriverManager.getConnection(url, user, pass);
 		} catch (SQLException e) {
-			System.out.println("Error connecting to database");
+			Main.log(Level.SEVERE, "Error connecting to database");
 			e.printStackTrace();
 		}
 	}
@@ -116,8 +119,8 @@ public class DbServices {
 	private static int getLastInvoicenum() {
 		final int SQL_FAILURE = -1;
 		ResultSet results = null;
-		try {
-			PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;");
+		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;")) {
+//			PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;");
 			results = lastInvoiceNumStatement.executeQuery();
 			while (results.next()) {
 				return results.getInt(1);	
@@ -130,19 +133,19 @@ public class DbServices {
 	}
 
 	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
-		Connection dbConnection = DbServices.getDbConnection();
-		try {
-			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
+//		Connection dbConnection = DbServices.getDbConnection();
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(queryString.toString())) {
+//			PreparedStatement statement = dbConnection.prepareStatement(queryString.toString());
 			int parameterIndex = 1;
 			for(String fieldData : dbFields) {
 				statement.setString(parameterIndex, fieldData);
 				parameterIndex++;
 			}
 			statement.execute();
-			System.out.println("Update Count: " + statement.getUpdateCount());
+			Main.log(Level.INFO, "Update Count: " + statement.getUpdateCount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.out.println(queryString);
+			Main.log(Level.SEVERE, "SQL Error: " + queryString);
 			e.printStackTrace();
 		}
 	}
@@ -231,48 +234,53 @@ public class DbServices {
 			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
 			isCustomerSearch = true;
-			query.append("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, "
-					+ "email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? "
-					+ "OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;");
-			outerQuery.append("SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, email, "
-					+ "customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? "
-					+ "OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (");
+			query.append("""
+					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+					email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
+					OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
+			outerQuery.append("""
+					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, email, 
+					customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? 
+					OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (""");
 			deleteStart = 7;
 			deleteEnd = 99;
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
 			isUnitSearch = true;
-			query.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;");
-			outerQuery.append("SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, "
-					+ "c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId " 
-					+ "WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? "
-					+ "AND unitId IN (");
+			query.append("""
+					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
+					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
+			outerQuery.append("""
+					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
+					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? 
+					AND unitId IN (""");
 			deleteStart = 15;
 			deleteEnd = 128;
 		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
 			isPartSearch = true;
-			query.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
-				+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;");
-			outerQuery.append("SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part " 
-						+ "WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? "
-						+ "AND partId IN (");
+			query.append("""
+				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""");
+			outerQuery.append("""
+					SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+					WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? 
+					AND partId IN (""");
 			deleteStart = 13;
 			deleteEnd = 87;
 		} else if (resultsTable.getColumn(0).getText().equals("Invoice #")) {
 			// TODO build invoice search results
 			isInvoiceSearch = true;
-//			query.append("SELECT i.invoicenum, c.lastname, c.firstname, i.cashiereddate, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
-//					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
-//					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
-			query.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, "
-					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM "
-					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON "
-					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;");
-			outerQuery.append("SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, \"\r\n"
-					+ "i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM \"\r\n"
-					+ "cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON \"\r\n"
-					+ "i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? AND i.invoicenum IN (;");
+			query.append("""
+					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, 
+					i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM 
+					cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON 
+					i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;""");
+			outerQuery.append("""
+					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, 
+					i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM 
+					cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON 
+					i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? AND i.invoicenum IN (;""");
 			deleteStart = 19;
 			deleteEnd = 218;
 		}
@@ -291,9 +299,9 @@ public class DbServices {
 		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = null;
 		ResultSet queryResultSet = null;
-		try {
-			Connection dbConnection = DbServices.getDbConnection();
-			PreparedStatement statement = dbConnection.prepareStatement(query.toString());
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(query.toString())) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			PreparedStatement statement = dbConnection.prepareStatement(query.toString());
 			statement.setMaxRows(MAX_RESULTS);
 			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
 			int parameterCount = parameterMetaData.getParameterCount();
@@ -383,9 +391,9 @@ public class DbServices {
 					long customerId = queryResultSet.getLong(2);
 					String lastname = queryResultSet.getString(3);
 					String firstname = queryResultSet.getString(4);
-					String customerData = new String(queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
+					String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
 							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
-								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11));
+								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
 					String notes = queryResultSet.getString(12);
 					BigDecimal tax = queryResultSet.getBigDecimal(13);
 					Timestamp cashieredDateTime = queryResultSet.getTimestamp(14);

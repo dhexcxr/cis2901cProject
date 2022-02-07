@@ -1,8 +1,11 @@
 package cis2901c.listeners;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 
+import cis2901c.main.Main;
 import cis2901c.objects.MyText;
 
 public class TextBoxFocusListener implements FocusListener {
@@ -16,7 +19,7 @@ public class TextBoxFocusListener implements FocusListener {
 	
 	@Override
 	public void focusGained(FocusEvent e) {
-		System.out.println(textBoxText + " box focused gained");
+		Main.log(Level.INFO, textBoxText + " box focused gained");
 		// enable "flashy" text box effects
 		if (txtBox.getText().equals(textBoxText)) {
 			txtBox.setText("");
@@ -25,7 +28,7 @@ public class TextBoxFocusListener implements FocusListener {
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		System.out.println(textBoxText + " box focused lost");
+		Main.log(Level.INFO, textBoxText + " box focused lost");
 		// enable "flashy" text box effects
 		if (txtBox.getText().equals("")) {
 			txtBox.setText(textBoxText);

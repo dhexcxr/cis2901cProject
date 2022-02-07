@@ -1,9 +1,12 @@
 package cis2901c.listeners;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import cis2901c.main.Main;
 import cis2901c.objects.MyText;
 
 public class RequiredTextBoxModifyListener implements ModifyListener {
@@ -19,7 +22,7 @@ public class RequiredTextBoxModifyListener implements ModifyListener {
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// set txtBox background to RED if user has not entered anything
-		System.out.println(txtBox.isModified());
+		Main.log(Level.INFO, Boolean.toString(txtBox.isModified()));
 		if (txtBox.getText().length() == 0 || txtBox.getText().equals(textBoxText)) {
 			txtBox.setModified(false);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
