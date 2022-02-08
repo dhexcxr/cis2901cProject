@@ -20,7 +20,7 @@ public class PartSearchDialog extends Dialog{
 
 	protected Object result;		// TODO probably change this to Part, wouldn't need cast for results
 	protected Shell shlPartSearch;
-	private MyPartInventoryTable partTable_SearchDialog;
+	private MyPartInventoryTable partTableSearchDialog;
 	private MyText partSearchTextBox;
 
 	/**
@@ -76,48 +76,48 @@ public class PartSearchDialog extends Dialog{
 		Gui.setDialogAtCenter(shlPartSearch);
 
 		// search results table						
-		partTable_SearchDialog = new MyPartInventoryTable(shlPartSearch, SWT.BORDER | SWT.FULL_SELECTION);
-		partTable_SearchDialog.setLinesVisible(true);
-		partTable_SearchDialog.setHeaderVisible(true);
-		partTable_SearchDialog.setBounds(10, 42, 908, 282);
-		partTable_SearchDialog.addMouseListener(new MouseAdapter() {
+		partTableSearchDialog = new MyPartInventoryTable(shlPartSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		partTableSearchDialog.setLinesVisible(true);
+		partTableSearchDialog.setHeaderVisible(true);
+		partTableSearchDialog.setBounds(10, 42, 908, 282);
+		partTableSearchDialog.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				if (partTable_SearchDialog.getSelection().length > 0) {
+				if (partTableSearchDialog.getSelection().length > 0) {
 					// return Customer selected from Customer Search Dialog table on double click
-					result =  partTable_SearchDialog.getSelection()[0].getData();
+					result =  partTableSearchDialog.getSelection()[0].getData();
 					shlPartSearch.close();
 				}
 			}
 		});
 
-		TableColumn tblclmnPartNumber_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnPartNumber_Inventory.setWidth(126);
-		tblclmnPartNumber_Inventory.setText("Part Number");
+		TableColumn tblclmnPartNumberInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnPartNumberInventory.setWidth(126);
+		tblclmnPartNumberInventory.setText("Part Number");
 
-		TableColumn tblclmnDescription_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnDescription_Inventory.setWidth(245);
-		tblclmnDescription_Inventory.setText("Description");
+		TableColumn tblclmnDescriptionInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnDescriptionInventory.setWidth(245);
+		tblclmnDescriptionInventory.setText("Description");
 
-		TableColumn tblclmnOnHand_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnOnHand_Inventory.setWidth(100);
-		tblclmnOnHand_Inventory.setText("On Hand");
+		TableColumn tblclmnOnHandInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnOnHandInventory.setWidth(100);
+		tblclmnOnHandInventory.setText("On Hand");
 
-		TableColumn tblclmnSupplier_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnSupplier_Inventory.setWidth(109);
-		tblclmnSupplier_Inventory.setText("Supplier");
+		TableColumn tblclmnSupplierInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnSupplierInventory.setWidth(109);
+		tblclmnSupplierInventory.setText("Supplier");
 
-		TableColumn tblclmnCategory_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnCategory_Inventory.setWidth(115);
-		tblclmnCategory_Inventory.setText("Category");
+		TableColumn tblclmnCategoryInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnCategoryInventory.setWidth(115);
+		tblclmnCategoryInventory.setText("Category");
 
-		TableColumn tblclmnCost_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnCost_Inventory.setWidth(100);
-		tblclmnCost_Inventory.setText("Cost");
+		TableColumn tblclmnCostInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnCostInventory.setWidth(100);
+		tblclmnCostInventory.setText("Cost");
 
-		TableColumn tblclmnRetailPrice_Inventory = new TableColumn(partTable_SearchDialog, SWT.NONE);
-		tblclmnRetailPrice_Inventory.setWidth(110);
-		tblclmnRetailPrice_Inventory.setText("Retail Price");
+		TableColumn tblclmnRetailPriceInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
+		tblclmnRetailPriceInventory.setWidth(110);
+		tblclmnRetailPriceInventory.setText("Retail Price");
 
 		// dialog  controls
 		Button btnSelectPart = new Button(shlPartSearch, SWT.NONE);
@@ -126,8 +126,8 @@ public class PartSearchDialog extends Dialog{
 		btnSelectPart.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if (partTable_SearchDialog.getSelection().length > 0) {
-					result =  partTable_SearchDialog.getSelection()[0].getData();
+				if (partTableSearchDialog.getSelection().length > 0) {
+					result =  partTableSearchDialog.getSelection()[0].getData();
 					shlPartSearch.close();
 				}
 			}
@@ -149,7 +149,7 @@ public class PartSearchDialog extends Dialog{
 		partSearchTextBox.setText("Search...");
 		partSearchTextBox.setBounds(10, 10, 909, 26);
 		partSearchTextBox.setFocus();
-		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTable_SearchDialog));
+		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableSearchDialog));
 		partSearchTextBox.addFocusListener(new TextBoxFocusListener(partSearchTextBox));
 	}
 }

@@ -71,9 +71,8 @@ public class AmountDueDialog extends Dialog{
 				BigDecimal total = new BigDecimal(txtFinalTotal.getText().replaceAll("[^.0-9]", ""));
 				BigDecimal tendered = new BigDecimal(txtAmountTendered.getText().replace("$", ""));
 				BigDecimal chageDue = total.subtract(tendered);
-//				BigDecimal chageDue = new BigDecimal(txtFinalTotal.getText().replaceAll("^[0-9.]", "")).subtract(new BigDecimal(txtAmountTendered.getText().replace("$", "")));
 				// if not enough money entered, complain
-				if (chageDue.compareTo(new BigDecimal(0)) == 1) {
+				if (chageDue.compareTo(BigDecimal.valueOf(0)) > 0) {
 					MessageBox notEnoughTenderedMessageBox = new MessageBox(shlAmountDue, SWT.ICON_INFORMATION);
 					notEnoughTenderedMessageBox.setText("Notice");
 					notEnoughTenderedMessageBox.setMessage("Customer did not tender enough money...");

@@ -14,6 +14,7 @@ import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -33,12 +34,9 @@ public class NewPartDialog extends Dialog {
 	private MyText txtCategory;
 	private MyText txtCost;
 	private MyText txtRetail;
-	private Button btnSavePart;
-	private Button btnCancel;
 	
 	private int partId = -1;
 	private Part part;
-//	private boolean newPart;
 
 	/**
 	 * Create the dialog.
@@ -69,26 +67,19 @@ public class NewPartDialog extends Dialog {
 	
 	public Object open(Part part) {
 		createContents();
-		
-		if (part.getPartId() != -1)
-			this.partId = part.getPartId();
-		if (part.getPartNumber() != null && part.getPartNumber().trim().length() > 0)
-			this.txtPartNumber.setText(part.getPartNumber());
-		if (part.getSupplier() != null && part.getSupplier().trim().length() > 0)
-			this.txtSupplier.setText(part.getSupplier());
-		if (part.getDescription() != null && part.getDescription().trim().length() > 0)
-			this.txtDescription.setText(part.getDescription());
-		if (part.getOnHand() != -1)
+
+		this.partId = part.getPartId();
+		this.txtPartNumber.setText(part.getPartNumber());
+		this.txtSupplier.setText(part.getSupplier());
+		this.txtDescription.setText(part.getDescription());
+		if (part.getOnHand() != -1) {
 			this.txtOnHand.setText(Integer.toString(part.getOnHand()));
-		if (part.getNotes() != null && part.getNotes().trim().length() > 0)
-			this.txtNotes.setText(part.getNotes());
-		if (part.getCategory() != null && part.getCategory().trim().length() > 0)
-			this.txtCategory.setText(part.getCategory());
-		if (part.getCost() != null && !part.getCost().equals(new BigDecimal(0)))
-			this.txtCost.setText(part.getCost().toString());
-		if (part.getRetail() != null && !part.getRetail().equals(new BigDecimal(0)))
-			this.txtRetail.setText(part.getRetail().toString());
-		
+		}
+		this.txtNotes.setText(part.getNotes());
+		this.txtCategory.setText(part.getCategory());
+		this.txtCost.setText(part.getCost().toString());
+		this.txtRetail.setText(part.getRetail().toString());
+
 		this.part = part;
 		
 		// open new New Part dialog, customize for editing current customer
@@ -166,7 +157,7 @@ public class NewPartDialog extends Dialog {
 		txtRetail.addFocusListener(new TextBoxFocusListener(txtRetail));
 		
 		// New Part dialog controls
-		btnSavePart = new Button(shlAddPart, SWT.NONE);
+		Button btnSavePart = new Button(shlAddPart, SWT.NONE);
 		btnSavePart.setText("Save Part");
 		btnSavePart.setBounds(10, 216, 413, 26);
 		btnSavePart.addMouseListener(new MouseAdapter() {
@@ -180,7 +171,7 @@ public class NewPartDialog extends Dialog {
 			}
 		});
 		
-		btnCancel = new Button(shlAddPart, SWT.NONE);
+		Button btnCancel = new Button(shlAddPart, SWT.NONE);
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -243,9 +234,7 @@ public class NewPartDialog extends Dialog {
 			try {
 				part.setRetail(new BigDecimal(txtRetail.getText()));
 			} catch (NumberFormatException e) {
-				// TODO: handle exception
-				System.out.println(e);
-				e.printStackTrace();
+				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
 		
@@ -253,9 +242,7 @@ public class NewPartDialog extends Dialog {
 			try {
 				part.setCost(new BigDecimal(txtCost.getText()));
 			} catch (NumberFormatException e) {
-				// TODO: handle exception
-				System.out.println(e);
-				e.printStackTrace();
+				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
 		

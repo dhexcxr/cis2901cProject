@@ -42,7 +42,6 @@ import cis2901c.objects.MyUnitTable;
 import cis2901c.objects.Part;
 
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.MouseAdapter;
@@ -52,16 +51,7 @@ public class Gui extends Composite {
 
 	// TODO why are these out here? maybe move them into methods where they are used
 	private Shell shell;
-	private MyText roSearchBox;
-	private MyTable roTable;
-	private MyText customerSearchTextBox;
-	private MyTable customerTable;
-	private MyTable unitTable;
-	private MyText txtInvoiceNotes;
-	private Text textCategory_Invoice;
-	private Text textSupplier_Invoice;
-	private Text textNotes_Invoice;
-	private MyTable partTable_Invoice;
+
 	
 	/**
 	 * Create the composite.
@@ -74,14 +64,14 @@ public class Gui extends Composite {
 		this.shell = (Shell) parent;
 
 		// Tab control widget
-		TabFolder tabFolder_Gui = new TabFolder(this, SWT.NONE);
-		tabFolder_Gui.setBounds(10, 10, 1004, 748);
+		TabFolder tabFolderGui = new TabFolder(this, SWT.NONE);
+		tabFolderGui.setBounds(10, 10, 1004, 748);
 
-		rosTab(tabFolder_Gui);
-		partsTab(tabFolder_Gui);
-		customersTab(tabFolder_Gui);
-		unitsTab(tabFolder_Gui);
-		reportsTab(tabFolder_Gui);
+		rosTab(tabFolderGui);
+		partsTab(tabFolderGui);
+		customersTab(tabFolderGui);
+		unitsTab(tabFolderGui);
+		reportsTab(tabFolderGui);
 	}
 	
 	private void rosTab(TabFolder tabFolder) {
@@ -92,41 +82,41 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 
 		// Table for RO search results
-		roTable = new MyTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable roTable = new MyTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		roTable.setBounds(10, 74, 976, 631);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
 
-		TableColumn tblclmnRo_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnRo_Ro.setText("RO #");
-		tblclmnRo_Ro.setWidth(75);
+		TableColumn tblclmnRoRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnRoRo.setText("RO #");
+		tblclmnRoRo.setWidth(75);
 
-		TableColumn tblclmnCustomer_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnCustomer_Ro.setText("Customer");
-		tblclmnCustomer_Ro.setWidth(164);
+		TableColumn tblclmnCustomerRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnCustomerRo.setText("Customer");
+		tblclmnCustomerRo.setWidth(164);
 
-		TableColumn tblclmnYear_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnYear_Ro.setText("Year");
-		tblclmnYear_Ro.setWidth(65);
+		TableColumn tblclmnYearRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnYearRo.setText("Year");
+		tblclmnYearRo.setWidth(65);
 
-		TableColumn tblclmnMake_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnMake_Ro.setText("Make");
-		tblclmnMake_Ro.setWidth(109);
+		TableColumn tblclmnMakeRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnMakeRo.setText("Make");
+		tblclmnMakeRo.setWidth(109);
 
-		TableColumn tblclmnModel_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnModel_Ro.setText("Model");
-		tblclmnModel_Ro.setWidth(113);
+		TableColumn tblclmnModelRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnModelRo.setText("Model");
+		tblclmnModelRo.setWidth(113);
 
-		TableColumn tblclmnVin_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnVin_Ro.setText("VIN");
-		tblclmnVin_Ro.setWidth(222);
+		TableColumn tblclmnVinRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnVinRo.setText("VIN");
+		tblclmnVinRo.setWidth(222);
 
-		TableColumn tblclmnJobs_Ro = new TableColumn(roTable, SWT.NONE);
-		tblclmnJobs_Ro.setText("Jobs");
-		tblclmnJobs_Ro.setWidth(212);
+		TableColumn tblclmnJobsRo = new TableColumn(roTable, SWT.NONE);
+		tblclmnJobsRo.setText("Jobs");
+		tblclmnJobsRo.setWidth(212);
 
 		// RO controls
-		roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
+		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
 		roSearchBox.addModifyListener(new RoSearchBoxListeners(roSearchBox, roTable));
@@ -172,80 +162,80 @@ public class Gui extends Composite {
 		Composite partsComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmParts.setControl(partsComposite);
 		
-		TabFolder tabFolder_Parts = new TabFolder(partsComposite, SWT.NONE);
-		tabFolder_Parts.setBounds(10, 10, 976, 695);
+		TabFolder tabFolderParts = new TabFolder(partsComposite, SWT.NONE);
+		tabFolderParts.setBounds(10, 10, 976, 695);
 		
 		// Inventory Tab
-		TabItem tbtmInventory = new TabItem(tabFolder_Parts, SWT.NONE);
+		TabItem tbtmInventory = new TabItem(tabFolderParts, SWT.NONE);
 		tbtmInventory.setText("Inventory");
 		
-		Composite inventoryComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		Composite inventoryComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmInventory.setControl(inventoryComposite);
 		
-		MyTable partTable_inventory = new MyPartInventoryTable(inventoryComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		partTable_inventory.setLinesVisible(true);
-		partTable_inventory.setHeaderVisible(true);
-		partTable_inventory.setBounds(10, 42, 948, 610);
-		partTable_inventory.addMouseListener(new OpenExistingObjectMouseListener(partTable_inventory, shell));
+		MyTable partTableInventory = new MyPartInventoryTable(inventoryComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		partTableInventory.setLinesVisible(true);
+		partTableInventory.setHeaderVisible(true);
+		partTableInventory.setBounds(10, 42, 948, 610);
+		partTableInventory.addMouseListener(new OpenExistingObjectMouseListener(partTableInventory, shell));
 		
-		TableColumn tblclmnPartNumber_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnPartNumber_Inventory.setWidth(126);
-		tblclmnPartNumber_Inventory.setText("Part Number");
+		TableColumn tblclmnPartNumberInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnPartNumberInventory.setWidth(126);
+		tblclmnPartNumberInventory.setText("Part Number");
 		
-		TableColumn tblclmnDescription_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnDescription_Inventory.setWidth(275);
-		tblclmnDescription_Inventory.setText("Description");
+		TableColumn tblclmnDescriptionInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnDescriptionInventory.setWidth(275);
+		tblclmnDescriptionInventory.setText("Description");
 		
-		TableColumn tblclmnOnHand_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnOnHand_Inventory.setWidth(100);
-		tblclmnOnHand_Inventory.setText("On Hand");
+		TableColumn tblclmnOnHandInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnOnHandInventory.setWidth(100);
+		tblclmnOnHandInventory.setText("On Hand");
 		
-		TableColumn tblclmnSupplier_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnSupplier_Inventory.setWidth(109);
-		tblclmnSupplier_Inventory.setText("Supplier");
+		TableColumn tblclmnSupplierInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnSupplierInventory.setWidth(109);
+		tblclmnSupplierInventory.setText("Supplier");
 		
-		TableColumn tblclmnCategory_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnCategory_Inventory.setWidth(115);
-		tblclmnCategory_Inventory.setText("Category");
+		TableColumn tblclmnCategoryInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnCategoryInventory.setWidth(115);
+		tblclmnCategoryInventory.setText("Category");
 		
-		TableColumn tblclmnCost_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnCost_Inventory.setWidth(100);
-		tblclmnCost_Inventory.setText("Cost");
+		TableColumn tblclmnCostInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnCostInventory.setWidth(100);
+		tblclmnCostInventory.setText("Cost");
 		
-		TableColumn tblclmnRetailPrice_Inventory = new TableColumn(partTable_inventory, SWT.NONE);
-		tblclmnRetailPrice_Inventory.setWidth(110);
-		tblclmnRetailPrice_Inventory.setText("Retail Price");
+		TableColumn tblclmnRetailPriceInventory = new TableColumn(partTableInventory, SWT.NONE);
+		tblclmnRetailPriceInventory.setWidth(110);
+		tblclmnRetailPriceInventory.setText("Retail Price");
 		
 		// Inventory controls
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
 		partSearchTextBox.setText("Search...");
 		partSearchTextBox.setBounds(10, 10, 861, 26);
-		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTable_inventory));
+		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableInventory));
 		partSearchTextBox.addFocusListener(new TextBoxFocusListener(partSearchTextBox));
 		
 		Button btnNewPart = new Button(inventoryComposite, SWT.NONE);
 		btnNewPart.setText("New Part");
 		btnNewPart.setBounds(877, 10, 81, 26);
-		btnNewPart.addMouseListener(new CreateNewObjectListener(partTable_inventory, partSearchTextBox, shell));
+		btnNewPart.addMouseListener(new CreateNewObjectListener(partTableInventory, partSearchTextBox, shell));
 		// END Inventory tab
 		
 		// START Invoice tab
-		TabItem tbtmInvoice = new TabItem(tabFolder_Parts, SWT.NONE);
+		TabItem tbtmInvoice = new TabItem(tabFolderParts, SWT.NONE);
 		tbtmInvoice.setText("Invoice");
 		
-		Composite invoiceComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		Composite invoiceComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmInvoice.setControl(invoiceComposite);
 		
-		MyText txtCustomer_invoice = new MyText(invoiceComposite, SWT.BORDER | SWT.WRAP);
-		txtCustomer_invoice.setText("Customer...");
-		txtCustomer_invoice.setEditable(false);
-		txtCustomer_invoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
-		txtCustomer_invoice.setBounds(10, 10, 554, 128);
-		txtCustomer_invoice.addModifyListener(new RequiredTextBoxModifyListener(txtCustomer_invoice));
+		MyText txtCustomerInvoice = new MyText(invoiceComposite, SWT.BORDER | SWT.WRAP);
+		txtCustomerInvoice.setText("Customer...");
+		txtCustomerInvoice.setEditable(false);
+		txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
+		txtCustomerInvoice.setBounds(10, 10, 554, 128);
+		txtCustomerInvoice.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerInvoice));
 			// TODO if double clicking to search, trim just first name, we'll hafta refacter CustomerSearchListener
-		txtCustomer_invoice.addMouseListener(new CustomerSearchListener(txtCustomer_invoice));
+		txtCustomerInvoice.addMouseListener(new CustomerSearchListener(txtCustomerInvoice));
 		
-		txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
+		MyText txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
 		txtInvoiceNotes.setText("Invoice Notes...");
 		txtInvoiceNotes.setBounds(570, 10, 388, 128);
 		txtInvoiceNotes.addModifyListener(new InfoTextBoxModifyListener(txtInvoiceNotes));
@@ -255,27 +245,27 @@ public class Gui extends Composite {
 		grpTotals.setText("Totals");
 		grpTotals.setBounds(728, 501, 230, 151);
 		
-		Text txtPartsTotal_Invoice;
-		Text txtTax_Invoice;
-		Text txtFinalTotal;
+		MyText txtPartsTotalInvoice;
+		MyText txtTaxInvoice;
+		MyText txtFinalTotal;
 		
-		txtPartsTotal_Invoice = new Text(grpTotals, SWT.BORDER);
-		txtPartsTotal_Invoice.setEditable(false);
-		txtPartsTotal_Invoice.setBounds(87, 22, 128, 26);
+		txtPartsTotalInvoice = new MyText(grpTotals, SWT.BORDER);
+		txtPartsTotalInvoice.setEditable(false);
+		txtPartsTotalInvoice.setBounds(87, 22, 128, 26);
 		
 		Label lblPartsTotal = new Label(grpTotals, SWT.NONE);
 		lblPartsTotal.setBounds(10, 25, 71, 20);
 		lblPartsTotal.setText("Parts Total:");
 		
-		txtTax_Invoice = new Text(grpTotals, SWT.BORDER);
-		txtTax_Invoice.setEditable(false);
-		txtTax_Invoice.setBounds(87, 54, 128, 26);
+		txtTaxInvoice = new MyText(grpTotals, SWT.BORDER);
+		txtTaxInvoice.setEditable(false);
+		txtTaxInvoice.setBounds(87, 54, 128, 26);
 		
 		Label lblTax = new Label(grpTotals, SWT.NONE);
 		lblTax.setBounds(57, 57, 24, 20);
 		lblTax.setText("Tax:");
 		
-		txtFinalTotal = new Text(grpTotals, SWT.BORDER);
+		txtFinalTotal = new MyText(grpTotals, SWT.BORDER);
 		txtFinalTotal.setEditable(false);
 		txtFinalTotal.setBounds(87, 86, 128, 26);
 		
@@ -291,14 +281,14 @@ public class Gui extends Composite {
 		btnDeleteLineItem.setBounds(333, 106, 126, 52);
 		btnDeleteLineItem.setText("Delete Line Item");
 		
-		textCategory_Invoice = new Text(grpSelectedPart, SWT.BORDER);
-		textCategory_Invoice.setEditable(false);
-		textCategory_Invoice.setBounds(381, 66, 78, 26);
+		MyText textCategoryInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textCategoryInvoice.setEditable(false);
+		textCategoryInvoice.setBounds(381, 66, 78, 26);
 		
-		textSupplier_Invoice = new Text(grpSelectedPart, SWT.BORDER);
-		textSupplier_Invoice.setEditable(false);
-		textSupplier_Invoice.setText("");
-		textSupplier_Invoice.setBounds(381, 20, 78, 26);
+		MyText textSupplierInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textSupplierInvoice.setEditable(false);
+		textSupplierInvoice.setText("");
+		textSupplierInvoice.setBounds(381, 20, 78, 26);
 		
 		Label lblSupplier = new Label(grpSelectedPart, SWT.NONE);
 		lblSupplier.setBounds(317, 23, 58, 20);
@@ -308,75 +298,75 @@ public class Gui extends Composite {
 		lblCategory.setBounds(312, 69, 63, 20);
 		lblCategory.setText("Category:");
 		
-		textNotes_Invoice = new Text(grpSelectedPart, SWT.BORDER);
-		textNotes_Invoice.setEditable(false);
-		textNotes_Invoice.setBounds(10, 51, 296, 107);
+		MyText textNotesInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textNotesInvoice.setEditable(false);
+		textNotesInvoice.setBounds(10, 51, 296, 107);
 		
 		Label lblNotes = new Label(grpSelectedPart, SWT.NONE);
 		lblNotes.setBounds(10, 23, 42, 20);
 		lblNotes.setText("Notes:");
 		
-		partTable_Invoice = new MyPartInvoiceTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		partTable_Invoice.addMouseListener(new MouseAdapter() {
+		MyTable partTableInvoice = new MyPartInvoiceTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		partTableInvoice.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				partTable_Invoice.getItemCount();
-				partTable_Invoice.getSelectionIndex();
-				if (partTable_Invoice.getSelectionIndex() >= 0 &&
-						partTable_Invoice.getSelectionIndex() < partTable_Invoice.getItemCount() &&
-							partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData() != null) {
-					Part selectedPart = (Part) partTable_Invoice.getItem(partTable_Invoice.getSelectionIndex()).getData();
-					textCategory_Invoice.setText(selectedPart.getCategory());
-					textSupplier_Invoice.setText(selectedPart.getSupplier());
-					textNotes_Invoice.setText(selectedPart.getNotes());
+				partTableInvoice.getItemCount();
+				partTableInvoice.getSelectionIndex();
+				if (partTableInvoice.getSelectionIndex() >= 0 &&
+						partTableInvoice.getSelectionIndex() < partTableInvoice.getItemCount() &&
+							partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData() != null) {
+					Part selectedPart = (Part) partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData();
+					textCategoryInvoice.setText(selectedPart.getCategory());
+					textSupplierInvoice.setText(selectedPart.getSupplier());
+					textNotesInvoice.setText(selectedPart.getNotes());
 				} else {
-					textCategory_Invoice.setText("");
-					textSupplier_Invoice.setText("");
-					textNotes_Invoice.setText("");
+					textCategoryInvoice.setText("");
+					textSupplierInvoice.setText("");
+					textNotesInvoice.setText("");
 				}
 			}
 		});
 		
-		final TableEditor editor = new TableEditor(partTable_Invoice);		// TODO why am I building this out here
+		final TableEditor editor = new TableEditor(partTableInvoice);		// TODO why am I building this out here
 	    editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
-	    partTable_Invoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(partTable_Invoice, editor, // and passing it in here
-	    		txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal, textCategory_Invoice, textSupplier_Invoice, textNotes_Invoice));
+	    partTableInvoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(partTableInvoice, editor, // and passing it in here
+	    		txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal, textCategoryInvoice, textSupplierInvoice, textNotesInvoice));
 	    
-		partTable_Invoice.setLinesVisible(true);
-		partTable_Invoice.setHeaderVisible(true);
-		partTable_Invoice.setBounds(10, 144, 948, 334);
+		partTableInvoice.setLinesVisible(true);
+		partTableInvoice.setHeaderVisible(true);
+		partTableInvoice.setBounds(10, 144, 948, 334);
 		
-		TableColumn tblclmnPartNumber_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnPartNumber_Invoice.setWidth(126);
-		tblclmnPartNumber_Invoice.setText("Part Number");
+		TableColumn tblclmnPartNumberInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnPartNumberInvoice.setWidth(126);
+		tblclmnPartNumberInvoice.setText("Part Number");
 		
-		TableColumn tblclmnDescription_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnDescription_Invoice.setWidth(275);
-		tblclmnDescription_Invoice.setText("Description");
+		TableColumn tblclmnDescriptionInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnDescriptionInvoice.setWidth(275);
+		tblclmnDescriptionInvoice.setText("Description");
 		
-		TableColumn tblclmnQuantity_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnQuantity_Invoice.setWidth(100);
-		tblclmnQuantity_Invoice.setText("Quantity");
+		TableColumn tblclmnQuantityInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnQuantityInvoice.setWidth(100);
+		tblclmnQuantityInvoice.setText("Quantity");
 		
-		TableColumn tblclmnOnHand = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnOnHand.setWidth(100);
-		tblclmnOnHand.setText("On Hand");
+		TableColumn tblclmnOnHandInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnOnHandInvoice.setWidth(100);
+		tblclmnOnHandInvoice.setText("On Hand");
 		
-		TableColumn tblclmnCost_Parts_1 = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnCost_Parts_1.setWidth(100);
-		tblclmnCost_Parts_1.setText("Cost");
+		TableColumn tblclmnCostInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnCostInvoice.setWidth(100);
+		tblclmnCostInvoice.setText("Cost");
 		
-		TableColumn tblclmnPartPrice_Parts = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnPartPrice_Parts.setWidth(110);
-		tblclmnPartPrice_Parts.setText("Part Price");
+		TableColumn tblclmnPartPriceInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnPartPriceInvoice.setWidth(110);
+		tblclmnPartPriceInvoice.setText("Part Price");
 		
-		TableColumn tblclmnExtendedPrice_Invoice = new TableColumn(partTable_Invoice, SWT.NONE);
-		tblclmnExtendedPrice_Invoice.setWidth(114);
-		tblclmnExtendedPrice_Invoice.setText("Extended Price");
+		TableColumn tblclmnExtendedPriceInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		tblclmnExtendedPriceInvoice.setWidth(114);
+		tblclmnExtendedPriceInvoice.setText("Extended Price");
 		
 		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-		TableItem tableItem = new MyInvoiceTableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
+		TableItem tableItem = new MyInvoiceTableItem(partTableInvoice, SWT.NONE);	// so we can add parts
 		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
 		btnCashier.addMouseListener(new MouseAdapter() {
@@ -389,14 +379,14 @@ public class Gui extends Composite {
 				
 				if (cashiered) {
 					Invoice cashieredInvoice = new Invoice();
-					cashieredInvoice.setCustomerId(((Customer) txtCustomer_invoice.getData()).getCustomerId());
+					cashieredInvoice.setCustomerId(((Customer) txtCustomerInvoice.getData()).getCustomerId());
 //					cashieredInvoice.setCustomerName(null, null);		// get name from txtCustomer_invoice
-					cashieredInvoice.setCustomerData(txtCustomer_invoice.getText());
-					cashieredInvoice.setNotes(textNotes_Invoice.getText());
-					cashieredInvoice.setTax(new BigDecimal(txtTax_Invoice.getText().replace("$", "")));
+					cashieredInvoice.setCustomerData(txtCustomerInvoice.getText());
+					cashieredInvoice.setNotes(textNotesInvoice.getText());
+					cashieredInvoice.setTax(new BigDecimal(txtTaxInvoice.getText().replace("$", "")));
 					cashieredInvoice.setCashiereDateTime(Timestamp.from(Instant.now()));
 					cashieredInvoice.setCashiered(true);
-					cashieredInvoice.setTableLineItems(partTable_Invoice.getItems());
+					cashieredInvoice.setTableLineItems(partTableInvoice.getItems());
 					// send invoice obj to DbServices
 					DbServices.saveObject(cashieredInvoice);
 					// TODO clear invoice tab
@@ -411,25 +401,25 @@ public class Gui extends Composite {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// TODO clear entire Invoice Tab
-				txtCustomer_invoice.setData(null);
-				txtCustomer_invoice.setText("Customer...");
+				txtCustomerInvoice.setData(null);
+				txtCustomerInvoice.setText("Customer...");
 				txtInvoiceNotes.setText("Invoice Notes...");
-				txtPartsTotal_Invoice.setText("0.00");
-				txtTax_Invoice.setText("0.00");
+				txtPartsTotalInvoice.setText("0.00");
+				txtTaxInvoice.setText("0.00");
 				txtFinalTotal.setText("0.00");
-				textCategory_Invoice.setText("");
-				textSupplier_Invoice.setText("");
-				textNotes_Invoice.setText("");
-				partTable_Invoice.removeAll();
+				textCategoryInvoice.setText("");
+				textSupplierInvoice.setText("");
+				textNotesInvoice.setText("");
+				partTableInvoice.removeAll();
 				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-				TableItem tableItem = new TableItem(partTable_Invoice, SWT.NONE);	// so we can add parts
+				TableItem tableItem = new TableItem(partTableInvoice, SWT.NONE);	// so we can add parts
 			}
 		});
 		btnCancel.setBounds(596, 607, 126, 45);
 		btnCancel.setText("Cancel");
 		
 		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(
-				partTable_Invoice, txtPartsTotal_Invoice, txtTax_Invoice, txtFinalTotal));
+				partTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal));
 		
 		Button btnSearchForInvoice = new Button(invoiceComposite, SWT.NONE);
 		btnSearchForInvoice.addMouseListener(new MouseAdapter() {
@@ -446,10 +436,10 @@ public class Gui extends Composite {
 		// END Invoice Tab
 		
 		// START Order tab
-		TabItem tbtmOrder = new TabItem(tabFolder_Parts, SWT.NONE);
+		TabItem tbtmOrder = new TabItem(tabFolderParts, SWT.NONE);
 		tbtmOrder.setText("Order");
 		
-		Composite orderComposite = new Composite(tabFolder_Parts, SWT.NONE);
+		Composite orderComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmOrder.setControl(orderComposite);
 		// END Order Tab
 	}
@@ -462,60 +452,60 @@ public class Gui extends Composite {
 		tbtmCustomers.setControl(customerComposite);
 
 		// Table for Customer search results
-		customerTable = new MyCustomerTable(customerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable customerTable = new MyCustomerTable(customerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.setBounds(10, 42, 976, 663);
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
 		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable, shell));
 
-		TableColumn tblclmnFirstName_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnFirstName_Customer.setText("First Name");
-		tblclmnFirstName_Customer.setWidth(100);
-		tblclmnFirstName_Customer.addSelectionListener(new TableColumnSortListener(tblclmnFirstName_Customer));
+		TableColumn tblclmnFirstNameCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnFirstNameCustomer.setText("First Name");
+		tblclmnFirstNameCustomer.setWidth(100);
+		tblclmnFirstNameCustomer.addSelectionListener(new TableColumnSortListener(tblclmnFirstNameCustomer));
 
-		TableColumn tblclmnLastName_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnLastName_Customer.setText("Last Name");
-		tblclmnLastName_Customer.setWidth(100);
-		tblclmnLastName_Customer.addSelectionListener(new TableColumnSortListener(tblclmnLastName_Customer));
+		TableColumn tblclmnLastNameCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnLastNameCustomer.setText("Last Name");
+		tblclmnLastNameCustomer.setWidth(100);
+		tblclmnLastNameCustomer.addSelectionListener(new TableColumnSortListener(tblclmnLastNameCustomer));
 
-		TableColumn tblclmnAddress_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnAddress_Customer.setText("Address");
-		tblclmnAddress_Customer.setWidth(100);
-		tblclmnAddress_Customer.addSelectionListener(new TableColumnSortListener(tblclmnAddress_Customer));
+		TableColumn tblclmnAddressCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnAddressCustomer.setText("Address");
+		tblclmnAddressCustomer.setWidth(100);
+		tblclmnAddressCustomer.addSelectionListener(new TableColumnSortListener(tblclmnAddressCustomer));
 		
 
-		TableColumn tblclmnCity_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnCity_Customer.setText("City");
-		tblclmnCity_Customer.setWidth(100);
-		tblclmnCity_Customer.addSelectionListener(new TableColumnSortListener(tblclmnCity_Customer));
+		TableColumn tblclmnCityCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCityCustomer.setText("City");
+		tblclmnCityCustomer.setWidth(100);
+		tblclmnCityCustomer.addSelectionListener(new TableColumnSortListener(tblclmnCityCustomer));
 
-		TableColumn tblclmnState_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnState_Customer.setText("State");
-		tblclmnState_Customer.setWidth(100);
-		tblclmnState_Customer.addSelectionListener(new TableColumnSortListener(tblclmnState_Customer));
+		TableColumn tblclmnStateCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnStateCustomer.setText("State");
+		tblclmnStateCustomer.setWidth(100);
+		tblclmnStateCustomer.addSelectionListener(new TableColumnSortListener(tblclmnStateCustomer));
 
-		TableColumn tblclmnZip_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnZip_Customer.setText("Zip");
-		tblclmnZip_Customer.setWidth(100);
-		tblclmnZip_Customer.addSelectionListener(new TableColumnSortListener(tblclmnZip_Customer));
+		TableColumn tblclmnZipCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnZipCustomer.setText("Zip");
+		tblclmnZipCustomer.setWidth(100);
+		tblclmnZipCustomer.addSelectionListener(new TableColumnSortListener(tblclmnZipCustomer));
 
-		TableColumn tblclmnHomePhone_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnHomePhone_Customer.setText("Home Phone");
-		tblclmnHomePhone_Customer.setWidth(100);
-		tblclmnHomePhone_Customer.addSelectionListener(new TableColumnSortListener(tblclmnHomePhone_Customer));
+		TableColumn tblclmnHomePhoneCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnHomePhoneCustomer.setText("Home Phone");
+		tblclmnHomePhoneCustomer.setWidth(100);
+		tblclmnHomePhoneCustomer.addSelectionListener(new TableColumnSortListener(tblclmnHomePhoneCustomer));
 
-		TableColumn tblclmnCellPhone_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnCellPhone_Customer.setText("Cell Phone");
-		tblclmnCellPhone_Customer.setWidth(100);
-		tblclmnCellPhone_Customer.addSelectionListener(new TableColumnSortListener(tblclmnCellPhone_Customer));
+		TableColumn tblclmnCellPhoneCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnCellPhoneCustomer.setText("Cell Phone");
+		tblclmnCellPhoneCustomer.setWidth(100);
+		tblclmnCellPhoneCustomer.addSelectionListener(new TableColumnSortListener(tblclmnCellPhoneCustomer));
 
-		TableColumn tblclmnEmail_Customer = new TableColumn(customerTable, SWT.NONE);
-		tblclmnEmail_Customer.setText("E-mail");
-		tblclmnEmail_Customer.setWidth(100);
-		tblclmnEmail_Customer.addSelectionListener(new TableColumnSortListener(tblclmnEmail_Customer));
+		TableColumn tblclmnEmailCustomer = new TableColumn(customerTable, SWT.NONE);
+		tblclmnEmailCustomer.setText("E-mail");
+		tblclmnEmailCustomer.setWidth(100);
+		tblclmnEmailCustomer.addSelectionListener(new TableColumnSortListener(tblclmnEmailCustomer));
 
 		// Customer controls
-		customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
+		MyText customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
 		customerSearchTextBox.setBounds(10, 10, 861, 26);
 		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
@@ -535,43 +525,43 @@ public class Gui extends Composite {
 		tbtmUnits.setControl(unitsComposite);
 
 		// Table for Unit search results
-		unitTable = new MyUnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable unitTable = new MyUnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);
 		unitTable.setLinesVisible(true);
 
-		TableColumn tblclmnOwner_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnOwner_Unit.setText("Owner");
-		tblclmnOwner_Unit.setWidth(165);
+		TableColumn tblclmnOwnerUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnOwnerUnit.setText("Owner");
+		tblclmnOwnerUnit.setWidth(165);
 
-		TableColumn tblclmnMake_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMake_Unit.setText("Make");
-		tblclmnMake_Unit.setWidth(119);
+		TableColumn tblclmnMakeUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMakeUnit.setText("Make");
+		tblclmnMakeUnit.setWidth(119);
 
-		TableColumn tblclmnModel_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModel_Unit.setText("Model");
-		tblclmnModel_Unit.setWidth(138);
+		TableColumn tblclmnModelUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModelUnit.setText("Model");
+		tblclmnModelUnit.setWidth(138);
 
-		TableColumn tblclmnModelName_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModelName_Unit.setText("Model Name");
-		tblclmnModelName_Unit.setWidth(148);
+		TableColumn tblclmnModelNameUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnModelNameUnit.setText("Model Name");
+		tblclmnModelNameUnit.setWidth(148);
 
-		TableColumn tblclmnYear_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnYear_Unit.setText("Year");
-		tblclmnYear_Unit.setWidth(50);
+		TableColumn tblclmnYearUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnYearUnit.setText("Year");
+		tblclmnYearUnit.setWidth(50);
 
-		TableColumn tblclmnMileage_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMileage_Unit.setText("Mileage");
-		tblclmnMileage_Unit.setWidth(85);
+		TableColumn tblclmnMileageUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnMileageUnit.setText("Mileage");
+		tblclmnMileageUnit.setWidth(85);
 
-		TableColumn tblclmnColor_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnColor_Unit.setText("Color");
-		tblclmnColor_Unit.setWidth(49);
+		TableColumn tblclmnColorUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnColorUnit.setText("Color");
+		tblclmnColorUnit.setWidth(49);
 
-		TableColumn tblclmnVin_Unit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnVin_Unit.setText("VIN");
-		tblclmnVin_Unit.setWidth(215);
+		TableColumn tblclmnVinUnit = new TableColumn(unitTable, SWT.NONE);
+		tblclmnVinUnit.setText("VIN");
+		tblclmnVinUnit.setWidth(215);
 
 		// Unit controls
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);

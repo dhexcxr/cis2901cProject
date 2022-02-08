@@ -4,6 +4,9 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+
+import java.util.logging.Level;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
@@ -187,7 +190,7 @@ public class NewCustomerDialog extends Dialog {
 					// create a new Customer
 					addNewCustomer();
 				} else {
-					System.out.println("Save existing customer");
+					Main.log(Level.INFO, "Save existing customer");
 					// save modifications to existing customer
 					saveCustomer(customer);
 				}

@@ -9,6 +9,8 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Unit;
 
+import java.util.logging.Level;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
@@ -38,7 +40,6 @@ public class NewUnitDialog extends Dialog {
 	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
 		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
-//	private long customerId = -1;
 	private Unit unit;
 
 	/**
@@ -91,8 +92,6 @@ public class NewUnitDialog extends Dialog {
 			txtNotes.setText(unit.getNotes());
 		if (unit.getUnitId() != 0)
 			unitId = unit.getUnitId();
-//		if (unit.getCustomerId() != -1)
-//			customerId = unit.getCustomerId(); 
 		this.unit = unit;
 		
 		// open Edit Unit dialog, customized for editing a current Unit
@@ -154,7 +153,7 @@ public class NewUnitDialog extends Dialog {
 			public void modifyText(ModifyEvent e) {
 				// VIN txt box, make red if VIN isn't 17 digits long
 					// we still allow user to make shorter VINs to accommodate VINs from the '60s etc
-				System.out.println(txtVinNumber.isModified());
+				Main.log(Level.INFO, "Editing unit: " + txtVinNumber.isModified());
 				if (!txtVinNumber.getText().equals("Vin Number...") && txtVinNumber.getText().length() != 17) {
 					txtVinNumber.setModified(false);
 					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
@@ -200,7 +199,7 @@ public class NewUnitDialog extends Dialog {
 					// save new Unit with current text boxes
 					addNewUnit();
 				} else {
-					System.out.println("Save existing unit");
+					Main.log(Level.INFO, "Save existing unit");
 					// save modifications to existing customer
 					saveUnit(unit);
 				}
@@ -229,8 +228,6 @@ public class NewUnitDialog extends Dialog {
 	protected void saveUnit(Unit unit) {
 		if (txtOwner.getData() != null && ((Customer) txtOwner.getData()).getCustomerId() != -1) {
 			unit.setCustomerId(((Customer) txtOwner.getData()).getCustomerId());
-//		if (customerId != -1) {
-//			unit.setCustomerId(customerId);
 			unit.setOwner(txtOwner.getText());
 		} else {
 			// if we haven't selected an Owner, complain - a Unit Owner is required
@@ -260,25 +257,23 @@ public class NewUnitDialog extends Dialog {
 			try {
 				unit.setMileage(Integer.parseInt(txtMileage.getText()));
 			} catch (Exception e) {
-				System.out.println(e);
-				e.printStackTrace();
+				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
 		
 		if (txtVinNumber.isModified()) {
 			unit.setVin(txtVinNumber.getText());
 		}
-		
+
 		if (txtModel.isModified()) {
 			unit.setModel(txtModel.getText());
 		}
-		
+
 		if (txtYear.isModified()) {
 			try {
 				unit.setYear(Integer.parseInt(txtYear.getText()));
 			} catch (Exception e) {
-				System.out.println(e);
-				e.printStackTrace();
+				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
 		
