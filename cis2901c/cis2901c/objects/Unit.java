@@ -39,7 +39,7 @@ public class Unit implements DbObject{
 	}
 	
 	public long getDbPk() {
-		return unitId;
+		return getUnitId();
 	}
 	
 	public String getPkName() {

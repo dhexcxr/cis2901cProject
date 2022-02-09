@@ -15,9 +15,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.PartSearchDialog;
-import cis2901c.objects.MyInvoiceTable;
 import cis2901c.objects.MyInvoiceTableItem;
-import cis2901c.objects.MyTable;
+import cis2901c.objects.MyPartInvoiceTable;
 import cis2901c.objects.Part;
 
 public class PartInvoiceEditorEventListener implements Listener{
@@ -34,7 +33,7 @@ public class PartInvoiceEditorEventListener implements Listener{
 			// if there is text in Part Number column when we "double" click to open Search box
 	private boolean ignoreFocusOut = false;
 	
-	private MyTable partInvoiceTable;
+	private MyPartInvoiceTable partInvoiceTable;
 	private TableEditor editor;
 	private Text txtPartsTotalInvoice;
 	private Text txtTaxInvoice;
@@ -48,7 +47,7 @@ public class PartInvoiceEditorEventListener implements Listener{
 	Text editorTxtBox = null;
 	int currentIndex;
 	
-	public PartInvoiceEditorEventListener(MyTable partInvoiceTable, TableEditor editor, Text txtPartsTotalInvoice,
+	public PartInvoiceEditorEventListener(MyPartInvoiceTable partInvoiceTable, TableEditor editor, Text txtPartsTotalInvoice,
 		Text txtTaxInvoice, Text txtFinalTotal, Text textCategoryInvoice, Text textSupplierInvoice, Text textNotesInvoice) {
 		this.partInvoiceTable = partInvoiceTable;
 		this.editor = editor;
@@ -76,16 +75,16 @@ public class PartInvoiceEditorEventListener implements Listener{
         	final TableItem item = partInvoiceTable.getItem(index);
         	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {
         		Rectangle rect = item.getBounds(i);
-        		if (rect.contains(pt) && (i == MyInvoiceTable.PART_NUMBER_COLUMN ||
-        											i == MyInvoiceTable.QUANTITY_COLUMN ||
-        												i == MyInvoiceTable.PART_PRICE_COLUMN)) {
+        		if (rect.contains(pt) && (i == MyPartInvoiceTable.PART_NUMBER_COLUMN ||
+        											i == MyPartInvoiceTable.QUANTITY_COLUMN ||
+        												i == MyPartInvoiceTable.PART_PRICE_COLUMN)) {
         			final int column = i;
         			editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
         			Listener textListener = new Listener() {
         				public void handleEvent(final Event e) {
         					switch (e.type) {
         					case SWT.MouseDown:
-        						if (column == MyInvoiceTable.PART_NUMBER_COLUMN) {
+        						if (column == MyPartInvoiceTable.PART_NUMBER_COLUMN) {
         							ignoreFocusOut = true;
         							PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
         							Part selectedPart = (Part) partSearchDialog.open(editorTxtBox.getText());
@@ -96,29 +95,28 @@ public class PartInvoiceEditorEventListener implements Listener{
         						}
         						break;
         					case SWT.FocusOut:
-        						if (column == MyInvoiceTable.PART_NUMBER_COLUMN && !ignoreFocusOut) {
+        						if (column == MyPartInvoiceTable.PART_NUMBER_COLUMN && !ignoreFocusOut) {
         							// we entered a part number
         							findPartNumber();
         							calculateInvoiceTotal();
-        						} else if (column == MyInvoiceTable.QUANTITY_COLUMN) {
+        						} else if (column == MyPartInvoiceTable.QUANTITY_COLUMN) {
         							// we entered a part quantity
         							if (partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals("")) {
         								setPartQuantity(item);
         								calculateInvoiceTotal();
         							}
-        						} else if (column == MyInvoiceTable.PART_PRICE_COLUMN) {
+        						} else if (column == MyPartInvoiceTable.PART_PRICE_COLUMN &&
+        								(partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals(""))) {
         							// we entered a part price
-        							if (partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals("")) {
-        								setPartPrice(item);
-        								calculateInvoiceTotal();
-        							}
+        							setPartPrice(item);
+        							calculateInvoiceTotal();
         						}
         						editorTxtBox.dispose();
         						break;
         					case SWT.Traverse:
         						switch (e.detail) {
         						case SWT.TRAVERSE_RETURN:
-        							if (column == MyInvoiceTable.PART_NUMBER_COLUMN) {
+        							if (column == MyPartInvoiceTable.PART_NUMBER_COLUMN) {
         								findPartNumber();
         							}
         							// FALL THROUGH
@@ -202,17 +200,17 @@ public class PartInvoiceEditorEventListener implements Listener{
 			onHandWarningDialogBox.open();
     		editorTxtBox.setText(Integer.toString(selectedPart.getOnHand()));
     	}
-		item.setText(MyInvoiceTable.QUANTITY_COLUMN, editorTxtBox.getText().replaceAll(NOT_NUMBERS, "").equals("") ? "0" :
+		item.setText(MyPartInvoiceTable.QUANTITY_COLUMN, editorTxtBox.getText().replaceAll(NOT_NUMBERS, "").equals("") ? "0" :
 															editorTxtBox.getText().replaceAll(NOT_NUMBERS, ""));
-		item.setText(MyInvoiceTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(MyInvoiceTable.QUANTITY_COLUMN)).multiply(
-				new BigDecimal(item.getText(MyInvoiceTable.PART_PRICE_COLUMN))).toString()));
+		item.setText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(MyPartInvoiceTable.QUANTITY_COLUMN)).multiply(
+				new BigDecimal(item.getText(MyPartInvoiceTable.PART_PRICE_COLUMN))).toString()));
 	}
 	
 	private void setPartPrice(TableItem item) {
-		item.setText(MyInvoiceTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
+		item.setText(MyPartInvoiceTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
 															editorTxtBox.getText().replaceAll(NOT_NUMBERS, ""));
-		item.setText(MyInvoiceTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(MyInvoiceTable.QUANTITY_COLUMN)).multiply(
-				new BigDecimal(item.getText(MyInvoiceTable.PART_PRICE_COLUMN))).toString()));
+		item.setText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(MyPartInvoiceTable.QUANTITY_COLUMN)).multiply(
+				new BigDecimal(item.getText(MyPartInvoiceTable.PART_PRICE_COLUMN))).toString()));
 	}
 	
 	private void calculateInvoiceTotal() {
@@ -220,13 +218,13 @@ public class PartInvoiceEditorEventListener implements Listener{
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = partInvoiceTable.getItems();
 		for (TableItem item : items) {
-			if (item.getText(MyInvoiceTable.EXTENDED_PRICE_COLUMN).equals("")) {
+			if (item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN).equals("")) {
 				// ignore new TableItem at end of list with no part data set 
 				break;
 			}
 			System.out.println("Total before: " + total.toString());
-			total = total.add(new BigDecimal(item.getText(MyInvoiceTable.EXTENDED_PRICE_COLUMN)));
-			System.out.println("Item price to BD: " + new BigDecimal(item.getText(MyInvoiceTable.EXTENDED_PRICE_COLUMN)).toString());
+			total = total.add(new BigDecimal(item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN)));
+			System.out.println("Item price to BD: " + new BigDecimal(item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN)).toString());
 			System.out.println("Total after: " + total.toString());
 		}
 		txtPartsTotalInvoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());

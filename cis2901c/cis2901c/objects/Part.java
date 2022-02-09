@@ -27,13 +27,13 @@ public class Part implements DbObject{
 		this.category = category;
 		this.description = description;
 		this.notes = notes;
-		this.cost = cost == (null) ? new BigDecimal(0) : cost;
-		this.retail = retail == (null) ? new BigDecimal(0) : retail;
+		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
+		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
 		this.onHand = onHand;
 	}
 	
 	public long getDbPk() {
-		return partId;
+		return getPartId();
 	}
 	
 	public String getPkName() {

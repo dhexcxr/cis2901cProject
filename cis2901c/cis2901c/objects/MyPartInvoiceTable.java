@@ -54,7 +54,7 @@ public class MyPartInvoiceTable extends MyTable{
 	
 	@Override
 	public void sort(int sortColumn) {
+		// invoice table doesn't sort, only display parts in order they were entered
 		Main.log(Level.WARNING, "Paint method should not be called on Part Invoice Table");
-		return;		// invoice doesn't sort, only display parts in order they were entered
 	}
 }

@@ -391,6 +391,7 @@ public class DbServices {
 					long customerId = queryResultSet.getLong(2);
 					String lastname = queryResultSet.getString(3);
 					String firstname = queryResultSet.getString(4);
+							// TODO see if we can use TextBlocks here
 					String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
 							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
 								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);

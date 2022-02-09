@@ -1,13 +1,10 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.TableItem;
 
 public class Invoice implements DbObject{

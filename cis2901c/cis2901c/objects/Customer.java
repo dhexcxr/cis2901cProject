@@ -20,6 +20,12 @@ public class Customer implements DbObject{
 	private String workPhone;
 	private String cellPhone;
 	private String email;
+
+	// this is now used here and in PartInvoiceEditorEventListener, and in PhoneNumberTextBoxModifyListener
+	private static final String NOT_NUMBERS = "[^0-9]";		// find a better name
+	private static final String SEVEN_DIGIT_PHONE = "$1-$2";
+	private static final String TEN_DIGIT_PHONE = "$1-$2-$3";
+	private static final String INTERNATIONAL_PHONE = "$1-$2-$3-$4";
 	
 	public Customer() {
 	}
@@ -41,7 +47,7 @@ public class Customer implements DbObject{
 	}
 	
 	public long getDbPk() {
-		return customerId;
+		return getCustomerId();
 	}
 	
 	public String getPkName() {
@@ -168,17 +174,17 @@ public class Customer implements DbObject{
 	
 	public String setPhoneNumberFormat(String inputNumber) {
 		if (inputNumber != null) {
-			inputNumber = (inputNumber.replaceAll("[^0-9]", ""));
+			inputNumber = (inputNumber.replaceAll(NOT_NUMBERS, ""));
 			if (inputNumber.length() >= 7 && inputNumber.length() < 10) {
-				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d+)", "$1-$2"));
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d+)", SEVEN_DIGIT_PHONE));
 			} else if (inputNumber.length() < 11) {
-				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3"));
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d+)", TEN_DIGIT_PHONE));
 			} else if (inputNumber.length() == 11) {
-				inputNumber = (inputNumber.replaceFirst("(\\d{1})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+				inputNumber = (inputNumber.replaceFirst("(\\d{1})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
 			} else if (inputNumber.length() == 12) {
-				inputNumber = (inputNumber.replaceFirst("(\\d{2})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+				inputNumber = (inputNumber.replaceFirst("(\\d{2})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
 			} else if (inputNumber.length() == 13) {
-				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4"));
+				inputNumber = (inputNumber.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
 			}
 		}
 		return inputNumber;

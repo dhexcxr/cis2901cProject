@@ -8,9 +8,9 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class MyInvoiceTableItem extends TableItem implements DbObject{
 	
-	private final int DESCRIPTION_COLUMN = 1;
-	private final int QUANTITY_COLUMN = 2;
-	private final int SOLDPRICE_COLUMN = 6;
+	private static final int DESCRIPTION_COLUMN = 1;
+	private static final int QUANTITY_COLUMN = 2;
+	private static final int SOLDPRICE_COLUMN = 6;
 	
 	private Map<String, String> dataMap = new HashMap<>();
 
