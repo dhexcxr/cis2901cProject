@@ -25,7 +25,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		// help track if text box has been modified
+		// format text in text box, account for different length county codes
 		if (ignore) {
 			return;
 		}

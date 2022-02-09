@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -67,18 +68,6 @@ public class DbServices {
 		}
 	}
 	
-//	public static void saveObject(Invoice cashieredInvoice) {
-//		saveInvoice(cashieredInvoice);
-//	}
-//	
-//	private static void saveInvoice(Invoice cashieredInvoice) {
-//		// insert data into invoice table
-//		StringBuilder queryString = new StringBuilder("INSERT INTO cis2901c.invoice () VALUES ();" );
-//		
-//		// insert individual part invoice line items into invoicepart table
-//			// in invoicepart section, update onHand of part table
-//	}
-	
 	public static void saveObject(DbObject dbObject) {
 		// public Save Object interface
 		if (dbObject == null) {
@@ -101,19 +90,26 @@ public class DbServices {
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
 //			saveInvoiceParts(dbObject);
 			// TODO get invoicenum, SELECT MAX(invoicenum) FROM cis2901c.invoice;
-			int invoicenum = getLastInvoicenum();
+			int invoiceNumber = getLastInvoicenum();
 			// insert individual part invoice line items into invoicepart table
 				// in invoicepart section, update onHand of part table
 			TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
 			for (TableItem invoiceLineItem : invoiceLineItems) {
 				if (invoiceLineItem.getData() == null) {
-					return;
+					break;
 				}
 				MyInvoiceTableItem myInvoiceLineItem = (MyInvoiceTableItem) invoiceLineItem;
-				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoicenum));
+				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 				saveObject(myInvoiceLineItem);
 			}
+			sellInvoicePartsFromDb(invoiceNumber);
 		}
+	}
+	
+	private static void sellInvoicePartsFromDb(int invoiceNumber) {
+		StringBuilder query = new StringBuilder("UPDATE part p JOIN invoicepart ip ON p.partid = ip.partid "
+				+ "SET p.onhand = p.onhand - ip.quantity WHERE ip.invoicenum = ?;");
+		sendQueryToDb(query, new ArrayList<String>(Arrays.asList(Integer.toString(invoiceNumber))));
 	}
 	
 	private static int getLastInvoicenum() {
