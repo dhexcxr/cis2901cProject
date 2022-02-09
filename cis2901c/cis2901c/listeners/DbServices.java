@@ -209,7 +209,7 @@ public class DbServices {
 		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
 	}
 	
-	@SuppressWarnings("unused")		// TODO see if we need this anywhere
+			// TODO see if we need this anywhere
 	private static String numberSanitizer(String searchQuery) {		// originally used in searchForCustomer, refactoring may have made it unnecessary
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection protection
@@ -272,21 +272,25 @@ public class DbServices {
 			// TODO build invoice search results
 			isInvoiceSearch = true;
 			query.append("""
-					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, 
-					i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM 
-					cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON 
-					i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ?;""");
+					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
+					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
+					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
+					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
+					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ?;
+					""");
 			outerQuery.append("""
-					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email, 
-					i.notes, i.tax, i.cashiereddate, i.cashiered, COUNT(ip.partid), SUM(ip.soldprice) + i.tax FROM 
-					cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid JOIN cis2901c.invoicepart as ip ON 
-					i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? AND i.invoicenum IN (;""");
+					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
+					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
+					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
+					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
+					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ? AND i.invoicenum IN (
+					""");
 			deleteStart = 19;
-			deleteEnd = 218;
+			deleteEnd = 207;
 		}
 
 		
-// TODO refactor to buildSearchQuery method here 
+// TODO refactor extract function to buildSearchQuery method here 
 		// build sub-queries if we have more than one search term
 		String[] wordsFromQuery = sanitizer(searchQuery);
 		for (int i = 1; i < wordsFromQuery.length; i++) {
@@ -402,7 +406,7 @@ public class DbServices {
 					int lineItemCount = queryResultSet.getInt(16);
 					BigDecimal finalTotal = queryResultSet.getBigDecimal(17); 
 					
-					Invoice invoice = new Invoice(invoiceNum, customerId, lastname, firstname, customerData, notes, tax, cashieredDateTime, cashiered, new Part[lineItemCount]);
+					Invoice invoice = new Invoice(invoiceNum, customerId, lastname, firstname, customerData, notes, tax, cashieredDateTime, cashiered, new Part[lineItemCount], finalTotal);
 					// TODO populate invoice.parts[]
 					results[i] = invoice;
 					i++;

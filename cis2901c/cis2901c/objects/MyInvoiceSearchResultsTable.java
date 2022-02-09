@@ -40,7 +40,7 @@ public class MyInvoiceSearchResultsTable extends MyTable {
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 				// TODO set date/time display to something nicer
 			tableItem.setText(new String[] {Integer.toString(invoice.getInvoiceNum()), invoice.getCustomerName(),
-					invoice.getCashiereDateTime().toString(), Integer.toString(invoice.getParts().length), "DUMMY"});
+					invoice.getCashiereDateTime().toString(), Integer.toString(invoice.getParts().length), "$" + invoice.getTotal().toString()});
 			tableItem.setData(invoice);
 		}
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);

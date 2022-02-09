@@ -17,6 +17,7 @@ public class Invoice implements DbObject{
 	private BigDecimal tax;
 	private Timestamp cashiereDateTime;
 	private boolean cashiered;
+	private BigDecimal total;
 	
 	private TableItem[] tableLineItems;
 	private Part[] parts;
@@ -25,7 +26,7 @@ public class Invoice implements DbObject{
 	}
 	
 	public Invoice(int invoiceNum, long customerId, String lastname, String firstname, String customerData, String notes, BigDecimal tax,
-			Timestamp cashiereDateTime, boolean cashiered, Part[] parts) {
+			Timestamp cashiereDateTime, boolean cashiered, Part[] parts, BigDecimal total) {
 		super();
 		this.invoiceNum = invoiceNum;
 		this.customerId = customerId;
@@ -36,6 +37,7 @@ public class Invoice implements DbObject{
 		this.cashiereDateTime = cashiereDateTime;
 		this.cashiered = cashiered;
 		this.parts = parts;
+		this.total = total;
 	}
 
 	public int getInvoiceNum() {
@@ -119,6 +121,22 @@ public class Invoice implements DbObject{
 
 	public void setParts(Part[] parts) {
 		this.parts = parts;
+	}
+	
+	private BigDecimal getPartsTotal() {
+		BigDecimal partsTotal = new BigDecimal(0);
+		for (int i = 0; i < this.getParts().length; i++) {
+			partsTotal.add(this.getParts()[i].getRetail());
+		}
+		return partsTotal;
+	}
+	
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
 	}
 
 	@Override
