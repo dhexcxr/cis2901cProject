@@ -8,45 +8,44 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyCustomerTable extends MyTable{
+public class MyInvoiceSearchResultsTable extends MyTable {
 	
-	public static final int FIRST_NAME_INDEX = 0;
-	public static final int LAST_NAME_INDEX = 1;
-	public static final int ADDRESS_INDEX = 2;
-	public static final int CITY_INDEX = 3;
-	public static final int STATE_INDEX = 4;
-	public static final int ZIP_INDEX = 5;
-	public static final int HOME_PHONE_INDEX = 6;
-	public static final int CELL_PHONE_INDEX = 7;
-	public static final int EMAIL_INDEX = 8;
+	private static final int INVOICE_NUM_INDEX = 0;
+	private static final int CUSTOMER_INDEX = 1;
+	private static final int CASHIER_DATE_TIME_INDEX = 2;
+	private static final int LINE_ITEMS_INDEX = 3;
+	private static final int TOTAL_INDEX = 4;
+	
 	private int currentSortDirection = SWT.UP;
-	private int currentSortedColumn = LAST_NAME_INDEX;
-
-	public MyCustomerTable(Composite parent, int style) {
+	private int currentSortedColumn = INVOICE_NUM_INDEX;
+		
+	public MyInvoiceSearchResultsTable(Composite parent, int style) {	
 		super(parent, style);
+		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	public void paint(Object customer) {
+	public void paint(Object part) {
 		// TODO compare this with MyPartInvoiceTable.paint(Object)
-		this.paint(new Object[] {customer});
+		this.paint(new Object[] {part});
 	}
 	
 	@Override
-	public void paint(Object[] customerResults) {
-		// build each TableItem to fill Customer Table
-		for (Customer customer : (Customer[]) customerResults) {
-			if (customer == null) {
+	public void paint(Object[] invoiceResults) {
+		// build each TableItem to fill Invoice Table
+		for (Invoice invoice: (Invoice[]) invoiceResults) {
+			if (invoice == null) {
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-			tableItem.setText(new String[] {customer.getFirstName(), customer.getLastName(), customer.getAddress(), customer.getCity(),
-					customer.getState(), customer.getZipCode(),	customer.setPhoneNumberFormat(customer.getHomePhone()),
-						customer.setPhoneNumberFormat(customer.getCellPhone()), customer.getEmail()} );
-			tableItem.setData(customer);
+				// TODO set date/time display to something nicer
+			tableItem.setText(new String[] {Integer.toString(invoice.getInvoiceNum()), invoice.getCustomerName(),
+					invoice.getCashiereDateTime().toString(), Integer.toString(invoice.getParts().length), "DUMMY"});
+			tableItem.setData(invoice);
 		}
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
+	
 	
 	// TODO this and sort() can be moved into MyTable class, the only thing thats different in any Table Class' version of this method
 				// is the String[] values which could be moved into a custom MyTableItem class
@@ -62,10 +61,8 @@ public class MyCustomerTable extends MyTable{
 				String value2 = items[j].getText(index);
 				if ((sortDirection ==  SWT.UP && collator.compare(value1, value2) < 0) ||
 						(sortDirection ==  SWT.DOWN && collator.compare(value1, value2) > 0)) {
-					String[] values = { items[i].getText(FIRST_NAME_INDEX), items[i].getText(LAST_NAME_INDEX),
-							items[i].getText(ADDRESS_INDEX), items[i].getText(CITY_INDEX), items[i].getText(STATE_INDEX),
-								items[i].getText(ZIP_INDEX), items[i].getText(HOME_PHONE_INDEX),
-								items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
+					String[] values = { items[i].getText(INVOICE_NUM_INDEX), items[i].getText(CUSTOMER_INDEX),
+							items[i].getText(CASHIER_DATE_TIME_INDEX), items[i].getText(LINE_ITEMS_INDEX), items[i].getText(TOTAL_INDEX) };
 					items[i].dispose();
 					TableItem item = new TableItem(this, SWT.NONE, j);
 					item.setText(values);

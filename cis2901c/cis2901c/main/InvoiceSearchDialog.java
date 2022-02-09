@@ -9,8 +9,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import cis2901c.listeners.SearchTextBoxListeners;
+import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
-import cis2901c.objects.MyInvoiceTable;
+import cis2901c.objects.MyInvoiceSearchResultsTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -44,7 +45,7 @@ public class InvoiceSearchDialog extends Dialog {
 		
 		Gui.setDialogAtCenter(shlInvoiceSearch);
 		
-		MyInvoiceTable invoiceTable = new MyInvoiceTable(shlInvoiceSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		MyInvoiceSearchResultsTable invoiceTable = new MyInvoiceSearchResultsTable(shlInvoiceSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		invoiceTable.setBounds(10, 42, 614, 282);
 		invoiceTable.setLinesVisible(true);
 		invoiceTable.setHeaderVisible(true);
@@ -63,28 +64,33 @@ public class InvoiceSearchDialog extends Dialog {
 		invoiceSearchTextBox.setText("Search...");
 		invoiceSearchTextBox.setBounds(9, 10, 614, 26);
 		invoiceSearchTextBox.setFocus();
+		invoiceSearchTextBox.addFocusListener(new TextBoxFocusListener(invoiceSearchTextBox));
 		invoiceSearchTextBox.addModifyListener(new SearchTextBoxListeners(invoiceSearchTextBox, invoiceTable));
 		
 		TableColumn tblclmnInvoiceNumber = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnInvoiceNumber.setWidth(83);
 		tblclmnInvoiceNumber.setText("Invoice #");
+		tblclmnInvoiceNumber.addSelectionListener(new TableColumnSortListener(tblclmnInvoiceNumber));
 		
 		TableColumn tblclmnCustomer = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnCustomer.setWidth(180);
 		tblclmnCustomer.setText("Customer");
+		tblclmnCustomer.addSelectionListener(new TableColumnSortListener(tblclmnCustomer));
 		
 		TableColumn tblclmnCashierDatetime = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnCashierDatetime.setWidth(152);
 		tblclmnCashierDatetime.setText("Cashier Date/Time");
+		tblclmnCashierDatetime.addSelectionListener(new TableColumnSortListener(tblclmnCashierDatetime));
 		
 		TableColumn tblclmnLineItems = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnLineItems.setWidth(82);
 		tblclmnLineItems.setText("Line Items");
+		tblclmnLineItems.addSelectionListener(new TableColumnSortListener(tblclmnLineItems));
 		
 		TableColumn tblclmnTotal = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnTotal.setWidth(100);
 		tblclmnTotal.setText("Total");
-		invoiceSearchTextBox.addFocusListener(new TextBoxFocusListener(invoiceSearchTextBox));
+		tblclmnTotal.addSelectionListener(new TableColumnSortListener(tblclmnTotal));
 
 		// dialog  controls
 		Button btnOpenInvoice = new Button(shlInvoiceSearch, SWT.NONE);

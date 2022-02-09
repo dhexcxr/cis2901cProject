@@ -36,6 +36,7 @@ import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.MyPartInventoryTable;
 import cis2901c.objects.MyPartInvoiceTable;
+import cis2901c.objects.MyRoTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.MyUnitTable;
@@ -82,7 +83,7 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 
 		// Table for RO search results
-		MyTable roTable = new MyTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyRoTable roTable = new MyRoTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		roTable.setBounds(10, 74, 976, 631);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
@@ -181,30 +182,37 @@ public class Gui extends Composite {
 		TableColumn tblclmnPartNumberInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnPartNumberInventory.setWidth(126);
 		tblclmnPartNumberInventory.setText("Part Number");
+		tblclmnPartNumberInventory.addSelectionListener(new TableColumnSortListener(tblclmnPartNumberInventory));
 		
 		TableColumn tblclmnDescriptionInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnDescriptionInventory.setWidth(275);
 		tblclmnDescriptionInventory.setText("Description");
+		tblclmnDescriptionInventory.addSelectionListener(new TableColumnSortListener(tblclmnDescriptionInventory));
 		
 		TableColumn tblclmnOnHandInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnOnHandInventory.setWidth(100);
 		tblclmnOnHandInventory.setText("On Hand");
+		tblclmnOnHandInventory.addSelectionListener(new TableColumnSortListener(tblclmnOnHandInventory));
 		
 		TableColumn tblclmnSupplierInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnSupplierInventory.setWidth(109);
 		tblclmnSupplierInventory.setText("Supplier");
+		tblclmnSupplierInventory.addSelectionListener(new TableColumnSortListener(tblclmnSupplierInventory));
 		
 		TableColumn tblclmnCategoryInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnCategoryInventory.setWidth(115);
 		tblclmnCategoryInventory.setText("Category");
+		tblclmnCategoryInventory.addSelectionListener(new TableColumnSortListener(tblclmnCategoryInventory));
 		
 		TableColumn tblclmnCostInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnCostInventory.setWidth(100);
 		tblclmnCostInventory.setText("Cost");
+		tblclmnCostInventory.addSelectionListener(new TableColumnSortListener(tblclmnCostInventory));
 		
 		TableColumn tblclmnRetailPriceInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnRetailPriceInventory.setWidth(110);
 		tblclmnRetailPriceInventory.setText("Retail Price");
+		tblclmnRetailPriceInventory.addSelectionListener(new TableColumnSortListener(tblclmnRetailPriceInventory));
 		
 		// Inventory controls
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
@@ -306,7 +314,7 @@ public class Gui extends Composite {
 		lblNotes.setBounds(10, 23, 42, 20);
 		lblNotes.setText("Notes:");
 		
-		MyTable partTableInvoice = new MyPartInvoiceTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyPartInvoiceTable partTableInvoice = new MyPartInvoiceTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		partTableInvoice.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -538,30 +546,37 @@ public class Gui extends Composite {
 		TableColumn tblclmnMakeUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnMakeUnit.setText("Make");
 		tblclmnMakeUnit.setWidth(119);
+		tblclmnMakeUnit.addSelectionListener(new TableColumnSortListener(tblclmnMakeUnit));
 
 		TableColumn tblclmnModelUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelUnit.setText("Model");
 		tblclmnModelUnit.setWidth(138);
+		tblclmnModelUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelUnit));
 
 		TableColumn tblclmnModelNameUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelNameUnit.setText("Model Name");
 		tblclmnModelNameUnit.setWidth(148);
+		tblclmnModelNameUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelNameUnit));
 
 		TableColumn tblclmnYearUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnYearUnit.setText("Year");
 		tblclmnYearUnit.setWidth(50);
+		tblclmnYearUnit.addSelectionListener(new TableColumnSortListener(tblclmnYearUnit));
 
 		TableColumn tblclmnMileageUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnMileageUnit.setText("Mileage");
 		tblclmnMileageUnit.setWidth(85);
+		tblclmnMileageUnit.addSelectionListener(new TableColumnSortListener(tblclmnMileageUnit));
 
 		TableColumn tblclmnColorUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnColorUnit.setText("Color");
 		tblclmnColorUnit.setWidth(49);
+		tblclmnColorUnit.addSelectionListener(new TableColumnSortListener(tblclmnColorUnit));
 
 		TableColumn tblclmnVinUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnVinUnit.setText("VIN");
 		tblclmnVinUnit.setWidth(215);
+		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
 
 		// Unit controls
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
