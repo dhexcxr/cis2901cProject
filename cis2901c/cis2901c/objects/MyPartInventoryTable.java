@@ -1,8 +1,5 @@
 package cis2901c.objects;
 
-import java.text.Collator;
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
@@ -19,6 +16,7 @@ public class MyPartInventoryTable extends MyTable{
 	
 	private int currentSortDirection = SWT.UP;
 	private int currentSortedColumn = PART_NUMBER_INDEX;
+//	private static Collator collator = Collator.getInstance(Locale.getDefault());
 
 	public MyPartInventoryTable(Composite parent, int style) {
 		super(parent, style);
@@ -53,7 +51,7 @@ public class MyPartInventoryTable extends MyTable{
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
-		Collator collator = Collator.getInstance(Locale.getDefault());
+//		Collator collator = Collator.getInstance(Locale.getDefault());
 		TableColumn column = this.getColumn(sortColumn);
 		int index = sortColumn;
 		for (int i = 1; i < items.length; i++) {
@@ -65,9 +63,11 @@ public class MyPartInventoryTable extends MyTable{
 					String[] values = { items[i].getText(PART_NUMBER_INDEX), items[i].getText(DESCRIPTION_INDEX),
 							items[i].getText(ON_HAND_INDEX), items[i].getText(SUPPLIER_INDEX), items[i].getText(CATEGORY_INDEX),
 								items[i].getText(COST_INDEX), items[i].getText(RETAIL_INDEX)};
+					Object tempPart = items[i].getData();
 					items[i].dispose();
 					TableItem item = new TableItem(this, SWT.NONE, j);
 					item.setText(values);
+					item.setData(tempPart);
 					items = this.getItems();
 					break;
 				}

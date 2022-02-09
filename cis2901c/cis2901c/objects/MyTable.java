@@ -1,9 +1,14 @@
 package cis2901c.objects;
 
+import java.text.Collator;
+import java.util.Locale;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
 public abstract class MyTable extends Table {
+	
+	protected static Collator collator = Collator.getInstance(Locale.getDefault());
 
 	protected MyTable(Composite parent, int style) {
 		super(parent, style);

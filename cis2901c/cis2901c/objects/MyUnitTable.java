@@ -1,8 +1,5 @@
 package cis2901c.objects;
 
-import java.text.Collator;
-import java.util.Locale;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
@@ -55,7 +52,7 @@ public class MyUnitTable extends MyTable{
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
-		Collator collator = Collator.getInstance(Locale.getDefault());
+//		Collator collator = Collator.getInstance(Locale.getDefault());
 		TableColumn column = this.getColumn(sortColumn);
 		int index = sortColumn;
 		for (int i = 1; i < items.length; i++) {
@@ -67,9 +64,11 @@ public class MyUnitTable extends MyTable{
 					String[] values = { items[i].getText(OWNER_INDEX), items[i].getText(MAKE_INDEX),
 							items[i].getText(MODEL_INDEX), items[i].getText(MODEL_NAME_INDEX), items[i].getText(YEAR_INDEX),
 							items[i].getText(MILEAGE_INDEX), items[i].getText(COLOR_INDEX), items[i].getText(VIN_INDEX)};
+					Object tempPart = items[i].getData();
 					items[i].dispose();
 					TableItem item = new TableItem(this, SWT.NONE, j);
 					item.setText(values);
+					item.setData(tempPart);
 					items = this.getItems();
 					break;
 				}
