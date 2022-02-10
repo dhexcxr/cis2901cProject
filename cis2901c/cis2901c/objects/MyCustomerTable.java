@@ -53,24 +53,17 @@ public class MyCustomerTable extends MyTable{
 			String value1 = items[i].getText(index);
 			for (int j = 0; j < i; j++) {
 				String value2 = items[j].getText(index);
-				if (sortDirection ==  SWT.UP && collator.compare(value1, value2) < 0) {
+				if ((sortDirection ==  SWT.UP && collator.compare(value1, value2) < 0) ||
+						(sortDirection ==  SWT.DOWN && collator.compare(value1, value2) > 0)) {
 					String[] values = { items[i].getText(FIRST_NAME_INDEX), items[i].getText(LAST_NAME_INDEX),
 							items[i].getText(ADDRESS_INDEX), items[i].getText(CITY_INDEX), items[i].getText(STATE_INDEX),
 								items[i].getText(ZIP_INDEX), items[i].getText(HOME_PHONE_INDEX),
 								items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
+					Object tempObject = items[i].getData();
 					items[i].dispose();
 					TableItem item = new TableItem(this, SWT.NONE, j);
 					item.setText(values);
-					items = this.getItems();
-					break;
-				} else if (sortDirection ==  SWT.DOWN && collator.compare(value1, value2) > 0) {
-					String[] values = { items[i].getText(FIRST_NAME_INDEX), items[i].getText(LAST_NAME_INDEX),
-							items[i].getText(ADDRESS_INDEX), items[i].getText(CITY_INDEX), items[i].getText(STATE_INDEX),
-								items[i].getText(ZIP_INDEX), items[i].getText(HOME_PHONE_INDEX),
-								items[i].getText(CELL_PHONE_INDEX), items[i].getText(EMAIL_INDEX) };
-					items[i].dispose();
-					TableItem item = new TableItem(this, SWT.NONE, j);
-					item.setText(values);
+					item.setData(tempObject);
 					items = this.getItems();
 					break;
 				}
