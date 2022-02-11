@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyPartInventoryTable extends MyTable{
+public class PartInventoryTable extends MyTable{
 	private static final int PART_NUMBER_INDEX = 0;
 	private static final int DESCRIPTION_INDEX = 1;
 	private static final int ON_HAND_INDEX = 2;
@@ -18,7 +18,7 @@ public class MyPartInventoryTable extends MyTable{
 	private int currentSortedColumn = PART_NUMBER_INDEX;
 //	private static Collator collator = Collator.getInstance(Locale.getDefault());
 
-	public MyPartInventoryTable(Composite parent, int style) {
+	public PartInventoryTable(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

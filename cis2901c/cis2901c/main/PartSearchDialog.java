@@ -14,7 +14,7 @@ import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
-import cis2901c.objects.MyPartInventoryTable;
+import cis2901c.objects.PartInventoryTable;
 
 public class PartSearchDialog extends Dialog{
 
@@ -22,7 +22,7 @@ public class PartSearchDialog extends Dialog{
 
 	protected Object result;		// TODO probably change this to Part, wouldn't need cast for results
 	protected Shell shlPartSearch;
-	private MyPartInventoryTable partTableSearchDialog;
+	private PartInventoryTable partTableSearchDialog;
 	private MyText partSearchTextBox;
 
 	/**
@@ -78,7 +78,7 @@ public class PartSearchDialog extends Dialog{
 		Gui.setDialogAtCenter(shlPartSearch);
 
 		// search results table						
-		partTableSearchDialog = new MyPartInventoryTable(shlPartSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		partTableSearchDialog = new PartInventoryTable(shlPartSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		partTableSearchDialog.setLinesVisible(true);
 		partTableSearchDialog.setHeaderVisible(true);
 		partTableSearchDialog.setBounds(10, 42, 908, 282);

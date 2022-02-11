@@ -34,7 +34,7 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.CustomerTable;
 import cis2901c.objects.MyInvoiceTableItem;
-import cis2901c.objects.MyPartInventoryTable;
+import cis2901c.objects.PartInventoryTable;
 import cis2901c.objects.MyPartInvoiceTable;
 import cis2901c.objects.MyRoTable;
 import cis2901c.objects.MyTable;
@@ -174,7 +174,7 @@ public class Gui extends Composite {
 		Composite inventoryComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmInventory.setControl(inventoryComposite);
 		
-		MyTable partTableInventory = new MyPartInventoryTable(inventoryComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable partTableInventory = new PartInventoryTable(inventoryComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		partTableInventory.setLinesVisible(true);
 		partTableInventory.setHeaderVisible(true);
 		partTableInventory.setBounds(10, 42, 948, 610);
