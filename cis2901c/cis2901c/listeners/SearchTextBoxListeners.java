@@ -31,30 +31,19 @@ public class SearchTextBoxListeners implements ModifyListener {
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		if (searchObject instanceof DbObjectSearchable) {
-			int queryLength = searchBox.getText().trim().length();
-			if (queryLength > 0) {
-				table.removeAll();
-				if (searchObject instanceof Customer) {
-					searchObject = new Customer(searchBox.getText());
-				} else if (searchObject instanceof Part) {
-					searchObject = new Part(searchBox.getText());
-				} else if (searchObject instanceof Unit) {
-					searchObject = new Unit(searchBox.getText());
-				} else if (searchObject instanceof Invoice) {
-					searchObject = new Invoice(searchBox.getText());
-				}
-				table.paint(DbServices.searchForObject(searchObject));
-			} else if (queryLength == 0) {
-				table.removeAll();
-			}
-			return;
-		}
-		
 		int queryLength = searchBox.getText().trim().length();
 		if (queryLength > 0) {
 			table.removeAll();
-			table.paint(DbServices.searchForObject(table, searchBox.getText()));
+			if (searchObject instanceof Customer) {
+				searchObject = new Customer(searchBox.getText());
+			} else if (searchObject instanceof Part) {
+				searchObject = new Part(searchBox.getText());
+			} else if (searchObject instanceof Unit) {
+				searchObject = new Unit(searchBox.getText());
+			} else if (searchObject instanceof Invoice) {
+				searchObject = new Invoice(searchBox.getText());
+			}
+			table.paint(DbServices.searchForObject(searchObject));
 		} else if (queryLength == 0) {
 			table.removeAll();
 		}
