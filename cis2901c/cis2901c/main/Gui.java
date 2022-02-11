@@ -218,7 +218,7 @@ public class Gui extends Composite {
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
 		partSearchTextBox.setText("Search...");
 		partSearchTextBox.setBounds(10, 10, 861, 26);
-		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableInventory));
+		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableInventory, new Part()));
 		partSearchTextBox.addFocusListener(new TextBoxFocusListener(partSearchTextBox));
 		
 		Button btnNewPart = new Button(inventoryComposite, SWT.NONE);

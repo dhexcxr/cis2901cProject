@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Part implements DbObjectSavable{
+public class Part extends DbObjectSearchable implements DbObjectSavable{
 	private int partId = -1;
 	private String partNumber;
 	private String supplier;
@@ -16,6 +16,16 @@ public class Part implements DbObjectSavable{
 	private int onHand = -1;
 	
 	public Part() {
+	}
+	
+	public Part(String searchString) {
+		super.searchString = searchString;
+		super.searchQuery = new StringBuilder("""
+				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""");
+		super.outerSearchQueryAppendix = new StringBuilder(" AND partId IN (");
+		super.querySubStringIndecies[0] = 13;
+		super.querySubStringIndecies[1] = 87;
 	}
 	
 //	public Part(int partId, String partNumber, String supplier, String category, String description,
@@ -134,5 +144,26 @@ public class Part implements DbObjectSavable{
 		dataMap.put("onHand", Integer.toString(onHand));
 		
 		return dataMap;
-	}	
+	}
+	
+	// START object search methods
+		public String getSearchString() {
+			return searchString;
+		}
+
+		public StringBuilder getSearchQuery() {
+			return searchQuery;
+		}
+
+		public String getOuterSearchQuery() {
+			StringBuilder outerSearchQuery = new StringBuilder(getSearchQuery());
+			outerSearchQuery.delete(outerSearchQuery.length() - 1, outerSearchQuery.length());
+			outerSearchQuery.append(outerSearchQueryAppendix);
+			return outerSearchQuery.toString();
+		}
+		
+		public int[] getQuerySubStringIndecies() {
+			return querySubStringIndecies;
+		}
+		// END object search methods
 }

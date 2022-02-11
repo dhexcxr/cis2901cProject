@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TableItem;
 import cis2901c.main.Main;
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSavable;
+import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.Part;
@@ -212,19 +213,20 @@ public class DbServices {
 		return searchQuery.replaceAll("[^0-9]", "");
 	}	
 	
-	public static Object[] searchForObject(Customer custoemr) {
-		String[] wordsFromQuery = sanitizer(custoemr.getSearchString());
+	public static Object[] searchForObject(DbObjectSearchable object) {
+		String querySearch = object.getSearchString();
+		String[] wordsFromQuery = sanitizer(querySearch);
 		for (int i = 1; i < wordsFromQuery.length; i++) {
-			custoemr.getSearchQuery().delete(custoemr.getQuerySubStringIndecies()[0], custoemr.getQuerySubStringIndecies()[1]);
-			custoemr.getSearchQuery().insert(0, custoemr.getOuterSearchQuery());
-			custoemr.getSearchQuery().replace(custoemr.getSearchQuery().length() - 1, custoemr.getSearchQuery().length(), ");");
+			object.getSearchQuery().delete(object.getQuerySubStringIndecies()[0], object.getQuerySubStringIndecies()[1]);
+			object.getSearchQuery().insert(0, object.getOuterSearchQuery());
+			object.getSearchQuery().replace(object.getSearchQuery().length() - 1, object.getSearchQuery().length(), ");");
 		}
 		
 		// TODO this needs to be its own method
 		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = null;
 		ResultSet queryResultSet = null;
-		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(custoemr.getSearchQuery().toString())) {
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery().toString())) {
 //			Connection dbConnection = DbServices.getDbConnection();
 //			PreparedStatement statement = dbConnection.prepareStatement(query.toString());
 			statement.setMaxRows(MAX_RESULTS);
@@ -242,7 +244,7 @@ public class DbServices {
 			queryResultSet = statement.executeQuery();
 			// TODO the previous needs to be its own method
 			
-			if (custoemr instanceof Customer) {
+			if (object instanceof Customer) {
 				results = new Customer[MAX_RESULTS];
 				int i = 0;
 				while (queryResultSet.next() && i < MAX_RESULTS) {
@@ -258,10 +260,27 @@ public class DbServices {
 					customer.setCellPhone(queryResultSet.getString(9));
 					customer.setEmail(queryResultSet.getString(10));
 					customer.setCustomerId(queryResultSet.getLong(11));
-					
-//					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
-//							zip, homePhone, workPhone, cellPhone, email);
+
 					results[i] = customer;
+					i++;
+				}
+			} else if (object instanceof Part) {
+				results = new Part[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					
+					Part part = new Part();
+					part.setPartId(queryResultSet.getInt(1));
+					part.setPartNumber(queryResultSet.getString(2));
+					part.setSupplier(queryResultSet.getString(3));
+					part.setCategory(queryResultSet.getString(4));
+					part.setDescription(queryResultSet.getString(5));
+					part.setNotes(queryResultSet.getString(6));
+					part.setCost(queryResultSet.getBigDecimal(7));
+					part.setRetail(queryResultSet.getBigDecimal(8));
+					part.setOnHand(queryResultSet.getInt(9));
+					
+					results[i] = part;
 					i++;
 				}
 			}

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import cis2901c.listeners.DbServices;
 
-public class Customer implements DbObjectSavable{
+public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	
 	// might not need this
 	private long customerId = -1;
@@ -21,14 +21,13 @@ public class Customer implements DbObjectSavable{
 	private String cellPhone;
 	private String email;
 	
-	private String searchString;
-	
-	private final StringBuilder searchQuery = new StringBuilder("""
-			SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
-			email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
-			OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
-	private final StringBuilder outerSearchQueryAppendix = new StringBuilder(" AND customerId IN (");
-	private final int[] querySubStringIndecies = {7, 99};
+//	String searchString;
+//	private final StringBuilder searchQuery = new StringBuilder("""
+//			SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+//			email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
+//			OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
+//	private final StringBuilder outerSearchQueryAppendix = new StringBuilder(" AND customerId IN (");
+//	private final int[] querySubStringIndecies = {7, 99};
 
 	// this is now used here and in PartInvoiceEditorEventListener, and in PhoneNumberTextBoxModifyListener
 	private static final String NOT_NUMBERS = "[^0-9]";		// find a better name
@@ -40,7 +39,14 @@ public class Customer implements DbObjectSavable{
 	}
 	
 	public Customer(String searchString) {
-		this.searchString = searchString;
+		super.searchString = searchString;
+		super.searchQuery = new StringBuilder("""
+				SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+				email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
+				OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
+		super.outerSearchQueryAppendix = new StringBuilder(" AND customerId IN (");
+		super.querySubStringIndecies[0] = 7;
+		super.querySubStringIndecies[1] = 99;
 	}
 	
 //	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
@@ -180,27 +186,6 @@ public class Customer implements DbObjectSavable{
 		return dataMap;
 	}
 
-	// START object search methods
-	public String getSearchString() {
-		return searchString;
-	}
-
-	public StringBuilder getSearchQuery() {
-		return searchQuery;
-	}
-
-	public String getOuterSearchQuery() {
-		StringBuilder outerSearchQuery = new StringBuilder(getSearchQuery());
-		outerSearchQuery.delete(outerSearchQuery.length() - 1, outerSearchQuery.length());
-		outerSearchQuery.append(outerSearchQueryAppendix);
-		return outerSearchQuery.toString();
-	}
-	
-	public int[] getQuerySubStringIndecies() {
-		return querySubStringIndecies;
-	}
-	// END object search methods
-
 	protected static void populateCustomerTable(Table table) {
 		// not yet used, could populate "" in searchForObject call with current txtSearchBox.getText()
 		DbServices.searchForObject(table, "");
@@ -222,5 +207,9 @@ public class Customer implements DbObjectSavable{
 			}
 		}
 		return inputNumber;
+	}
+	
+	public String getSearchString() {
+		return searchString;
 	}
 }
