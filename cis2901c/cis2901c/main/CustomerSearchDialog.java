@@ -8,7 +8,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.SearchTextBoxListeners;
+import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.Customer;
 import cis2901c.objects.MyCustomerTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
@@ -96,44 +98,53 @@ public class CustomerSearchDialog extends Dialog {
 		TableColumn tblclmnFirstName = new TableColumn(customerTable, SWT.NONE);
 		tblclmnFirstName.setText("First Name");
 		tblclmnFirstName.setWidth(100);
+		tblclmnFirstName.addSelectionListener(new TableColumnSortListener(tblclmnFirstName));
 		
 		TableColumn tblclmnLastName = new TableColumn(customerTable, SWT.NONE);
 		tblclmnLastName.setText("Last Name");
 		tblclmnLastName.setWidth(100);
+		tblclmnLastName.addSelectionListener(new TableColumnSortListener(tblclmnLastName));
 		
 		TableColumn tblclmnAddress = new TableColumn(customerTable, SWT.NONE);
 		tblclmnAddress.setText("Address");
 		tblclmnAddress.setWidth(100);
+		tblclmnAddress.addSelectionListener(new TableColumnSortListener(tblclmnAddress));
 		
 		TableColumn tblclmnCity = new TableColumn(customerTable, SWT.NONE);
 		tblclmnCity.setText("City");
 		tblclmnCity.setWidth(100);
+		tblclmnCity.addSelectionListener(new TableColumnSortListener(tblclmnCity));
 		
 		TableColumn tblclmnState = new TableColumn(customerTable, SWT.NONE);
 		tblclmnState.setText("State");
 		tblclmnState.setWidth(100);
+		tblclmnState.addSelectionListener(new TableColumnSortListener(tblclmnState));
 		
 		TableColumn tblclmnZip = new TableColumn(customerTable, SWT.NONE);
 		tblclmnZip.setText("Zip");
 		tblclmnZip.setWidth(100);
+		tblclmnZip.addSelectionListener(new TableColumnSortListener(tblclmnZip));
 		
 		TableColumn tblclmnHomePhone = new TableColumn(customerTable, SWT.NONE);
 		tblclmnHomePhone.setText("Home Phone");
 		tblclmnHomePhone.setWidth(100);
+		tblclmnHomePhone.addSelectionListener(new TableColumnSortListener(tblclmnHomePhone));
 		
 		TableColumn tblclmnCellPhone = new TableColumn(customerTable, SWT.NONE);
 		tblclmnCellPhone.setText("Cell Phone");
 		tblclmnCellPhone.setWidth(100);
+		tblclmnCellPhone.addSelectionListener(new TableColumnSortListener(tblclmnCellPhone));
 		
 		TableColumn tblclmnEmail = new TableColumn(customerTable, SWT.NONE);
 		tblclmnEmail.setText("E-mail");
 		tblclmnEmail.setWidth(100);
+		tblclmnEmail.addSelectionListener(new TableColumnSortListener(tblclmnEmail));
 		
 		customerSearchTextBox = new MyText(shlCustomerSearch, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
 		customerSearchTextBox.setBounds(10, 10, 909, 26);
 		customerSearchTextBox.setFocus();
-		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
+		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable, new Customer()));
 		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
 
 		// dialog  controls

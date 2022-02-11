@@ -10,8 +10,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 
 import cis2901c.listeners.SearchTextBoxListeners;
+import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.MyText;
+import cis2901c.objects.Part;
 import cis2901c.objects.MyPartInventoryTable;
 
 public class PartSearchDialog extends Dialog{
@@ -94,30 +96,37 @@ public class PartSearchDialog extends Dialog{
 		TableColumn tblclmnPartNumberInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnPartNumberInventory.setWidth(126);
 		tblclmnPartNumberInventory.setText("Part Number");
+		tblclmnPartNumberInventory.addSelectionListener(new TableColumnSortListener(tblclmnPartNumberInventory));
 
 		TableColumn tblclmnDescriptionInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnDescriptionInventory.setWidth(245);
 		tblclmnDescriptionInventory.setText("Description");
+		tblclmnDescriptionInventory.addSelectionListener(new TableColumnSortListener(tblclmnDescriptionInventory));
 
 		TableColumn tblclmnOnHandInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnOnHandInventory.setWidth(100);
 		tblclmnOnHandInventory.setText("On Hand");
+		tblclmnOnHandInventory.addSelectionListener(new TableColumnSortListener(tblclmnOnHandInventory));
 
 		TableColumn tblclmnSupplierInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnSupplierInventory.setWidth(109);
 		tblclmnSupplierInventory.setText("Supplier");
+		tblclmnSupplierInventory.addSelectionListener(new TableColumnSortListener(tblclmnSupplierInventory));
 
 		TableColumn tblclmnCategoryInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnCategoryInventory.setWidth(115);
 		tblclmnCategoryInventory.setText("Category");
+		tblclmnCategoryInventory.addSelectionListener(new TableColumnSortListener(tblclmnCategoryInventory));
 
 		TableColumn tblclmnCostInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnCostInventory.setWidth(100);
 		tblclmnCostInventory.setText("Cost");
+		tblclmnCostInventory.addSelectionListener(new TableColumnSortListener(tblclmnCostInventory));
 
 		TableColumn tblclmnRetailPriceInventory = new TableColumn(partTableSearchDialog, SWT.NONE);
 		tblclmnRetailPriceInventory.setWidth(110);
 		tblclmnRetailPriceInventory.setText("Retail Price");
+		tblclmnRetailPriceInventory.addSelectionListener(new TableColumnSortListener(tblclmnRetailPriceInventory));
 
 		// dialog  controls
 		Button btnSelectPart = new Button(shlPartSearch, SWT.NONE);
@@ -149,7 +158,7 @@ public class PartSearchDialog extends Dialog{
 		partSearchTextBox.setText("Search...");
 		partSearchTextBox.setBounds(10, 10, 909, 26);
 		partSearchTextBox.setFocus();
-		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableSearchDialog));
+		partSearchTextBox.addModifyListener(new SearchTextBoxListeners(partSearchTextBox, partTableSearchDialog, new Part()));
 		partSearchTextBox.addFocusListener(new TextBoxFocusListener(partSearchTextBox));
 	}
 }
