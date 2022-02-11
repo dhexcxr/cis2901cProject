@@ -25,20 +25,20 @@ public class Invoice implements DbObject{
 	public Invoice() {
 	}
 	
-	public Invoice(int invoiceNum, long customerId, String lastname, String firstname, String customerData, String notes, BigDecimal tax,
-			Timestamp cashiereDateTime, boolean cashiered, Part[] parts, BigDecimal total) {
-		super();
-		this.invoiceNum = invoiceNum;
-		this.customerId = customerId;
-		this.setCustomerName(lastname, firstname);
-		this.customerData = customerData;
-		this.notes = notes;
-		this.tax = tax;
-		this.cashiereDateTime = cashiereDateTime;
-		this.cashiered = cashiered;
-		this.parts = parts;
-		this.total = total;
-	}
+//	public Invoice(int invoiceNum, long customerId, String lastname, String firstname, String customerData, String notes, BigDecimal tax,
+//			Timestamp cashiereDateTime, boolean cashiered, Part[] parts, BigDecimal total) {
+//		super();
+//		this.invoiceNum = invoiceNum;
+//		this.customerId = customerId;
+//		this.setCustomerName(lastname, firstname);
+//		this.customerData = customerData;
+//		this.notes = notes;
+//		this.tax = tax;
+//		this.cashiereDateTime = cashiereDateTime;
+//		this.cashiered = cashiered;
+//		this.parts = parts;
+//		this.total = total;
+//	}
 
 	public int getInvoiceNum() {
 		return invoiceNum;
@@ -124,6 +124,7 @@ public class Invoice implements DbObject{
 	}
 	
 	private BigDecimal getPartsTotal() {
+		// not used right now, need to populate Part[] parts before this is usable
 		BigDecimal partsTotal = new BigDecimal(0);
 		for (int i = 0; i < this.getParts().length; i++) {
 			partsTotal.add(this.getParts()[i].getRetail());

@@ -22,21 +22,21 @@ public class Unit implements DbObject{
 	public Unit() {
 	}
 	
-	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear,
-										int mileage, String color, String vin, String notes, String owner) {
-		super();
-		this.unitId = unitId;
-		this.customerId = customerId;
-		this.make = make;
-		this.model = model;
-		this.modelName = modelName;
-		this.year = modelYear;
-		this.mileage = mileage;
-		this.color = color;
-		this.vin = vin;
-		this.notes = notes;
-		this.owner = owner;
-	}
+//	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear,
+//										int mileage, String color, String vin, String notes, String owner) {
+//		super();
+//		this.unitId = unitId;
+//		this.customerId = customerId;
+//		this.make = make;
+//		this.model = model;
+//		this.modelName = modelName;
+//		this.year = modelYear;
+//		this.mileage = mileage;
+//		this.color = color;
+//		this.vin = vin;
+//		this.notes = notes;
+//		this.owner = owner;
+//	}
 	
 	public long getDbPk() {
 		return getUnitId();

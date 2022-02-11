@@ -18,19 +18,19 @@ public class Part implements DbObject{
 	public Part() {
 	}
 	
-	public Part(int partId, String partNumber, String supplier, String category, String description,
-										String notes, BigDecimal cost, BigDecimal retail, int onHand) {
-		super();
-		this.partId = partId;
-		this.partNumber = partNumber;
-		this.supplier = supplier;
-		this.category = category;
-		this.description = description;
-		this.notes = notes;
-		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
-		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
-		this.onHand = onHand;
-	}
+//	public Part(int partId, String partNumber, String supplier, String category, String description,
+//										String notes, BigDecimal cost, BigDecimal retail, int onHand) {
+//		super();
+//		this.partId = partId;
+//		this.partNumber = partNumber;
+//		this.supplier = supplier;
+//		this.category = category;
+//		this.description = description;
+//		this.notes = notes;
+//		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
+//		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
+//		this.onHand = onHand;
+//	}
 	
 	public long getDbPk() {
 		return getPartId();
@@ -97,7 +97,7 @@ public class Part implements DbObject{
 	}
 
 	public void setCost(BigDecimal cost) {
-		this.cost = cost;
+		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
 	}
 
 	public BigDecimal getRetail() {
@@ -105,7 +105,7 @@ public class Part implements DbObject{
 	}
 
 	public void setRetail(BigDecimal retail) {
-		this.retail = retail;
+		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
 	}
 
 	public int getOnHand() {

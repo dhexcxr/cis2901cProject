@@ -30,21 +30,21 @@ public class Customer implements DbObject{
 	public Customer() {
 	}
 	
-	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
-			String zipCode, String homePhone, String workPhone, String cellPhone, String email) {
-		super();
-		this.customerId = customerId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.address = address;
-		this.city = city;
-		this.state = state;
-		this.zipCode = zipCode;
-		this.homePhone = homePhone;
-		this.workPhone = workPhone;
-		this.cellPhone = cellPhone;
-		this.email = email;
-	}
+//	public Customer(long customerId, String firstName, String lastName, String address, String city, String state,
+//			String zipCode, String homePhone, String workPhone, String cellPhone, String email) {
+//		super();
+//		this.customerId = customerId;
+//		this.firstName = firstName;
+//		this.lastName = lastName;
+//		this.address = address;
+//		this.city = city;
+//		this.state = state;
+//		this.zipCode = zipCode;
+//		this.homePhone = homePhone;
+//		this.workPhone = workPhone;
+//		this.cellPhone = cellPhone;
+//		this.email = email;
+//	}
 	
 	public long getDbPk() {
 		return getCustomerId();

@@ -323,20 +323,21 @@ public class DbServices {
 				results = new Customer[MAX_RESULTS];
 				int i = 0;
 				while (queryResultSet.next() && i < MAX_RESULTS) {
-					String firstName = queryResultSet.getString(1);
-					String lastName = queryResultSet.getString(2);
-					String address = queryResultSet.getString(3);
-					String city = queryResultSet.getString(4);
-					String state = queryResultSet.getString(5);			
-					String zip = queryResultSet.getString(6);
-					String homePhone = queryResultSet.getString(7);
-					String workPhone = queryResultSet.getString(8);
-					String cellPhone = queryResultSet.getString(9);
-					String email = queryResultSet.getString(10);
-					long customerId = queryResultSet.getLong(11);
+					Customer customer = new Customer();
+					customer.setFirstName(queryResultSet.getString(1));
+					customer.setLastName(queryResultSet.getString(2));
+					customer.setAddress(queryResultSet.getString(3));
+					customer.setCity(queryResultSet.getString(4));
+					customer.setState(queryResultSet.getString(5));			
+					customer.setZipCode(queryResultSet.getString(6));
+					customer.setHomePhone(queryResultSet.getString(7));
+					customer.setWorkPhone(queryResultSet.getString(8));
+					customer.setCellPhone(queryResultSet.getString(9));
+					customer.setEmail(queryResultSet.getString(10));
+					customer.setCustomerId(queryResultSet.getLong(11));
 					
-					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
-							zip, homePhone, workPhone, cellPhone, email);
+//					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+//							zip, homePhone, workPhone, cellPhone, email);
 					results[i] = customer;
 					i++;
 				}
@@ -344,24 +345,28 @@ public class DbServices {
 				results = new Unit[MAX_RESULTS];
 				int i = 0;
 				while (queryResultSet.next() && i < MAX_RESULTS) {
-					long unitId = queryResultSet.getLong(1);
-					long customerId = queryResultSet.getLong(2);
-					String make = queryResultSet.getString(3);
-					String model = queryResultSet.getString(4);
-					String modelName = queryResultSet.getString(5);
-					int year = queryResultSet.getInt(6);
-					int mileage = queryResultSet.getInt(7);
-					String color = queryResultSet.getString(8);
-					String vin = queryResultSet.getString(9);
-					String notes = queryResultSet.getString(10);
+					
+					Unit unit = new Unit();
+					unit.setUnitId(queryResultSet.getLong(1));
+					unit.setCustomerId(queryResultSet.getLong(2));
+					unit.setMake(queryResultSet.getString(3));
+					unit.setModel(queryResultSet.getString(4));
+					unit.setModelName(queryResultSet.getString(5));
+					unit.setYear(queryResultSet.getInt(6));
+					unit.setMileage(queryResultSet.getInt(7));
+					unit.setColor(queryResultSet.getString(8));
+					unit.setVin(queryResultSet.getString(9));
+					unit.setNotes(queryResultSet.getString(10));
+					
 					String lastName = queryResultSet.getString(11);
 					String firstName = queryResultSet.getString(12);
 					String owner = lastName;
 					if (firstName != null && firstName.length() != 0) {
 						owner = lastName + ", " + firstName;
 					}
+					unit.setOwner(owner);
 					
-					Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
+//					Unit unit = new Unit(unitId, customerId, make, model, modelName, year, mileage, color, vin, notes, owner);
 					results[i] = unit;
 					i++;
 				}
@@ -369,17 +374,29 @@ public class DbServices {
 				results = new Part[MAX_RESULTS];
 				int i = 0;
 				while (queryResultSet.next() && i < MAX_RESULTS) {
-					int partId = queryResultSet.getInt(1);
-					String partNumber = queryResultSet.getString(2);
-					String supplier = queryResultSet.getString(3);
-					String category = queryResultSet.getString(4);
-					String description = queryResultSet.getString(5);
-					String notes = queryResultSet.getString(6);
-					BigDecimal cost = queryResultSet.getBigDecimal(7);
-					BigDecimal retail = queryResultSet.getBigDecimal(8);
-					int onHand = queryResultSet.getInt(9);
-
-					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
+					
+					Part part = new Part();
+					part.setPartId(queryResultSet.getInt(1));
+					part.setPartNumber(queryResultSet.getString(2));
+					part.setSupplier(queryResultSet.getString(3));
+					part.setCategory(queryResultSet.getString(4));
+					part.setDescription(queryResultSet.getString(5));
+					part.setNotes(queryResultSet.getString(6));
+					part.setCost(queryResultSet.getBigDecimal(7));
+					part.setRetail(queryResultSet.getBigDecimal(8));
+					part.setOnHand(queryResultSet.getInt(9));
+					
+//					int partId = queryResultSet.getInt(1);
+//					String partNumber = queryResultSet.getString(2);
+//					String supplier = queryResultSet.getString(3);
+//					String category = queryResultSet.getString(4);
+//					String description = queryResultSet.getString(5);
+//					String notes = queryResultSet.getString(6);
+//					BigDecimal cost = queryResultSet.getBigDecimal(7);
+//					BigDecimal retail = queryResultSet.getBigDecimal(8);
+//					int onHand = queryResultSet.getInt(9);
+//
+//					Part part = new Part(partId, partNumber, supplier, category, description, notes, cost, retail, onHand);
 					results[i] = part;
 					i++;
 				}
@@ -387,23 +404,29 @@ public class DbServices {
 				results = new Invoice[MAX_RESULTS];
 				int i = 0;
 				while (queryResultSet.next() && i < MAX_RESULTS) {
-					int invoiceNum = queryResultSet.getInt(1);
-					long customerId = queryResultSet.getLong(2);
+					Invoice invoice = new Invoice();
+					invoice.setInvoiceNum(queryResultSet.getInt(1));
+					invoice.setCustomerId(queryResultSet.getLong(2));
+					
 					String lastname = queryResultSet.getString(3);
 					String firstname = queryResultSet.getString(4);
-							// TODO see if we can use TextBlocks here
+					invoice.setCustomerName(lastname, firstname);
+					
+					// TODO see if we can use TextBlocks here
 					String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
 							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
 								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
-					String notes = queryResultSet.getString(12);
-					BigDecimal tax = queryResultSet.getBigDecimal(13);
-					Timestamp cashieredDateTime = queryResultSet.getTimestamp(14);
-					boolean cashiered = queryResultSet.getBoolean(15);
-					int lineItemCount = queryResultSet.getInt(16);
-					BigDecimal finalTotal = queryResultSet.getBigDecimal(17); 
+					invoice.setCustomerData(customerData);
 					
-					Invoice invoice = new Invoice(invoiceNum, customerId, lastname, firstname, customerData, notes, tax, cashieredDateTime, cashiered, new Part[lineItemCount], finalTotal);
+					invoice.setNotes(queryResultSet.getString(12));
+					invoice.setTax(queryResultSet.getBigDecimal(13));
+					invoice.setCashiereDateTime(queryResultSet.getTimestamp(14));
+					invoice.setCashiered(queryResultSet.getBoolean(15));
 					// TODO populate invoice.parts[]
+					int lineItemCount = queryResultSet.getInt(16);
+					invoice.setParts(new Part[lineItemCount]);
+					
+					invoice.setTotal(queryResultSet.getBigDecimal(17)); 
 					results[i] = invoice;
 					i++;
 				}
