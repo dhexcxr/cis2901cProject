@@ -516,7 +516,7 @@ public class Gui extends Composite {
 		MyText customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
 		customerSearchTextBox.setBounds(10, 10, 861, 26);
-		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable));
+		customerSearchTextBox.addModifyListener(new SearchTextBoxListeners(customerSearchTextBox, customerTable, new Customer()));
 		customerSearchTextBox.addFocusListener(new TextBoxFocusListener(customerSearchTextBox));
 
 		Button btnNewCustomer = new Button(customerComposite, SWT.NONE);

@@ -212,6 +212,67 @@ public class DbServices {
 		return searchQuery.replaceAll("[^0-9]", "");
 	}	
 	
+	public static Object[] searchForObject(Customer custoemr) {
+		String[] wordsFromQuery = sanitizer(custoemr.getSearchString());
+		for (int i = 1; i < wordsFromQuery.length; i++) {
+			custoemr.getSearchQuery().delete(custoemr.getQuerySubStringIndecies()[0], custoemr.getQuerySubStringIndecies()[1]);
+			custoemr.getSearchQuery().insert(0, custoemr.getOuterSearchQuery());
+			custoemr.getSearchQuery().replace(custoemr.getSearchQuery().length() - 1, custoemr.getSearchQuery().length(), ");");
+		}
+		
+		// TODO this needs to be its own method
+		final int MAX_RESULTS = 255;		// max search return results
+		Object[] results = null;
+		ResultSet queryResultSet = null;
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(custoemr.getSearchQuery().toString())) {
+//			Connection dbConnection = DbServices.getDbConnection();
+//			PreparedStatement statement = dbConnection.prepareStatement(query.toString());
+			statement.setMaxRows(MAX_RESULTS);
+			ParameterMetaData parameterMetaData = statement.getParameterMetaData();
+			int parameterCount = parameterMetaData.getParameterCount();
+			int queryWord = wordsFromQuery.length - 1;
+			for (int j = 1; j <= parameterCount; j++) {
+				// fill search fields in queryString
+				statement.setString(j, "%" + wordsFromQuery[queryWord] + "%");
+				int parametersPerQuery = parameterCount / wordsFromQuery.length; 
+				if (j % parametersPerQuery == 0) {
+					queryWord--;
+				}
+			}
+			queryResultSet = statement.executeQuery();
+			// TODO the previous needs to be its own method
+			
+			if (custoemr instanceof Customer) {
+				results = new Customer[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					Customer customer = new Customer();
+					customer.setFirstName(queryResultSet.getString(1));
+					customer.setLastName(queryResultSet.getString(2));
+					customer.setAddress(queryResultSet.getString(3));
+					customer.setCity(queryResultSet.getString(4));
+					customer.setState(queryResultSet.getString(5));			
+					customer.setZipCode(queryResultSet.getString(6));
+					customer.setHomePhone(queryResultSet.getString(7));
+					customer.setWorkPhone(queryResultSet.getString(8));
+					customer.setCellPhone(queryResultSet.getString(9));
+					customer.setEmail(queryResultSet.getString(10));
+					customer.setCustomerId(queryResultSet.getLong(11));
+					
+//					Customer customer = new Customer(customerId, firstName, lastName, address, city, state,
+//							zip, homePhone, workPhone, cellPhone, email);
+					results[i] = customer;
+					i++;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+	
 	public static Object[] searchForObject(Table resultsTable, String searchQuery) {
 		// public search interface
 		
@@ -229,17 +290,19 @@ public class DbServices {
 			// search for searchQuery and display in resultsTable
 			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
-			isCustomerSearch = true;
-			query.append("""
-					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
-					email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
-					OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
-			outerQuery.append("""
-					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, email, 
-					customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? 
-					OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (""");
-			deleteStart = 7;
-			deleteEnd = 99;
+//			isCustomerSearch = true;
+//			query.append(Customer.getSearchQuery());
+//			outerQuery.append(Customer.getOuterSearchQuery());
+////			query.append("""
+////					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+////					email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
+////					OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
+////			outerQuery.append("""
+////					SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, email, 
+////					customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? OR workPhone LIKE ? 
+////					OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ? AND customerId IN (""");
+//			deleteStart = Customer.getQuerySubStringIndecies()[0];
+//			deleteEnd = Customer.getQuerySubStringIndecies()[1];;
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
 			isUnitSearch = true;
 			query.append("""
