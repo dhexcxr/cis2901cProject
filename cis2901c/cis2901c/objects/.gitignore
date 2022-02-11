@@ -21,3 +21,7 @@
 /CustomerTable.class
 /UnitTable.class
 /PartInventoryTable.class
+/InvoicePartTable.class
+/InvoiceSearchResultsTable.class
+/InvoicePartTableItem.class
+/RoTable.class

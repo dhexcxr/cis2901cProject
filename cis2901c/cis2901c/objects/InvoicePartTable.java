@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.main.Main;
 
-public class MyPartInvoiceTable extends MyTable{
+public class InvoicePartTable extends MyTable{
 	
 	// TODO find out where these are being used and see if I want to move them somewhere else, these are table indecies for Invoice Table columns
 	public static final int PART_NUMBER_COLUMN = 0;
@@ -16,7 +16,7 @@ public class MyPartInvoiceTable extends MyTable{
 	public static final int PART_PRICE_COLUMN = 5;
 	public static final int EXTENDED_PRICE_COLUMN = 6;
 
-	public MyPartInvoiceTable(Composite parent, int style) {
+	public InvoicePartTable(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyInvoiceSearchResultsTable extends MyTable {
+public class InvoiceSearchResultsTable extends MyTable {
 	
 	private static final int INVOICE_NUM_INDEX = 0;
 	private static final int CUSTOMER_INDEX = 1;
@@ -16,7 +16,7 @@ public class MyInvoiceSearchResultsTable extends MyTable {
 	private int currentSortDirection = SWT.UP;
 	private int currentSortedColumn = INVOICE_NUM_INDEX;
 		
-	public MyInvoiceSearchResultsTable(Composite parent, int style) {	
+	public InvoiceSearchResultsTable(Composite parent, int style) {	
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

@@ -19,7 +19,7 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
-import cis2901c.objects.MyInvoiceTableItem;
+import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
@@ -95,7 +95,7 @@ public class DbServices {
 				if (invoiceLineItem.getData() == null) {
 					break;
 				}
-				MyInvoiceTableItem myInvoiceLineItem = (MyInvoiceTableItem) invoiceLineItem;
+				InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
 				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 				saveObject(myInvoiceLineItem);
 			}

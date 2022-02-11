@@ -6,7 +6,9 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyInvoiceTableItem extends TableItem implements DbObjectSavable{
+public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
+	
+	// this emulates the invoicepart DB table
 	
 	private static final int DESCRIPTION_COLUMN = 1;
 	private static final int QUANTITY_COLUMN = 2;
@@ -14,12 +16,12 @@ public class MyInvoiceTableItem extends TableItem implements DbObjectSavable{
 	
 	private Map<String, String> dataMap = new HashMap<>();
 
-	public MyInvoiceTableItem(Table parent, int style) {
+	public InvoicePartTableItem(Table parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}
 
-	public MyInvoiceTableItem(MyTable parent, int style, int itemCount) {
+	public InvoicePartTableItem(MyTable parent, int style, int itemCount) {
 		super(parent, style, itemCount);
 		// TODO Auto-generated constructor stub
 	}

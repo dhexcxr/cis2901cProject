@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
-import cis2901c.objects.MyPartInvoiceTable;
+import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyTable;
 
 public class DeleteLineItemListener extends MouseAdapter{
@@ -40,13 +40,13 @@ public class DeleteLineItemListener extends MouseAdapter{
 			BigDecimal total = BigDecimal.valueOf(0);
 			TableItem[] items = partTableInvoice.getItems();
 			for (TableItem item : items) {
-				if (item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN).equals("")) {
+				if (item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN).equals("")) {
 					// ignore new TableItem at end of list with no part data set 
 					break;
 				}
 				Main.log(Level.INFO, "Total before: " + total.toString());
-				total = total.add(new BigDecimal(item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN)));
-				Main.log(Level.INFO, "Item price to BD: " + new BigDecimal(item.getText(MyPartInvoiceTable.EXTENDED_PRICE_COLUMN)).toString());
+				total = total.add(new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)));
+				Main.log(Level.INFO, "Item price to BD: " + new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)).toString());
 				Main.log(Level.INFO, "Total after: " + total.toString());
 			}
 			txtPartsTotalInvoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());

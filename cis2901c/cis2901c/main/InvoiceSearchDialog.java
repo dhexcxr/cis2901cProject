@@ -12,7 +12,7 @@ import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Invoice;
-import cis2901c.objects.MyInvoiceSearchResultsTable;
+import cis2901c.objects.InvoiceSearchResultsTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -46,7 +46,7 @@ public class InvoiceSearchDialog extends Dialog {
 		
 		Gui.setDialogAtCenter(shlInvoiceSearch);
 		
-		MyInvoiceSearchResultsTable invoiceTable = new MyInvoiceSearchResultsTable(shlInvoiceSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		InvoiceSearchResultsTable invoiceTable = new InvoiceSearchResultsTable(shlInvoiceSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		invoiceTable.setBounds(10, 42, 614, 282);
 		invoiceTable.setLinesVisible(true);
 		invoiceTable.setHeaderVisible(true);

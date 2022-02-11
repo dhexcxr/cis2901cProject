@@ -33,10 +33,10 @@ import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.CustomerTable;
-import cis2901c.objects.MyInvoiceTableItem;
+import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.PartInventoryTable;
-import cis2901c.objects.MyPartInvoiceTable;
-import cis2901c.objects.MyRoTable;
+import cis2901c.objects.InvoicePartTable;
+import cis2901c.objects.RoTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.UnitTable;
@@ -84,7 +84,7 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 
 		// Table for RO search results
-		MyRoTable roTable = new MyRoTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		RoTable roTable = new RoTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		roTable.setBounds(10, 74, 976, 631);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
@@ -315,16 +315,16 @@ public class Gui extends Composite {
 		lblNotes.setBounds(10, 23, 42, 20);
 		lblNotes.setText("Notes:");
 		
-		MyPartInvoiceTable partTableInvoice = new MyPartInvoiceTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		partTableInvoice.addMouseListener(new MouseAdapter() {
+		InvoicePartTable invoicePartsTable = new InvoicePartTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		invoicePartsTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				partTableInvoice.getItemCount();
-				partTableInvoice.getSelectionIndex();
-				if (partTableInvoice.getSelectionIndex() >= 0 &&
-						partTableInvoice.getSelectionIndex() < partTableInvoice.getItemCount() &&
-							partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData() != null) {
-					Part selectedPart = (Part) partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData();
+				invoicePartsTable.getItemCount();
+				invoicePartsTable.getSelectionIndex();
+				if (invoicePartsTable.getSelectionIndex() >= 0 &&
+						invoicePartsTable.getSelectionIndex() < invoicePartsTable.getItemCount() &&
+							invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData() != null) {
+					Part selectedPart = (Part) invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData();
 					textCategoryInvoice.setText(selectedPart.getCategory());
 					textSupplierInvoice.setText(selectedPart.getSupplier());
 					textNotesInvoice.setText(selectedPart.getNotes());
@@ -336,46 +336,46 @@ public class Gui extends Composite {
 			}
 		});
 		
-		final TableEditor editor = new TableEditor(partTableInvoice);		// TODO why am I building this out here
+		final TableEditor editor = new TableEditor(invoicePartsTable);		// TODO why am I building this out here
 	    editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
-	    partTableInvoice.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(partTableInvoice, editor, // and passing it in here
+	    invoicePartsTable.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(invoicePartsTable, editor, // and passing it in here
 	    		txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal, textCategoryInvoice, textSupplierInvoice, textNotesInvoice));
 	    
-		partTableInvoice.setLinesVisible(true);
-		partTableInvoice.setHeaderVisible(true);
-		partTableInvoice.setBounds(10, 144, 948, 334);
+		invoicePartsTable.setLinesVisible(true);
+		invoicePartsTable.setHeaderVisible(true);
+		invoicePartsTable.setBounds(10, 144, 948, 334);
 		
-		TableColumn tblclmnPartNumberInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnPartNumberInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnPartNumberInvoice.setWidth(126);
 		tblclmnPartNumberInvoice.setText("Part Number");
 		
-		TableColumn tblclmnDescriptionInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnDescriptionInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnDescriptionInvoice.setWidth(275);
 		tblclmnDescriptionInvoice.setText("Description");
 		
-		TableColumn tblclmnQuantityInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnQuantityInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnQuantityInvoice.setWidth(100);
 		tblclmnQuantityInvoice.setText("Quantity");
 		
-		TableColumn tblclmnOnHandInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnOnHandInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnOnHandInvoice.setWidth(100);
 		tblclmnOnHandInvoice.setText("On Hand");
 		
-		TableColumn tblclmnCostInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnCostInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnCostInvoice.setWidth(100);
 		tblclmnCostInvoice.setText("Cost");
 		
-		TableColumn tblclmnPartPriceInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnPartPriceInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnPartPriceInvoice.setWidth(110);
 		tblclmnPartPriceInvoice.setText("Part Price");
 		
-		TableColumn tblclmnExtendedPriceInvoice = new TableColumn(partTableInvoice, SWT.NONE);
+		TableColumn tblclmnExtendedPriceInvoice = new TableColumn(invoicePartsTable, SWT.NONE);
 		tblclmnExtendedPriceInvoice.setWidth(114);
 		tblclmnExtendedPriceInvoice.setText("Extended Price");
 		
 		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-		TableItem tableItem = new MyInvoiceTableItem(partTableInvoice, SWT.NONE);	// so we can add parts
+		TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
 		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
 		btnCashier.addMouseListener(new MouseAdapter() {
@@ -395,7 +395,7 @@ public class Gui extends Composite {
 					cashieredInvoice.setTax(new BigDecimal(txtTaxInvoice.getText().replace("$", "")));
 					cashieredInvoice.setCashiereDateTime(Timestamp.from(Instant.now()));
 					cashieredInvoice.setCashiered(true);
-					cashieredInvoice.setTableLineItems(partTableInvoice.getItems());
+					cashieredInvoice.setTableLineItems(invoicePartsTable.getItems());
 					// send invoice obj to DbServices
 					DbServices.saveObject(cashieredInvoice);
 					// TODO clear invoice tab
@@ -419,16 +419,16 @@ public class Gui extends Composite {
 				textCategoryInvoice.setText("");
 				textSupplierInvoice.setText("");
 				textNotesInvoice.setText("");
-				partTableInvoice.removeAll();
+				invoicePartsTable.removeAll();
 				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-				TableItem tableItem = new TableItem(partTableInvoice, SWT.NONE);	// so we can add parts
+				TableItem tableItem = new TableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
 			}
 		});
 		btnCancel.setBounds(596, 607, 126, 45);
 		btnCancel.setText("Cancel");
 		
 		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(
-				partTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal));
+				invoicePartsTable, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal));
 		
 		Button btnSearchForInvoice = new Button(invoiceComposite, SWT.NONE);
 		btnSearchForInvoice.addMouseListener(new MouseAdapter() {
