@@ -32,14 +32,14 @@ import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
 import cis2901c.objects.Invoice;
-import cis2901c.objects.MyCustomerTable;
+import cis2901c.objects.CustomerTable;
 import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.MyPartInventoryTable;
 import cis2901c.objects.MyPartInvoiceTable;
 import cis2901c.objects.MyRoTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
-import cis2901c.objects.MyUnitTable;
+import cis2901c.objects.UnitTable;
 import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
@@ -461,7 +461,7 @@ public class Gui extends Composite {
 		tbtmCustomers.setControl(customerComposite);
 
 		// Table for Customer search results
-		MyTable customerTable = new MyCustomerTable(customerComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable customerTable = new CustomerTable(customerComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.setBounds(10, 42, 976, 663);
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
@@ -534,7 +534,7 @@ public class Gui extends Composite {
 		tbtmUnits.setControl(unitsComposite);
 
 		// Table for Unit search results
-		MyTable unitTable = new MyUnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		MyTable unitTable = new UnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);

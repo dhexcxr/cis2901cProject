@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyCustomerTable extends MyTable{
+public class CustomerTable extends MyTable{
 	
 	public static final int FIRST_NAME_INDEX = 0;
 	public static final int LAST_NAME_INDEX = 1;
@@ -19,7 +19,7 @@ public class MyCustomerTable extends MyTable{
 	private int currentSortDirection = SWT.UP;
 	private int currentSortedColumn = LAST_NAME_INDEX;
 
-	public MyCustomerTable(Composite parent, int style) {
+	public CustomerTable(Composite parent, int style) {
 		super(parent, style);
 	}
 	

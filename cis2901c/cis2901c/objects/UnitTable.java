@@ -5,7 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyUnitTable extends MyTable{
+public class UnitTable extends MyTable{
 	
 	private static final int OWNER_INDEX = 0;
 	private static final int MAKE_INDEX = 1;
@@ -19,7 +19,7 @@ public class MyUnitTable extends MyTable{
 	private int currentSortDirection = SWT.UP;
 	private int currentSortedColumn = OWNER_INDEX;
 
-	public MyUnitTable(Composite parent, int style) {
+	public UnitTable(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}

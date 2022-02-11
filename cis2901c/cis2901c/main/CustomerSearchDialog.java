@@ -11,7 +11,7 @@ import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
-import cis2901c.objects.MyCustomerTable;
+import cis2901c.objects.CustomerTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -24,7 +24,7 @@ public class CustomerSearchDialog extends Dialog {
 
 	protected Object result;		// TODO probably change this to Customer, wouldn't need cast for results
 	protected Shell shlCustomerSearch;
-	private MyCustomerTable customerTable;
+	private CustomerTable customerTable;
 	private MyText customerSearchTextBox;
 	
 	/**
@@ -80,7 +80,7 @@ public class CustomerSearchDialog extends Dialog {
 		Gui.setDialogAtCenter(shlCustomerSearch);
 						
 		// search results table
-		customerTable = new MyCustomerTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
+		customerTable = new CustomerTable(shlCustomerSearch, SWT.BORDER | SWT.FULL_SELECTION);
 		customerTable.setBounds(10, 42, 909, 282);
 		customerTable.setLinesVisible(true);
 		customerTable.setHeaderVisible(true);
