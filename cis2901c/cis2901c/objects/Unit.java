@@ -3,7 +3,7 @@ package cis2901c.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Unit implements DbObjectSavable{
+public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	
 	// might not need this
 	private long unitId = -1;
@@ -22,21 +22,16 @@ public class Unit implements DbObjectSavable{
 	public Unit() {
 	}
 	
-//	public Unit(long unitId, long customerId, String make, String model, String modelName, int modelYear,
-//										int mileage, String color, String vin, String notes, String owner) {
-//		super();
-//		this.unitId = unitId;
-//		this.customerId = customerId;
-//		this.make = make;
-//		this.model = model;
-//		this.modelName = modelName;
-//		this.year = modelYear;
-//		this.mileage = mileage;
-//		this.color = color;
-//		this.vin = vin;
-//		this.notes = notes;
-//		this.owner = owner;
-//	}
+	public Unit(String searchString) {
+		super.searchString = searchString;
+		super.searchQuery = new StringBuilder("""
+				SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
+					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
+		super.outerSearchQueryAppendix = new StringBuilder(" AND u.unitId IN (");
+		super.querySubStringIndecies[0] = 15;
+		super.querySubStringIndecies[1] = 128;
+	}
 	
 	public long getDbPk() {
 		return getUnitId();

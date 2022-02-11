@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.TableItem;
 
-public class Invoice implements DbObjectSavable{
+public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
 	private int invoiceNum = -1;
 	private long customerId;
@@ -25,20 +25,18 @@ public class Invoice implements DbObjectSavable{
 	public Invoice() {
 	}
 	
-//	public Invoice(int invoiceNum, long customerId, String lastname, String firstname, String customerData, String notes, BigDecimal tax,
-//			Timestamp cashiereDateTime, boolean cashiered, Part[] parts, BigDecimal total) {
-//		super();
-//		this.invoiceNum = invoiceNum;
-//		this.customerId = customerId;
-//		this.setCustomerName(lastname, firstname);
-//		this.customerData = customerData;
-//		this.notes = notes;
-//		this.tax = tax;
-//		this.cashiereDateTime = cashiereDateTime;
-//		this.cashiered = cashiered;
-//		this.parts = parts;
-//		this.total = total;
-//	}
+	public Invoice(String searchString) {
+		super.searchString = searchString;
+		super.searchQuery = new StringBuilder("""
+				SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
+				c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
+				FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
+				JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
+				ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ?;""");
+		super.outerSearchQueryAppendix = new StringBuilder(" AND i.invoicenum IN (");
+		super.querySubStringIndecies[0] = 19;
+		super.querySubStringIndecies[1] = 207;
+	}
 
 	public int getInvoiceNum() {
 		return invoiceNum;

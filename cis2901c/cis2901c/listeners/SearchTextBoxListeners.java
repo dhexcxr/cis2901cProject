@@ -5,9 +5,11 @@ import org.eclipse.swt.events.ModifyListener;
 
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSearchable;
+import cis2901c.objects.Invoice;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
+import cis2901c.objects.Unit;
 
 public class SearchTextBoxListeners implements ModifyListener {
 	
@@ -37,6 +39,10 @@ public class SearchTextBoxListeners implements ModifyListener {
 					searchObject = new Customer(searchBox.getText());
 				} else if (searchObject instanceof Part) {
 					searchObject = new Part(searchBox.getText());
+				} else if (searchObject instanceof Unit) {
+					searchObject = new Unit(searchBox.getText());
+				} else if (searchObject instanceof Invoice) {
+					searchObject = new Invoice(searchBox.getText());
 				}
 				table.paint(DbServices.searchForObject(searchObject));
 			} else if (queryLength == 0) {

@@ -216,6 +216,7 @@ public class DbServices {
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		String querySearch = object.getSearchString();
 		String[] wordsFromQuery = sanitizer(querySearch);
+		
 		for (int i = 1; i < wordsFromQuery.length; i++) {
 			object.getSearchQuery().delete(object.getQuerySubStringIndecies()[0], object.getQuerySubStringIndecies()[1]);
 			object.getSearchQuery().insert(0, object.getOuterSearchQuery());
@@ -283,6 +284,64 @@ public class DbServices {
 					results[i] = part;
 					i++;
 				}
+			} else if (object instanceof Unit) {
+				results = new Unit[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					
+					Unit unit = new Unit();
+					unit.setUnitId(queryResultSet.getLong(1));
+					unit.setCustomerId(queryResultSet.getLong(2));
+					unit.setMake(queryResultSet.getString(3));
+					unit.setModel(queryResultSet.getString(4));
+					unit.setModelName(queryResultSet.getString(5));
+					unit.setYear(queryResultSet.getInt(6));
+					unit.setMileage(queryResultSet.getInt(7));
+					unit.setColor(queryResultSet.getString(8));
+					unit.setVin(queryResultSet.getString(9));
+					unit.setNotes(queryResultSet.getString(10));
+					
+					String lastName = queryResultSet.getString(11);
+					String firstName = queryResultSet.getString(12);
+					String owner = lastName;
+					if (firstName != null && firstName.length() != 0) {
+						owner = lastName + ", " + firstName;
+					}
+					unit.setOwner(owner);
+					
+					results[i] = unit;
+					i++;
+				}
+			} else if (object instanceof Invoice) {
+				results = new Invoice[MAX_RESULTS];
+				int i = 0;
+				while (queryResultSet.next() && i < MAX_RESULTS) {
+					Invoice invoice = new Invoice();
+					invoice.setInvoiceNum(queryResultSet.getInt(1));
+					invoice.setCustomerId(queryResultSet.getLong(2));
+					
+					String lastname = queryResultSet.getString(3);
+					String firstname = queryResultSet.getString(4);
+					invoice.setCustomerName(lastname, firstname);
+					
+					// TODO see if we can use TextBlocks here
+					String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
+							queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
+								queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
+					invoice.setCustomerData(customerData);
+					
+					invoice.setNotes(queryResultSet.getString(12));
+					invoice.setTax(queryResultSet.getBigDecimal(13));
+					invoice.setCashiereDateTime(queryResultSet.getTimestamp(14));
+					invoice.setCashiered(queryResultSet.getBoolean(15));
+					// TODO populate invoice.parts[]
+					int lineItemCount = queryResultSet.getInt(16);
+					invoice.setParts(new Part[lineItemCount]);
+					
+					invoice.setTotal(queryResultSet.getBigDecimal(17)); 
+					results[i] = invoice;
+					i++;
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -309,6 +368,7 @@ public class DbServices {
 			// search for searchQuery and display in resultsTable
 			// TODO there might be a better way to check what type we're searching
 		if (resultsTable.getColumn(0).getText().equals("First Name")) {
+			Main.log(Level.WARNING, "Shoudln't be called");
 //			isCustomerSearch = true;
 //			query.append(Customer.getSearchQuery());
 //			outerQuery.append(Customer.getOuterSearchQuery());
@@ -323,48 +383,50 @@ public class DbServices {
 //			deleteStart = Customer.getQuerySubStringIndecies()[0];
 //			deleteEnd = Customer.getQuerySubStringIndecies()[1];;
 		} else if (resultsTable.getColumn(0).getText().equals("Owner")) {
-			isUnitSearch = true;
-			query.append("""
-					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
-					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
-					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
-			outerQuery.append("""
-					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
-					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
-					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? 
-					AND unitId IN (""");
-			deleteStart = 15;
-			deleteEnd = 128;
+			Main.log(Level.WARNING, "Shoudln't be called");
+//			isUnitSearch = true;
+//			query.append("""
+//					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
+//					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+//					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
+//			outerQuery.append("""
+//					SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
+//					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+//					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ? 
+//					AND unitId IN (""");
+//			deleteStart = 15;
+//			deleteEnd = 128;
 		} else if (resultsTable.getColumn(0).getText().equals("Part Number")) {
-			isPartSearch = true;
-			query.append("""
-				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
-				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""");
-			outerQuery.append("""
-					SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
-					WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? 
-					AND partId IN (""");
-			deleteStart = 13;
-			deleteEnd = 87;
+			Main.log(Level.WARNING, "Shoudln't be called");
+//			isPartSearch = true;
+//			query.append("""
+//				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+//				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""");
+//			outerQuery.append("""
+//					SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+//					WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ? 
+//					AND partId IN (""");
+//			deleteStart = 13;
+//			deleteEnd = 87;
 		} else if (resultsTable.getColumn(0).getText().equals("Invoice #")) {
-			// TODO build invoice search results
-			isInvoiceSearch = true;
-			query.append("""
-					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
-					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
-					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
-					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
-					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ?;
-					""");
-			outerQuery.append("""
-					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
-					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
-					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
-					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
-					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ? AND i.invoicenum IN (
-					""");
-			deleteStart = 19;
-			deleteEnd = 207;
+			Main.log(Level.WARNING, "Shoudln't be called");
+//			isInvoiceSearch = true;
+//			query.append("""
+//					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
+//					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
+//					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
+//					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
+//					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ?;
+//					""");
+//			outerQuery.append("""
+//					SELECT i.invoicenum, i.customerid, c.lastname, c.firstname, c.address, c.city, c.state, c.zipcode, 
+//					c.homephone, c.cellphone, c.email, i.notes, i.tax, i.cashiereddate, i.cashiered, ip.count, ip.total + i.tax 
+//					FROM cis2901c.invoice AS i JOIN cis2901c.customer AS c ON i.customerid = c.customerid 
+//					JOIN (SELECT invoicenum, COUNT(partid) AS count, SUM(soldprice) AS total FROM cis2901c.invoicepart GROUP BY invoicenum) AS ip 
+//					ON i.invoicenum = ip.invoicenum WHERE c.lastname LIKE ? OR c.firstname LIKE ? OR i.invoicenum LIKE ? AND i.invoicenum IN (
+//					""");
+//			deleteStart = 19;
+//			deleteEnd = 207;
 		}
 
 		

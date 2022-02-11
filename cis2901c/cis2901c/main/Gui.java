@@ -41,6 +41,7 @@ import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.MyUnitTable;
 import cis2901c.objects.Part;
+import cis2901c.objects.Unit;
 
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.TableItem;
@@ -582,7 +583,7 @@ public class Gui extends Composite {
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
 		unitSearchBox.setText("Search...");
 		unitSearchBox.setBounds(10, 10, 861, 26);
-		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable));
+		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable, new Unit()));
 		unitSearchBox.addFocusListener(new TextBoxFocusListener(unitSearchBox));
 		
 		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);

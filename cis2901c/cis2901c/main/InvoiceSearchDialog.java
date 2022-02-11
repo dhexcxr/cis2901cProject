@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.objects.Invoice;
 import cis2901c.objects.MyInvoiceSearchResultsTable;
 import cis2901c.objects.MyText;
 import org.eclipse.swt.widgets.TableColumn;
@@ -65,7 +66,7 @@ public class InvoiceSearchDialog extends Dialog {
 		invoiceSearchTextBox.setBounds(9, 10, 614, 26);
 		invoiceSearchTextBox.setFocus();
 		invoiceSearchTextBox.addFocusListener(new TextBoxFocusListener(invoiceSearchTextBox));
-		invoiceSearchTextBox.addModifyListener(new SearchTextBoxListeners(invoiceSearchTextBox, invoiceTable));
+		invoiceSearchTextBox.addModifyListener(new SearchTextBoxListeners(invoiceSearchTextBox, invoiceTable, new Invoice()));
 		
 		TableColumn tblclmnInvoiceNumber = new TableColumn(invoiceTable, SWT.NONE);
 		tblclmnInvoiceNumber.setWidth(83);
