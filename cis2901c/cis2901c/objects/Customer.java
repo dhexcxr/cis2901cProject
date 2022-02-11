@@ -40,11 +40,11 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	
 	public Customer(String searchString) {
 		super.searchString = searchString;
-		super.searchQuery = new StringBuilder("""
+		super.searchQuery = new String("""
 				SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
 				email, customerId FROM cis2901c.customer WHERE firstName LIKE ? OR homePhone LIKE ? OR lastName LIKE ? 
 				OR workPhone LIKE ? OR address LIKE ? OR cellPhone LIKE ? OR city LIKE ? OR zipcode LIKE ? OR state LIKE ?;""");
-		super.outerSearchQueryAppendix = new StringBuilder(" AND customerId IN (");
+		super.outerSearchQueryAppendix = new String(" AND customerId IN (");
 		super.querySubStringIndecies[0] = 7;
 		super.querySubStringIndecies[1] = 99;
 	}
@@ -188,7 +188,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 
 	protected static void populateCustomerTable(Table table) {
 		// not yet used, could populate "" in searchForObject call with current txtSearchBox.getText()
-		DbServices.searchForObject(table, "");
+		DbServices.searchForObject(new Customer(""));
 	}
 	
 	public String setPhoneNumberFormat(String inputNumber) {
@@ -207,9 +207,5 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 			}
 		}
 		return inputNumber;
-	}
-	
-	public String getSearchString() {
-		return searchString;
 	}
 }

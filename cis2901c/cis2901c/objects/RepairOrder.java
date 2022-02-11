@@ -17,10 +17,10 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	public RepairOrder(String searchString) {
 		super.searchString = searchString;
 		// TODO searchQuery is preliminary
-		super.searchQuery = new StringBuilder("""
+		super.searchQuery = new String("""
 				SELECT roId, customerId, unitId, createdTime, closedTime, cashiered FROM cis2901c.ro 
 				WHERE roId LIKE ?;""");
-		super.outerSearchQueryAppendix = new StringBuilder(" AND roId IN (");
+		super.outerSearchQueryAppendix = new String(" AND roId IN (");
 		super.querySubStringIndecies[0] = 11;
 		super.querySubStringIndecies[1] = 67;
 	}
