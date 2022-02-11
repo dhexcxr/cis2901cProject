@@ -152,7 +152,7 @@ public class PartInvoiceEditorEventListener implements Listener{
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
 			// if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
-			Part[] partResults = (Part[]) DbServices.searchForObject(partInvoiceTable, editorTxtBox.getText());
+			Part[] partResults = (Part[]) DbServices.searchForObject(new Part(editorTxtBox.getText()));
 			Part editedLineItem = null;
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
 				editedLineItem = partResults[0];
@@ -161,7 +161,9 @@ public class PartInvoiceEditorEventListener implements Listener{
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				editedLineItem = (Part) partSearchDialog.open(editorTxtBox.getText());
 			}
-			paintInvoiceLines(editedLineItem);
+			if (editedLineItem != null) {
+				paintInvoiceLines(editedLineItem);	
+			}
 		}
 	}
 	
