@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public class MyInvoiceTableItem extends TableItem implements DbObject{
+public class MyInvoiceTableItem extends TableItem implements DbObjectSavable{
 	
 	private static final int DESCRIPTION_COLUMN = 1;
 	private static final int QUANTITY_COLUMN = 2;

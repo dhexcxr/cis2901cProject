@@ -3,7 +3,7 @@ package cis2901c.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Unit implements DbObject{
+public class Unit implements DbObjectSavable{
 	
 	// might not need this
 	private long unitId = -1;

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.main.Main;
 import cis2901c.objects.Customer;
-import cis2901c.objects.DbObject;
+import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.MyInvoiceTableItem;
 import cis2901c.objects.Part;
@@ -68,7 +68,7 @@ public class DbServices {
 		}
 	}
 	
-	public static void saveObject(DbObject dbObject) {
+	public static void saveObject(DbObjectSavable dbObject) {
 		// public Save Object interface
 		if (dbObject == null) {
 			return;
@@ -146,7 +146,7 @@ public class DbServices {
 		}
 	}
 	
-	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, DbObject dbObject, boolean creatingNewObject) {
+	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, DbObjectSavable dbObject, boolean creatingNewObject) {
 		List<String> results = new ArrayList<>();
 //		boolean isAnythingModified = false;
 		for (Map.Entry<String, String> entry : dbObject.getDataMap().entrySet()) {
@@ -191,7 +191,7 @@ public class DbServices {
 		queryString.insert(fieldInsertionPoint, field);
 	}
 	
-	private static void saveInvoiceParts(DbObject dbObject) {
+	private static void saveInvoiceParts(DbObjectSavable dbObject) {
 		TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
 		StringBuilder queryString = new StringBuilder();
 		for (TableItem invoiceLineItem : invoiceLineItems) {

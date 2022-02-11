@@ -16,3 +16,5 @@
 /MyInvoiceTableItem.class
 /MyRoTable.class
 /MyInvoiceSearchResultsTable.class
+/DbObjectSavable.class
+/DbObjectSearchable.class

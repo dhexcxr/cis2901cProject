@@ -3,7 +3,7 @@ package cis2901c.objects;
 import java.util.Date;
 import java.util.Map;
 
-public class RepairOrder implements DbObject{
+public class RepairOrder implements DbObjectSavable{
 	long repairOrderId;		// TODO add this Pk into DB
 	long repairOrderNumber;
 	long customerId;

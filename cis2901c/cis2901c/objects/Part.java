@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Part implements DbObject{
+public class Part implements DbObjectSavable{
 	private int partId = -1;
 	private String partNumber;
 	private String supplier;

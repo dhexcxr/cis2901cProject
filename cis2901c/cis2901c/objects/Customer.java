@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import cis2901c.listeners.DbServices;
 
-public class Customer implements DbObject{
+public class Customer implements DbObjectSavable{
 	
 	// might not need this
 	private long customerId = -1;

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.TableItem;
 
-public class Invoice implements DbObject{
+public class Invoice implements DbObjectSavable{
 
 	private int invoiceNum = -1;
 	private long customerId;
