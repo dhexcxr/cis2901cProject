@@ -30,7 +30,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
 		super.outerSearchQueryAppendix = new String(" AND u.unitId IN (");
 		super.querySubStringIndecies[0] = 15;
-		super.querySubStringIndecies[1] = 128;
+		super.querySubStringIndecies[1] = 129;
 	}
 	
 	public long getDbPk() {
@@ -62,7 +62,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getMake() {
-		return make;
+		return make == null ? "" : make;
 	}
 
 	public void setMake(String make) {
@@ -70,7 +70,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getModel() {
-		return model;
+		return model == null ? "" : model;
 	}
 
 	public void setModelName(String modelName) {
@@ -78,7 +78,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 	
 	public String getModelName() {
-		return modelName;
+		return modelName == null ? "" : modelName;
 	}
 
 	public void setModel(String model) {
@@ -102,7 +102,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getColor() {
-		return color;
+		return color == null ? "" : color;
 	}
 
 	public void setColor(String color) {
@@ -110,7 +110,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getVin() {
-		return vin;
+		return vin == null ? "" : vin;
 	}
 
 	public void setVin(String vin) {
@@ -118,7 +118,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getNotes() {
-		return notes;
+		return notes == null ? "" : notes;
 	}
 
 	public void setNotes(String notes) {
@@ -126,7 +126,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	}
 	
 	public String getOwner() {
-		return owner;
+		return owner == null ? "" : owner;
 	}
 
 	public void setOwner(String owner) {

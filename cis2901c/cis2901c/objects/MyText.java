@@ -19,7 +19,7 @@ public class MyText extends Text {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
-
+	
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components

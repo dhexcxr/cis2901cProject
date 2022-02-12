@@ -103,23 +103,23 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public BigDecimal getCost() {
-		return cost;
+		return cost == null ? BigDecimal.valueOf(0) : cost;
 	}
 
 	public void setCost(BigDecimal cost) {
-		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
+		this.cost = cost == null ? BigDecimal.valueOf(0) : cost;
 	}
 
 	public BigDecimal getRetail() {
-		return retail;
+		return retail == null ? BigDecimal.valueOf(0) : retail;
 	}
 
 	public void setRetail(BigDecimal retail) {
-		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
+		this.retail = retail == null ? BigDecimal.valueOf(0) : retail;
 	}
 
 	public int getOnHand() {
-		return onHand;
+		return onHand == -1 ? 0 : onHand;
 	}
 
 	public void setOnHand(int onHand) {

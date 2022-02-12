@@ -1,5 +1,7 @@
 package cis2901c.listeners;
 
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -32,17 +34,21 @@ public class CustomerSearchListener extends MouseAdapter{
 			selectedCustomer = (Customer) customerSearchDialog.open();
 		}
 		if (selectedCustomer instanceof Customer) {
+			// get only last name if there is no first name
+			StringBuilder customerData = new StringBuilder(selectedCustomer.getLastName());
+			if (selectedCustomer.getFirstName() != null) {
+				customerData.append(selectedCustomer.getFirstName().equals("") ? "" :", " + selectedCustomer.getFirstName());
+			}
 			if (txtBoxStartingText.equals("Owner...")) {		// Owner text box in New Unit dialog
-				txtBox.setText(selectedCustomer.getLastName() + ", " + selectedCustomer.getFirstName());
+				txtBox.setText(customerData.toString());
 			} else if (txtBoxStartingText.equals("Customer...")) {		// Customer text box in Part Invoice tab	
-				StringBuilder customerName = new StringBuilder(selectedCustomer.getLastName());
-				if (selectedCustomer.getFirstName() != null) {
-					customerName.append(selectedCustomer.getFirstName().equals("") ?
-							selectedCustomer.getFirstName() :", " + selectedCustomer.getFirstName());
+				customerData.append("\n" + selectedCustomer.getAddress() + "\n");
+				if (selectedCustomer.getCity().equals("") || (selectedCustomer.getState().equals("") && selectedCustomer.getZipCode().equals(""))) {
+					customerData.append(selectedCustomer.getCity() + " " + selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
+				} else {
+					customerData.append(selectedCustomer.getCity() + ", " +	selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
 				}
-				// TODO fix null display on null Strings
-				txtBox.setText(customerName + "\n" + selectedCustomer.getAddress() + "\n" + selectedCustomer.getCity() + ", " +
-						selectedCustomer.getState() + " " + selectedCustomer.getZipCode() + "\n" + selectedCustomer.getHomePhone() + "\n" + 
+				txtBox.setText(customerData + "\n" + selectedCustomer.getHomePhone() + "\n" + 
 						selectedCustomer.getCellPhone() + "\n" + selectedCustomer.getEmail());
 			}
 			txtBox.setData(selectedCustomer);

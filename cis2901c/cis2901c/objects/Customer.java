@@ -86,7 +86,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return firstName == null ? "" : firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -94,7 +94,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getLastName() {
-		return lastName;
+		return lastName == null ? "" : lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -102,7 +102,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getAddress() {
-		return address;
+		return address == null ? "" : address;
 	}
 
 	public void setAddress(String address) {
@@ -110,7 +110,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getCity() {
-		return city;
+		return city == null ? "" : city;
 	}
 
 	public void setCity(String city) {
@@ -118,7 +118,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getState() {
-		return state;
+		return state == null ? "" : state;
 	}
 
 	public void setState(String state) {
@@ -126,7 +126,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getZipCode() {
-		return zipCode;
+		return zipCode == null ? "" : zipCode;
 	}
 
 	public void setZipCode(String zipCode) {
@@ -134,7 +134,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getHomePhone() {
-		return homePhone;
+		return homePhone == null ? "" : homePhone;
 	}
 
 	public void setHomePhone(String homePhone) {
@@ -142,7 +142,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getWorkPhone() {
-		return workPhone;
+		return workPhone == null ? "" : workPhone;
 	}
 
 	public void setWorkPhone(String workPhone) {
@@ -150,7 +150,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getCellPhone() {
-		return cellPhone;
+		return cellPhone == null ? "" : cellPhone;
 	}
 
 	public void setCellPhone(String cellPhone) {
@@ -158,7 +158,7 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getEmail() {
-		return email;
+		return email == null ? "" : email;
 	}
 
 	public void setEmail(String email) {
