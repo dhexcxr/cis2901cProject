@@ -200,7 +200,7 @@ public class NewCustomerDialog extends Dialog {
 		Button btnCancel = new Button(shlNewCustomer, SWT.NONE);
 		btnCancel.setText("Cancel");
 		btnCancel.setBounds(332, 170, 181, 30);
-		shlNewCustomer.setTabList(new Control[]{btnCancel, txtFirstName, txtLastName, txtAddress, txtHomePhone, txtCity, txtWorkPhone, txtState, txtCellPhone, txtZipCode, txtEmail, btnSaveCustomerButton});
+		shlNewCustomer.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtCity, txtState, txtZipCode, txtHomePhone, txtWorkPhone, txtCellPhone, txtEmail, btnSaveCustomerButton, btnCancel});
 		btnCancel.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
