@@ -40,6 +40,7 @@ public class NewUnitDialog extends Dialog {
 	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
 		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
+	private long customerId = -1;
 	private Unit unit;
 
 	/**
@@ -73,7 +74,7 @@ public class NewUnitDialog extends Dialog {
 
 		// set txtBoxes when opening a current Unit for editing
 		if (unit.getOwner() != null)
-			txtOwner.setText(unit.getOwner());
+			txtOwner.setText(unit.getOwner());			
 		if (unit.getMake() != null)
 			txtMake.setText(unit.getMake());
 		if (unit.getModelName() != null)
@@ -92,7 +93,11 @@ public class NewUnitDialog extends Dialog {
 			txtNotes.setText(unit.getNotes());
 		if (unit.getUnitId() != 0)
 			unitId = unit.getUnitId();
+		if (unit.getCustomerId() != 0)
+			customerId = unit.getCustomerId();
 		this.unit = unit;
+		
+		txtOwner.setData(DbServices.searchForCustomer(customerId));
 		
 		// open Edit Unit dialog, customized for editing a current Unit
 		shlNewUnit.setText("Edit Unit Details");
@@ -227,6 +232,7 @@ public class NewUnitDialog extends Dialog {
 	
 	protected void saveUnit(Unit unit) {
 		if (txtOwner.getData() != null && ((Customer) txtOwner.getData()).getCustomerId() != -1) {
+//		if (txtOwner.getText() != null && txtOwner.getText().length() > 0) {
 			unit.setCustomerId(((Customer) txtOwner.getData()).getCustomerId());
 			unit.setOwner(txtOwner.getText());
 		} else {

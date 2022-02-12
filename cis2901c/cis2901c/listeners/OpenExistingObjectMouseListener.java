@@ -31,7 +31,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
 		// open saved object for editing
-		Main.log(Level.INFO, "Double click to open an existing object");
+		Main.log(Level.INFO, "Double clicked to open an existing object");
 		Object[] tableObjects = null;
 		// TODO there might be a better way to check what type we're searching
 			// just like in DbServices.searchForObject

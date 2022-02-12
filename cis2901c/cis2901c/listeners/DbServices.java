@@ -196,6 +196,21 @@ public class DbServices {
 		return searchQuery.replaceAll("[^0-9]", "");
 	}
 	
+	public static Object searchForCustomer(long customerId) {
+		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
+											// this will allow us to make a polymorphic select by Primary Key search
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement("""
+				SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+				email, customerId FROM cis2901c.customer WHERE customerId = ?;""")) {
+			statement.setLong(1, customerId);
+			ResultSet queryResultSet = statement.executeQuery();
+			results = buildFoundObjects(queryResultSet, new Customer(), 1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return results;	
+	}
+	
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = null;
