@@ -29,10 +29,7 @@ public class InvoicePartTableListener implements Listener {
 	}
 
 	@Override
-	public void handleEvent(Event event) {
-		// based on "edit a cell in a table (in place, fancy)"
-			// https://git.eclipse.org/c/platform/eclipse.platform.swt.git/tree/examples/org.eclipse.swt.snippets/src/org/eclipse/swt/snippets/Snippet124.java
-        
+	public void handleEvent(Event event) {   
         int currentTableItemIndex = partInvoiceTable.getSelectionIndex();
         Rectangle tableWidgetArea = partInvoiceTable.getClientArea();
         Point clickPoint = new Point(event.x, event.y);
