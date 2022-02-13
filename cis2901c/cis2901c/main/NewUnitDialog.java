@@ -241,7 +241,7 @@ public class NewUnitDialog extends Dialog {
 			ownerRequirementBox.setText("Notice");
 			ownerRequirementBox.setMessage("Please select an Owner");
 			ownerRequirementBox.open();
-			return;			
+			return;
 		}
 		
 		if (txtMake.isModified()) {
