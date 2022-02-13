@@ -411,16 +411,29 @@ public class Gui extends Composite {
 				if (cashiered) {
 					Invoice cashieredInvoice = new Invoice();
 					cashieredInvoice.setCustomerId(((Customer) txtCustomerInvoice.getData()).getCustomerId());
-//					cashieredInvoice.setCustomerName(null, null);		// get name from txtCustomer_invoice
 					cashieredInvoice.setCustomerData(txtCustomerInvoice.getText());
 					cashieredInvoice.setNotes(textNotesInvoice.getText());
 					cashieredInvoice.setTax(new BigDecimal(txtTaxInvoice.getText().replace("$", "")));
 					cashieredInvoice.setCashiereDateTime(Timestamp.from(Instant.now()));
 					cashieredInvoice.setCashiered(true);
 					cashieredInvoice.setTableLineItems(invoicePartsTable.getItems());
+					
 					// send invoice obj to DbServices
 					DbServices.saveObject(cashieredInvoice);
-					// TODO clear invoice tab
+					
+					// clear entire Invoice Tab
+					txtCustomerInvoice.setData(null);
+					txtCustomerInvoice.setText("Customer...");
+					txtInvoiceNotes.setText("Invoice Notes...");
+					txtPartsTotalInvoice.setText("0.00");
+					txtTaxInvoice.setText("0.00");
+					txtFinalTotal.setText("0.00");
+					textCategoryInvoice.setText("");
+					textSupplierInvoice.setText("");
+					textNotesInvoice.setText("");
+					invoicePartsTable.removeAll();
+					@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+					TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
 				}
 			}
 		});
@@ -431,7 +444,7 @@ public class Gui extends Composite {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				// TODO clear entire Invoice Tab
+				// clear entire Invoice Tab
 				txtCustomerInvoice.setData(null);
 				txtCustomerInvoice.setText("Customer...");
 				txtInvoiceNotes.setText("Invoice Notes...");
