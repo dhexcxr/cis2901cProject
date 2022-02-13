@@ -3,6 +3,9 @@ package cis2901c.main;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,7 +27,7 @@ import cis2901c.listeners.DbServices;
 import cis2901c.listeners.DeleteLineItemListener;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
-import cis2901c.listeners.PartInvoiceEditorEventListener;
+import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.RoSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
@@ -336,11 +339,17 @@ public class Gui extends Composite {
 			}
 		});
 		
-		final TableEditor editor = new TableEditor(invoicePartsTable);		// TODO why am I building this out here
-	    editor.horizontalAlignment = SWT.LEFT;
-	    editor.grabHorizontal = true;
-	    invoicePartsTable.addListener(SWT.MouseDown, new PartInvoiceEditorEventListener(invoicePartsTable, editor, // and passing it in here
-	    		txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal, textCategoryInvoice, textSupplierInvoice, textNotesInvoice));
+//		final TableEditor editor = new TableEditor(invoicePartsTable);		// TODO why am I building this out here
+//	    editor.horizontalAlignment = SWT.LEFT;
+//	    editor.grabHorizontal = true;
+		List<MyText> invoiceDetailText = new ArrayList<>();
+		invoiceDetailText.add(txtPartsTotalInvoice);
+		invoiceDetailText.add(txtTaxInvoice);
+		invoiceDetailText.add(txtFinalTotal);
+		invoiceDetailText.add(textCategoryInvoice);
+		invoiceDetailText.add(textSupplierInvoice);
+		invoiceDetailText.add(textNotesInvoice);
+	    invoicePartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(invoicePartsTable, invoiceDetailText));
 	    
 		invoicePartsTable.setLinesVisible(true);
 		invoicePartsTable.setHeaderVisible(true);

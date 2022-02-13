@@ -26,3 +26,6 @@
 /PartInvoiceTotaler.class
 /DeleteLineItemListener.class
 /TableColumnSortListener.class
+/InvoicePartTableListener$1.class
+/InvoicePartTableListener.class
+/InvoicePartEditorListener.class
