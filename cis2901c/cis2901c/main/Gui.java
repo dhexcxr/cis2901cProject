@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -391,7 +392,19 @@ public class Gui extends Composite {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// spawn amount due dialog box
-				// TODO don't do anything if there are not items on invoice
+				if (invoicePartsTable.getItemCount() == 1) {
+					MessageBox noPartsBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+					noPartsBox.setText("Notice");
+					noPartsBox.setMessage("Enter a part to invoice");
+					noPartsBox.open();
+					return;
+				} else if (txtCustomerInvoice.getData() == null) {
+					MessageBox customerRequiredBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+					customerRequiredBox.setText("Notice");
+					customerRequiredBox.setMessage("Please select a Customer");
+					customerRequiredBox.open();
+					return;
+				}
 				AmountDueDialog amountDueDialog = new AmountDueDialog(shell, getStyle());
 				boolean cashiered = amountDueDialog.open(txtFinalTotal.getText());
 				
@@ -430,7 +443,7 @@ public class Gui extends Composite {
 				textNotesInvoice.setText("");
 				invoicePartsTable.removeAll();
 				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-				TableItem tableItem = new TableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
+				TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
 			}
 		});
 		btnCancel.setBounds(596, 607, 126, 45);
