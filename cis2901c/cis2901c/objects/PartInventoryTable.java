@@ -16,7 +16,6 @@ public class PartInventoryTable extends MyTable{
 	
 	private int currentSortDirection = SWT.UP;
 	private int currentSortedColumn = PART_NUMBER_INDEX;
-//	private static Collator collator = Collator.getInstance(Locale.getDefault());
 
 	public PartInventoryTable(Composite parent, int style) {
 		super(parent, style);
@@ -57,7 +56,6 @@ public class PartInventoryTable extends MyTable{
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
-//		Collator collator = Collator.getInstance(Locale.getDefault());
 		TableColumn column = this.getColumn(sortColumn);
 		int index = sortColumn;
 		for (int i = 1; i < items.length; i++) {

@@ -24,11 +24,11 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	
 	public Unit(String searchString) {
 		super.searchString = searchString;
-		super.searchQuery = new String("""
+		super.searchQuery = """
 				SELECT u.unitId, u.customerId, u.make, u.model, u.modelname, u.year, u.mileage, u.color, u.vin, u.notes, 
-					c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
-					WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""");
-		super.outerSearchQueryAppendix = new String(" AND u.unitId IN (");
+				c.lastName, c.firstName FROM cis2901c.unit AS u JOIN cis2901c.customer AS c ON u.customerId = c.customerId 
+				WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""";
+		super.outerSearchQueryAppendix = " AND u.unitId IN (";
 		super.querySubStringIndecies[0] = 15;
 		super.querySubStringIndecies[1] = 129;
 	}

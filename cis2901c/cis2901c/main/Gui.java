@@ -49,7 +49,6 @@ import cis2901c.objects.Unit;
 
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
@@ -340,9 +339,6 @@ public class Gui extends Composite {
 			}
 		});
 		
-//		final TableEditor editor = new TableEditor(invoicePartsTable);		// TODO why am I building this out here
-//	    editor.horizontalAlignment = SWT.LEFT;
-//	    editor.grabHorizontal = true;
 		List<MyText> invoiceDetailText = new ArrayList<>();
 		invoiceDetailText.add(txtPartsTotalInvoice);
 		invoiceDetailText.add(txtTaxInvoice);

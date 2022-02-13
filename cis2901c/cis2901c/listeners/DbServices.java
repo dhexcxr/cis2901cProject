@@ -86,7 +86,6 @@ public class DbServices {
 		sendQueryToDb(queryString, dbFields);
 		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
-			// TODO get invoicenum, SELECT MAX(invoicenum) FROM cis2901c.invoice;
 			int invoiceNumber = getLastInvoicenum();
 			// insert individual part invoice line items into invoicepart table
 				// in invoicepart section, update onHand of part table
@@ -204,7 +203,7 @@ public class DbServices {
 				email, customerId FROM cis2901c.customer WHERE customerId = ?;""")) {
 			statement.setLong(1, customerId);
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, new Customer(), 1);
+			results = buildFoundObjects(queryResultSet, new Customer(), 1)[0];
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -241,7 +240,7 @@ public class DbServices {
 	
 	private static Object[] buildFoundObjects(ResultSet queryResultSet, DbObjectSearchable object, int maxResults) throws SQLException {
 		// TODO delegate this out to individual buildFoundCustomers/Units/Parts/Invoices etc methods
-		Object[] results = null;
+		Object[] results = new Object[1];
 		if (object instanceof Customer) {
 			results = new Customer[maxResults];
 			int i = 0;

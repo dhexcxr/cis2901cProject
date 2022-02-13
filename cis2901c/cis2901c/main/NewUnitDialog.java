@@ -232,7 +232,6 @@ public class NewUnitDialog extends Dialog {
 	
 	protected void saveUnit(Unit unit) {
 		if (txtOwner.getData() != null && ((Customer) txtOwner.getData()).getCustomerId() != -1) {
-//		if (txtOwner.getText() != null && txtOwner.getText().length() > 0) {
 			unit.setCustomerId(((Customer) txtOwner.getData()).getCustomerId());
 			unit.setOwner(txtOwner.getText());
 		} else {

@@ -68,28 +68,27 @@ public class NewCustomerDialog extends Dialog {
 	}
 	
 	public Object open(Customer customer) {
-		// set properties (text fields) via Customer object, used when opening a current customer to edit
 		createContents();
 		
-		if (customer.getFirstName() != null && customer.getFirstName().length() > 0)
+		if (customer.getFirstName().length() > 0)
 			txtFirstName.setText(customer.getFirstName());
-		if (customer.getAddress() != null && customer.getAddress().length() > 0)
+		if (customer.getAddress().length() > 0)
 			txtAddress.setText(customer.getAddress());
-		if (customer.getCity() != null && customer.getCity().length() > 0)
+		if (customer.getCity().length() > 0)
 			txtCity.setText(customer.getCity());
-		if (customer.getState() != null && customer.getState().length() > 0)
+		if (customer.getState().length() > 0)
 			txtState.setText(customer.getState());
-		if (customer.getZipCode() != null && customer.getZipCode().length() > 0)
+		if (customer.getZipCode().length() > 0)
 			txtZipCode.setText(customer.getZipCode());
-		if (customer.getLastName() != null && customer.getLastName().length() > 0)
+		if (customer.getLastName().length() > 0)
 			txtLastName.setText(customer.getLastName());
-		if (customer.getHomePhone() != null && customer.getHomePhone().length() > 0)
+		if (customer.getHomePhone().length() > 0)
 			txtHomePhone.setText(customer.getHomePhone());
-		if (customer.getWorkPhone() != null && customer.getWorkPhone().length() > 0)
+		if (customer.getWorkPhone().length() > 0)
 			txtWorkPhone.setText(customer.getWorkPhone());
-		if (customer.getCellPhone() != null && customer.getCellPhone().length() > 0)
+		if (customer.getCellPhone().length() > 0)
 			txtCellPhone.setText(customer.getCellPhone());
-		if (customer.getEmail() != null && customer.getEmail().length() > 0)
+		if (customer.getEmail().length() > 0)
 			txtEmail.setText(customer.getEmail());
 		this.customerId = customer.getCustomerId();
 		this.customer = customer;

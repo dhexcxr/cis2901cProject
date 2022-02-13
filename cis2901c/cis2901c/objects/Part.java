@@ -20,27 +20,13 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 	
 	public Part(String searchString) {
 		super.searchString = searchString;
-		super.searchQuery = new String("""
+		super.searchQuery = """
 				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
-				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""");
-		super.outerSearchQueryAppendix = new String(" AND partId IN (");
+				WHERE partNumber LIKE ? OR supplier LIKE ? OR category LIKE ? OR description LIKE ?;""";
+		super.outerSearchQueryAppendix = " AND partId IN (";
 		super.querySubStringIndecies[0] = 13;
 		super.querySubStringIndecies[1] = 87;
 	}
-	
-//	public Part(int partId, String partNumber, String supplier, String category, String description,
-//										String notes, BigDecimal cost, BigDecimal retail, int onHand) {
-//		super();
-//		this.partId = partId;
-//		this.partNumber = partNumber;
-//		this.supplier = supplier;
-//		this.category = category;
-//		this.description = description;
-//		this.notes = notes;
-//		this.cost = cost == (null) ? BigDecimal.valueOf(0) : cost;
-//		this.retail = retail == (null) ? BigDecimal.valueOf(0) : retail;
-//		this.onHand = onHand;
-//	}
 	
 	public long getDbPk() {
 		return getPartId();
@@ -145,25 +131,4 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 		
 		return dataMap;
 	}
-	
-	// START object search methods
-//		public String getSearchString() {
-//			return searchString;
-//		}
-//
-//		public StringBuilder getSearchQuery() {
-//			return searchQuery;
-//		}
-//
-//		public String getOuterSearchQuery() {
-//			StringBuilder outerSearchQuery = new StringBuilder(getSearchQuery());
-//			outerSearchQuery.delete(outerSearchQuery.length() - 1, outerSearchQuery.length());
-//			outerSearchQuery.append(outerSearchQueryAppendix);
-//			return outerSearchQuery.toString();
-//		}
-//		
-//		public int[] getQuerySubStringIndecies() {
-//			return querySubStringIndecies;
-//		}
-		// END object search methods
 }

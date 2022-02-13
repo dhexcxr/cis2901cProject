@@ -58,7 +58,6 @@ public class UnitTable extends MyTable{
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
-//		Collator collator = Collator.getInstance(Locale.getDefault());
 		TableColumn column = this.getColumn(sortColumn);
 		int index = sortColumn;
 		for (int i = 1; i < items.length; i++) {
