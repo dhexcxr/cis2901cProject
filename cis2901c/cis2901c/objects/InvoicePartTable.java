@@ -20,15 +20,21 @@ public class InvoicePartTable extends MyTable{
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	@Override
 	public void paint(Object object) {
+		// build each TableItem to fill Unit Table
+			paint(object,this.getSelectionIndex());
+	}
+
+	@Override
+	public void paint(Object object, int selectedTableItemIndex) {
 		// build each TableItem to fill Unit Table
 			if (object == null) {
 				return;
 			}
 			Part part = (Part) object;
-			TableItem tableItem = this.getItem(this.getSelectionIndex());
+			TableItem tableItem = this.getItem(selectedTableItemIndex);
 				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),

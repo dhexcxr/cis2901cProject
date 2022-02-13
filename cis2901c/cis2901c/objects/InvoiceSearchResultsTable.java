@@ -20,9 +20,14 @@ public class InvoiceSearchResultsTable extends MyTable {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}
-	
 	@Override
-	public void paint(Object part) {
+	public void paint(Object object) {
+		// build each TableItem to fill Unit Table
+			paint(object,this.getSelectionIndex());
+	}
+
+	@Override
+	public void paint(Object part, int selectedTableItemIndex) {
 		// TODO compare this with MyPartInvoiceTable.paint(Object)
 		this.paint(new Object[] {part});
 	}

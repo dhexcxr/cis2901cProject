@@ -25,7 +25,13 @@ public class UnitTable extends MyTable{
 	}
 	
 	@Override
-	public void paint(Object customer) {
+	public void paint(Object object) {
+		// build each TableItem to fill Unit Table
+			paint(object,this.getSelectionIndex());
+	}
+
+	@Override
+	public void paint(Object customer, int selectedTableItemIndex) {
 		// TODO compare this with MyPartInvoiceTable.paint(Object)
 		this.paint(new Object[] {customer});
 	}

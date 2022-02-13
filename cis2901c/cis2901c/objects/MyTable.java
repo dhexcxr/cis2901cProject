@@ -16,6 +16,8 @@ public abstract class MyTable extends Table {
 	
 	public abstract void paint(Object object);
 	
+	public abstract void paint(Object object, int selectedItemIndex);
+	
 	public abstract void paint(Object[] objects);
 	
 	@Override

@@ -11,6 +11,12 @@ public class RoTable extends MyTable {
 
 	@Override
 	public void paint(Object object) {
+		// build each TableItem to fill Unit Table
+			paint(object,this.getSelectionIndex());
+	}
+
+	@Override
+	public void paint(Object object, int selectedTableItemIndex) {
 		// TODO Auto-generated method stub
 
 	}
