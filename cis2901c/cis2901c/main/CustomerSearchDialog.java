@@ -53,11 +53,11 @@ public class CustomerSearchDialog extends Dialog {
 		return result;
 	}
 	
-	public Object open(String owner) {
+	public Object open(String customer) {
 		createContents();
 		
 		// populate Search Text Box with selected Owner
-		customerSearchTextBox.setText(owner);
+		customerSearchTextBox.setText(customer);
 		shlCustomerSearch.open();
 		shlCustomerSearch.layout();
 		Display display = getParent().getDisplay();
