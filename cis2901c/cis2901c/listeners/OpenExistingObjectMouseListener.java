@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
@@ -26,6 +27,13 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	public OpenExistingObjectMouseListener(MyTable table, Shell shell) {
 		this.table = table;
 		this.shell = shell;
+	}
+	
+	@Override
+	public void mouseDown(MouseEvent e) {
+		if (e.getSource() instanceof Button) {
+			mouseDoubleClick(e);
+		}
 	}
 
 	@Override

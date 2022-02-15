@@ -11,10 +11,12 @@ import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
 import cis2901c.main.NewPartDialog;
 import cis2901c.main.NewUnitDialog;
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.Customer;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 // TODO rename this something better (or refactor more), 'cause we're not just creating objects here
@@ -33,6 +35,8 @@ public class CreateNewObjectListener extends MouseAdapter{
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
+		
+		// TODO change this to pass in a new Object instead of checking table type, like in Object searches
 		Main.log(Level.INFO, "Mouse down event on a table, first column: " + table.getColumn(0).getText());
 		
 		Object newObject = null;
@@ -49,7 +53,11 @@ public class CreateNewObjectListener extends MouseAdapter{
 			NewPartDialog addNewPartDialog = new NewPartDialog(shell, SWT.NONE);
 			newObject = addNewPartDialog.open();
 			newTableContents = new Part[table.getItems().length + 1];
-		} 
+		} else if (table.getColumn(0).getText().equals("RO #")) {
+			RepairOrderDialog addNewRepairOrderDialog = new RepairOrderDialog(shell, SWT.NONE);
+			newObject = addNewRepairOrderDialog.open();
+			newTableContents = new RepairOrder[table.getItems().length + 1];
+		}
 		
 		// repaint table - get current data in TableItems, insert the new data at the end, then call table.paint
 		for (int i = 0; i < table.getItems().length; i++) {

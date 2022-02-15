@@ -40,7 +40,7 @@ import cis2901c.objects.CustomerTable;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.PartInventoryTable;
 import cis2901c.objects.InvoicePartTable;
-import cis2901c.objects.RoTable;
+import cis2901c.objects.RepairOrderTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.UnitTable;
@@ -87,7 +87,7 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 
 		// Table for RO search results
-		RoTable roTable = new RoTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		RepairOrderTable roTable = new RepairOrderTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		roTable.setBounds(10, 74, 976, 631);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
@@ -130,12 +130,7 @@ public class Gui extends Composite {
 		Button btnNewRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
 		btnNewRepairOrder.setBounds(846, 10, 140, 26);
 		btnNewRepairOrder.setText("New Repair Order");
-		btnNewRepairOrder.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// create new Repair Order
-			}
-		});
+		btnNewRepairOrder.addMouseListener(new CreateNewObjectListener(roTable, roSearchBox, shell));
 
 		Button btnNewEstimate = new Button(repairOrdersComposite, SWT.NONE);
 		btnNewEstimate.setText("New Estimate");

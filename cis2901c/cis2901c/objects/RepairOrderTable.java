@@ -2,9 +2,9 @@ package cis2901c.objects;
 
 import org.eclipse.swt.widgets.Composite;
 
-public class RoTable extends MyTable {
+public class RepairOrderTable extends MyTable {
 
-	public RoTable(Composite parent, int style) {
+	public RepairOrderTable(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 	}
