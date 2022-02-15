@@ -30,7 +30,7 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 				WHERE c.firstName LIKE ? OR c.lastName LIKE ? OR u.vin LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.year LIKE ?;""";
 		super.outerSearchQueryAppendix = " AND u.unitId IN (";
 		super.querySubStringIndecies[0] = 15;
-		super.querySubStringIndecies[1] = 129;
+		super.querySubStringIndecies[1] = 128;
 	}
 	
 	public long getDbPk() {
