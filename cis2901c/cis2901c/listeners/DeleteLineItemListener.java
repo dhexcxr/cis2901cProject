@@ -35,7 +35,7 @@ public class DeleteLineItemListener extends MouseAdapter{
 													partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData() != null) {
 			partTableInvoice.remove(partTableInvoice.getSelectionIndex());
 			
-			// the following copied from PartInvoiceEditorEventListener, need to find a better way to calc invoice total
+			// TODO the following copied from PartInvoiceEditorEventListener, need to find a better way to calc invoice total
 			BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
 			BigDecimal total = BigDecimal.valueOf(0);
 			TableItem[] items = partTableInvoice.getItems();
