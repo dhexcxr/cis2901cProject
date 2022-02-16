@@ -28,10 +28,10 @@ public class DbServices {
 		// set icon in initial connectToDb method call
 		// maybe check isConnected before every getDbConnection call, and set icon then too
 	
+	private static Connection mainDbConnection = null;
+	
 	private DbServices() {
 	}
-	
-	private static Connection mainDbConnection = null;
 	
 	// START General DB methods
 	public static boolean isConnected() {
@@ -86,7 +86,7 @@ public class DbServices {
 		sendQueryToDb(queryString, dbFields);
 		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
-			int invoiceNumber = getLastInvoicenum();
+			int invoiceNumber = getLastInvoiceNum();
 			// insert individual part invoice line items into invoicepart table
 				// in invoicepart section, update onHand of part table
 			TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
@@ -98,28 +98,29 @@ public class DbServices {
 				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 				saveObject(myInvoiceLineItem);
 			}
-			sellInvoicePartsFromDb(invoiceNumber);
+			sellInvoicePartsOutOfInventory(invoiceNumber);
 		}
 	}
 	
-	private static void sellInvoicePartsFromDb(int invoiceNumber) {
+	private static void sellInvoicePartsOutOfInventory(int invoiceNumber) {
 		StringBuilder query = new StringBuilder("UPDATE part p JOIN invoicepart ip ON p.partid = ip.partid "
 				+ "SET p.onhand = p.onhand - ip.quantity WHERE ip.invoicenum = ?;");
 		sendQueryToDb(query, new ArrayList<>(Arrays.asList(Integer.toString(invoiceNumber))));
 	}
 	
-	private static int getLastInvoicenum() {
+	private static int getLastInvoiceNum() {
 		final int SQL_FAILURE = -1;
 		ResultSet results = null;
 		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;")) {
 			results = lastInvoiceNumStatement.executeQuery();
 			while (results.next()) {
-				return results.getInt(1);	
+				return results.getInt(1);		// we should always return here
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		// if we get here something went wrong
 		return SQL_FAILURE;
 	}
 
@@ -212,7 +213,7 @@ public class DbServices {
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		final int MAX_RESULTS = 255;		// max search return results
-		Object[] results = null;
+		Object[] results = new Object[1];
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setMaxRows(MAX_RESULTS);
 			fillStatementParameters(statement, object);
