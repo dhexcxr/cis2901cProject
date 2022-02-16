@@ -7,6 +7,8 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	long repairOrderId;		// TODO add this Pk into DB
 	long repairOrderNumber;
 	long customerId;
+	String customerName;
+	String customerData;
 	long unitId;
 	Date createdDate;
 	Date closedDate;

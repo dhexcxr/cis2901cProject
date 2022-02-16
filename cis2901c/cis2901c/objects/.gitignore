@@ -26,3 +26,7 @@
 /InvoicePartTableItem.class
 /RoTable.class
 /RepairOrderTable.class
+/RepairOrderJobTable.class
+/RepairOrderJobTableItem.class
+/RepairOrderJobsTable.class
+/Job.class

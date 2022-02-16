@@ -9,7 +9,10 @@ import org.eclipse.swt.widgets.Text;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.UnitSearchListener;
+import cis2901c.objects.Job;
 import cis2901c.objects.MyText;
+import cis2901c.objects.RepairOrderJobTable;
+import cis2901c.objects.RepairOrderJobTableItem;
 
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -29,7 +32,7 @@ public class RepairOrderDialog extends Dialog {
 	protected Shell shell;
 	private MyText txtCustomerRepairOrder;
 	private MyText txtUnitRepairOrder;
-	private Table tableJobsRepairOrder;
+	private RepairOrderJobTable tableJobsRepairOrder;
 	private Text txtSubTotalRepairOrder;
 	private Text textTaxRepairOrder;
 	private Text textFinalTotalRepairOrder;
@@ -85,7 +88,7 @@ public class RepairOrderDialog extends Dialog {
 		txtUnitRepairOrder.addMouseListener(new UnitSearchListener(txtUnitRepairOrder));
 		// TODO Unit Search Dialog
 		
-		tableJobsRepairOrder = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+		tableJobsRepairOrder = new RepairOrderJobTable(shell, SWT.BORDER | SWT.FULL_SELECTION);
 		tableJobsRepairOrder.setBounds(10, 144, 660, 200);
 		tableJobsRepairOrder.setHeaderVisible(true);
 		tableJobsRepairOrder.setLinesVisible(true);
@@ -109,10 +112,28 @@ public class RepairOrderDialog extends Dialog {
 		Button btnAddJob = new Button(shell, SWT.NONE);
 		btnAddJob.setBounds(676, 144, 140, 94);
 		btnAddJob.setText("Add Job");
+		btnAddJob.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// create new Job on Job Table
+				RepairOrderJobTableItem job = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+				job.setData(new Job());
+			}
+		});
 		
 		Button btnDeleteJob = new Button(shell, SWT.NONE);
 		btnDeleteJob.setBounds(824, 144, 140, 47);
 		btnDeleteJob.setText("Delete Job");
+		btnDeleteJob.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// create new Job on Job Table
+				if (tableJobsRepairOrder.getSelectionIndex() >= 0 && tableJobsRepairOrder.getSelectionIndex() < tableJobsRepairOrder.getItemCount()
+						&& tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData() != null) {
+					tableJobsRepairOrder.remove(tableJobsRepairOrder.getSelectionIndex());
+				}
+			}
+		});
 		
 		Button btnCashier = new Button(shell, SWT.NONE);
 		btnCashier.setBounds(676, 244, 140, 47);
