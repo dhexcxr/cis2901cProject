@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -19,6 +20,10 @@ public class DeleteLineItemListener extends MouseAdapter{
 	private Text txtPartsTotalInvoice;
 	private Text txtTaxInvoice;
 	private Text txtFinalTotal;
+	
+	public DeleteLineItemListener(MyTable partTableInvoice) {
+		this(partTableInvoice, new Text(new Shell(), 0), new Text(new Shell(), 0), new Text(new Shell(), 0));
+	}
 	
 	public DeleteLineItemListener(MyTable partTableInvoice, Text txtPartsTotalInvoice, Text txtTaxInvoice,
 			Text txtFinalTotal) {

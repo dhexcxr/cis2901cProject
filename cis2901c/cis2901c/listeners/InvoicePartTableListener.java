@@ -1,5 +1,6 @@
 package cis2901c.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -7,6 +8,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -17,7 +19,17 @@ public class InvoicePartTableListener implements Listener {
 		
 	private InvoicePartTable partInvoiceTable;
 	private TableEditor editor;
-	private List<MyText> invoiceDetailText;	
+	private List<MyText> invoiceDetailText;
+	
+	public InvoicePartTableListener(InvoicePartTable invoicePartTable) {
+		this(invoicePartTable, new ArrayList<>());
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));		// I think this is a total hack way to do this
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));
+		this.invoiceDetailText.add(new MyText(new Shell(), 0));
+	}
 	
 	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
 		this.partInvoiceTable = invoicePartTable;

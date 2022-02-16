@@ -7,6 +7,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.listeners.CustomerSearchListener;
+import cis2901c.listeners.DeleteLineItemListener;
+import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
@@ -25,6 +27,14 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import cis2901c.objects.InvoicePartTable;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class RepairOrderDialog extends Dialog {
 
@@ -36,6 +46,10 @@ public class RepairOrderDialog extends Dialog {
 	private Text txtSubTotalRepairOrder;
 	private Text textTaxRepairOrder;
 	private Text textFinalTotalRepairOrder;
+	private Text txtJobName;
+	private Text txtComplaints;
+	private Text txtResolution;
+	private Text txtReccomendations;
 
 	/**
 	 * Create the dialog.
@@ -73,6 +87,8 @@ public class RepairOrderDialog extends Dialog {
 		shell.setText(getText());
 		
 		Gui.setDialogAtCenter(shell);
+		
+//		InvoicePartTable jobPartsTable;
 		
 		txtCustomerRepairOrder = new MyText(shell, SWT.BORDER | SWT.WRAP);
 		txtCustomerRepairOrder.setEditable(false);
@@ -181,17 +197,115 @@ public class RepairOrderDialog extends Dialog {
 		textFinalTotalRepairOrder.setText("Final Total");
 		textFinalTotalRepairOrder.setEditable(false);
 		
+		Button btnDeleteLineItem = new Button(shell, SWT.NONE);
+		btnDeleteLineItem.setBounds(386, 350, 121, 56);
+		btnDeleteLineItem.setText("Delete Line Item");
+		btnDeleteLineItem.setVisible(false);
+//		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(jobPartsTable));
+		
+		Button btnAddLaborLine = new Button(shell, SWT.NONE);
+		btnAddLaborLine.setBounds(255, 350, 121, 56);
+		btnAddLaborLine.setText("Add Labor");
+		btnAddLaborLine.setVisible(false);
+		
+		Button btnDeleteLaborLine = new Button(shell, SWT.NONE);
+		btnDeleteLaborLine.setBounds(386, 350, 121, 56);
+		btnDeleteLaborLine.setText("Delete Labor");
+		btnDeleteLaborLine.setVisible(false);
+		
 		TabFolder tabFolderJobsRepairOrder = new TabFolder(shell, SWT.NONE);
+		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
+			@Override		// set visibility of Tab function buttons
+			public void widgetSelected(SelectionEvent e) {
+				if (tabFolderJobsRepairOrder.getSelectionIndex() == 0) {		// Parts tab
+					btnDeleteLineItem.setVisible(false);
+					btnAddLaborLine.setVisible(false);
+					btnDeleteLaborLine.setVisible(false);
+				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 1) {		// Parts tab
+					Main.log(Level.INFO, "Repair Order Parts tab selected");
+					btnDeleteLineItem.setVisible(true);
+					btnAddLaborLine.setVisible(false);
+					btnDeleteLaborLine.setVisible(false);
+				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 2) {		// Labor tab
+					Main.log(Level.INFO, "Repair Order Labor tab selected");
+					btnDeleteLineItem.setVisible(false);
+					btnAddLaborLine.setVisible(true);
+					btnDeleteLaborLine.setVisible(true);
+				}
+			}
+		});
 		tabFolderJobsRepairOrder.setBounds(10, 383, 954, 296);
 		
 		TabItem tbtmJobDetails = new TabItem(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmJobDetails.setText("Job Details");
 		
+		Composite jobDetailsComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
+		tbtmJobDetails.setControl(jobDetailsComposite);
+		
+		txtJobName = new Text(jobDetailsComposite, SWT.BORDER);
+		txtJobName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// TODO copy entered text into Selected Job Table Item
+			}
+		});
+		txtJobName.setText("Job Name...");
+		txtJobName.setBounds(10, 10, 460, 26);
+		
+		txtComplaints = new Text(jobDetailsComposite, SWT.BORDER);
+		txtComplaints.setText("Complaints...");
+		txtComplaints.setBounds(10, 42, 460, 211);
+		
+		txtResolution = new Text(jobDetailsComposite, SWT.BORDER);
+		txtResolution.setText("Resolution...");
+		txtResolution.setBounds(476, 42, 460, 100);
+		
+		txtReccomendations = new Text(jobDetailsComposite, SWT.BORDER);
+		txtReccomendations.setText("Reccomendations...");
+		txtReccomendations.setBounds(476, 148, 460, 105);
+		
 		TabItem tbtmParts = new TabItem(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmParts.setText("Parts");
 		
+		Composite jobPartsComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
+		tbtmParts.setControl(jobPartsComposite);
+		
+		InvoicePartTable jobPartsTable = new InvoicePartTable(jobPartsComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		jobPartsTable.setLinesVisible(true);
+		jobPartsTable.setHeaderVisible(true);
+		jobPartsTable.setBounds(10, 10, 915, 243);
+		jobPartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(jobPartsTable));
+		
+		TableColumn tblclmnPartNumberInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnPartNumberInvoice.setWidth(126);
+		tblclmnPartNumberInvoice.setText("Part Number");
+		
+		TableColumn tblclmnDescriptionInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnDescriptionInvoice.setWidth(262);
+		tblclmnDescriptionInvoice.setText("Description");
+		
+		TableColumn tblclmnQuantityInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnQuantityInvoice.setWidth(91);
+		tblclmnQuantityInvoice.setText("Quantity");
+		
+		TableColumn tblclmnOnHandInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnOnHandInvoice.setWidth(100);
+		tblclmnOnHandInvoice.setText("On Hand");
+		
+		TableColumn tblclmnCostInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnCostInvoice.setWidth(100);
+		tblclmnCostInvoice.setText("Cost");
+		
+		TableColumn tblclmnPartPriceInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnPartPriceInvoice.setWidth(110);
+		tblclmnPartPriceInvoice.setText("Part Price");
+		
+		TableColumn tblclmnExtendedPriceInvoice = new TableColumn(jobPartsTable, SWT.NONE);
+		tblclmnExtendedPriceInvoice.setWidth(114);
+		tblclmnExtendedPriceInvoice.setText("Extended Price");
+		
 		TabItem tbtmLabor = new TabItem(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmLabor.setText("Labor");
-
+		
+		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(jobPartsTable));
 	}
 }
