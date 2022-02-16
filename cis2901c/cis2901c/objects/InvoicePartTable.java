@@ -18,7 +18,8 @@ public class InvoicePartTable extends MyTable{
 
 	public InvoicePartTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
+		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+		TableItem tableItem = new InvoicePartTableItem(this, SWT.NONE);	// so we can add parts
 	}
 	
 	@Override

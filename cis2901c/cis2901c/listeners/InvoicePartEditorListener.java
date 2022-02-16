@@ -50,7 +50,7 @@ public class InvoicePartEditorListener implements Listener {
 		this.selectedTableItemIndex = selectedTableItemIndex;
 		this.selectedColumnIndex = selectedColumnIndex;
 		this.editorTxtBox = editorTxtBox;
-		
+
 		this.txtPartsTotalInvoice = invoiceDetailText.get(0);
 		this.txtTaxInvoice = invoiceDetailText.get(1);
 		this.txtFinalTotal = invoiceDetailText.get(2);
