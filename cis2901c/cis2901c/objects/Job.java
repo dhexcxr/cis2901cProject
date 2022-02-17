@@ -1,11 +1,87 @@
 package cis2901c.objects;
 
+import java.util.List;
 import java.util.Map;
 
 public class Job extends DbObjectSearchable implements DbObjectSavable {
+	
+	private	String jobName;
+	private String complaints;
+	private String resolution;
+	private String reccomendations;
+	
+	List<Part> parts;
+	List<Labor> labor;
 
 	public Job() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Job(String jobName, String complaints, String resolution, String reccomendations, List<Part> parts,
+			List<Labor> labor) {
+		super();
+		this.jobName = jobName;
+		this.complaints = complaints;
+		this.resolution = resolution;
+		this.reccomendations = reccomendations;
+		this.parts = parts;
+		this.labor = labor;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public String getComplaints() {
+		return complaints;
+	}
+
+	public void setComplaints(String complaints) {
+		this.complaints = complaints;
+	}
+
+	public String getResolution() {
+		return resolution;
+	}
+
+	public String getReccomendations() {
+		return reccomendations;
+	}
+
+	public void setReccomendations(String reccomendations) {
+		this.reccomendations = reccomendations;
+	}
+
+	public void setResolution(String resolution) {
+		this.resolution = resolution;
+	}
+
+	public List<Part> getParts() {
+		return parts;
+	}
+
+	public void setParts(List<Part> parts) {
+		this.parts = parts;
+	}
+	
+	public void addParts(Part part) {
+		this.parts.add(part);
+	}
+
+	public List<Labor> getLabor() {
+		return labor;
+	}
+
+	public void setLabor(List<Labor> labor) {
+		this.labor = labor;
+	}
+	
+	public void addLabor(Labor labor) {
+		this.labor.add(labor);
 	}
 
 	@Override

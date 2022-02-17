@@ -7,7 +7,7 @@ import cis2901c.objects.MyText;
 
 public class InfoTextBoxModifyListener implements ModifyListener {
 	
-	private MyText txtBox;
+	protected MyText txtBox;
 	private String txtBoxStartingText;
 	
 	public InfoTextBoxModifyListener(MyText text) {
