@@ -1,5 +1,6 @@
 package cis2901c.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public String getJobName() {
-		return jobName;
+		return jobName == null ? "" : jobName;
 	}
 
 	public void setJobName(String jobName) {
@@ -37,7 +38,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public String getComplaints() {
-		return complaints;
+		return complaints == null ? "" : complaints;
 	}
 
 	public void setComplaints(String complaints) {
@@ -45,23 +46,23 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public String getResolution() {
-		return resolution;
+		return resolution == null ? "" : resolution;
+	}
+	
+	public void setResolution(String resolution) {
+		this.resolution = resolution;
 	}
 
 	public String getReccomendations() {
-		return reccomendations;
+		return reccomendations == null ? "" : reccomendations;
 	}
 
 	public void setReccomendations(String reccomendations) {
 		this.reccomendations = reccomendations;
 	}
 
-	public void setResolution(String resolution) {
-		this.resolution = resolution;
-	}
-
 	public List<Part> getParts() {
-		return parts;
+		return parts == null ? new ArrayList<>() : parts;
 	}
 
 	public void setParts(List<Part> parts) {
@@ -73,7 +74,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public List<Labor> getLabor() {
-		return labor;
+		return labor == null ? new ArrayList<>() : labor;
 	}
 
 	public void setLabor(List<Labor> labor) {
