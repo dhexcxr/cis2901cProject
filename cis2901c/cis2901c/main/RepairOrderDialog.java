@@ -2,13 +2,11 @@ package cis2901c.main;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Text;
-
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DeleteLineItemListener;
-import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
@@ -17,10 +15,10 @@ import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
 import cis2901c.objects.JobLaborTable;
 import cis2901c.objects.MyText;
+import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
@@ -29,14 +27,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.ModifyEvent;
 import cis2901c.objects.InvoicePartTable;
+import cis2901c.objects.InvoicePartTableItem;
+
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -51,9 +47,11 @@ public class RepairOrderDialog extends Dialog {
 	private MyText textTaxRepairOrder;
 	private MyText textFinalTotalRepairOrder;
 	private MyText txtJobName;
+	private JobNameModifiedListener jobNameModifiedListener;
 	private MyText txtComplaints;
 	private MyText txtResolution;
 	private MyText txtReccomendations;
+	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
 
 	/**
@@ -192,6 +190,7 @@ public class RepairOrderDialog extends Dialog {
 		btnDeleteLaborLine.setText("Delete Labor");
 		btnDeleteLaborLine.setVisible(false);
 		
+		// START Job Tabs
 		TabFolder tabFolderJobsRepairOrder = new TabFolder(shell, SWT.NONE);
 		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override		// set visibility of Tab function buttons
@@ -225,7 +224,8 @@ public class RepairOrderDialog extends Dialog {
 		txtJobName = new MyText(jobDetailsComposite, SWT.BORDER);
 		txtJobName.setText("Job Name...");
 		txtJobName.setBounds(10, 10, 460, 26);
-		txtJobName.addModifyListener(new JobNameModifiedListener(txtJobName, tableJobsRepairOrder));
+		jobNameModifiedListener = new JobNameModifiedListener(txtJobName, tableJobsRepairOrder);
+		txtJobName.addModifyListener(jobNameModifiedListener);
 //		txtJobName.addModifyListener(new ModifyListener() {
 //			public void modifyText(ModifyEvent e) {
 //				// TODO copy entered text into Selected Job Table Item
@@ -257,7 +257,7 @@ public class RepairOrderDialog extends Dialog {
 		Composite jobPartsComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmParts.setControl(jobPartsComposite);
 		
-		InvoicePartTable jobPartsTable = new InvoicePartTable(jobPartsComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		jobPartsTable = new InvoicePartTable(jobPartsComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		jobPartsTable.setLinesVisible(true);
 		jobPartsTable.setHeaderVisible(true);
 		jobPartsTable.setBounds(10, 10, 915, 243);
@@ -345,25 +345,39 @@ public class RepairOrderDialog extends Dialog {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// create new Job on Job Table
+				int selectedIndex = -1;
 				if (tableJobsRepairOrder.getSelectionIndex() >= 0 && tableJobsRepairOrder.getSelectionIndex() < tableJobsRepairOrder.getItemCount()
 						&& tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData() != null) {
-					tableJobsRepairOrder.remove(tableJobsRepairOrder.getSelectionIndex());
+					selectedIndex = tableJobsRepairOrder.getSelectionIndex();
+					tableJobsRepairOrder.remove(selectedIndex);
 				}
+				selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
+//				selectedIndex--;
+				tableJobsRepairOrder.setSelection(selectedIndex);
+				tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 				
+				// disable Job Tabs if no jobs on Job Table
 				if (tableJobsRepairOrder.getItemCount() == 0) {
 					txtJobName.setEnabled(false);
+					txtJobName.setText("Job Name...");
 					txtComplaints.setEnabled(false);
+					txtComplaints.setText("Complaints...");
 					txtResolution.setEnabled(false);
+					txtResolution.setText("Resolution...");
 					txtReccomendations.setEnabled(false);
+					txtReccomendations.setText("Reccomendations...");
 					jobPartsTable.setEnabled(false);
+					jobPartsTable.removeAll();
 					jobLaborTable.setEnabled(false);
-				}
+					jobLaborTable.removeAll();
+				} 
 			}
 		});
 		
 		tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				txtJobName.removeModifyListener(jobNameModifiedListener);
 				// job selected
 				txtJobName.setEnabled(true);
 				txtComplaints.setEnabled(true);
@@ -371,9 +385,36 @@ public class RepairOrderDialog extends Dialog {
 				txtReccomendations.setEnabled(true);
 				jobPartsTable.setEnabled(true);
 				jobLaborTable.setEnabled(true);
+				// TODO protect agains;t invalid indecies
+				if (tableJobsRepairOrder.getSelectionIndex() < 0 || tableJobsRepairOrder.getSelectionIndex() >= tableJobsRepairOrder.getItemCount()) {
+					return;
+				}
+				Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
+				// copy selected Job to Job Tabs
+				if (selectedJob != null && !selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
+					tabFolderJobsRepairOrder.setData(selectedJob);
+					// set Job data into Job Tabs
+					txtJobName.setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
+					txtComplaints.setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
+					txtResolution.setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
+					txtReccomendations.setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
+					
+					for (Part part : selectedJob.getParts()) {
+						// TODO see how I stored quantity in Invoice, or figure out how to store quantity
+						addPartToPartTableItem(part);
+					}
+				}
+
 				
-				// TODO copy Job details to Job Tabs
+				txtJobName.addModifyListener(jobNameModifiedListener);
 			}
 		});
+	}
+	
+	private void addPartToPartTableItem(Part part) {
+		// used in tableJobsRepairOrder.addSelectionListener
+		InvoicePartTableItem jobPart = new InvoicePartTableItem(jobPartsTable, getStyle());
+		jobPart.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(0), Integer.toString(part.getOnHand()),
+				part.getCost().toString(), part.getRetail().toString(), part.getRetail().toString()});
 	}
 }
