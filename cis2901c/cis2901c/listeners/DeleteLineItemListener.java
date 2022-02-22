@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.logging.Level;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
@@ -38,9 +40,16 @@ public class DeleteLineItemListener extends MouseAdapter{
 	public void mouseDown(MouseEvent e) {
 		if (partTableInvoice.getSelectionIndex() >= 0 && partTableInvoice.getSelectionIndex() < partTableInvoice.getItemCount() &&
 													partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData() != null) {
-			partTableInvoice.remove(partTableInvoice.getSelectionIndex());
+			int selectedIndex = partTableInvoice.getSelectionIndex();
+			partTableInvoice.remove(selectedIndex);
 			
-			// TODO the following copied from PartInvoiceEditorEventListener, need to find a better way to calc invoice total
+			selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
+			partTableInvoice.setSelection(selectedIndex);
+			partTableInvoice.notifyListeners(SWT.Selection, new Event());
+			
+			// TODO the following copied from InvoicePartEditorEventListener, need to find a better way to calc invoice total
+					// we could do this by making InvoicePartEditorEventListener.calculateInvoiceTotal a method of the invoicePartTable
+					// but that would require some re-figuring for txtPartsTotalInvoice, txtTaxInvoice, and txtFinalTotal
 			BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
 			BigDecimal total = BigDecimal.valueOf(0);
 			TableItem[] items = partTableInvoice.getItems();
