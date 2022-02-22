@@ -41,8 +41,6 @@ public class InvoicePartEditorListener implements Listener {
 
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
-
-
 	public InvoicePartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex, int selectedColumnIndex,
 										Text editorTxtBox, List<MyText> invoiceDetailText) {
 		this.partInvoiceTable = partInvoiceTable;

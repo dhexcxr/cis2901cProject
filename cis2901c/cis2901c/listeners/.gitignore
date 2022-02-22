@@ -31,3 +31,5 @@
 /InvoicePartEditorListener.class
 /UnitSearchListener.class
 /JobNameModifiedListener.class
+/RepairOrderPartTableListener.class
+/RepairOrderPartEditorListener.class

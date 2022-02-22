@@ -7,8 +7,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DeleteLineItemListener;
-import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.JobNameModifiedListener;
+import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
@@ -261,7 +261,7 @@ public class RepairOrderDialog extends Dialog {
 		jobPartsTable.setLinesVisible(true);
 		jobPartsTable.setHeaderVisible(true);
 		jobPartsTable.setBounds(10, 10, 915, 243);
-		jobPartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(jobPartsTable));
+		jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder));		// TODO extend this listener so we can show totals in Job Table
 		jobPartsTable.setEnabled(false);
 		
 		TableColumn tblclmnPartNumberInvoice = new TableColumn(jobPartsTable, SWT.NONE);
@@ -385,7 +385,7 @@ public class RepairOrderDialog extends Dialog {
 				txtReccomendations.setEnabled(true);
 				jobPartsTable.setEnabled(true);
 				jobLaborTable.setEnabled(true);
-				// TODO protect agains;t invalid indecies
+				// TODO protect agains't invalid indices
 				if (tableJobsRepairOrder.getSelectionIndex() < 0 || tableJobsRepairOrder.getSelectionIndex() >= tableJobsRepairOrder.getItemCount()) {
 					return;
 				}
