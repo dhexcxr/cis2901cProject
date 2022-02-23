@@ -16,18 +16,18 @@ import cis2901c.main.Main;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyTable;
 
-public class DeleteLineItemListener extends MouseAdapter{
+public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 	
 	private MyTable partTableInvoice;
-	private Text txtPartsTotalInvoice;
+	protected Text txtPartsTotalInvoice;
 	private Text txtTaxInvoice;
 	private Text txtFinalTotal;
 	
-	public DeleteLineItemListener(MyTable partTableInvoice) {
+	public InvoicePartDeleteLineItemListener(MyTable partTableInvoice) {
 		this(partTableInvoice, new Text(new Shell(), 0), new Text(new Shell(), 0), new Text(new Shell(), 0));
 	}
 	
-	public DeleteLineItemListener(MyTable partTableInvoice, Text txtPartsTotalInvoice, Text txtTaxInvoice,
+	public InvoicePartDeleteLineItemListener(MyTable partTableInvoice, Text txtPartsTotalInvoice, Text txtTaxInvoice,
 			Text txtFinalTotal) {
 		super();
 		this.partTableInvoice = partTableInvoice;

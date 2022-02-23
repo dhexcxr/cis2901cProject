@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import cis2901c.listeners.CreateNewObjectListener;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
-import cis2901c.listeners.DeleteLineItemListener;
+import cis2901c.listeners.InvoicePartDeleteLineItemListener;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.InvoicePartTableListener;
@@ -454,7 +454,7 @@ public class Gui extends Composite {
 		btnCancel.setBounds(596, 607, 126, 45);
 		btnCancel.setText("Cancel");
 		
-		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(
+		btnDeleteLineItem.addMouseListener(new InvoicePartDeleteLineItemListener(
 				invoicePartsTable, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal));
 		
 		Button btnSearchForInvoice = new Button(invoiceComposite, SWT.NONE);
