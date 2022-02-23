@@ -33,3 +33,5 @@
 /JobNameModifiedListener.class
 /RepairOrderPartTableListener.class
 /RepairOrderPartEditorListener.class
+/RepairOrderLaborTableListener.class
+/RepairOrderLaborEditorListener.class

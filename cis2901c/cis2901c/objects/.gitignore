@@ -32,3 +32,6 @@
 /Job.class
 /Labor.class
 /JobLaborTable.class
+/RepairOrderJobLaborTable.class
+/LaborTable.class
+/LaborTableItem.class

@@ -29,7 +29,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	}
 	
 	private void totalParts() {
-		tableJobsRepairOrder.getSelection()[0].setText(1, invoiceDetailText.get(0).getText());
+		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.PART_TOTAL_COLUMN, invoiceDetailText.get(0).getText());
 	}
 
 	

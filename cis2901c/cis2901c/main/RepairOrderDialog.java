@@ -8,18 +8,21 @@ import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DeleteLineItemListener;
 import cis2901c.listeners.JobNameModifiedListener;
+import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
-import cis2901c.objects.JobLaborTable;
+import cis2901c.objects.LaborTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
+import cis2901c.objects.LaborTableItem;
 
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -52,7 +55,7 @@ public class RepairOrderDialog extends Dialog {
 	private MyText txtResolution;
 	private MyText txtReccomendations;
 	private InvoicePartTable jobPartsTable;
-	private JobLaborTable jobLaborTable;
+	private LaborTable jobLaborTable;
 
 	/**
 	 * Create the dialog.
@@ -184,13 +187,36 @@ public class RepairOrderDialog extends Dialog {
 		btnAddLaborLine.setBounds(255, 350, 121, 56);
 		btnAddLaborLine.setText("Add Labor");
 		btnAddLaborLine.setVisible(false);
+		btnAddLaborLine.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// TODO add Labor to Labor Table
+				@SuppressWarnings("unused")
+				TableItem tableItem = new LaborTableItem(jobLaborTable, SWT.NONE);
+			}
+		});
 		
 		Button btnDeleteLaborLine = new Button(shell, SWT.NONE);
 		btnDeleteLaborLine.setBounds(386, 350, 121, 56);
 		btnDeleteLaborLine.setText("Delete Labor");
 		btnDeleteLaborLine.setVisible(false);
+		btnDeleteLaborLine.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// delete Labor from Labor Table
+				if (jobLaborTable.getSelectionIndex() >=0 && jobLaborTable.getSelectionIndex() < jobLaborTable.getItemCount()) {
+					int selectedIndex = jobLaborTable.getSelectionIndex();
+					jobLaborTable.remove(selectedIndex);
+					
+					selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
+					jobLaborTable.setSelection(selectedIndex);
+					
+					// TODO recalculate total for Job labor
+				}
+			}
+		});
 		
-		// START Job Tabs
+		//---- Job Details tab
 		TabFolder tabFolderJobsRepairOrder = new TabFolder(shell, SWT.NONE);
 		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override		// set visibility of Tab function buttons
@@ -219,38 +245,34 @@ public class RepairOrderDialog extends Dialog {
 		
 		Composite jobDetailsComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmJobDetails.setControl(jobDetailsComposite);
-//		jobDetailsComposite.setEnabled(false);
 		
 		txtJobName = new MyText(jobDetailsComposite, SWT.BORDER);
 		txtJobName.setText("Job Name...");
 		txtJobName.setBounds(10, 10, 460, 26);
+		txtJobName.setEnabled(false);
 		jobNameModifiedListener = new JobNameModifiedListener(txtJobName, tableJobsRepairOrder);
 		txtJobName.addModifyListener(jobNameModifiedListener);
-//		txtJobName.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				// TODO copy entered text into Selected Job Table Item
-//				Main.log(Level.INFO, "Job Name Txt modified");
-//			}
-//		});
 		txtJobName.addFocusListener(new TextBoxFocusListener(txtJobName));
-//		txtJobName.addModifyListener(new RequiredTextBoxModifyListener(txtJobName));
-		txtJobName.setEnabled(false);
 		
 		txtComplaints = new MyText(jobDetailsComposite, SWT.BORDER | SWT.WRAP);
 		txtComplaints.setText("Complaints...");
 		txtComplaints.setBounds(10, 42, 460, 211);
 		txtComplaints.setEnabled(false);
+		txtComplaints.addFocusListener(new TextBoxFocusListener(txtComplaints));
 		
 		txtResolution = new MyText(jobDetailsComposite, SWT.BORDER | SWT.WRAP);
 		txtResolution.setText("Resolution...");
 		txtResolution.setBounds(476, 42, 460, 100);
 		txtResolution.setEnabled(false);
+		txtResolution.addFocusListener(new TextBoxFocusListener(txtResolution));
 		
 		txtReccomendations = new MyText(jobDetailsComposite, SWT.BORDER | SWT.WRAP);
 		txtReccomendations.setText("Reccomendations...");
 		txtReccomendations.setBounds(476, 148, 460, 105);
 		txtReccomendations.setEnabled(false);
+		txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
 		
+		//---- Job Part tab
 		TabItem tbtmParts = new TabItem(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmParts.setText("Parts");
 		
@@ -261,7 +283,7 @@ public class RepairOrderDialog extends Dialog {
 		jobPartsTable.setLinesVisible(true);
 		jobPartsTable.setHeaderVisible(true);
 		jobPartsTable.setBounds(10, 10, 915, 243);
-		jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder));		// TODO extend this listener so we can show totals in Job Table
+		jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder));
 		jobPartsTable.setEnabled(false);
 		
 		TableColumn tblclmnPartNumberInvoice = new TableColumn(jobPartsTable, SWT.NONE);
@@ -292,17 +314,19 @@ public class RepairOrderDialog extends Dialog {
 		tblclmnExtendedPriceInvoice.setWidth(114);
 		tblclmnExtendedPriceInvoice.setText("Extended Price");
 		
+		//---- Labor tab
 		TabItem tbtmLabor = new TabItem(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmLabor.setText("Labor");
 		
 		Composite jobLaborComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmLabor.setControl(jobLaborComposite);
 		
-		jobLaborTable = new JobLaborTable(jobLaborComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		jobLaborTable = new LaborTable(jobLaborComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		jobLaborTable.setBounds(10, 10, 926, 243);
 		jobLaborTable.setHeaderVisible(true);
 		jobLaborTable.setLinesVisible(true);
 		jobLaborTable.setEnabled(false);
+		jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder));
 		
 		TableColumn tblclmnTechnician = new TableColumn(jobLaborTable, SWT.NONE);
 		tblclmnTechnician.setWidth(100);
@@ -398,6 +422,8 @@ public class RepairOrderDialog extends Dialog {
 					txtComplaints.setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
 					txtResolution.setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
 					txtReccomendations.setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
+					
+					// TODO add other methods to set up Job Detail tabs, Part tab, and Labor tab
 					
 					for (Part part : selectedJob.getParts()) {
 						// TODO see how I stored quantity in Invoice, or figure out how to store quantity
