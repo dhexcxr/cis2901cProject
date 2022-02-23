@@ -11,6 +11,7 @@ import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
+import cis2901c.listeners.RoTotalListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
@@ -115,6 +116,7 @@ public class RepairOrderDialog extends Dialog {
 		tableJobsRepairOrder.setHeaderVisible(true);
 		tableJobsRepairOrder.setLinesVisible(true);
 		
+		
 		TableColumn tblclmnJobName = new TableColumn(tableJobsRepairOrder, SWT.NONE);
 		tblclmnJobName.setWidth(330);
 		tblclmnJobName.setText("Job Name");
@@ -195,6 +197,9 @@ public class RepairOrderDialog extends Dialog {
 				TableItem tableItem = new LaborTableItem(jobLaborTable, SWT.NONE);
 				jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
 				jobLaborTable.notifyListeners(SWT.Selection, new Event());
+				
+				jobLaborTable.setTotalLabor(tableJobsRepairOrder);
+				tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 			}
 		});
 		
@@ -212,6 +217,9 @@ public class RepairOrderDialog extends Dialog {
 					
 					selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
 					jobLaborTable.setSelection(selectedIndex);
+					
+					jobLaborTable.setTotalLabor(tableJobsRepairOrder);
+					tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 					
 					// TODO recalculate total for Job labor
 				}
@@ -384,6 +392,8 @@ public class RepairOrderDialog extends Dialog {
 				tableJobsRepairOrder.setSelection(selectedIndex);
 				tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 				
+				tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+				
 				// disable Job Tabs if no jobs on Job Table
 				if (tableJobsRepairOrder.getItemCount() == 0) {
 					txtJobName.setEnabled(false);
@@ -402,6 +412,7 @@ public class RepairOrderDialog extends Dialog {
 			}
 		});
 		
+		tableJobsRepairOrder.addListener(SWT.BUTTON5, new RoTotalListener(tableJobsRepairOrder, txtSubTotalRepairOrder, textTaxRepairOrder, textFinalTotalRepairOrder));
 		tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

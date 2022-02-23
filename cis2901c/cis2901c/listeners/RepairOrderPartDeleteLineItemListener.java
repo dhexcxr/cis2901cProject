@@ -2,7 +2,9 @@ package cis2901c.listeners;
 
 import java.math.BigDecimal;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.objects.MyTable;
@@ -42,6 +44,7 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 		selectedJobTableItem.setPartTotal(partTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
+		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 	}
 
 }
