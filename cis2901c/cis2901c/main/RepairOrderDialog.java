@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
-import cis2901c.listeners.DeleteLineItemListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
+import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
@@ -193,6 +193,8 @@ public class RepairOrderDialog extends Dialog {
 				// TODO add Labor to Labor Table
 				@SuppressWarnings("unused")
 				TableItem tableItem = new LaborTableItem(jobLaborTable, SWT.NONE);
+				jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
+				jobLaborTable.notifyListeners(SWT.Selection, new Event());
 			}
 		});
 		
@@ -348,7 +350,7 @@ public class RepairOrderDialog extends Dialog {
 		tblclmnTotal.setWidth(100);
 		tblclmnTotal.setText("Total");
 		
-		btnDeleteLineItem.addMouseListener(new DeleteLineItemListener(jobPartsTable));
+		btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder));
 		
 		Button btnAddJob = new Button(shell, SWT.NONE);
 		btnAddJob.setBounds(676, 144, 140, 94);
@@ -359,6 +361,8 @@ public class RepairOrderDialog extends Dialog {
 				// create new Job on Job Table
 				RepairOrderJobTableItem job = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
 				job.setData(new Job());
+				tableJobsRepairOrder.setSelection(tableJobsRepairOrder.getItemCount() - 1);
+				tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 			}
 		});
 		
