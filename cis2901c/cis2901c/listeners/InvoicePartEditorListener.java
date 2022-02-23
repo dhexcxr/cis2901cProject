@@ -37,7 +37,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	// this allows us to ignore the FocusOut listener so we don't call PartSearchDialog twice
 	// if there is text in Part Number column when we "double" click to open Search box
-	private boolean ignoreFocusOut = false;
+	protected boolean ignoreFocusOut = false;
 
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
@@ -71,10 +71,10 @@ public class InvoicePartEditorListener implements Listener {
 			}
 		} else if (event.type == SWT.FocusOut) {
 			setColumnData();
-		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_RETURN) {
-			setColumnData();
 		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_ESCAPE) {
 			editorTxtBox.dispose();
+		} else if (event.type == SWT.Traverse) {
+			setColumnData();
 		}
 	}
 	
@@ -83,12 +83,11 @@ public class InvoicePartEditorListener implements Listener {
 			// we entered a part number
 			findPartNumber();
 			calculateInvoiceTotal();
-		} else if (selectedColumnIndex == InvoicePartTable.QUANTITY_COLUMN) {
+		} else if (selectedColumnIndex == InvoicePartTable.QUANTITY_COLUMN &&
+				(partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals(""))) {
 			// we entered a part quantity
-			if (partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals("")) {
 				setPartQuantity(selectedTableItem);
 				calculateInvoiceTotal();
-			}
 		} else if (selectedColumnIndex == InvoicePartTable.PART_PRICE_COLUMN &&
 				(partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals(""))) {
 			// we entered a part price
@@ -99,6 +98,7 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void findPartNumber() {
+		ignoreFocusOut = true;
 		Main.log(Level.INFO, "findPartNumber called");
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
@@ -115,6 +115,7 @@ public class InvoicePartEditorListener implements Listener {
 				paintInvoiceLines(editedLineItem);	
 			}
 		}
+		ignoreFocusOut = false;
 	}
 
 	private void paintInvoiceLines(Part editedLineItem) {

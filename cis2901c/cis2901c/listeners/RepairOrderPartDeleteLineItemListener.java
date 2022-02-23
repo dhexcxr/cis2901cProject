@@ -1,38 +1,34 @@
 package cis2901c.listeners;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Text;
 
-import cis2901c.objects.InvoicePartTable;
-import cis2901c.objects.MyText;
+import cis2901c.objects.MyTable;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
-public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
+public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLineItemListener {
 	
-	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
-	private boolean ignoreFocusOut = false;
 
-	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
-			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder) {
-		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
-		// TODO connect Job Part total
-		this.invoiceDetailText = invoiceDetailText;
+	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, RepairOrderJobTable tableJobsRepairOrder) {
+		super(repairOrderPartTableInvoice);
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
+		// TODO Auto-generated constructor stub
+	}
+
+	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, Text txtPartsTotalInvoice,
+			Text txtTaxInvoice, Text txtFinalTotal) {
+		super(repairOrderPartTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal);
+		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	public void handleEvent(Event event) {
-		if (!ignoreFocusOut) {
-			ignoreFocusOut = true;
-			super.handleEvent(event);
-			totalParts();
-			ignoreFocusOut = false;
-		}
+	public void mouseDown(MouseEvent event) {
+		super.mouseDown(event);
+		totalParts();
 	}
 	
 	private void totalParts() {
@@ -40,7 +36,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 //		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.PART_TOTAL_COLUMN, textToParse);
 		
 		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
-		String textToParse = invoiceDetailText.get(0).getText();
+		String textToParse = super.txtPartsTotalInvoice.getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
 		BigDecimal partTotal = new BigDecimal(textToParse);
 		selectedJobTableItem.setPartTotal(partTotal);
@@ -48,5 +44,4 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
 	}
 
-	
 }

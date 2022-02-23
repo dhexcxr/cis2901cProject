@@ -14,6 +14,7 @@ import cis2901c.main.Main;
 import cis2901c.objects.LaborTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.RepairOrderJobTable;
+import cis2901c.objects.RepairOrderJobTableItem;
 
 public class RepairOrderLaborEditorListener implements Listener {
 
@@ -76,7 +77,11 @@ public class RepairOrderLaborEditorListener implements Listener {
 	}
 	
 	private void setTotalLabor() {
-		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, calculateLaborTotal().toString());
+		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
+		BigDecimal laborTotal = calculateLaborTotal();
+		selectedJobTableItem.setLaborTotal(laborTotal);
+		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
+		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (laborTotal.add(selectedJobTableItem.getPartTotal()).toString()));
 	}
 	
 	private BigDecimal calculateLaborTotal() {
