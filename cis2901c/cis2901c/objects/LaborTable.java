@@ -1,6 +1,14 @@
 package cis2901c.objects;
 
+import java.math.BigDecimal;
+import java.util.logging.Level;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.TableItem;
+
+import cis2901c.main.Main;
 
 public class LaborTable extends MyTable {
 	
@@ -39,6 +47,32 @@ public class LaborTable extends MyTable {
 	public void sort(int i) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void setTotalLabor(RepairOrderJobTable tableJobsRepairOrder) {
+		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
+		BigDecimal laborTotal = calculateLaborTotal();
+		selectedJobTableItem.setLaborTotal(laborTotal);
+		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
+		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (laborTotal.add(selectedJobTableItem.getPartTotal()).toString()));
+		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+	}
+	
+	private BigDecimal calculateLaborTotal() {
+//		BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
+		BigDecimal total = BigDecimal.valueOf(0);
+		TableItem[] items = this.getItems();
+		for (TableItem item : items) {
+			if (item.getText(LaborTable.TOTAL_COLUMN).equals("")) {
+				// ignore new TableItem at end of list with no data set 
+				break;
+			}
+			Main.log(Level.INFO, "labor Total before: " + total.toString());
+			total = total.add(new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)));
+			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)).toString());
+			Main.log(Level.INFO, "labor Total after: " + total.toString());
+		}
+		return total;
 	}
 
 }
