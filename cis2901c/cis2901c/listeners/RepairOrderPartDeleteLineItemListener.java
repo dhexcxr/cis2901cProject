@@ -40,7 +40,7 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
 		String textToParse = super.txtPartsTotalInvoice.getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
-		BigDecimal partTotal = new BigDecimal(textToParse);
+		BigDecimal partTotal = new BigDecimal(textToParse.equals("") ? "0" : textToParse);
 		selectedJobTableItem.setPartTotal(partTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
