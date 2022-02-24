@@ -30,7 +30,7 @@ public class JobNameModifiedListener extends InfoTextBoxModifyListener {
 			TableItem selectedJob = tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex());
 			selectedJob.setText(0, super.txtBox.getText());
 			((Job) selectedJob.getData()).setJobName(super.txtBox.getText());
-		} else {
+		} else if (tableJobsRepairOrder.getItemCount() > 0){
 			tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).setText(0, "");
 		}
 	}
