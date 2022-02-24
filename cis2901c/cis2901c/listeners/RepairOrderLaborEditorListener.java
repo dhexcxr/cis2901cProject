@@ -1,7 +1,6 @@
 package cis2901c.listeners;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
@@ -12,7 +11,6 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
 import cis2901c.objects.LaborTable;
-import cis2901c.objects.MyText;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
@@ -20,28 +18,20 @@ public class RepairOrderLaborEditorListener implements Listener {
 
 	private LaborTable jobLaborTable;
 	private TableItem selectedTableItem;
-	private int selectedTableItemIndex;
 	private int selectedColumnIndex;
 	private Text editorTxtBox;
-	
-//	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
-	
-//	private Text txtLaborTotal;
+
 
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
+
 	public RepairOrderLaborEditorListener(LaborTable jobLaborTable, int selectedTableItemIndex, int selectedColumnIndex,
-										Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder) {
+			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder) {
 		this.jobLaborTable = jobLaborTable;
 		this.selectedTableItem = jobLaborTable.getItem(selectedTableItemIndex);
-		this.selectedTableItemIndex = selectedTableItemIndex;
 		this.selectedColumnIndex = selectedColumnIndex;
 		this.editorTxtBox = editorTxtBox;
-
-//		this.txtLaborTotal = invoiceDetailText.get(0);
-		
-//		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 	}
 
