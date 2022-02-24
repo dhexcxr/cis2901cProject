@@ -69,8 +69,12 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		this.parts = parts;
 	}
 	
-	public void addParts(Part part) {
+	public void addPart(Part part) {
 		this.parts.add(part);
+	}
+	
+	public void deletePart(Part part) {
+		this.parts.remove(part);
 	}
 
 	public List<Labor> getLabor() {
@@ -83,6 +87,10 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	
 	public void addLabor(Labor labor) {
 		this.labor.add(labor);
+	}
+	
+	public void deleteLabor(Labor labor) {
+		this.labor.remove(labor);
 	}
 
 	@Override

@@ -38,3 +38,5 @@
 /InvoicePartDeleteLineItemListener.class
 /RepairOrderPartDeleteLineItemListener.class
 /RoTotalListener.class
+/JobModifiedListener.class
+/JobModifyListener.class

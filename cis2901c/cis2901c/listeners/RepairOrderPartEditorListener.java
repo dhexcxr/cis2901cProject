@@ -48,6 +48,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
 		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 
 	
