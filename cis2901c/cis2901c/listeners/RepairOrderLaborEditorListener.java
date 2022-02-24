@@ -49,10 +49,10 @@ public class RepairOrderLaborEditorListener implements Listener {
 	public void handleEvent(Event event) {
 		if (event.type == SWT.FocusOut) {
 			setColumnData();
-		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_RETURN) {
-			setColumnData();
 		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_ESCAPE) {
 			editorTxtBox.dispose();
+		} else if (event.type == SWT.Traverse) {
+			setColumnData();
 		}
 		
 		setTotalLabor();
@@ -60,7 +60,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 	
 	private void setColumnData() {
 		if (selectedColumnIndex == LaborTable.TECHNICIAN_COLUMN || selectedColumnIndex == LaborTable.DESCRIPTION_COLUMN) {
-			selectedTableItem.setText(selectedTableItemIndex, editorTxtBox.getText());
+			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText());
 		} else if (selectedColumnIndex == LaborTable.HOURS_COLUMN || selectedColumnIndex == LaborTable.RATE_COLUMN) {
 																			 // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
 			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
@@ -83,6 +83,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (laborTotal.add(selectedJobTableItem.getPartTotal()).toString()));
 		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 	
 	private BigDecimal calculateLaborTotal() {
