@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.main.Main;
@@ -29,13 +32,21 @@ public class DbServices {
 		// maybe check isConnected before every getDbConnection call, and set icon then too
 	
 	private static Connection mainDbConnection = null;
+	private static final int SQL_FAILURE = -1;
 	
 	private DbServices() {
 	}
 	
 	// START General DB methods
 	public static boolean isConnected() {
-		return mainDbConnection != null;
+		boolean isConnected = false;
+		try {
+			isConnected = mainDbConnection.isValid(5);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isConnected;
 	}
 	
 	public static Connection getDbConnection() {
@@ -66,7 +77,25 @@ public class DbServices {
 		}
 	}
 	
+	public static void checkForDbConnection() {
+		if (!isConnected()) {
+			connectToDb();
+		}
+		if (!isConnected()) {
+			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
+			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
+			dbConnectionError.setText("DB Error");
+			dbConnectionError.setMessage("Unable to connect to database");
+			dbConnectionError.open();
+		}
+	}
+	
 	public static void saveObject(DbObjectSavable dbObject) {
+		// TODO check for DB connection, try to reconnect
+		checkForDbConnection();
+		if (!isConnected()) {
+			return;
+		}
 		// public Save Object interface
 		if (dbObject == null) {
 			return;
@@ -109,7 +138,6 @@ public class DbServices {
 	}
 	
 	private static int getLastInvoiceNum() {
-		final int SQL_FAILURE = -1;
 		ResultSet results = null;
 		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(invoicenum) FROM cis2901c.invoice;")) {
 			results = lastInvoiceNumStatement.executeQuery();
@@ -197,6 +225,12 @@ public class DbServices {
 	}
 	
 	public static Object searchForCustomer(long customerId) {
+		// TODO check for DB connection, try to reconnect
+		checkForDbConnection();
+		if (!isConnected()) {
+			System.exit(SQL_FAILURE);
+		}
+		
 		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
 											// this will allow us to make a polymorphic select by Primary Key search
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement("""
@@ -212,6 +246,12 @@ public class DbServices {
 	}
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
+		// TODO check for DB connection, try to reconnect
+		checkForDbConnection();
+		if (!isConnected()) {
+			System.exit(SQL_FAILURE);
+		}
+		
 		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = new Object[1];
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
