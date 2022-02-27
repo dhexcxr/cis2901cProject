@@ -26,6 +26,7 @@ import cis2901c.objects.Part;
 public class Gui extends Composite {
 
 	private Shell shell;
+	private String noImplementationMsg = "Not Implimented Yet...";
 
 	public Gui(Composite parent, int style) {
 		super(parent, style);
@@ -51,7 +52,7 @@ public class Gui extends Composite {
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 		
 		Label lblNotImplimentedYet = new Label(repairOrdersComposite, SWT.NONE);
-		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setText(noImplementationMsg);
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 	
@@ -134,7 +135,7 @@ public class Gui extends Composite {
 		tbtmInvoice.setControl(invoiceComposite);
 		
 		Label lblInvoiceNotImplimentedYet = new Label(invoiceComposite, SWT.NONE);
-		lblInvoiceNotImplimentedYet.setText("Not Implimented Yet...");
+		lblInvoiceNotImplimentedYet.setText(noImplementationMsg);
 		lblInvoiceNotImplimentedYet.setBounds(10, 10, 147, 20);
 		// END Invoice Tab
 		
@@ -146,7 +147,7 @@ public class Gui extends Composite {
 		tbtmOrder.setControl(orderComposite);
 		
 		Label lblOrderNotImplimentedYet = new Label(orderComposite, SWT.NONE);
-		lblOrderNotImplimentedYet.setText("Not Implimented Yet...");
+		lblOrderNotImplimentedYet.setText(noImplementationMsg);
 		lblOrderNotImplimentedYet.setBounds(10, 10, 147, 20);
 		// END Order Tab
 	}
@@ -232,7 +233,7 @@ public class Gui extends Composite {
 		tbtmUnits.setControl(unitsComposite);
 		
 		Label lblNotImplimentedYet = new Label(unitsComposite, SWT.NONE);
-		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setText(noImplementationMsg);
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 	
@@ -244,7 +245,7 @@ public class Gui extends Composite {
 		tbtmReports.setControl(reportsComposite);
 
 		Label lblNotImplimentedYet = new Label(reportsComposite, SWT.NONE);
-		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setText(noImplementationMsg);
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 		
