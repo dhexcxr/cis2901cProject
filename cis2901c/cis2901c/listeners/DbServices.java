@@ -13,10 +13,13 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
+import cis2901c.main.Gui;
 import cis2901c.main.Main;
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSavable;
@@ -43,8 +46,11 @@ public class DbServices {
 		try {
 			isConnected = mainDbConnection.isValid(5);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			Main.log(Level.FINER, "DbServices.isConnected: mainDbConnection SQL Exception");
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+				Main.log(Level.SEVERE, "DbServices.isConnected: mainDbConnection Null Pointer Exception");
+				e.printStackTrace();
 		}
 		return isConnected;
 	}
@@ -57,15 +63,37 @@ public class DbServices {
 		// TODO decide if I want to setAutoCommit to false before returning Connection, every call would have to connection.commit
 			// or rollback if an exception is caught
 		// TODO offer some customization options in application like actual DB options
+		Main.getLogger().log(Level.INFO, "Connecting to Database");
 		String url = "jdbc:mysql://localhost:3306/cis2901c";
 		String user = "TestUser";
 		String pass = "test";
-		try {
-			mainDbConnection = DriverManager.getConnection(url, user, pass);
-		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "Error connecting to database");
-			e.printStackTrace();
+		
+		long splashTime = System.currentTimeMillis();
+		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
+		connectingToDb.setSize(980, 640);
+		connectingToDb.setBackgroundImage(new Image(Main.display(), "C:\\Users\\People\\git\\cis2901c\\cis2901c\\resources\\splash.jpg"));
+		connectingToDb.setText("Connecting to database...");
+		connectingToDb.open();
+		
+		int i = 0;
+		while (!isConnected() && i < 3) {
+			try {
+				mainDbConnection = DriverManager.getConnection(url, user, pass);
+			} catch (SQLException e) {
+				Main.log(Level.SEVERE, "Error connecting to database");
+				e.printStackTrace();
+			}
+			i++;
 		}
+		if (!isConnected()) {
+			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
+			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
+			dbConnectionError.setText("DB Error");
+			dbConnectionError.setMessage("Unable to connect to database...");
+			dbConnectionError.open();
+		}
+		while (System.currentTimeMillis() - splashTime < 2000) {};
+		connectingToDb.close();
 	}
 	
 	public static void disconnectFromDb() {
@@ -73,28 +101,34 @@ public class DbServices {
 		try {
 			mainDbConnection.close();
 		} catch (SQLException e) {
+			Main.log(Level.FINER, "DbServices.disconnectFromDb: mainDbConnection SQL Exception");
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			Main.log(Level.SEVERE, "DbServices.disconnectFromDb: mainDbConnection Null Pointer Exception");
 			e.printStackTrace();
 		}
 	}
 	
 	public static void checkForDbConnection() {
-		if (!isConnected()) {
+		int i = 0;
+		while (!isConnected() && i < 4) {
 			connectToDb();
 		}
 		if (!isConnected()) {
 			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
 			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
 			dbConnectionError.setText("DB Error");
-			dbConnectionError.setMessage("Unable to connect to database");
+			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
+			System.exit(SQL_FAILURE);
 		}
 	}
 	
 	public static void saveObject(DbObjectSavable dbObject) {
 		// TODO check for DB connection, try to reconnect
-		checkForDbConnection();
+//		checkForDbConnection();
 		if (!isConnected()) {
-			return;
+			connectToDb();
 		}
 		// public Save Object interface
 		if (dbObject == null) {
@@ -226,9 +260,9 @@ public class DbServices {
 	
 	public static Object searchForCustomer(long customerId) {
 		// TODO check for DB connection, try to reconnect
-		checkForDbConnection();
+//		checkForDbConnection();
 		if (!isConnected()) {
-			System.exit(SQL_FAILURE);
+			connectToDb();
 		}
 		
 		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
@@ -247,9 +281,9 @@ public class DbServices {
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		// TODO check for DB connection, try to reconnect
-		checkForDbConnection();
+//		checkForDbConnection();
 		if (!isConnected()) {
-			System.exit(SQL_FAILURE);
+			connectToDb();
 		}
 		
 		final int MAX_RESULTS = 255;		// max search return results
