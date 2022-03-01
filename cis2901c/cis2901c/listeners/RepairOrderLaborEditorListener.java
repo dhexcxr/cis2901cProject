@@ -72,7 +72,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 		selectedJobTableItem.setLaborTotal(laborTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (laborTotal.add(selectedJobTableItem.getPartTotal()).toString()));
-		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
 //		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 	
