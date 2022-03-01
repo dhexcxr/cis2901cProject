@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import cis2901c.listeners.CreateNewObjectListener;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
+import cis2901c.listeners.DeleteObjectListener;
 import cis2901c.listeners.InvoicePartDeleteLineItemListener;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
@@ -212,6 +215,14 @@ public class Gui extends Composite {
 		tblclmnRetailPriceInventory.setWidth(110);
 		tblclmnRetailPriceInventory.setText("Retail Price");
 		tblclmnRetailPriceInventory.addSelectionListener(new TableColumnSortListener(tblclmnRetailPriceInventory));
+		
+		// Delete right click menu
+		Menu popupMenu = new Menu(partTableInventory);
+		MenuItem deletePart = new MenuItem(popupMenu, SWT.NONE);
+		deletePart.setText("Delete Part");
+		deletePart.setEnabled(false);
+		deletePart.addSelectionListener(new DeleteObjectListener(partTableInventory));
+		partTableInventory.setMenu(popupMenu);
 		
 		// Inventory controls
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
@@ -540,6 +551,14 @@ public class Gui extends Composite {
 		tblclmnEmailCustomer.setWidth(100);
 		tblclmnEmailCustomer.addSelectionListener(new TableColumnSortListener(tblclmnEmailCustomer));
 
+		// Delete right click menu
+		Menu popupMenu = new Menu(customerTable);
+		MenuItem deleteCustomer = new MenuItem(popupMenu, SWT.NONE);
+		deleteCustomer.setText("Delete Customer");
+		deleteCustomer.setEnabled(false);
+		deleteCustomer.addSelectionListener(new DeleteObjectListener(customerTable));
+		customerTable.setMenu(popupMenu);
+		
 		// Customer controls
 		MyText customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
 		customerSearchTextBox.setText("Search...");
@@ -606,6 +625,14 @@ public class Gui extends Composite {
 		tblclmnVinUnit.setWidth(215);
 		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
 
+		// Delete right click menu
+		Menu popupMenu = new Menu(unitTable);
+		MenuItem deleteUnit = new MenuItem(popupMenu, SWT.NONE);
+		deleteUnit.setText("Delete Unit");
+		deleteUnit.setEnabled(false);
+		deleteUnit.addSelectionListener(new DeleteObjectListener(unitTable));
+		unitTable.setMenu(popupMenu);
+		
 		// Unit controls
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
 		unitSearchBox.setText("Search...");

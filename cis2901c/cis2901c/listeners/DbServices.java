@@ -92,7 +92,8 @@ public class DbServices {
 			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
 		}
-		while (System.currentTimeMillis() - splashTime < 2000) {};
+		// TODO disable splash while testing
+//		while (System.currentTimeMillis() - splashTime < 2000) {};		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
 		connectingToDb.close();
 	}
 	
@@ -109,24 +110,34 @@ public class DbServices {
 		}
 	}
 	
-	public static void checkForDbConnection() {
-		int i = 0;
-		while (!isConnected() && i < 4) {
+//	public static void checkForDbConnection() {
+//		int i = 0;
+//		while (!isConnected() && i < 4) {
+//			connectToDb();
+//		}
+//		if (!isConnected()) {
+//			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
+//			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
+//			dbConnectionError.setText("DB Error");
+//			dbConnectionError.setMessage("Unable to connect to database...");
+//			dbConnectionError.open();
+//			System.exit(SQL_FAILURE);
+//		}
+//	}
+	
+	public static int deleteObject(DbObjectSavable dbObject) {
+		if (!isConnected()) {
 			connectToDb();
 		}
-		if (!isConnected()) {
-			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
-			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
-			dbConnectionError.setText("DB Error");
-			dbConnectionError.setMessage("Unable to connect to database...");
-			dbConnectionError.open();
-			System.exit(SQL_FAILURE);
+		if (dbObject == null) {
+			return 0;		// no object passed in, so no object deleted
 		}
+		StringBuilder queryString = new StringBuilder();
+		queryString.append("DELETE FROM cis2901c." + dbObject.getTableName() + " WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk());
+		return sendQueryToDb(queryString);
 	}
 	
 	public static void saveObject(DbObjectSavable dbObject) {
-		// TODO check for DB connection, try to reconnect
-//		checkForDbConnection();
 		if (!isConnected()) {
 			connectToDb();
 		}
@@ -185,8 +196,13 @@ public class DbServices {
 		// if we get here something went wrong
 		return SQL_FAILURE;
 	}
+	
+	private static int sendQueryToDb(StringBuilder queryString) {
+		return sendQueryToDb(queryString, new ArrayList<>());
+	}
 
-	private static void sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
+	private static int sendQueryToDb(StringBuilder queryString, List<String> dbFields) {
+		int updateCount = 0;
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(queryString.toString())) {
 			int parameterIndex = 1;
 			for(String fieldData : dbFields) {
@@ -194,12 +210,14 @@ public class DbServices {
 				parameterIndex++;
 			}
 			statement.execute();
+			updateCount = statement.getUpdateCount();
 			Main.log(Level.INFO, "Update Count: " + statement.getUpdateCount());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Main.log(Level.SEVERE, "SQL Error: " + queryString);
 			e.printStackTrace();
 		}
+		return updateCount;
 	}
 	
 	private static List<String> insertFieldsIntoQuery(StringBuilder queryString, DbObjectSavable dbObject, boolean creatingNewObject) {
