@@ -247,7 +247,11 @@ public class NewPartDialog extends Dialog {
 		}
 		
 		if (txtOnHand.isModified()) {
-			part.setOnHand(Integer.parseInt(txtOnHand.getText()));
+			try {
+				part.setOnHand(Integer.parseInt(txtOnHand.getText()));
+			} catch (NumberFormatException e) {
+				Main.getLogger().log(Level.FINER, e.getMessage(), e);
+			}
 		}
 		
 		DbServices.saveObject(part);
