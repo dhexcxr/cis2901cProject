@@ -118,7 +118,7 @@ public class RepairOrderDialog extends Dialog {
 
 		roControls();
 		
-		jobControls();
+		jobTabs();
 		
 		listeners();		
 	}
@@ -144,7 +144,7 @@ public class RepairOrderDialog extends Dialog {
 		txtSubTotalRepairOrder = new MyText(grpTotals, SWT.BORDER);
 		txtSubTotalRepairOrder.setBounds(10, 26, 128, 26);
 		txtSubTotalRepairOrder.setEditable(false);
-		txtSubTotalRepairOrder.setText("SubTotal");
+		txtSubTotalRepairOrder.setText("$0.00");
 
 		Label lblTax = new Label(grpTotals, SWT.NONE);
 		lblTax.setBounds(148, 0, 21, 20);
@@ -152,7 +152,7 @@ public class RepairOrderDialog extends Dialog {
 
 		textTaxRepairOrder = new MyText(grpTotals, SWT.BORDER);
 		textTaxRepairOrder.setBounds(148, 26, 128, 26);
-		textTaxRepairOrder.setText("Tax");
+		textTaxRepairOrder.setText("$0.00");
 		textTaxRepairOrder.setEditable(false);
 
 		Label lblFinalTotal = new Label(grpTotals, SWT.NONE);
@@ -161,7 +161,7 @@ public class RepairOrderDialog extends Dialog {
 
 		textFinalTotalRepairOrder = new MyText(grpTotals, SWT.BORDER);
 		textFinalTotalRepairOrder.setBounds(286, 26, 128, 26);
-		textFinalTotalRepairOrder.setText("Final Total");
+		textFinalTotalRepairOrder.setText("$0.00");
 		textFinalTotalRepairOrder.setEditable(false);
 		// END Totals
 	}
@@ -213,7 +213,7 @@ public class RepairOrderDialog extends Dialog {
 		// END RO controls
 	}
 	
-	private void jobControls() {
+	private void jobTabs() {
 		// Job Tabs Buttons
 		// These buttons need to be before the Tab to be painted over top of it
 		btnDeleteLineItem = new Button(shell, SWT.NONE);
@@ -364,7 +364,9 @@ public class RepairOrderDialog extends Dialog {
 						txtComplaints.setText("Complaints...");
 						txtResolution.setText("Resolution...");
 						txtReccomendations.setText("Reccomendations...");
-//						jobPartsTable.removeAll();		// TODO remove all then make one blank line for new part
+						jobPartsTable.removeAll();
+						@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+						TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
 						jobLaborTable.removeAll();
 					}
 				});
