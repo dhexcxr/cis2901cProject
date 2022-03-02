@@ -37,7 +37,7 @@ public class CustomerSearchListener extends MouseAdapter{
 			if (selectedCustomer.getFirstName() != null) {
 				customerData.append(selectedCustomer.getFirstName().equals("") ? "" :", " + selectedCustomer.getFirstName());
 			}
-			if (txtBoxStartingText.equals("Owner...")) {		// Owner text box in New Unit dialog
+			if (txtBoxStartingText.equals("")) {		// Owner text box in New Unit dialog
 				txtBox.setText(customerData.toString());
 			} else if (txtBoxStartingText.equals("Customer...")) {		// Customer text box in Repair Order, and Part Invoice tab
 				customerData.append("\n" + selectedCustomer.getAddress() + "\n");

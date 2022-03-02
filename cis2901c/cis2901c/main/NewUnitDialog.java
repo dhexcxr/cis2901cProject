@@ -131,7 +131,7 @@ public class NewUnitDialog extends Dialog {
 		lblOwner.setText("Owner:");
 		txtOwner = new MyText(shlNewUnit, SWT.BORDER);
 		txtOwner.setBackground(SWTResourceManager.getColor(255, 102, 102));
-//		txtOwner.setText("Owner...");
+		txtOwner.setText("");
 		txtOwner.setBounds(10, 36, 554, 26);
 		txtOwner.setEditable(false);
 		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
