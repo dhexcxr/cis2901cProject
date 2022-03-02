@@ -21,6 +21,7 @@ import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
+import org.eclipse.swt.widgets.Label;
 
 public class NewCustomerDialog extends Dialog {
 
@@ -111,77 +112,120 @@ public class NewCustomerDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlNewCustomer = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-		shlNewCustomer.setSize(592, 255);
+		shlNewCustomer.setSize(592, 389);
 		shlNewCustomer.setText("New Customer");
 		
 		Gui.setDialogAtCenter(shlNewCustomer);
 		
 		// customer detail text boxes
+		Label lblFirstname = new Label(shlNewCustomer, SWT.NONE);
+//		lblFirstname.setAlignment(SWT.RIGHT);
+		lblFirstname.setBounds(10, 10, 192, 20);
+		lblFirstname.setText("FirstName:");
 		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
-		txtFirstName.setText("First Name...");
-		txtFirstName.setBounds(10, 10, 272, 26);
+//		txtFirstName.setText("First Name...");
+		txtFirstName.setBounds(10, 36, 272, 26);
 		txtFirstName.addFocusListener(new TextBoxFocusListener(txtFirstName));
 		txtFirstName.addModifyListener(new InfoTextBoxModifyListener(txtFirstName));
 		
+		Label lblLastNamecompanyName = new Label(shlNewCustomer, SWT.NONE);
+//		lblLastNamecompanyName.setAlignment(SWT.RIGHT);
+		lblLastNamecompanyName.setBounds(292, 10, 192, 20);
+		lblLastNamecompanyName.setText("Last Name/Company Name:");
 		txtLastName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtLastName.setBackground(SWTResourceManager.getColor(255, 102, 102));
-		txtLastName.setText("Last Name/Company Name...");
-		txtLastName.setBounds(292, 10, 272, 26);
+//		txtLastName.setText("Last Name/Company Name...");
+		txtLastName.setBounds(292, 36, 272, 26);
 		txtLastName.addFocusListener(new TextBoxFocusListener(txtLastName));
 		txtLastName.addModifyListener(new RequiredTextBoxModifyListener(txtLastName));
-		
+
+		Label lblAddress = new Label(shlNewCustomer, SWT.NONE);
+//		lblAddress.setAlignment(SWT.RIGHT);
+		lblAddress.setBounds(10, 68, 56, 20);
+		lblAddress.setText("Address:");
 		txtAddress = new MyText(shlNewCustomer, SWT.BORDER);
-		txtAddress.setText("Address...");
-		txtAddress.setBounds(10, 42, 272, 26);
+//		txtAddress.setText("Address...");
+		txtAddress.setBounds(10, 94, 554, 26);
 		txtAddress.addFocusListener(new TextBoxFocusListener(txtAddress));
 		txtAddress.addModifyListener(new InfoTextBoxModifyListener(txtAddress));
-		
+
+		Label lblCity = new Label(shlNewCustomer, SWT.NONE);
+//		lblCity.setAlignment(SWT.RIGHT);
+		lblCity.setBounds(10, 126, 192, 20);
+		lblCity.setText("City:");
 		txtCity = new MyText(shlNewCustomer, SWT.BORDER);
-		txtCity.setText("City...");
-		txtCity.setBounds(10, 74, 272, 26);
+//		txtCity.setText("City...");
+		txtCity.setBounds(10, 152, 272, 26);
 		txtCity.addFocusListener(new TextBoxFocusListener(txtCity));
 		txtCity.addModifyListener(new InfoTextBoxModifyListener(txtCity));
-		
+
+		Label lblState = new Label(shlNewCustomer, SWT.NONE);
+//		lblState.setAlignment(SWT.RIGHT);
+		lblState.setBounds(292, 126, 37, 20);
+		lblState.setText("State:");
 		txtState = new MyText(shlNewCustomer, SWT.BORDER);
-		txtState.setText("State...");
-		txtState.setBounds(10, 106, 272, 26);
+//		txtState.setText("State...");
+		txtState.setBounds(292, 152, 74, 26);
 		txtState.addFocusListener(new TextBoxFocusListener(txtState));
 		txtState.addModifyListener(new InfoTextBoxModifyListener(txtState));
-		
+
+		Label lblZipCode = new Label(shlNewCustomer, SWT.NONE);
+//		lblZipCode.setAlignment(SWT.RIGHT);
+		lblZipCode.setBounds(372, 126, 192, 20);
+		lblZipCode.setText("Zip Code:");
 		txtZipCode = new MyText(shlNewCustomer, SWT.BORDER);
-		txtZipCode.setText("Zip Code...");
-		txtZipCode.setBounds(10, 138, 272, 26);
+//		txtZipCode.setText("Zip Code...");
+		txtZipCode.setBounds(372, 152, 192, 26);
 		txtZipCode.addFocusListener(new TextBoxFocusListener(txtZipCode));
 		txtZipCode.addModifyListener(new InfoTextBoxModifyListener(txtZipCode));
-		
+
+		Label lblHomePhone = new Label(shlNewCustomer, SWT.NONE);
+//		lblHomePhone.setAlignment(SWT.RIGHT);
+		lblHomePhone.setBounds(10, 184, 192, 20);
+		lblHomePhone.setText("Home Phone:");
 		txtHomePhone = new MyText(shlNewCustomer, SWT.BORDER);
-		txtHomePhone.setText("Home Phone...");
-		txtHomePhone.setBounds(292, 42, 272, 26);
+//		txtHomePhone.setText("Home Phone...");
+		txtHomePhone.setBounds(10, 210, 272, 26);
 		txtHomePhone.addFocusListener(new TextBoxFocusListener(txtHomePhone));
 		txtHomePhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtHomePhone));
-		
+
+		Label lblWorkPhone = new Label(shlNewCustomer, SWT.NONE);
+//		lblWorkPhone.setAlignment(SWT.RIGHT);
+		lblWorkPhone.setBounds(292, 184, 192, 20);
+		lblWorkPhone.setText("Work Phone:");
 		txtWorkPhone = new MyText(shlNewCustomer, SWT.BORDER);
-		txtWorkPhone.setText("Work Phone...");
-		txtWorkPhone.setBounds(292, 74, 272, 26);
+//		txtWorkPhone.setText("Work Phone...");
+		txtWorkPhone.setBounds(292, 210, 272, 26);
 		txtWorkPhone.addFocusListener(new TextBoxFocusListener(txtWorkPhone));
 		txtWorkPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtWorkPhone));
-		
+
+		Label lblCellPhone = new Label(shlNewCustomer, SWT.NONE);
+//		lblCellPhone.setAlignment(SWT.RIGHT);
+		lblCellPhone.setBounds(10, 242, 192, 20);
+		lblCellPhone.setText("Cell Phone:");
 		txtCellPhone = new MyText(shlNewCustomer, SWT.BORDER);
-		txtCellPhone.setText("Cell Phone...");
-		txtCellPhone.setBounds(292, 106, 272, 26);
+//		txtCellPhone.setText("Cell Phone...");
+		txtCellPhone.setBounds(10, 268, 272, 26);
 		txtCellPhone.addFocusListener(new TextBoxFocusListener(txtCellPhone));
 		txtCellPhone.addModifyListener(new PhoneNumberTextBoxModifyListener(txtCellPhone));
 		
+		Label lblEmail = new Label(shlNewCustomer, SWT.NONE);
+//		lblEmail.setAlignment(SWT.RIGHT);
+		lblEmail.setBounds(292, 242, 192, 20);
+		lblEmail.setText("E-Mail:");
 		txtEmail = new MyText(shlNewCustomer, SWT.BORDER);
-		txtEmail.setText("E-Mail...");
-		txtEmail.setBounds(292, 138, 272, 26);
+//		txtEmail.setText("E-Mail...");
+		txtEmail.setBounds(292, 268, 272, 26);
 		txtEmail.addFocusListener(new TextBoxFocusListener(txtEmail));
 		txtEmail.addModifyListener(new InfoTextBoxModifyListener(txtEmail));
 
 		// New Customer dialog controls
+		Label label = new Label(shlNewCustomer, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setBounds(10, 300, 554, 2);
+		
 		Button btnSaveCustomerButton = new Button(shlNewCustomer, SWT.NONE);
 		btnSaveCustomerButton.setText("Save Customer");
-		btnSaveCustomerButton.setBounds(50, 170, 181, 30);
+		btnSaveCustomerButton.setBounds(10, 308, 345, 26);
 		btnSaveCustomerButton.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -198,7 +242,8 @@ public class NewCustomerDialog extends Dialog {
 
 		Button btnCancel = new Button(shlNewCustomer, SWT.NONE);
 		btnCancel.setText("Cancel");
-		btnCancel.setBounds(332, 170, 181, 30);
+		btnCancel.setBounds(361, 308, 203, 26);
+		
 		shlNewCustomer.setTabList(new Control[]{txtFirstName, txtLastName, txtAddress, txtCity, txtState, txtZipCode, txtHomePhone, txtWorkPhone, txtCellPhone, txtEmail, btnSaveCustomerButton, btnCancel});
 		btnCancel.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
