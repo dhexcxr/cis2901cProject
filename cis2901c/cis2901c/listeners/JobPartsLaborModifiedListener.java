@@ -19,7 +19,7 @@ import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 
-public class JobModifiedListener implements Listener{
+public class JobPartsLaborModifiedListener implements Listener{
 	
 	TabFolder tabFolderJobsRepairOrder;
 	List<MyText> jobDetailWidgets;
@@ -27,14 +27,14 @@ public class JobModifiedListener implements Listener{
 	
 	private MyTable tableJobsRepairOrder;
 
-	public JobModifiedListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
+	public JobPartsLaborModifiedListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
 			List<MyTable> jobTables) {
 		this.tabFolderJobsRepairOrder = tabFolderJobsRepairOrder;
 		this.jobDetailWidgets = jobDetailWidgets;
 		this.jobTables = jobTables;
 	}
 	
-	public JobModifiedListener(MyTable tableJobsRepairOrder, List<MyText> jobDetailWidgets,
+	public JobPartsLaborModifiedListener(MyTable tableJobsRepairOrder, List<MyText> jobDetailWidgets,
 			List<MyTable> jobTables) {
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.jobDetailWidgets = jobDetailWidgets;
@@ -65,20 +65,24 @@ public class JobModifiedListener implements Listener{
 //		currentJob.setComplaints(jobDetailWidgets.get(1).getText());
 //		currentJob.setResolution(jobDetailWidgets.get(2).getText());
 //		currentJob.setReccomendations(jobDetailWidgets.get(3).getText());
-		currentJob.setParts(new ArrayList<>());
+//		currentJob.setParts(new ArrayList<>());
 		for (TableItem currentPartTableItem : jobTables.get(0).getItems()) {
-			currentJob.addPart((Part) currentPartTableItem.getData());
+			if (!currentJob.getParts().contains(currentPartTableItem.getData())) {
+				currentJob.addPart((Part) currentPartTableItem.getData());
+			}
+			
 		}
-		currentJob.setLabor(new ArrayList<>());
+//		currentJob.setLabor(new ArrayList<>());
 		for (TableItem currentLaborTableItem : jobTables.get(1).getItems()) {
-			currentJob.addLabor((Labor) currentLaborTableItem.getData());
+			if (!currentJob.getLabor().contains(currentLaborTableItem.getData())) {
+				currentJob.addLabor((Labor) currentLaborTableItem.getData());
+			}
 		}
-		
 	}
 
 	@Override
 	public void handleEvent(Event event) {
-		Main.log(Level.INFO, "JobModifiedListener called by:\n" + event.widget);
+		Main.log(Level.INFO, "JobPartsModifiedListener called by:\n" + event.widget);
 		if (event.type == SWT.BUTTON4) {
 			saveJob();
 		}

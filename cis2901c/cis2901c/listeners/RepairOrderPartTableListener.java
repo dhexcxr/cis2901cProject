@@ -60,7 +60,7 @@ public class RepairOrderPartTableListener implements Listener{
         				(i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
-        			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex(); 
+        			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
         			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
         																		editorTxtBox, invoiceDetailText, tableJobsRepairOrder, currentJobTableItemIndex);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);

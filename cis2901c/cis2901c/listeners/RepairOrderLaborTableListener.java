@@ -41,8 +41,9 @@ public class RepairOrderLaborTableListener implements Listener {
         								i == LaborTable.HOURS_COLUMN || i == LaborTable.RATE_COLUMN)) {
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(jobLaborTable, SWT.NONE);
+        			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
         			Listener textListener = new RepairOrderLaborEditorListener(jobLaborTable, currentTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, tableJobsRepairOrder);
+        																		editorTxtBox, tableJobsRepairOrder, currentJobTableItemIndex);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);
         			editorTxtBox.addListener(SWT.Traverse, textListener);

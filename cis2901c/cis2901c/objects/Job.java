@@ -62,7 +62,10 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public List<Part> getParts() {
-		return parts == null ? new ArrayList<>() : parts;
+		if (parts == null) {
+			parts = new ArrayList<>();
+		}
+		return parts;
 	}
 
 	public void setParts(List<Part> parts) {
@@ -78,7 +81,10 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public List<Labor> getLabor() {
-		return labor == null ? new ArrayList<>() : labor;
+		if (labor == null) {
+			labor = new ArrayList<>();
+		}
+		return labor;
 	}
 
 	public void setLabor(List<Labor> labor) {

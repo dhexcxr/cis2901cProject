@@ -1,5 +1,6 @@
 package cis2901c.objects;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Table;
@@ -47,6 +48,19 @@ public class LaborTableItem extends TableItem implements DbObjectSavable {
 	public Map<String, String> getDataMap() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setData(String technician, String description, BigDecimal hours, BigDecimal rate) {
+		if (this.getData() == null) {
+			super.setData(new Labor(technician, description, hours, rate));
+		} else {
+			Labor tableItemLabor = (Labor) this.getData();
+			tableItemLabor.setTechnician(technician);
+			tableItemLabor.setDescription(description);
+			tableItemLabor.setHours(hours);
+			tableItemLabor.setLaborRate(rate);
+		}
+
 	}
 	
 	@Override

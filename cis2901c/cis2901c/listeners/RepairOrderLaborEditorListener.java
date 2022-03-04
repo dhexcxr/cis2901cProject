@@ -11,28 +11,31 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
 import cis2901c.objects.LaborTable;
+import cis2901c.objects.LaborTableItem;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
 public class RepairOrderLaborEditorListener implements Listener {
 
 	private LaborTable jobLaborTable;
-	private TableItem selectedTableItem;
+	private LaborTableItem selectedTableItem;
 	private int selectedColumnIndex;
 	private Text editorTxtBox;
 	private RepairOrderJobTable tableJobsRepairOrder;
+	private int currentJobTableItemIndex;
 
 
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
 
 	public RepairOrderLaborEditorListener(LaborTable jobLaborTable, int selectedTableItemIndex, int selectedColumnIndex,
-			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder) {
+			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex) {
 		this.jobLaborTable = jobLaborTable;
-		this.selectedTableItem = jobLaborTable.getItem(selectedTableItemIndex);
+		this.selectedTableItem = (LaborTableItem) jobLaborTable.getItem(selectedTableItemIndex);
 		this.selectedColumnIndex = selectedColumnIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
+		this.currentJobTableItemIndex = currentJobTableItemIndex;
 	}
 
 	@Override
@@ -57,6 +60,9 @@ public class RepairOrderLaborEditorListener implements Listener {
 				editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
 			calculateJobTotal();
 		}
+		selectedTableItem.setData(selectedTableItem.getText(LaborTable.TECHNICIAN_COLUMN), selectedTableItem.getText(LaborTable.DESCRIPTION_COLUMN),
+										new BigDecimal(selectedTableItem.getText(LaborTable.HOURS_COLUMN).replaceAll(ONLY_DECIMALS, "")),
+											new BigDecimal(selectedTableItem.getText(LaborTable.RATE_COLUMN).replaceAll(ONLY_DECIMALS, "")));
 		editorTxtBox.dispose();
 	}
 	
@@ -67,7 +73,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 	}
 	
 	private void setTotalLabor() {
-		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
+		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getItem(currentJobTableItemIndex);
 		BigDecimal laborTotal = calculateLaborTotal();
 		selectedJobTableItem.setLaborTotal(laborTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());

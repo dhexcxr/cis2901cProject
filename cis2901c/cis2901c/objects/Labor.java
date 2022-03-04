@@ -10,8 +10,8 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 	private BigDecimal hours = BigDecimal.valueOf(0);
 	private BigDecimal laborRate = BigDecimal.valueOf(0);
 	
-	Labor() {
-		// TODO default
+	public Labor() {
+		this("", "", BigDecimal.valueOf(0), BigDecimal.valueOf(100));
 	}
 
 	public Labor(String technician, String description, BigDecimal hours, BigDecimal laborRate) {

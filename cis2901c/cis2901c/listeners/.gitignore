@@ -42,3 +42,7 @@
 /JobModifyListener.class
 /DeleteObjectListener.class
 /JobDetailsModifiedListener.class
+/JobPartsModifiedListener.class
+/JabLaborModifiedListener.class
+/JobLaborModifiedListener.class
+/JobPartsLaborModifiedListener.class

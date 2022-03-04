@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
-import cis2901c.listeners.JobModifiedListener;
+import cis2901c.listeners.JobPartsLaborModifiedListener;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
@@ -485,6 +485,7 @@ public class RepairOrderDialog extends Dialog {
 						// TODO add Labor to Labor Table
 						@SuppressWarnings("unused")
 						TableItem tableItem = new LaborTableItem(jobLaborTable, SWT.NONE);
+						tableItem.setData(new Labor());
 						jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
 						jobLaborTable.notifyListeners(SWT.Selection, new Event());
 						
@@ -559,7 +560,7 @@ public class RepairOrderDialog extends Dialog {
 				jobTables.add(jobLaborTable);
 //				tabFolderJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
 //				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tableJobsRepairOrder, jobDetailWidgets, jobTables));
-				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
+				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobPartsLaborModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
 				jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables);
 				txtJobName.addModifyListener(jobDetailsModifiedListener);
 				txtComplaints.addModifyListener(jobDetailsModifiedListener);
@@ -578,6 +579,8 @@ public class RepairOrderDialog extends Dialog {
 	private void addLaborToLaborTableItem(Labor labor) {
 		// used in tableJobsRepairOrder.addSelectionListener
 		LaborTableItem jobLabor = new LaborTableItem(jobLaborTable, getStyle());
-		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString()});
+		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString(),
+							labor.getHours().multiply(labor.getLaborRate()).toString()});
+		jobLabor.setData(labor);
 	}
 }
