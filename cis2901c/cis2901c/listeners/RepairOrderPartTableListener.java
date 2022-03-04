@@ -48,20 +48,21 @@ public class RepairOrderPartTableListener implements Listener{
 	
 	@Override
 	public void handleEvent(Event event) {
-        int currentTableItemIndex = partInvoiceTable.getSelectionIndex();
+        int currentPartTableItemIndex = partInvoiceTable.getSelectionIndex();
         Rectangle tableWidgetArea = partInvoiceTable.getClientArea();
         Point clickPoint = new Point(event.x, event.y);
-        while (currentTableItemIndex < partInvoiceTable.getItemCount() && currentTableItemIndex >= 0) {		// scan through Invoice Part's TableItems
+        while (currentPartTableItemIndex < partInvoiceTable.getItemCount() && currentPartTableItemIndex >= 0) {		// scan through Invoice Part's TableItems
         	boolean visible = false;
-        	final TableItem selectedTableItem = partInvoiceTable.getItem(currentTableItemIndex);
+        	final TableItem selectedTableItem = partInvoiceTable.getItem(currentPartTableItemIndex);
         	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
         		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
         		if (selectedTableItemColumnBounds.contains(clickPoint) &&
         				(i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
-        			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, invoiceDetailText, tableJobsRepairOrder);
+        			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex(); 
+        			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
+        																		editorTxtBox, invoiceDetailText, tableJobsRepairOrder, currentJobTableItemIndex);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);
         			editorTxtBox.addListener(SWT.Traverse, textListener);
@@ -77,7 +78,8 @@ public class RepairOrderPartTableListener implements Listener{
         	}
         	if (!visible)
         		return;
-        	currentTableItemIndex++;
+        	currentPartTableItemIndex++;
         }
+//        tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 	}
 }

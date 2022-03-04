@@ -11,13 +11,13 @@ import cis2901c.objects.Job;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 
-public class JobModifyListener implements ModifyListener {
+public class JobDetailsModifiedListener implements ModifyListener {
 
 	TabFolder tabFolderJobsRepairOrder;
 	List<MyText> jobDetailWidgets;
 	List<MyTable> jobTables;
 
-	public JobModifyListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
+	public JobDetailsModifiedListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
 			List<MyTable> jobTables) {
 		this.tabFolderJobsRepairOrder = tabFolderJobsRepairOrder;
 		this.jobDetailWidgets = jobDetailWidgets;

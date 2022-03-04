@@ -60,7 +60,7 @@ public class RepairOrderLaborTableListener implements Listener {
         		return;
         	currentTableItemIndex++;
         }
-
+//        tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 	}
 
 }

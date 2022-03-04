@@ -44,7 +44,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 		} else if (event.type == SWT.Traverse) {
 			setColumnData();
 		}
-		
+		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 		setTotalLabor();
 	}
 	

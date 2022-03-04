@@ -17,13 +17,15 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private boolean ignoreFocusOut = false;
+	private int currentJobTableItemIndex;
 
 	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
-			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder) {
+			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex) {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
 		// TODO connect Job Part total
 		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
+		this.currentJobTableItemIndex = currentJobTableItemIndex;
 	}
 	
 	@Override
@@ -31,6 +33,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		if (!ignoreFocusOut) {
 			ignoreFocusOut = true;
 			super.handleEvent(event);
+			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 			totalParts();
 			ignoreFocusOut = false;
 		}
@@ -40,7 +43,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 //		String textToParse = invoiceDetailText.get(0).getText();
 //		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.PART_TOTAL_COLUMN, textToParse);
 		
-		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
+		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getItem(currentJobTableItemIndex);
 		String textToParse = invoiceDetailText.get(0).getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
 		BigDecimal partTotal = new BigDecimal(textToParse);

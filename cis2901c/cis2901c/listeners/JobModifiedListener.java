@@ -1,5 +1,8 @@
 package cis2901c.listeners;
 
+// I think I can rename this to JobPartsLaborModifiedListener
+// I don't think I'm calling this anywhere yet
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,10 +24,19 @@ public class JobModifiedListener implements Listener{
 	TabFolder tabFolderJobsRepairOrder;
 	List<MyText> jobDetailWidgets;
 	List<MyTable> jobTables;
+	
+	private MyTable tableJobsRepairOrder;
 
 	public JobModifiedListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
 			List<MyTable> jobTables) {
 		this.tabFolderJobsRepairOrder = tabFolderJobsRepairOrder;
+		this.jobDetailWidgets = jobDetailWidgets;
+		this.jobTables = jobTables;
+	}
+	
+	public JobModifiedListener(MyTable tableJobsRepairOrder, List<MyText> jobDetailWidgets,
+			List<MyTable> jobTables) {
+		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.jobDetailWidgets = jobDetailWidgets;
 		this.jobTables = jobTables;
 	}
@@ -48,6 +60,7 @@ public class JobModifiedListener implements Listener{
 	
 	private void saveJob() {
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
+//		Job currentJob = (Job) tableJobsRepairOrder.getData();
 //		currentJob.setJobName(jobDetailWidgets.get(0).getText());
 //		currentJob.setComplaints(jobDetailWidgets.get(1).getText());
 //		currentJob.setResolution(jobDetailWidgets.get(2).getText());
