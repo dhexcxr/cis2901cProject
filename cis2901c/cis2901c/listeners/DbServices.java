@@ -14,12 +14,10 @@ import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
-import cis2901c.main.Gui;
 import cis2901c.main.Main;
 import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSavable;
@@ -92,7 +90,7 @@ public class DbServices {
 			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
 		}
-		// TODO disable splash while testing
+		// TODO enable splash delay in release 
 //		while (System.currentTimeMillis() - splashTime < 2000) {};		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
 		connectingToDb.close();
 	}
@@ -190,7 +188,7 @@ public class DbServices {
 				return results.getInt(1);		// we should always return here
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			Main.log(Level.SEVERE, "SQL Error: getLastInvoiceNum");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -213,7 +211,6 @@ public class DbServices {
 			updateCount = statement.getUpdateCount();
 			Main.log(Level.INFO, "Update Count: " + statement.getUpdateCount());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			Main.log(Level.SEVERE, "SQL Error: " + queryString);
 			e.printStackTrace();
 		}
