@@ -69,7 +69,8 @@ public class DbServices {
 		long splashTime = System.currentTimeMillis();
 		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
 		connectingToDb.setSize(980, 640);
-		connectingToDb.setBackgroundImage(new Image(Main.display(), "C:\\Users\\People\\git\\cis2901c\\cis2901c\\resources\\splash.jpg"));
+//		connectingToDb.setBackgroundImage(new Image(Main.display(), "C:\\Users\\People\\git\\cis2901c\\cis2901c\\resources\\splash.jpg"));
+		connectingToDb.setBackgroundImage(new Image(Main.display(), "resources\\splash.jpg"));
 		connectingToDb.setText("Connecting to database...");
 		connectingToDb.open();
 		
