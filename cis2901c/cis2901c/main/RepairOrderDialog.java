@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
-import cis2901c.listeners.JobPartsLaborModifiedListener;
+//import cis2901c.listeners.JobPartsLaborModifiedListener;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
@@ -566,7 +566,7 @@ public class RepairOrderDialog extends Dialog {
 				jobTables.add(jobLaborTable);
 //				tabFolderJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
 //				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tableJobsRepairOrder, jobDetailWidgets, jobTables));
-				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobPartsLaborModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
+//				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobPartsLaborModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
 				jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables);
 				txtJobName.addModifyListener(jobDetailsModifiedListener);
 				txtComplaints.addModifyListener(jobDetailsModifiedListener);
@@ -600,5 +600,22 @@ public class RepairOrderDialog extends Dialog {
 		BigDecimal tax = total.multiply(BigDecimal.valueOf(0.065));
 		textTaxRepairOrder.setText("$" + tax.setScale(2, RoundingMode.CEILING).toString());
 		textFinalTotalRepairOrder.setText("$" + total.add(tax).setScale(2, RoundingMode.CEILING).toString());
+	}
+	
+	public void saveJob() {
+		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
+
+		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
+			if (!currentJob.getParts().contains(currentPartTableItem.getData())) {
+				currentJob.addPart((Part) currentPartTableItem.getData());
+			}
+			
+		}
+
+		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
+			if (!currentJob.getLabor().contains(currentLaborTableItem.getData())) {
+				currentJob.addLabor((Labor) currentLaborTableItem.getData());
+			}
+		}
 	}
 }
