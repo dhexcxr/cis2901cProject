@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.RepairOrderJobTable;
@@ -18,14 +19,16 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private boolean ignoreFocusOut = false;
 	private int currentJobTableItemIndex;
+	private RepairOrderDialog repairOrderDialog;
 
 	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
-			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex) {
+			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex, RepairOrderDialog repairOrderDialog) {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
 		// TODO connect Job Part total
 		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
+		this.repairOrderDialog = repairOrderDialog;
 	}
 	
 	@Override
@@ -50,7 +53,8 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		selectedJobTableItem.setPartTotal(partTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
-		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+		repairOrderDialog.calcRoTotal();
 //		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 

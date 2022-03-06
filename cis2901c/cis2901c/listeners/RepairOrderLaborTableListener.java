@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.LaborTable;
 import cis2901c.objects.RepairOrderJobTable;
 
@@ -17,10 +18,12 @@ public class RepairOrderLaborTableListener implements Listener {
 	private LaborTable jobLaborTable;
 	private TableEditor editor;
 	private RepairOrderJobTable tableJobsRepairOrder;
+	private RepairOrderDialog repairOrderDialog;
 
-	public RepairOrderLaborTableListener(LaborTable jobLaborTable, RepairOrderJobTable tableJobsRepairOrder) {
+	public RepairOrderLaborTableListener(LaborTable jobLaborTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog) {
 		this.jobLaborTable = jobLaborTable;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
+		this.repairOrderDialog = repairOrderDialog;
 		this.editor = new TableEditor(jobLaborTable);
 		editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
@@ -43,7 +46,8 @@ public class RepairOrderLaborTableListener implements Listener {
         			Text editorTxtBox = new Text(jobLaborTable, SWT.NONE);
         			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
         			Listener textListener = new RepairOrderLaborEditorListener(jobLaborTable, currentTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, tableJobsRepairOrder, currentJobTableItemIndex);
+        																		editorTxtBox, tableJobsRepairOrder, currentJobTableItemIndex,
+        																			repairOrderDialog);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);
         			editorTxtBox.addListener(SWT.Traverse, textListener);

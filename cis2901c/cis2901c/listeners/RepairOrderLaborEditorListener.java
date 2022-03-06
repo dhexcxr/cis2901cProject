@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.LaborTable;
 import cis2901c.objects.LaborTableItem;
 import cis2901c.objects.RepairOrderJobTable;
@@ -23,19 +24,21 @@ public class RepairOrderLaborEditorListener implements Listener {
 	private Text editorTxtBox;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
+	private RepairOrderDialog repairOrderDialog;
 
 
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
 
 	public RepairOrderLaborEditorListener(LaborTable jobLaborTable, int selectedTableItemIndex, int selectedColumnIndex,
-			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex) {
+			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex, RepairOrderDialog repairOrderDialog) {
 		this.jobLaborTable = jobLaborTable;
 		this.selectedTableItem = (LaborTableItem) jobLaborTable.getItem(selectedTableItemIndex);
 		this.selectedColumnIndex = selectedColumnIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
+		this.repairOrderDialog = repairOrderDialog;
 	}
 
 	@Override
@@ -78,7 +81,8 @@ public class RepairOrderLaborEditorListener implements Listener {
 		selectedJobTableItem.setLaborTotal(laborTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (laborTotal.add(selectedJobTableItem.getPartTotal()).toString()));
-		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+		repairOrderDialog.calcRoTotal();
 //		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 	

@@ -13,8 +13,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyText;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 
 // TODO i don't think I need this
@@ -25,8 +27,9 @@ public class RepairOrderPartTableListener implements Listener{
 	private TableEditor editor;
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
+	private RepairOrderDialog repairOrderDialog;
 
-	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTable tableJobsRepairOrder) {
+	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog) {
 		this(invoicePartTable, new ArrayList<>());
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));		// I think this is a total hack way to do this
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));
@@ -35,6 +38,7 @@ public class RepairOrderPartTableListener implements Listener{
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
+		this.repairOrderDialog = repairOrderDialog;
 	}
 
 	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
@@ -62,7 +66,8 @@ public class RepairOrderPartTableListener implements Listener{
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
         			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
         			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, invoiceDetailText, tableJobsRepairOrder, currentJobTableItemIndex);
+        																		editorTxtBox, invoiceDetailText,
+        																		tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);
         			editorTxtBox.addListener(SWT.Traverse, textListener);

@@ -13,7 +13,7 @@ import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
-import cis2901c.listeners.RoTotalListener;
+//import cis2901c.listeners.RoTotalListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -76,6 +78,7 @@ public class RepairOrderDialog extends Dialog {
 	private JobNameModifiedListener jobNameModifiedListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
 	
+	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 	
 
 	/**
@@ -387,7 +390,8 @@ public class RepairOrderDialog extends Dialog {
 						tableJobsRepairOrder.setSelection(selectedIndex);
 						tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 						
-						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+//						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+						calcRoTotal();
 						
 						// disable Job Tabs if no jobs on Job Table
 						if (tableJobsRepairOrder.getItemCount() == 0) {
@@ -407,7 +411,7 @@ public class RepairOrderDialog extends Dialog {
 					}
 				});
 				
-				tableJobsRepairOrder.addListener(SWT.BUTTON5, new RoTotalListener(tableJobsRepairOrder, txtSubTotalRepairOrder, textTaxRepairOrder, textFinalTotalRepairOrder));
+//				tableJobsRepairOrder.addListener(SWT.BUTTON5, new RoTotalListener(tableJobsRepairOrder, txtSubTotalRepairOrder, textTaxRepairOrder, textFinalTotalRepairOrder));
 				tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -477,7 +481,7 @@ public class RepairOrderDialog extends Dialog {
 					}
 				});
 				
-				btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder));
+				btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder, this));
 				
 				btnAddLaborLine.addMouseListener(new MouseAdapter() {
 					@Override
@@ -490,7 +494,8 @@ public class RepairOrderDialog extends Dialog {
 						jobLaborTable.notifyListeners(SWT.Selection, new Event());
 						
 						jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+//						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+						calcRoTotal();
 					}
 				});
 				
@@ -506,7 +511,8 @@ public class RepairOrderDialog extends Dialog {
 							jobLaborTable.setSelection(selectedIndex);
 							
 							jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-							tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+//							tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
+							calcRoTotal();
 							
 							// TODO recalculate total for Job labor
 						}
@@ -544,9 +550,9 @@ public class RepairOrderDialog extends Dialog {
 				
 				txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
 				
-				jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder));
+				jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this));
 
-				jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder));
+				jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this));
 				// END LISTENERS
 				
 				// setup Job modified listener
@@ -582,5 +588,17 @@ public class RepairOrderDialog extends Dialog {
 		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString(),
 							labor.getHours().multiply(labor.getLaborRate()).toString()});
 		jobLabor.setData(labor);
+	}
+	
+	public void calcRoTotal() {
+		BigDecimal total = BigDecimal.valueOf(0);
+		for (TableItem currentItem: tableJobsRepairOrder.getItems()) {
+			String totalString = currentItem.getText(RepairOrderJobTable.JOB_TOTAL_COLUMN).replaceAll(ONLY_DECIMALS, "");
+			total = total.add(new BigDecimal(totalString));
+		}
+		txtSubTotalRepairOrder.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());
+		BigDecimal tax = total.multiply(BigDecimal.valueOf(0.065));
+		textTaxRepairOrder.setText("$" + tax.setScale(2, RoundingMode.CEILING).toString());
+		textFinalTotalRepairOrder.setText("$" + total.add(tax).setScale(2, RoundingMode.CEILING).toString());
 	}
 }
