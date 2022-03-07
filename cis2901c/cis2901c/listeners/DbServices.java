@@ -69,7 +69,6 @@ public class DbServices {
 		long splashTime = System.currentTimeMillis();
 		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
 		connectingToDb.setSize(980, 640);
-//		connectingToDb.setBackgroundImage(new Image(Main.display(), "C:\\Users\\People\\git\\cis2901c\\cis2901c\\resources\\splash.jpg"));
 		connectingToDb.setBackgroundImage(new Image(Main.display(), "resources\\splash.jpg"));
 		connectingToDb.setText("Connecting to database...");
 		connectingToDb.open();
@@ -108,21 +107,6 @@ public class DbServices {
 			e.printStackTrace();
 		}
 	}
-	
-//	public static void checkForDbConnection() {
-//		int i = 0;
-//		while (!isConnected() && i < 4) {
-//			connectToDb();
-//		}
-//		if (!isConnected()) {
-//			Main.getLogger().log(Level.SEVERE, "DB Connection error dialog box");
-//			MessageBox dbConnectionError = new MessageBox(new Shell(), SWT.ERROR);
-//			dbConnectionError.setText("DB Error");
-//			dbConnectionError.setMessage("Unable to connect to database...");
-//			dbConnectionError.open();
-//			System.exit(SQL_FAILURE);
-//		}
-//	}
 	
 	public static int deleteObject(DbObjectSavable dbObject) {
 		if (!isConnected()) {
@@ -275,8 +259,6 @@ public class DbServices {
 	}
 	
 	public static Object searchForCustomer(long customerId) {
-		// TODO check for DB connection, try to reconnect
-//		checkForDbConnection();
 		if (!isConnected()) {
 			connectToDb();
 		}
@@ -296,8 +278,6 @@ public class DbServices {
 	}
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
-		// TODO check for DB connection, try to reconnect
-//		checkForDbConnection();
 		if (!isConnected()) {
 			connectToDb();
 		}

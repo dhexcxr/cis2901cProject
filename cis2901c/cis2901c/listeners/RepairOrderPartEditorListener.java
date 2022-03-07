@@ -3,7 +3,6 @@ package cis2901c.listeners;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
@@ -17,7 +16,6 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
-	private boolean ignoreFocusOut = false;
 	private int currentJobTableItemIndex;
 	private RepairOrderDialog repairOrderDialog;
 
@@ -44,9 +42,6 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	}
 	
 	private void totalParts() {
-//		String textToParse = invoiceDetailText.get(0).getText();
-//		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.PART_TOTAL_COLUMN, textToParse);
-		
 		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getItem(currentJobTableItemIndex);
 		String textToParse = invoiceDetailText.get(0).getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
@@ -54,9 +49,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		selectedJobTableItem.setPartTotal(partTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
-//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
 		repairOrderDialog.calcRoTotal();
-//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());
 	}
 
 	

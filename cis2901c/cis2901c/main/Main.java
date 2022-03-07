@@ -43,7 +43,6 @@ public class Main {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");
-//		shell.setImage(new Image(Main.display(), "C:\\Users\\People\\git\\cis2901c\\cis2901c\\resources\\icon.png"));
 		shell.setImage(new Image(Main.display(), "resources\\icon.png"));
 		@SuppressWarnings("unused")
 		Gui gui = new Gui(shell, SWT.NONE);
@@ -57,12 +56,6 @@ public class Main {
 				if (!display.readAndDispatch())
 					display.sleep();
 			}
-//		} else {
-//			getLogger().log(Level.SEVERE, "DB Connection error dialog box");
-//			MessageBox dbConnectionError = new MessageBox(shell, SWT.ERROR);
-//			dbConnectionError.setText("DB Error");
-//			dbConnectionError.setMessage("Unable to connect to database");
-//			dbConnectionError.open();
 		}
 		
 		// disconnect from SQL DB before close

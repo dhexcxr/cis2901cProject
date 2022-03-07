@@ -6,14 +6,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
-//import cis2901c.listeners.JobPartsLaborModifiedListener;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
-//import cis2901c.listeners.RoTotalListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
@@ -28,7 +26,6 @@ import cis2901c.objects.MyTable;
 
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -219,7 +216,7 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void jobTabs() {
 		// Job Tabs Buttons
-		// These buttons need to be before the Tab to be painted over top of it
+		// These buttons need to be before the TabFolder to be painted over top of it
 		btnDeleteLineItem = new Button(shell, SWT.NONE);
 		btnDeleteLineItem.setBounds(386, 350, 121, 56);
 		btnDeleteLineItem.setText("Delete Line Item");
@@ -386,11 +383,9 @@ public class RepairOrderDialog extends Dialog {
 							tableJobsRepairOrder.remove(selectedIndex);
 						}
 						selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
-//						selectedIndex--;
 						tableJobsRepairOrder.setSelection(selectedIndex);
 						tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-						
-//						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());		// call RoTotalListener
+
 						calcRoTotal();
 						
 						// disable Job Tabs if no jobs on Job Table
@@ -411,7 +406,6 @@ public class RepairOrderDialog extends Dialog {
 					}
 				});
 				
-//				tableJobsRepairOrder.addListener(SWT.BUTTON5, new RoTotalListener(tableJobsRepairOrder, txtSubTotalRepairOrder, textTaxRepairOrder, textFinalTotalRepairOrder));
 				tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -494,7 +488,6 @@ public class RepairOrderDialog extends Dialog {
 						jobLaborTable.notifyListeners(SWT.Selection, new Event());
 						
 						jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-//						tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 						calcRoTotal();
 					}
 				});
@@ -511,7 +504,6 @@ public class RepairOrderDialog extends Dialog {
 							jobLaborTable.setSelection(selectedIndex);
 							
 							jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-//							tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 							calcRoTotal();
 							
 							// TODO recalculate total for Job labor
@@ -564,9 +556,6 @@ public class RepairOrderDialog extends Dialog {
 				List<MyTable> jobTables = new ArrayList<>(); 
 				jobTables.add(jobPartsTable);
 				jobTables.add(jobLaborTable);
-//				tabFolderJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
-//				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobModifiedListener(tableJobsRepairOrder, jobDetailWidgets, jobTables));
-//				tableJobsRepairOrder.addListener(SWT.BUTTON4, new JobPartsLaborModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables));
 				jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables);
 				txtJobName.addModifyListener(jobDetailsModifiedListener);
 				txtComplaints.addModifyListener(jobDetailsModifiedListener);
@@ -609,7 +598,6 @@ public class RepairOrderDialog extends Dialog {
 			if (!currentJob.getParts().contains(currentPartTableItem.getData())) {
 				currentJob.addPart((Part) currentPartTableItem.getData());
 			}
-			
 		}
 
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {

@@ -19,16 +19,6 @@ public class InvoicePartTableListener implements Listener {
 	private TableEditor editor;
 	private List<MyText> invoiceDetailText;
 	
-//	public InvoicePartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTableItem selectedTableItem) {
-//		this(invoicePartTable, new ArrayList<>());
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));		// I think this is a total hack way to do this
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));
-//		this.invoiceDetailText.add(new MyText(new Shell(), 0));
-//	}
-	
 	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
 		this.partInvoiceTable = invoicePartTable;
 		this.invoiceDetailText = invoiceDetailText;

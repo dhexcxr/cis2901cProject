@@ -39,15 +39,6 @@ public class JobDetailsModifiedListener implements ModifyListener {
 		currentJob.setJobName(jobDetailWidgets.get(0).getText());
 		currentJob.setComplaints(jobDetailWidgets.get(1).getText());
 		currentJob.setResolution(jobDetailWidgets.get(2).getText());
-		currentJob.setReccomendations(jobDetailWidgets.get(3).getText());
-//		currentJob.setParts(new ArrayList<>());
-//		for (TableItem currentPartTableItem : jobTables.get(0).getItems()) {
-//			currentJob.addPart((Part) currentPartTableItem.getData());
-//		}
-//		currentJob.setLabor(new ArrayList<>());
-//		for (TableItem currentLaborTableItem : jobTables.get(1).getItems()) {
-//			currentJob.addLabor((Labor) currentLaborTableItem.getData());
-//		}
-		
+		currentJob.setReccomendations(jobDetailWidgets.get(3).getText());		
 	}
 }

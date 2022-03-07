@@ -36,9 +36,6 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 	}
 	
 	private void totalParts() {
-//		String textToParse = invoiceDetailText.get(0).getText();
-//		tableJobsRepairOrder.getSelection()[0].setText(RepairOrderJobTable.PART_TOTAL_COLUMN, textToParse);
-		
 		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getSelection()[0];
 		String textToParse = super.txtPartsTotalInvoice.getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
@@ -46,7 +43,6 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 		selectedJobTableItem.setPartTotal(partTotal);
 		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
-//		tableJobsRepairOrder.notifyListeners(SWT.BUTTON5, new Event());
 		repairOrderDialog.calcRoTotal();
 	}
 

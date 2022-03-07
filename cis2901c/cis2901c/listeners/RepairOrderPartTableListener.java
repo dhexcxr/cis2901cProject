@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Text;
 import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyText;
-import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 
 // TODO i don't think I need this

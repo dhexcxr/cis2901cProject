@@ -1,8 +1,6 @@
 package cis2901c.listeners;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.MessageBox;
@@ -35,13 +33,4 @@ public class DeleteObjectListener extends SelectionAdapter {
 			table.remove(table.getSelectionIndex());
 		}
 	}
-	
-//	@Override
-//	public void mouseDown(MouseEvent e) {
-//		if (table.getSelectionIndex() >= 0 && table.getSelectionIndex() < table.getItemCount() &&
-//				table.getItem(table.getSelectionIndex()).getData() != null) {
-//			DbServices.deleteObject((DbObjectSavable) table.getItem(table.getSelectionIndex()).getData());
-//		}
-//	}
-
 }
