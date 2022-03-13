@@ -46,16 +46,23 @@ public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 
 	@Override
 	public Map<String, String> getDataMap() {
-		dataMap.put("partid", Integer.toString(((Part) this.getData()).getPartId()));
-		dataMap.put("description", this.getText(DESCRIPTION_COLUMN));
-		dataMap.put("quantity", this.getText(QUANTITY_COLUMN));
-		dataMap.put("soldprice", this.getText(SOLDPRICE_COLUMN));		
+		// TODO i think I need to put these into the constructor, as it stands these will be added to 
+			// dataMap every time this function is called, check every instance of getDataMap in all Objects
+		// TODO cont, I can't create this in constructor, I don't necessarily know all these details at object instatiation
+			// if I create a new map in here, it will return this new object, but then I can't add invoicenum in DbServices
+//		Map<String, String> dataMap = new HashMap<>();
+		if (dataMap.isEmpty()) {
+			dataMap.put("partid", Integer.toString(((Part) this.getData()).getPartId()));
+			dataMap.put("description", this.getText(DESCRIPTION_COLUMN));
+			dataMap.put("quantity", this.getText(QUANTITY_COLUMN));
+			dataMap.put("soldprice", this.getText(SOLDPRICE_COLUMN));
+		}		
 		return dataMap;
 	}
 	
-	public void setDataMap(Map<String, String> dataMap) {
-		this.dataMap = dataMap;
-	}
+//	public void setDataMap(Map<String, String> dataMap) {
+//		this.dataMap = dataMap;
+//	}
 	
 	@Override
 	protected void checkSubclass() {
