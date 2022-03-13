@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
+import cis2901c.listeners.DbServices;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
@@ -19,6 +20,7 @@ import cis2901c.objects.Labor;
 import cis2901c.objects.LaborTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 import cis2901c.objects.LaborTableItem;
@@ -30,17 +32,22 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.swt.widgets.Composite;
+
+import cis2901c.objects.Customer;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.InvoicePartTableItem;
 
@@ -57,6 +64,7 @@ public class RepairOrderDialog extends Dialog {
 	private MyText txtSubTotalRepairOrder;
 	private MyText textTaxRepairOrder;
 	private MyText textFinalTotalRepairOrder;
+	private Button btnSaveRo;
 	private Button btnCloseRo;
 	private Button btnAddJob;
 	private Button btnDeleteJob;
@@ -76,6 +84,9 @@ public class RepairOrderDialog extends Dialog {
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
 	
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
+	
+	// TODO create isModified variable in this RepairOrderDialog object to track if ANYTHING in the underlying repairOrder has been modified
+		// so we can ask the user if they want to save before closing RepairOrderDialog
 	
 
 	/**
@@ -204,7 +215,7 @@ public class RepairOrderDialog extends Dialog {
 		btnCashierRo.setBounds(676, 244, 140, 47);
 		btnCashierRo.setText("Cashier");
 
-		Button btnSaveRo = new Button(shell, SWT.NONE);
+		btnSaveRo = new Button(shell, SWT.NONE);
 		btnSaveRo.setBounds(822, 197, 142, 94);
 		btnSaveRo.setText("Save");
 
@@ -464,6 +475,28 @@ public class RepairOrderDialog extends Dialog {
 						txtComplaints.addModifyListener(jobDetailsModifiedListener);
 						txtResolution.addModifyListener(jobDetailsModifiedListener);
 						txtReccomendations.addModifyListener(jobDetailsModifiedListener);
+					}
+				});
+				
+				btnSaveRo.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseDown(MouseEvent e) {
+						// TODO Auto-generated method stub
+						// spawn amount due dialog box
+						if (txtCustomerRepairOrder.getData() == null) {
+							MessageBox customerRequiredBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+							customerRequiredBox.setText("Notice");
+							customerRequiredBox.setMessage("Please select a Customer");
+							customerRequiredBox.open();
+							return;
+						} else {
+							// TODO create RepairOrder, set fields, call DbServices.saveObject
+							RepairOrder repairOrder = new RepairOrder();
+							
+							
+							// send invoice obj to DbServices
+							DbServices.saveObject(repairOrder);
+						}
 					}
 				});
 				

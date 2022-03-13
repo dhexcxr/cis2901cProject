@@ -121,6 +121,7 @@ public class DbServices {
 	}
 	
 	public static void saveObject(DbObjectSavable dbObject) {
+		// TODO have saveObject also return updateCount from sendQueryToDb
 		if (!isConnected()) {
 			connectToDb();
 		}
@@ -143,6 +144,7 @@ public class DbServices {
 		sendQueryToDb(queryString, dbFields);
 		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
+			// TODO refactor into saveInvocieLineItems function
 			int invoiceNumber = getLastInvoiceNum();
 			// insert individual part invoice line items into invoicepart table
 				// in invoicepart section, update onHand of part table
