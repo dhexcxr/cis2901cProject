@@ -14,10 +14,10 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 	private String customerName;
 	private String customerData;
 	private String notes;
-	private BigDecimal tax;
 	private Timestamp cashiereDateTime;
-	private boolean cashiered;
+	private BigDecimal tax;
 	private BigDecimal total;
+	private boolean cashiered;
 	
 	private TableItem[] tableLineItems;
 	private Part[] parts;
@@ -159,7 +159,8 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 		// TODO finish field map method
 		Map<String, String> dataMap = new HashMap<>();
 		if (invoiceNum != -1) {
-			dataMap.put("invoicenum", Long.toString(customerId));
+//			dataMap.put("invoicenum", Long.toString(customerId));		// TODO figure out what bugs this may have caused
+			dataMap.put("invoicenum", Long.toString(invoiceNum));
 		}
 		dataMap.put("customerid", Long.toString(customerId));
 		dataMap.put("customerdata", customerData);
