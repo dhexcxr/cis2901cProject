@@ -125,7 +125,7 @@ public class DbServices {
 		if (!isConnected()) {
 			connectToDb();
 		}
-		// public Save Object interface
+
 		if (dbObject == null) {
 			return;
 		}
@@ -265,6 +265,7 @@ public class DbServices {
 			connectToDb();
 		}
 		
+		final int MAX_RESULTS = 1;		// max search return results
 		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
 											// this will allow us to make a polymorphic select by Primary Key search
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement("""
@@ -272,7 +273,7 @@ public class DbServices {
 				email, customerId FROM cis2901c.customer WHERE customerId = ?;""")) {
 			statement.setLong(1, customerId);
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, new Customer(), 1)[0];
+			results = buildFoundObjects(queryResultSet, new Customer(), MAX_RESULTS)[0];
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

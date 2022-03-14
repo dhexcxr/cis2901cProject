@@ -84,6 +84,7 @@ public class RepairOrderDialog extends Dialog {
 	private LaborTable jobLaborTable;
 	
 	private RepairOrder currentRepairOrder;
+	private long customerId;
 	
 	private JobNameModifiedListener jobNameModifiedListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
@@ -125,6 +126,14 @@ public class RepairOrderDialog extends Dialog {
 		createContents();
 		
 		// TODO set Dialog boxes and stuff from repairOrder fields
+		if (repairOrder.getCustomerId() != 0) {
+			customerId = repairOrder.getCustomerId();
+			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
+		}
+		
+		if (repairOrder.getCustomerData() != null) {
+			txtCustomerRepairOrder.setText(repairOrder.getCustomerData());
+		}
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
