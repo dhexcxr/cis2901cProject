@@ -31,6 +31,7 @@ public class PartInventoryTable extends MyTable{
 	@Override
 	public void paint(Object part, int selectedTableItemIndex) {
 		// TODO compare this with MyPartInvoiceTable.paint(Object)
+			// e.g. where is this method called and does it matter that I'm ignoring selectedTableItemIndex
 		this.paint(new Object[] {part});
 	}
 	
@@ -42,7 +43,6 @@ public class PartInventoryTable extends MyTable{
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-				// TODO break out all tables into classes so we can correctly paint all without conditional paint
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(),
 					Integer.toString(part.getOnHand() == -1 ? 0 : part.getOnHand()), part.getSupplier(),
 								part.getCategory(), part.getCost().toString(), part.getRetail().toString()});

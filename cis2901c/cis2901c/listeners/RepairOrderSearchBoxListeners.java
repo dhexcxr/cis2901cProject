@@ -13,13 +13,13 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
 
-public class RoSearchBoxListeners implements ModifyListener, FocusListener {
+public class RepairOrderSearchBoxListeners implements ModifyListener, FocusListener {
 	
 	// TODO combine with SearchBoxListener
 	private Text searchBox;
 	private Table table;
 	
-	public RoSearchBoxListeners(Text textBox, Table table) {
+	public RepairOrderSearchBoxListeners(Text textBox, Table table) {
 		this.searchBox = textBox;
 		this.table = table;
 	}

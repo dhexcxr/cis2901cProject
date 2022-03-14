@@ -25,6 +25,7 @@ import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class DbServices {
@@ -47,8 +48,8 @@ public class DbServices {
 			Main.log(Level.FINER, "DbServices.isConnected: mainDbConnection SQL Exception");
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-				Main.log(Level.SEVERE, "DbServices.isConnected: mainDbConnection Null Pointer Exception");
-				e.printStackTrace();
+			Main.log(Level.SEVERE, "DbServices.isConnected: mainDbConnection Null Pointer Exception");
+			e.printStackTrace();
 		}
 		return isConnected;
 	}
@@ -410,6 +411,17 @@ public class DbServices {
 				
 				invoice.setTotal(queryResultSet.getBigDecimal(17)); 
 				results[i] = invoice;
+				i++;
+			}
+		} else if (object instanceof RepairOrder) {
+			results = new RepairOrder[maxResults];
+			int i = 0;
+			while (queryResultSet.next()) {
+				// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
+				RepairOrder repairOrder = new RepairOrder();
+				repairOrder.setRepairOrderId(queryResultSet.getLong(1));
+				
+				results[i] = repairOrder;
 				i++;
 			}
 		}

@@ -25,7 +25,7 @@ public class InvoicePartTable extends MyTable{
 	@Override
 	public void paint(Object object) {
 		// build each TableItem to fill Unit Table
-			paint(object,this.getSelectionIndex());
+			paint(object, this.getSelectionIndex());
 	}
 
 	@Override
@@ -48,10 +48,9 @@ public class InvoicePartTable extends MyTable{
 		// build each TableItem to fill Unit Table
 		for (Part part : (Part[]) partResults) {
 			if (part == null) {
-				break;
+				return;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-				// TODO break out all tables into classes so we can correctly paint all without conditional paint
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 													Integer.toString(part.getOnHand()), part.getCost().toString(),
 														part.getRetail().toString(), part.getRetail().toString()});

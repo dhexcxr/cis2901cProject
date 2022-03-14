@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
-	private long repairOrderId;		// TODO add this Pk into DB
+	private long repairOrderId = -1;		// TODO add this Pk into DB
 //	private long repairOrderNumber;
 	private long customerId;
 	private String customerName;
@@ -96,6 +96,22 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 		this.closedDate = closedDate;
 	}
 
+	public BigDecimal getTax() {
+		return tax;
+	}
+
+	public void setTax(BigDecimal tax) {
+		this.tax = tax;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
 	public List<Job> getJobs() {
 		if (jobs == null) {
 			jobs = new ArrayList<>();
@@ -131,8 +147,15 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 		dataMap.put("customerid", Long.toString(customerId));
 		dataMap.put("customerdata", customerData);
 		dataMap.put("unitid", Long.toString(unitId));
-		dataMap.put("createdTime", createdDate.toString());
-		dataMap.put("closedTime", closedDate.toString());
+		
+		if (createdDate != null) {
+			dataMap.put("createdTime", createdDate.toString());
+		}
+		
+		if (closedDate != null) {
+			dataMap.put("closedTime", closedDate.toString());
+		}
+		
 		dataMap.put("tax", tax.toString());
 		dataMap.put("total", total.toString());
 		return dataMap;

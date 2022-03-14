@@ -33,7 +33,7 @@ import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.OpenExistingObjectMouseListener;
 import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
-import cis2901c.listeners.RoSearchBoxListeners;
+import cis2901c.listeners.RepairOrderSearchBoxListeners;
 import cis2901c.listeners.SearchTextBoxListeners;
 import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
@@ -42,6 +42,7 @@ import cis2901c.objects.Invoice;
 import cis2901c.objects.CustomerTable;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.PartInventoryTable;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.RepairOrderTable;
 import cis2901c.objects.MyTable;
@@ -128,7 +129,8 @@ public class Gui extends Composite {
 		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
-		roSearchBox.addModifyListener(new RoSearchBoxListeners(roSearchBox, roTable));
+//		roSearchBox.addModifyListener(new RepairOrderSearchBoxListeners(roSearchBox, roTable));
+		roSearchBox.addModifyListener(new SearchTextBoxListeners(roSearchBox, roTable, new RepairOrder()));
 		roSearchBox.addFocusListener(new TextBoxFocusListener(roSearchBox));
 
 		Button btnNewRepairOrder = new Button(repairOrdersComposite, SWT.NONE);

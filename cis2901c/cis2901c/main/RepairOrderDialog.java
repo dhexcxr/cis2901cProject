@@ -23,6 +23,7 @@ import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
+import cis2901c.objects.Unit;
 import cis2901c.objects.LaborTableItem;
 import cis2901c.objects.MyTable;
 
@@ -512,26 +513,20 @@ public class RepairOrderDialog extends Dialog {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						// TODO Auto-generated method stub
-						// spawn amount due dialog box
-						if (txtCustomerRepairOrder.getData() == null) {
-							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
-							customerRequiredBox.setText("Notice");
-							customerRequiredBox.setMessage("Please select a Customer");
-							customerRequiredBox.open();
-							return;
-						} else {
+//						 spawn amount due dialog box
+//						if (txtCustomerRepairOrder.getData() == null) {
+//							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
+//							customerRequiredBox.setText("Notice");
+//							customerRequiredBox.setMessage("Please select a Customer");
+//							customerRequiredBox.open();
+//							return;
+//						} else {
 							if (roId == -1) {
 								saveNewRo();
 							} else {
 								saveRo(currentRepairOrder);
 							}
-							
-							// TODO create RepairOrder, set fields, call DbServices.saveObject
-							RepairOrder repairOrder = new RepairOrder();
-							
-							
-							
-						}
+//						}
 					}
 				});
 				
@@ -692,6 +687,23 @@ public class RepairOrderDialog extends Dialog {
 			customerRequiredBox.open();
 			return;
 		}
+		
+		if (txtUnitRepairOrder.getData() != null && ((Unit) txtUnitRepairOrder.getData()).getUnitId() != -1) {
+			repairOrder.setUnitId(((Unit) txtUnitRepairOrder.getData()).getUnitId());
+		} else {
+			// if we haven't selected a Unit, complain - an RO Unit is required
+			MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
+			customerRequiredBox.setText("Notice");
+			customerRequiredBox.setMessage("Please select a Unit");
+			customerRequiredBox.open();
+			return;
+		}
+		
+		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));
+		// setClosedTime
+		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
+		repairOrder.setTotal(new BigDecimal(textFinalTotalRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
+		
 		
 		// send RepairOrder object to DbServices
 		DbServices.saveObject(repairOrder);

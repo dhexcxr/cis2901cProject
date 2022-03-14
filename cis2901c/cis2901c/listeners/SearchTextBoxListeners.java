@@ -9,6 +9,7 @@ import cis2901c.objects.Invoice;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class SearchTextBoxListeners implements ModifyListener {
@@ -43,8 +44,10 @@ public class SearchTextBoxListeners implements ModifyListener {
 				searchObject = new Unit(searchBox.getText());
 			} else if (searchObject instanceof Invoice) {
 				searchObject = new Invoice(searchBox.getText());
+			} else if (searchObject instanceof RepairOrder) {
+				searchObject = new RepairOrder(searchBox.getText());
 			}
-			if (table.getMenu() != null) {		// enable Delete right click menu when there are things in the table
+			if (table.getMenu() != null && !(searchObject instanceof RepairOrder)) {		// enable Delete right click menu when there are things in the table
 				table.getMenu().getItem(DELETE_MENU_ITEM).setEnabled(true);
 			}
 			table.paint(DbServices.searchForObject(searchObject));
