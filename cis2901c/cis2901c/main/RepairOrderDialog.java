@@ -57,13 +57,9 @@ import org.eclipse.swt.events.SelectionEvent;
 public class RepairOrderDialog extends Dialog {
 
 	protected Object result;
-	protected Shell shell;
-	private MyText txtCustomerRepairOrder;
-	private MyText txtUnitRepairOrder;
+	protected Shell shlRepairOrder;
+	
 	private RepairOrderJobTable tableJobsRepairOrder;
-	private MyText txtSubTotalRepairOrder;
-	private MyText textTaxRepairOrder;
-	private MyText textFinalTotalRepairOrder;
 	private Button btnSaveRo;
 	private Button btnCloseRo;
 	private Button btnAddJob;
@@ -72,6 +68,14 @@ public class RepairOrderDialog extends Dialog {
 	private Button btnAddLaborLine;
 	private Button btnDeleteLaborLine;
 	private TabFolder tabFolderJobsRepairOrder;
+	
+	private MyText txtSubTotalRepairOrder;
+	private MyText textTaxRepairOrder;
+	private MyText textFinalTotalRepairOrder;
+	
+	private long roId = -1;
+	private MyText txtCustomerRepairOrder;
+	private MyText txtUnitRepairOrder;
 	private MyText txtJobName;
 	private MyText txtComplaints;
 	private MyText txtResolution;
@@ -79,6 +83,7 @@ public class RepairOrderDialog extends Dialog {
 	private InvoicePartTable jobPartsTable;
 	private LaborTable jobLaborTable;
 	
+	private RepairOrder currentRepairOrder;
 	
 	private JobNameModifiedListener jobNameModifiedListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
@@ -105,10 +110,26 @@ public class RepairOrderDialog extends Dialog {
 	 */
 	public Object open() {
 		createContents();
-		shell.open();
-		shell.layout();
+		shlRepairOrder.open();
+		shlRepairOrder.layout();
 		Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
+		while (!shlRepairOrder.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
+	
+	public Object open(RepairOrder repairOrder) {
+		createContents();
+		
+		// TODO set Dialog boxes and stuff from repairOrder fields
+		
+		shlRepairOrder.open();
+		shlRepairOrder.layout();
+		Display display = getParent().getDisplay();
+		while (!shlRepairOrder.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -120,11 +141,11 @@ public class RepairOrderDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shell = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-		shell.setSize(992, 736);
-		shell.setText(getText());
+		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+		shlRepairOrder.setSize(992, 736);
+		shlRepairOrder.setText(getText());
 		
-		Gui.setDialogAtCenter(shell);
+		Gui.setDialogAtCenter(shlRepairOrder);
 		
 		roDetails();
 
@@ -137,19 +158,19 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void roDetails() {
 		// Customer Data
-		txtCustomerRepairOrder = new MyText(shell, SWT.BORDER | SWT.WRAP);
+		txtCustomerRepairOrder = new MyText(shlRepairOrder, SWT.BORDER | SWT.WRAP);
 		txtCustomerRepairOrder.setEditable(false);
 		txtCustomerRepairOrder.setText("Customer...");
 		txtCustomerRepairOrder.setBounds(10, 10, 466, 128);
 		
-		txtUnitRepairOrder = new MyText(shell, SWT.BORDER);
+		txtUnitRepairOrder = new MyText(shlRepairOrder, SWT.BORDER);
 		txtUnitRepairOrder.setEditable(false);
 		txtUnitRepairOrder.setText("Unit...");
 		txtUnitRepairOrder.setBounds(498, 10, 466, 128);
 		// END Customer Data
 
 		// Totals
-		Group grpTotals = new Group(shell, SWT.NONE);
+		Group grpTotals = new Group(shlRepairOrder, SWT.NONE);
 		grpTotals.setText("Sub Total");
 		grpTotals.setBounds(540, 344, 424, 62);
 
@@ -180,7 +201,7 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void roControls() {
 		// Jobs table
-		tableJobsRepairOrder = new RepairOrderJobTable(shell, SWT.BORDER | SWT.FULL_SELECTION);
+		tableJobsRepairOrder = new RepairOrderJobTable(shlRepairOrder, SWT.BORDER | SWT.FULL_SELECTION);
 		tableJobsRepairOrder.setBounds(10, 144, 660, 200);
 		tableJobsRepairOrder.setHeaderVisible(true);
 		tableJobsRepairOrder.setLinesVisible(true);
@@ -201,25 +222,25 @@ public class RepairOrderDialog extends Dialog {
 		tblclmnJobTotal.setWidth(111);
 		tblclmnJobTotal.setText("Job Total");
 
-		btnAddJob = new Button(shell, SWT.NONE);
+		btnAddJob = new Button(shlRepairOrder, SWT.NONE);
 		btnAddJob.setBounds(676, 144, 140, 94);
 		btnAddJob.setText("Add Job");
 
-		btnDeleteJob = new Button(shell, SWT.NONE);
+		btnDeleteJob = new Button(shlRepairOrder, SWT.NONE);
 		btnDeleteJob.setBounds(824, 144, 140, 47);
 		btnDeleteJob.setText("Delete Job");
 		// END Jobs table
 
 		// RO Controls
-		Button btnCashierRo = new Button(shell, SWT.NONE);
+		Button btnCashierRo = new Button(shlRepairOrder, SWT.NONE);
 		btnCashierRo.setBounds(676, 244, 140, 47);
 		btnCashierRo.setText("Cashier");
 
-		btnSaveRo = new Button(shell, SWT.NONE);
+		btnSaveRo = new Button(shlRepairOrder, SWT.NONE);
 		btnSaveRo.setBounds(822, 197, 142, 94);
 		btnSaveRo.setText("Save");
 
-		btnCloseRo = new Button(shell, SWT.NONE);
+		btnCloseRo = new Button(shlRepairOrder, SWT.NONE);
 		btnCloseRo.setBounds(749, 297, 140, 47);
 		btnCloseRo.setText("Close");
 		// END RO controls
@@ -228,24 +249,24 @@ public class RepairOrderDialog extends Dialog {
 	private void jobTabs() {
 		// Job Tabs Buttons
 		// These buttons need to be before the TabFolder to be painted over top of it
-		btnDeleteLineItem = new Button(shell, SWT.NONE);
+		btnDeleteLineItem = new Button(shlRepairOrder, SWT.NONE);
 		btnDeleteLineItem.setBounds(386, 350, 121, 56);
 		btnDeleteLineItem.setText("Delete Line Item");
 		btnDeleteLineItem.setVisible(false);
 
-		btnAddLaborLine = new Button(shell, SWT.NONE);
+		btnAddLaborLine = new Button(shlRepairOrder, SWT.NONE);
 		btnAddLaborLine.setBounds(255, 350, 121, 56);
 		btnAddLaborLine.setText("Add Labor");
 		btnAddLaborLine.setVisible(false);
 
-		btnDeleteLaborLine = new Button(shell, SWT.NONE);
+		btnDeleteLaborLine = new Button(shlRepairOrder, SWT.NONE);
 		btnDeleteLaborLine.setBounds(386, 350, 121, 56);
 		btnDeleteLaborLine.setText("Delete Labor");
 		btnDeleteLaborLine.setVisible(false);
 		// END Job Tabs Buttons
 
 		// Job tabs
-		tabFolderJobsRepairOrder = new TabFolder(shell, SWT.NONE);
+		tabFolderJobsRepairOrder = new TabFolder(shlRepairOrder, SWT.NONE);
 		tabFolderJobsRepairOrder.setBounds(10, 383, 954, 296);
 
 		// Job Details Tab
@@ -484,18 +505,23 @@ public class RepairOrderDialog extends Dialog {
 						// TODO Auto-generated method stub
 						// spawn amount due dialog box
 						if (txtCustomerRepairOrder.getData() == null) {
-							MessageBox customerRequiredBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
 							customerRequiredBox.setText("Notice");
 							customerRequiredBox.setMessage("Please select a Customer");
 							customerRequiredBox.open();
 							return;
 						} else {
+							if (roId == -1) {
+								saveNewRo();
+							} else {
+								saveRo(currentRepairOrder);
+							}
+							
 							// TODO create RepairOrder, set fields, call DbServices.saveObject
 							RepairOrder repairOrder = new RepairOrder();
 							
 							
-							// send invoice obj to DbServices
-							DbServices.saveObject(repairOrder);
+							
 						}
 					}
 				});
@@ -504,7 +530,7 @@ public class RepairOrderDialog extends Dialog {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						// TODO if there are unsaved changes, prompt to save before closing
-						shell.close();
+						shlRepairOrder.close();
 					}
 				});
 				
@@ -638,5 +664,29 @@ public class RepairOrderDialog extends Dialog {
 				currentJob.addLabor((Labor) currentLaborTableItem.getData());
 			}
 		}
+	}
+	
+	private void saveNewRo() {
+		saveRo(new RepairOrder());
+	}
+	
+	private void saveRo(RepairOrder repairOrder) {
+		
+		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
+			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());
+			repairOrder.setCustomerData(txtCustomerRepairOrder.getText());
+		} else {
+			// if we haven't selected a Customer, complain - an RO Customer is required
+			MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
+			customerRequiredBox.setText("Notice");
+			customerRequiredBox.setMessage("Please select a Customer");
+			customerRequiredBox.open();
+			return;
+		}
+		
+		// send RepairOrder object to DbServices
+		DbServices.saveObject(repairOrder);
+		result = repairOrder;
+		shlRepairOrder.close();
 	}
 }
