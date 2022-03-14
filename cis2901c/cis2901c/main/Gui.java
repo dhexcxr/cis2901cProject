@@ -94,6 +94,7 @@ public class Gui extends Composite {
 		roTable.setBounds(10, 74, 976, 631);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
+		roTable.addMouseListener(new OpenExistingObjectMouseListener(roTable, shell));
 
 		TableColumn tblclmnRoRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnRoRo.setText("RO #");

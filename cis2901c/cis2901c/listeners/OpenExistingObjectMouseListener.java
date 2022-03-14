@@ -13,9 +13,11 @@ import cis2901c.main.Main;
 import cis2901c.main.NewCustomerDialog;
 import cis2901c.main.NewPartDialog;
 import cis2901c.main.NewUnitDialog;
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.Customer;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.Part;
+import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class OpenExistingObjectMouseListener extends MouseAdapter {
@@ -52,6 +54,9 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		} else if (table.getColumn(0).getText().equals("Part Number") && table.getSelection().length > 0) {
 			openPart(table);
 			tableObjects = new Part[table.getItems().length];
+		} else if (table.getColumn(0).getText().equals("RO #") && table.getSelection().length > 0) {
+			openRo(table);
+			tableObjects = new RepairOrder[table.getItems().length];
 		} else {		// if nothing is selected, return TODO i'd like to find a better way to do this than
 			return;			// checking for all other conditions first, like if (selection == null)
 		}
@@ -95,5 +100,14 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		
 		NewPartDialog modifyExistingPartDialog = new NewPartDialog(shell, SWT.NONE);
 		modifyExistingPartDialog.open(part);
+	}
+	
+	private void openRo(Table table) {
+		// get object saved in TableItem Data
+		RepairOrder repairOrder= (RepairOrder) table.getSelection()[0].getData();
+		Main.log(Level.INFO, "Open RO: " + repairOrder.getRepairOrderId());
+		
+		RepairOrderDialog modifyExistingRepairOrder= new RepairOrderDialog(shell, SWT.NONE);
+		modifyExistingRepairOrder.open(repairOrder);
 	}
 }
