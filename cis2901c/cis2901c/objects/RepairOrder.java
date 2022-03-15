@@ -122,6 +122,13 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	public void setJobs(List<Job> jobs) {
 		this.jobs = jobs;
 	}
+	
+	public void addJob(Job job) {
+		if (jobs == null) {
+			jobs = new ArrayList<>();
+		}
+		jobs.add(job);
+	}
 
 	@Override
 	public long getDbPk() {

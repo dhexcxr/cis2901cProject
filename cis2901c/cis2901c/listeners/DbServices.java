@@ -24,6 +24,7 @@ import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTableItem;
+import cis2901c.objects.Job;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
@@ -145,27 +146,56 @@ public class DbServices {
 		sendQueryToDb(queryString, dbFields);
 		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
-			// TODO refactor into saveInvocieLineItems function
-			int invoiceNumber = getLastInvoiceNum();
-			// insert individual part invoice line items into invoicepart table
-				// in invoicepart section, update onHand of part table
-			TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
-			for (TableItem invoiceLineItem : invoiceLineItems) {
-				if (invoiceLineItem.getData() == null) {
-					break;
-				}
-				InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
-				myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
-				saveObject(myInvoiceLineItem);
-			}
-			sellInvoicePartsOutOfInventory(invoiceNumber);
+//			((Invoice) dbObject).setInvoiceNum(getLastInvoiceNum());
+			saveInvoiceLineItems(dbObject);
+		} else if (dbObject instanceof RepairOrder) {
+			saveRoJobs(dbObject);
+		} else if (dbObject instanceof Job) {
+			// TODO cycle through Parts and save them, and Labor and save them
 		}
 	}
 	
-	private static void sellInvoicePartsOutOfInventory(int invoiceNumber) {
-		StringBuilder query = new StringBuilder("UPDATE part p JOIN invoicepart ip ON p.partid = ip.partid "
-				+ "SET p.onhand = p.onhand - ip.quantity WHERE ip.invoicenum = ?;");
-		sendQueryToDb(query, new ArrayList<>(Arrays.asList(Integer.toString(invoiceNumber))));
+	private static void saveRoJobs(DbObjectSavable dbObject ) {
+		long roNum = dbObject.getDbPk();
+		if (roNum == -1) {
+			roNum = getLastRoNum();
+		}
+		List<Job> roJobs = ((RepairOrder) dbObject).getJobs();
+		for (Job job : roJobs) {
+			job.getDataMap().put("roid", Long.toString(roNum));
+			DbServices.saveObject(job);
+		}
+	}
+	
+	private static int getLastRoNum() {
+		ResultSet results = null;
+		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(roid) FROM cis2901c.ro;")) {
+			results = lastInvoiceNumStatement.executeQuery();
+			while (results.next()) {
+				return results.getInt(1);		// we should always return here
+			}
+		} catch (SQLException e) {
+			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
+			e.printStackTrace();
+		}
+		// if we get here something went wrong
+		return SQL_FAILURE;
+	}
+	
+	private static void saveInvoiceLineItems(DbObjectSavable dbObject) {
+		int invoiceNumber = getLastInvoiceNum();
+		// insert individual part invoice line items into invoicepart table
+		// in invoicepart section, update onHand of part table
+		TableItem[] invoiceLineItems = ((Invoice) dbObject).getTableLineItems();
+		for (TableItem invoiceLineItem : invoiceLineItems) {
+			if (invoiceLineItem.getData() == null) {
+				break;
+			}
+			InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
+			myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
+			saveObject(myInvoiceLineItem);
+		}
+		sellInvoicePartsOutOfInventory(invoiceNumber);
 	}
 	
 	private static int getLastInvoiceNum() {
@@ -181,6 +211,12 @@ public class DbServices {
 		}
 		// if we get here something went wrong
 		return SQL_FAILURE;
+	}
+	
+	private static void sellInvoicePartsOutOfInventory(int invoiceNumber) {
+		StringBuilder query = new StringBuilder("UPDATE part p JOIN invoicepart ip ON p.partid = ip.partid "
+				+ "SET p.onhand = p.onhand - ip.quantity WHERE ip.invoicenum = ?;");
+		sendQueryToDb(query, new ArrayList<>(Arrays.asList(Integer.toString(invoiceNumber))));
 	}
 	
 	private static int sendQueryToDb(StringBuilder queryString) {

@@ -1,18 +1,23 @@
 package cis2901c.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Job extends DbObjectSearchable implements DbObjectSavable {
 	
+	private long jobId = -1;
 	private	String jobName;
 	private String complaints;
 	private String resolution;
 	private String reccomendations;
 	
-	List<Part> parts;
-	List<Labor> labor;
+	private List<Part> parts;
+	// TODO change this to TableLineItems, probabaly make a new Object that extends InvoiceTableLineItem so we can override dataMap and searchQuery to provide correct DB tables 
+	private List<Labor> labor;
+	
+	private Map<String, String> dataMap = new HashMap<>();
 
 	public Job() {
 		// TODO Auto-generated constructor stub
@@ -27,6 +32,14 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		this.reccomendations = reccomendations;
 		this.parts = parts;
 		this.labor = labor;
+	}
+
+	public long getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(long jobId) {
+		this.jobId = jobId;
 	}
 
 	public String getJobName() {
@@ -101,26 +114,31 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public long getDbPk() {
-		// TODO Auto-generated method stub
-		return 0;
+		return jobId;
 	}
 
 	@Override
 	public String getPkName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "jobid";
 	}
 
 	@Override
 	public String getTableName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "job";
 	}
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
-		return null;
+		if (dataMap.isEmpty() ) {
+			if (jobId != -1) {
+				dataMap.put("jobid", Long.toString(jobId));
+			}
+			dataMap.put("name", jobName);
+			dataMap.put("complaint", complaints);
+			dataMap.put("resolution", resolution);
+			dataMap.put("recommendations", reccomendations);
+		}
+		return dataMap;
 	}
 
 }

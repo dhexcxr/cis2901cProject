@@ -127,6 +127,8 @@ public class RepairOrderDialog extends Dialog {
 		createContents();
 		
 		// TODO set Dialog boxes and stuff from repairOrder fields
+		currentRepairOrder = repairOrder;
+		roId = repairOrder.getRepairOrderId();
 		if (repairOrder.getCustomerId() != 0) {
 			customerId = repairOrder.getCustomerId();
 			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
@@ -699,6 +701,12 @@ public class RepairOrderDialog extends Dialog {
 			return;
 		}
 		
+		if (tableJobsRepairOrder.getItemCount() > 0) {
+			for (TableItem jobTableItem : tableJobsRepairOrder.getItems()) {
+				repairOrder.addJob((Job) jobTableItem.getData());
+			}
+		}
+		
 		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));
 		// setClosedTime
 		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
@@ -708,6 +716,6 @@ public class RepairOrderDialog extends Dialog {
 		// send RepairOrder object to DbServices
 		DbServices.saveObject(repairOrder);
 		result = repairOrder;
-		shlRepairOrder.close();
+//		shlRepairOrder.close();
 	}
 }

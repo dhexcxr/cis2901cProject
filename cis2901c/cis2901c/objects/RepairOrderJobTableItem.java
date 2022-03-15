@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class RepairOrderJobTableItem extends TableItem implements DbObjectSavable {
 	
+	// TODO I don't think this needs to implement DbObjectSavable
+	
 	private static final int JOB_NAME_COLUMN = 0;
 	private static final int PART_TOTAL_COLUMN = 1;
 	private static final int LABOR_TOTAL_COLUMN = 2;
