@@ -131,6 +131,7 @@ public class RepairOrderDialog extends Dialog {
 		roId = repairOrder.getRepairOrderId();
 		if (repairOrder.getCustomerId() != 0) {
 			customerId = repairOrder.getCustomerId();
+			// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
 			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
 		}
 		

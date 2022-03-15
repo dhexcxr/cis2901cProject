@@ -298,12 +298,11 @@ public class DbServices {
 		return searchQuery.replaceAll("[^0-9]", "");
 	}
 	
-	public static Object searchForCustomer(long customerId) {
+	public static Customer searchForCustomer(long customerId) {
 		if (!isConnected()) {
 			connectToDb();
 		}
 		
-		final int MAX_RESULTS = 1;		// max search return results
 		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
 											// this will allow us to make a polymorphic select by Primary Key search
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement("""
@@ -315,7 +314,7 @@ public class DbServices {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return results;	
+		return (Customer) results;	
 	}
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
@@ -482,7 +481,27 @@ public class DbServices {
 			// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
 			RepairOrder repairOrder = new RepairOrder();
 			repairOrder.setRepairOrderId(queryResultSet.getLong(1));
+			repairOrder.setCustomerId(queryResultSet.getLong(2));
 			
+			String lastname = queryResultSet.getString(3);
+			String firstname = queryResultSet.getString(4);
+			repairOrder.setCustomerName(lastname, firstname);
+			
+			// TODO see if we can use TextBlocks here
+			String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
+					queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
+					queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
+			repairOrder.setCustomerData(customerData);
+			
+			repairOrder.setUnitId(queryResultSet.getLong(12));
+			repairOrder.setUnitYear(queryResultSet.getString(13));
+			repairOrder.setUnitMake(queryResultSet.getString(14));
+			repairOrder.setUnitModel(queryResultSet.getString(15));
+			repairOrder.setUnitVin(queryResultSet.getString(16));
+			
+			repairOrder.setCreatedDate(queryResultSet.getTimestamp(17));
+			repairOrder.setClosedDate(queryResultSet.getTimestamp(17));
+						
 			results[i] = repairOrder;
 			i++;
 		}

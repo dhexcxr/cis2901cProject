@@ -11,9 +11,15 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	private long repairOrderId = -1;		// TODO add this Pk into DB
 //	private long repairOrderNumber;
 	private long customerId;
+	private Customer customer;
 	private String customerName;
 	private String customerData;
 	private long unitId;
+	private Unit unit;
+	private String unitYear;
+	private String unitMake;
+	private String unitModel;
+	private String unitVin;
 	private List<Job> jobs;
 	private Timestamp createdDate;
 	private Timestamp closedDate;
@@ -29,12 +35,22 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 		super.searchString = searchString;
 		// TODO searchQuery is preliminary
 		// TODO get job names to display in search results
+//		super.searchQuery = """
+//				SELECT roId, customerId, unitId, createdTime, closedTime, cashiered FROM cis2901c.ro 
+//				WHERE roId LIKE ?;""";
 		super.searchQuery = """
-				SELECT roId, customerId, unitId, createdTime, closedTime, cashiered FROM cis2901c.ro 
-				WHERE roId LIKE ?;""";
+				SELECT r.roId, r.customerId,
+				c.firstname, c.lastname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email,
+				r.unitId, u.year, u.make, u.model, u.vin,
+				r.createdTime, r.closedTime, r.cashiered
+				FROM cis2901c.ro AS r JOIN cis2901c.customer AS c ON r.customerid = c.customerid
+				JOIN cis2901c.unit AS u ON r.unitId = u.unitId
+				WHERE r.roId LIKE ? OR c.lastname LIKE ? OR c.firstname LIKE ? OR c.homephone LIKE ? OR c.cellphone LIKE ? OR u.year LIKE ? OR u.make LIKE ? OR u.model LIKE ? OR u.vin;
+				""";
 		super.outerSearchQueryAppendix = " AND roId IN (";
 		super.querySubStringIndecies[0] = 11;
-		super.querySubStringIndecies[1] = 67;
+//		super.querySubStringIndecies[1] = 67;
+		super.querySubStringIndecies[1] = 210;
 	}
 	
 	public long getRepairOrderId() {
@@ -51,6 +67,14 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 
 	public void setCustomerId(long customerId) {
 		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public String getCustomerName() {
@@ -78,6 +102,50 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 
 	public void setUnitId(long unitId) {
 		this.unitId = unitId;
+	}
+
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
+
+	public String getUnitYear() {
+		return unitYear;
+	}
+
+	public void setUnitYear(String unitYear) {
+		this.unitYear = unitYear;
+	}
+
+	public String getUnitMake() {
+		return unitMake;
+	}
+
+	public void setUnitMake(String unitMake) {
+		this.unitMake = unitMake;
+	}
+
+	public String getUnitModel() {
+		return unitModel;
+	}
+
+	public void setUnitModel(String unitModel) {
+		this.unitModel = unitModel;
+	}
+
+	public String getUnitVin() {
+		return unitVin;
+	}
+
+	public void setUnitVin(String unitVin) {
+		this.unitVin = unitVin;
+	}
+
+	public String getUnitData() {
+		return unitYear + " " + unitMake + " " + unitModel + "\n" + unitVin;
 	}
 
 	public Timestamp getCreatedDate() {

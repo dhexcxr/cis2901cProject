@@ -48,7 +48,8 @@ public class RepairOrderTable extends MyTable {
 				break;
 			}
 			TableItem tableItem =  new TableItem(this, SWT.NONE);	
-			tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName() /*, year, make, model, vin, jobs */ });
+			tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName(),
+					repairOrder.getUnitYear(), repairOrder.getUnitMake(), repairOrder.getUnitModel(), repairOrder.getUnitVin() /* jobs */ });
 			tableItem.setData(repairOrder);
 		}
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);
