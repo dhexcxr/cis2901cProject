@@ -45,7 +45,7 @@ public class RepairOrderTable extends MyTable {
 	public void paint(Object[] repairOrderResults) {
 		for (RepairOrder repairOrder : (RepairOrder[]) repairOrderResults) {
 			if (repairOrder == null) {
-				return;
+				break;
 			}
 			TableItem tableItem =  new TableItem(this, SWT.NONE);	
 			tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName() /*, year, make, model, vin, jobs */ });
