@@ -31,6 +31,11 @@ public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 		// when this is called in DbServices we'll always be making a new TableItem
 		return -1;					// ie you can't edit a TableItem
 	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+		return;
+	}
 
 	@Override
 	public String getPkName() {
@@ -52,7 +57,7 @@ public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 			// if I create a new map in here, it will return this new object, but then I can't add invoicenum in DbServices
 //		Map<String, String> dataMap = new HashMap<>();
 		if (dataMap.isEmpty()) {
-			dataMap.put("partid", Integer.toString(((Part) this.getData()).getPartId()));
+			dataMap.put("partid", Long.toString(((Part) this.getData()).getPartId()));
 			dataMap.put("description", this.getText(DESCRIPTION_COLUMN));
 			dataMap.put("quantity", this.getText(QUANTITY_COLUMN));
 			dataMap.put("soldprice", this.getText(SOLDPRICE_COLUMN));

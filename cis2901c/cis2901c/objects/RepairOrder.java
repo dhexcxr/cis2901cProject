@@ -200,7 +200,12 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public long getDbPk() {
-		return repairOrderId;
+		return getRepairOrderId();
+	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+		repairOrderId = dbPk;
 	}
 	
 	@Override

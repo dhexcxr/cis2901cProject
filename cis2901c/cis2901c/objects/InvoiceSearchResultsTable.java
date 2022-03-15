@@ -41,7 +41,7 @@ public class InvoiceSearchResultsTable extends MyTable {
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 				// TODO set date/time display to something nicer
-			tableItem.setText(new String[] {Integer.toString(invoice.getInvoiceNum()), invoice.getCustomerName(),
+			tableItem.setText(new String[] {Long.toString(invoice.getInvoiceNum()), invoice.getCustomerName(),
 					invoice.getCashiereDateTime().toString(), Integer.toString(invoice.getParts().length), "$" + invoice.getTotal().toString()});
 			tableItem.setData(invoice);
 		}

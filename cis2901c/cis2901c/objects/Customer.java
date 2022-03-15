@@ -45,6 +45,11 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 		return getCustomerId();
 	}
 	
+	@Override
+	public void setDbPk(long dbPk) {
+		customerId = dbPk;
+	}
+	
 	public String getPkName() {
 		return "customerId";
 	}

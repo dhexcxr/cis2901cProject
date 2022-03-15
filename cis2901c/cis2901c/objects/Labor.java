@@ -56,8 +56,12 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public long getDbPk() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getLaborId();
+	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+		laborId = dbPk;
 	}
 
 	@Override

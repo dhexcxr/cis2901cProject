@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
-	private int invoiceNum = -1;
+	private long invoiceNum = -1;
 	private long customerId;
 	private String customerName;
 	private String customerData;
@@ -38,11 +38,11 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 		super.querySubStringIndecies[1] = 207;
 	}
 
-	public int getInvoiceNum() {
+	public long getInvoiceNum() {
 		return invoiceNum;
 	}
 
-	public void setInvoiceNum(int invoiceNum) {
+	public void setInvoiceNum(long invoiceNum) {
 		this.invoiceNum = invoiceNum;
 	}
 
@@ -142,6 +142,11 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 	public long getDbPk() {
 //		return invoiceNum;		// when this is called in DbServices we'll always be making a new invoice
 		return -1;					// ie you can't edit an old invoice
+	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+		invoiceNum = dbPk;
 	}
 
 	@Override

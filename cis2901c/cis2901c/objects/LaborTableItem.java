@@ -31,6 +31,11 @@ public class LaborTableItem extends TableItem implements DbObjectSavable {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+//		laborId = dbPk;
+	}
 
 	@Override
 	public String getPkName() {

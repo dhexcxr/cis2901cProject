@@ -45,6 +45,11 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+//		laborId = dbPk;
+	}
 
 	@Override
 	public String getPkName() {

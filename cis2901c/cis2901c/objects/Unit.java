@@ -37,6 +37,11 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 		return getUnitId();
 	}
 	
+	@Override
+	public void setDbPk(long dbPk) {
+		unitId = dbPk;
+	}
+	
 	public String getPkName() {
 		return "unitId";
 	}

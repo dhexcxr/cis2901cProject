@@ -36,7 +36,7 @@ public class NewPartDialog extends Dialog {
 	private MyText txtCost;
 	private MyText txtRetail;
 	
-	private int partId = -1;
+	private long partId = -1;
 	private Part part;
 
 	/**

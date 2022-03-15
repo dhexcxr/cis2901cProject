@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Part extends DbObjectSearchable implements DbObjectSavable{
-	private int partId = -1;
+	private long partId = -1;
 	private String partNumber;
 	private String supplier;
 	private String category;
@@ -32,6 +32,11 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 		return getPartId();
 	}
 	
+	@Override
+	public void setDbPk(long dbPk) {
+		partId = dbPk;
+	}
+	
 	public String getPkName() {
 		return "partId";
 	}
@@ -40,11 +45,11 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 		return "part";
 	}
 	
-	public int getPartId() {
+	public long getPartId() {
 		return partId;
 	}
 	
-	public void setPartId(int partId) {
+	public void setPartId(long partId) {
 		this.partId = partId;
 	}
 
@@ -118,7 +123,7 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 		Map<String, String> dataMap = new HashMap<>();
 		
 		if (partId != -1) {
-			dataMap.put("partId", Integer.toString(partId));
+			dataMap.put("partId", Long.toString(partId));
 		}
 		dataMap.put("partNumber", partNumber);
 		dataMap.put("supplier", supplier);

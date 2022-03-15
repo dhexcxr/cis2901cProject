@@ -114,7 +114,12 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public long getDbPk() {
-		return jobId;
+		return getJobId();
+	}
+	
+	@Override
+	public void setDbPk(long dbPk) {
+		jobId = dbPk;
 	}
 
 	@Override
