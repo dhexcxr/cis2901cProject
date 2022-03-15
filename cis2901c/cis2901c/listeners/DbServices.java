@@ -36,6 +36,7 @@ public class DbServices {
 	
 	private static Connection mainDbConnection = null;
 	private static final int SQL_FAILURE = -1;
+	final static int MAX_RESULTS = 255;		// max search return results
 	
 	private DbServices() {
 	}
@@ -310,7 +311,7 @@ public class DbServices {
 				email, customerId FROM cis2901c.customer WHERE customerId = ?;""")) {
 			statement.setLong(1, customerId);
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, new Customer(), MAX_RESULTS)[0];
+			results = buildFoundObjects(queryResultSet, new Customer())[0];
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -322,13 +323,13 @@ public class DbServices {
 			connectToDb();
 		}
 		
-		final int MAX_RESULTS = 255;		// max search return results
+//		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = new Object[1];
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setMaxRows(MAX_RESULTS);
 			fillStatementParameters(statement, object);
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, object, MAX_RESULTS);
+			results = buildFoundObjects(queryResultSet, object);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -349,117 +350,141 @@ public class DbServices {
 		}
 	}
 	
-	private static Object[] buildFoundObjects(ResultSet queryResultSet, DbObjectSearchable object, int maxResults) throws SQLException {
-		// TODO delegate this out to individual buildFoundCustomers/Units/Parts/Invoices etc methods
+	private static Object[] buildFoundObjects(ResultSet queryResultSet, DbObjectSearchable object) throws SQLException {
 		Object[] results = new Object[1];
 		if (object instanceof Customer) {
-			results = new Customer[maxResults];
-			int i = 0;
-			while (queryResultSet.next()) {
-				Customer customer = new Customer();
-				customer.setFirstName(queryResultSet.getString(1));
-				customer.setLastName(queryResultSet.getString(2));
-				customer.setAddress(queryResultSet.getString(3));
-				customer.setCity(queryResultSet.getString(4));
-				customer.setState(queryResultSet.getString(5));			
-				customer.setZipCode(queryResultSet.getString(6));
-				customer.setHomePhone(queryResultSet.getString(7));
-				customer.setWorkPhone(queryResultSet.getString(8));
-				customer.setCellPhone(queryResultSet.getString(9));
-				customer.setEmail(queryResultSet.getString(10));
-				customer.setCustomerId(queryResultSet.getLong(11));
-
-				results[i] = customer;
-				i++;
-			}
+			results = buildCustomers(queryResultSet);
 		} else if (object instanceof Part) {
-			results = new Part[maxResults];
-			int i = 0;
-			while (queryResultSet.next()) {
-				
-				Part part = new Part();
-				part.setPartId(queryResultSet.getInt(1));
-				part.setPartNumber(queryResultSet.getString(2));
-				part.setSupplier(queryResultSet.getString(3));
-				part.setCategory(queryResultSet.getString(4));
-				part.setDescription(queryResultSet.getString(5));
-				part.setNotes(queryResultSet.getString(6));
-				part.setCost(queryResultSet.getBigDecimal(7));
-				part.setRetail(queryResultSet.getBigDecimal(8));
-				part.setOnHand(queryResultSet.getInt(9));
-				
-				results[i] = part;
-				i++;
-			}
+			results = buildParts(queryResultSet);
 		} else if (object instanceof Unit) {
-			results = new Unit[maxResults];
-			int i = 0;
-			while (queryResultSet.next()) {
-				
-				Unit unit = new Unit();
-				unit.setUnitId(queryResultSet.getLong(1));
-				unit.setCustomerId(queryResultSet.getLong(2));
-				unit.setMake(queryResultSet.getString(3));
-				unit.setModel(queryResultSet.getString(4));
-				unit.setModelName(queryResultSet.getString(5));
-				unit.setYear(queryResultSet.getInt(6));
-				unit.setMileage(queryResultSet.getInt(7));
-				unit.setColor(queryResultSet.getString(8));
-				unit.setVin(queryResultSet.getString(9));
-				unit.setNotes(queryResultSet.getString(10));
-				
-				String lastName = queryResultSet.getString(11);
-				String firstName = queryResultSet.getString(12);
-				String owner = lastName;
-				if (firstName != null && firstName.length() != 0) {
-					owner = lastName + ", " + firstName;
-				}
-				unit.setOwner(owner);
-				
-				results[i] = unit;
-				i++;
-			}
+			results = buildUnits(queryResultSet);
 		} else if (object instanceof Invoice) {
-			results = new Invoice[maxResults];
-			int i = 0;
-			while (queryResultSet.next()) {
-				Invoice invoice = new Invoice();
-				invoice.setInvoiceNum(queryResultSet.getInt(1));
-				invoice.setCustomerId(queryResultSet.getLong(2));
-				
-				String lastname = queryResultSet.getString(3);
-				String firstname = queryResultSet.getString(4);
-				invoice.setCustomerName(lastname, firstname);
-				
-				// TODO see if we can use TextBlocks here
-				String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
-						queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
-							queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
-				invoice.setCustomerData(customerData);
-				
-				invoice.setNotes(queryResultSet.getString(12));
-				invoice.setTax(queryResultSet.getBigDecimal(13));
-				invoice.setCashiereDateTime(queryResultSet.getTimestamp(14));
-				invoice.setCashiered(queryResultSet.getBoolean(15));
-				// TODO populate invoice.parts[]
-				int lineItemCount = queryResultSet.getInt(16);
-				invoice.setParts(new Part[lineItemCount]);
-				
-				invoice.setTotal(queryResultSet.getBigDecimal(17)); 
-				results[i] = invoice;
-				i++;
-			}
+			results = buildInvoices(queryResultSet);
 		} else if (object instanceof RepairOrder) {
-			results = new RepairOrder[maxResults];
-			int i = 0;
-			while (queryResultSet.next()) {
-				// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
-				RepairOrder repairOrder = new RepairOrder();
-				repairOrder.setRepairOrderId(queryResultSet.getLong(1));
-				
-				results[i] = repairOrder;
-				i++;
+			results = buildRepairOrders(queryResultSet);
+		}
+		return results;
+	}
+	
+	private static Customer[] buildCustomers(ResultSet queryResultSet) throws SQLException {
+		Customer[] results = new Customer[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			Customer customer = new Customer();
+			customer.setFirstName(queryResultSet.getString(1));
+			customer.setLastName(queryResultSet.getString(2));
+			customer.setAddress(queryResultSet.getString(3));
+			customer.setCity(queryResultSet.getString(4));
+			customer.setState(queryResultSet.getString(5));			
+			customer.setZipCode(queryResultSet.getString(6));
+			customer.setHomePhone(queryResultSet.getString(7));
+			customer.setWorkPhone(queryResultSet.getString(8));
+			customer.setCellPhone(queryResultSet.getString(9));
+			customer.setEmail(queryResultSet.getString(10));
+			customer.setCustomerId(queryResultSet.getLong(11));
+
+			results[i] = customer;
+			i++;
+		}
+		return results;
+	}
+	
+	private static Part[] buildParts(ResultSet queryResultSet) throws SQLException {
+		Part[] results = new Part[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			
+			Part part = new Part();
+			part.setPartId(queryResultSet.getInt(1));
+			part.setPartNumber(queryResultSet.getString(2));
+			part.setSupplier(queryResultSet.getString(3));
+			part.setCategory(queryResultSet.getString(4));
+			part.setDescription(queryResultSet.getString(5));
+			part.setNotes(queryResultSet.getString(6));
+			part.setCost(queryResultSet.getBigDecimal(7));
+			part.setRetail(queryResultSet.getBigDecimal(8));
+			part.setOnHand(queryResultSet.getInt(9));
+			
+			results[i] = part;
+			i++;
+		}
+		return results;
+	}
+	
+	private static Unit[] buildUnits(ResultSet queryResultSet) throws SQLException {
+		Unit[] results = new Unit[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			
+			Unit unit = new Unit();
+			unit.setUnitId(queryResultSet.getLong(1));
+			unit.setCustomerId(queryResultSet.getLong(2));
+			unit.setMake(queryResultSet.getString(3));
+			unit.setModel(queryResultSet.getString(4));
+			unit.setModelName(queryResultSet.getString(5));
+			unit.setYear(queryResultSet.getInt(6));
+			unit.setMileage(queryResultSet.getInt(7));
+			unit.setColor(queryResultSet.getString(8));
+			unit.setVin(queryResultSet.getString(9));
+			unit.setNotes(queryResultSet.getString(10));
+			
+			String lastName = queryResultSet.getString(11);
+			String firstName = queryResultSet.getString(12);
+			String owner = lastName;
+			if (firstName != null && firstName.length() != 0) {
+				owner = lastName + ", " + firstName;
 			}
+			unit.setOwner(owner);
+			
+			results[i] = unit;
+			i++;
+		}
+		return results;
+	}
+	
+	private static Invoice[] buildInvoices(ResultSet queryResultSet) throws SQLException {
+		Invoice[] results = new Invoice[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			Invoice invoice = new Invoice();
+			invoice.setInvoiceNum(queryResultSet.getInt(1));
+			invoice.setCustomerId(queryResultSet.getLong(2));
+			
+			String lastname = queryResultSet.getString(3);
+			String firstname = queryResultSet.getString(4);
+			invoice.setCustomerName(lastname, firstname);
+			
+			// TODO see if we can use TextBlocks here
+			String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
+					queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
+						queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
+			invoice.setCustomerData(customerData);
+			
+			invoice.setNotes(queryResultSet.getString(12));
+			invoice.setTax(queryResultSet.getBigDecimal(13));
+			invoice.setCashiereDateTime(queryResultSet.getTimestamp(14));
+			invoice.setCashiered(queryResultSet.getBoolean(15));
+			// TODO populate invoice.parts[]
+			int lineItemCount = queryResultSet.getInt(16);
+			invoice.setParts(new Part[lineItemCount]);
+			
+			invoice.setTotal(queryResultSet.getBigDecimal(17)); 
+			results[i] = invoice;
+			i++;
+		}
+		return results;
+	}
+	
+	private static RepairOrder[] buildRepairOrders(ResultSet queryResultSet) throws SQLException {
+		RepairOrder[] results = new RepairOrder[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
+			RepairOrder repairOrder = new RepairOrder();
+			repairOrder.setRepairOrderId(queryResultSet.getLong(1));
+			
+			results[i] = repairOrder;
+			i++;
 		}
 		return results;
 	}
