@@ -142,9 +142,7 @@ public class RepairOrderDialog extends Dialog {
 		if (repairOrder.getUnitId() != 0) {
 			txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
 										repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-		}
-		if (repairOrder.getUnit() != null) {
-			txtUnitRepairOrder.setData(repairOrder.getUnit());
+			txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
 		}
 		
 		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
