@@ -5,9 +5,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Display;
 
-import cis2901c.main.CustomerSearchDialog;
 import cis2901c.main.UnitSearchDialog;
-import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Unit;
 
