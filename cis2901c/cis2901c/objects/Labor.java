@@ -1,14 +1,19 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Labor extends DbObjectSearchable implements DbObjectSavable {
 	
+	private long laborId = -1;
+	private long JobId;
 	private String technician;
 	private String description;
 	private BigDecimal hours = BigDecimal.valueOf(0);
 	private BigDecimal laborRate = BigDecimal.valueOf(0);
+	
+	private Map<String, String> dataMap = new HashMap<>();
 	
 	public Labor() {
 		this("", "", BigDecimal.valueOf(0), BigDecimal.valueOf(100));
@@ -20,6 +25,22 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 		this.description = description;
 		this.hours = hours;
 		this.laborRate = laborRate;
+	}
+
+	public long getLaborId() {
+		return laborId;
+	}
+
+	public void setLaborId(long laborId) {
+		this.laborId = laborId;
+	}
+
+	public long getJobId() {
+		return JobId;
+	}
+
+	public void setJobId(long jobId) {
+		JobId = jobId;
 	}
 
 	public String getTechnician() {
@@ -66,20 +87,26 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public String getPkName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "laborid";
 	}
 
 	@Override
 	public String getTableName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "joblabor";
 	}
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
-		return null;
+		if (dataMap.isEmpty()) {
+			if (laborId != -1) {
+				dataMap.put("laborid", Long.toString(laborId));
+			}
+			dataMap.put("description", description);
+			dataMap.put("hours", hours.toString());
+			dataMap.put("hourrate", laborRate.toString());
+			dataMap.put("technician", technician);
+		}
+		return dataMap;
 	}
 
 }

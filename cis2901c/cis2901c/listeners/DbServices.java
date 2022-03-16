@@ -25,6 +25,7 @@ import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Job;
+import cis2901c.objects.Labor;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
@@ -150,9 +151,16 @@ public class DbServices {
 //			((Invoice) dbObject).setInvoiceNum(getLastInvoiceNum());
 			saveInvoiceLineItems(dbObject);
 		} else if (dbObject instanceof RepairOrder) {
+			if (dbObject.getDbPk() == -1 ) {
+				dbObject.setDbPk(getLastRoNum());
+			}
 			saveRoJobs(dbObject);
 		} else if (dbObject instanceof Job) {
-			// TODO cycle through Parts and save them, and Labor and save them
+			if (dbObject.getDbPk() == -1 ) {
+				dbObject.setDbPk(getLastJobId());
+			}
+			saveJobParts(dbObject);
+			saveJobLabor(dbObject);
 		}
 	}
 	
@@ -177,6 +185,37 @@ public class DbServices {
 			}
 		} catch (SQLException e) {
 			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
+			e.printStackTrace();
+		}
+		// if we get here something went wrong
+		return SQL_FAILURE;
+	}
+	
+	private static void saveJobParts(DbObjectSavable dbObject ) {
+		// TODO document why this method is empty
+	}
+	
+	private static void saveJobLabor(DbObjectSavable dbObject ) {
+		long jobId = dbObject.getDbPk();
+		if (jobId == -1) {
+			jobId = getLastJobId();
+		}
+		List<Labor> jobLabor = ((Job) dbObject).getLabor();
+		for (Labor labor : jobLabor) {
+			labor.getDataMap().put("jobid", Long.toString(jobId));
+			DbServices.saveObject(labor);
+		}
+	}
+	
+	private static int getLastJobId() {
+		ResultSet results = null;
+		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(jobid) FROM cis2901c.job;")) {
+			results = lastInvoiceNumStatement.executeQuery();
+			while (results.next()) {
+				return results.getInt(1);		// we should always return here
+			}
+		} catch (SQLException e) {
+			Main.log(Level.SEVERE, "SQL Error: getLastJobId");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -363,6 +402,7 @@ public class DbServices {
 		return results;
 	}
 	
+	// TODO change the below  MAX_RESULTS to queryResultSet.getResultCount or whatever it is
 	private static Customer[] buildCustomers(ResultSet queryResultSet) throws SQLException {
 		Customer[] results = new Customer[MAX_RESULTS];
 		int i = 0;
