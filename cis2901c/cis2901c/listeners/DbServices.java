@@ -404,6 +404,8 @@ public class DbServices {
 			results = buildRepairOrders(queryResultSet);
 		} else if (object instanceof Job) {
 			results = buildJobs(queryResultSet);
+		} else if (object instanceof Labor) {
+			results = buildLabors(queryResultSet);
 		}
 		return results;
 	}
@@ -564,6 +566,24 @@ public class DbServices {
 			job.setReccomendations(queryResultSet.getString(6));
 			
 			results[i] = job;
+			i++;
+		}
+		return results;
+	}
+	
+	private static Labor[] buildLabors(ResultSet queryResultSet) throws SQLException {
+		Labor[] results = new Labor[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			Labor labor = new Labor();
+			labor.setLaborId(queryResultSet.getLong(1));
+			labor.setJobId(queryResultSet.getLong(2));
+			labor.setDescription(queryResultSet.getString(3));
+			labor.setHours(queryResultSet.getBigDecimal(4));
+			labor.setLaborRate(queryResultSet.getBigDecimal(5));
+			labor.setTechnician(queryResultSet.getString(6));
+						
+			results[i] = labor;
 			i++;
 		}
 		return results;

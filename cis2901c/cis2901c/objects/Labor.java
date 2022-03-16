@@ -7,7 +7,7 @@ import java.util.Map;
 public class Labor extends DbObjectSearchable implements DbObjectSavable {
 	
 	private long laborId = -1;
-	private long JobId;
+	private long jobId;
 	private String technician;
 	private String description;
 	private BigDecimal hours = BigDecimal.valueOf(0);
@@ -26,6 +26,14 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 		this.hours = hours;
 		this.laborRate = laborRate;
 	}
+	
+	public Labor(long jobId) {
+		super.searchString = Long.toString(jobId);
+		super.searchQuery = "SELECT laborid, jobid, description, hours, hourrate, technician FROM cis2901c.joblabor WHERE jobid = ?;";
+		super.outerSearchQueryAppendix = "";
+		super.querySubStringIndecies[0] = 0;
+		super.querySubStringIndecies[1] = 0;
+	}
 
 	public long getLaborId() {
 		return laborId;
@@ -36,11 +44,11 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public long getJobId() {
-		return JobId;
+		return jobId;
 	}
 
 	public void setJobId(long jobId) {
-		JobId = jobId;
+		this.jobId = jobId;
 	}
 
 	public String getTechnician() {

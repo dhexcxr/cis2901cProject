@@ -43,6 +43,8 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -150,7 +152,10 @@ public class RepairOrderDialog extends Dialog {
 				break;
 			}
 			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-			jobTableItem.setData( job);
+			List<Labor> jobLabor = new ArrayList<>(Arrays.asList((Labor[]) DbServices.searchForObjectsByPk(new Labor(job.getJobId()))));
+			jobLabor.removeAll(Collections.singleton(null));
+			job.setLabor(jobLabor);
+			jobTableItem.setData(job);
 			tableJobsRepairOrder.setSelection(0);
 			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 			
