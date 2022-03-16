@@ -41,6 +41,16 @@ public class Customer extends DbObjectSearchable implements DbObjectSavable{
 		super.querySubStringIndecies[1] = 99;
 	}
 	
+	public Customer(long customerId) {
+		super.searchString = Long.toString(customerId);
+		super.searchQuery = """
+				SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
+				email, customerId FROM cis2901c.customer WHERE customerId = ?;""";
+		super.outerSearchQueryAppendix = "";
+		super.querySubStringIndecies[0] = 0;
+		super.querySubStringIndecies[1] = 0;
+	}
+	
 	public long getDbPk() {
 		return getCustomerId();
 	}

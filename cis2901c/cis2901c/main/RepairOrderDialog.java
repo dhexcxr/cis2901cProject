@@ -132,12 +132,23 @@ public class RepairOrderDialog extends Dialog {
 		if (repairOrder.getCustomerId() != 0) {
 			customerId = repairOrder.getCustomerId();
 			// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
-			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
+//			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
+			txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
+		}
+		if (repairOrder.getCustomerData() != null) {
+			txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
 		}
 		
-		if (repairOrder.getCustomerData() != null) {
-			txtCustomerRepairOrder.setText(repairOrder.getCustomerData());
+		if (repairOrder.getUnitId() != 0) {
+			txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
+										repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
 		}
+		if (repairOrder.getUnit() != null) {
+			txtUnitRepairOrder.setData(repairOrder.getUnit());
+		}
+		
+		// TODO find and build Jobs
+		
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
@@ -176,7 +187,7 @@ public class RepairOrderDialog extends Dialog {
 		txtCustomerRepairOrder.setText("Customer...");
 		txtCustomerRepairOrder.setBounds(10, 10, 466, 128);
 		
-		txtUnitRepairOrder = new MyText(shlRepairOrder, SWT.BORDER);
+		txtUnitRepairOrder = new MyText(shlRepairOrder, SWT.BORDER | SWT.WRAP);
 		txtUnitRepairOrder.setEditable(false);
 		txtUnitRepairOrder.setText("Unit...");
 		txtUnitRepairOrder.setBounds(498, 10, 466, 128);
@@ -716,6 +727,7 @@ public class RepairOrderDialog extends Dialog {
 		
 		// send RepairOrder object to DbServices
 		DbServices.saveObject(repairOrder);
+		roId = repairOrder.getRepairOrderId();
 		result = repairOrder;
 //		shlRepairOrder.close();
 	}

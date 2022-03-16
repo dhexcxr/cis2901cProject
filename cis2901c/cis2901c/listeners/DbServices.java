@@ -298,23 +298,21 @@ public class DbServices {
 		return searchQuery.replaceAll("[^0-9]", "");
 	}
 	
-	public static Customer searchForCustomer(long customerId) {
+	public static Object searchForObjectByPk(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
 		}
 		
 		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
-											// this will allow us to make a polymorphic select by Primary Key search
-		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement("""
-				SELECT firstName, lastName, address, city, state, zipcode, homePhone, workPhone, cellPhone, 
-				email, customerId FROM cis2901c.customer WHERE customerId = ?;""")) {
-			statement.setLong(1, customerId);
+											// this will allow us to make a polymorphic select by Primary Key search - MOSTLY DONE
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
+			statement.setLong(1, Long.parseLong(object.getSearchString()));
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, new Customer())[0];
+			results = buildFoundObjects(queryResultSet, object)[0];
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (Customer) results;	
+		return results;	
 	}
 	
 	public static Object[] searchForObject(DbObjectSearchable object) {
