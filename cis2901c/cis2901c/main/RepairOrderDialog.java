@@ -147,8 +147,17 @@ public class RepairOrderDialog extends Dialog {
 			txtUnitRepairOrder.setData(repairOrder.getUnit());
 		}
 		
-		// TODO find and build Jobs
-		
+		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
+			if (job == null) {
+				break;
+			}
+			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+			jobTableItem.setData( job);
+			tableJobsRepairOrder.setSelection(0);
+			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+			
+			// TODO find and build Parts and Labor
+		}
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
@@ -410,6 +419,8 @@ public class RepairOrderDialog extends Dialog {
 				btnAddJob.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
+						// TODO judging by the comment on 2 lines below I think this might should've been for tableJobsRepairOrder
+							// but it seems to be working fine so I don't know that its actually needed
 						tabFolderJobsRepairOrder.notifyListeners(SWT.Selection, new Event());		// trigger saving Job details
 						// create new Job on Job Table
 						RepairOrderJobTableItem job = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());

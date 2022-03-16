@@ -8,6 +8,7 @@ import java.util.Map;
 public class Job extends DbObjectSearchable implements DbObjectSavable {
 	
 	private long jobId = -1;
+	private long roId;
 	private	String jobName;
 	private String complaints;
 	private String resolution;
@@ -21,6 +22,14 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 
 	public Job() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public Job(long roId) {
+		super.searchString = Long.toString(roId);
+		super.searchQuery = "SELECT jobid, roid, name, complaint, resolution, recommendations FROM cis2901c.job WHERE roid = ?;";
+		super.outerSearchQueryAppendix = "";
+		super.querySubStringIndecies[0] = 0;
+		super.querySubStringIndecies[1] = 0;
 	}
 
 	public Job(String jobName, String complaints, String resolution, String reccomendations, List<Part> parts,
@@ -40,6 +49,14 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 
 	public void setJobId(long jobId) {
 		this.jobId = jobId;
+	}
+
+	public long getRoId() {
+		return roId;
+	}
+
+	public void setRoId(long roId) {
+		this.roId = roId;
 	}
 
 	public String getJobName() {

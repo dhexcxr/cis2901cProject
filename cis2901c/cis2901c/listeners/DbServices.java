@@ -338,16 +338,20 @@ public class DbServices {
 	}
 	
 	public static Object searchForObjectByPk(DbObjectSearchable object) {
+		return searchForObjectsByPk(object)[0];
+	}
+	
+	public static Object[] searchForObjectsByPk(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
 		}
 		
-		Object results = new Object();		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
+		Object[] results = new Object[1];		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
 											// this will allow us to make a polymorphic select by Primary Key search - MOSTLY DONE
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setLong(1, Long.parseLong(object.getSearchString()));
 			ResultSet queryResultSet = statement.executeQuery();
-			results = buildFoundObjects(queryResultSet, object)[0];
+			results = buildFoundObjects(queryResultSet, object);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -398,11 +402,12 @@ public class DbServices {
 			results = buildInvoices(queryResultSet);
 		} else if (object instanceof RepairOrder) {
 			results = buildRepairOrders(queryResultSet);
+		} else if (object instanceof Job) {
+			results = buildJobs(queryResultSet);
 		}
 		return results;
 	}
 	
-	// TODO change the below  MAX_RESULTS to queryResultSet.getResultCount or whatever it is
 	private static Customer[] buildCustomers(ResultSet queryResultSet) throws SQLException {
 		Customer[] results = new Customer[MAX_RESULTS];
 		int i = 0;
@@ -541,6 +546,24 @@ public class DbServices {
 			repairOrder.setClosedDate(queryResultSet.getTimestamp(17));
 						
 			results[i] = repairOrder;
+			i++;
+		}
+		return results;
+	}
+	
+	private static Job[] buildJobs(ResultSet queryResultSet) throws SQLException {
+		Job[] results = new Job[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			Job job = new Job();
+			job.setJobId(queryResultSet.getLong(1));
+			job.setRoId(queryResultSet.getLong(2));
+			job.setJobName(queryResultSet.getString(3));
+			job.setComplaints(queryResultSet.getString(4));
+			job.setResolution(queryResultSet.getString(5));
+			job.setReccomendations(queryResultSet.getString(6));
+			
+			results[i] = job;
 			i++;
 		}
 		return results;
