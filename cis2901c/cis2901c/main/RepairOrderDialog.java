@@ -128,6 +128,7 @@ public class RepairOrderDialog extends Dialog {
 	
 	public Object open(RepairOrder repairOrder) {
 		createContents();
+		setupListeners();
 		
 		// TODO set Dialog boxes and stuff from repairOrder fields
 		currentRepairOrder = repairOrder;
@@ -162,8 +163,6 @@ public class RepairOrderDialog extends Dialog {
 			
 			// TODO find and build Parts and Labor
 		}
-		
-		setupListeners();
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
