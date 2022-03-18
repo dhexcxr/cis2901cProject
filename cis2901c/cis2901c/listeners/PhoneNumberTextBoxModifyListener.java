@@ -31,7 +31,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 			return;
 		}
 		
-		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
+		if (!text.getText().equals(textBoxText)) {
 			text.setModified(true);
 			Point cursorPosition = text.getSelection();
 			ignore = true;

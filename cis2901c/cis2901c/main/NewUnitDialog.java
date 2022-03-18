@@ -4,7 +4,7 @@ import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.InfoTextBoxModifyListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
-import cis2901c.listeners.TextBoxFocusListener;
+import cis2901c.listeners.VinModifyListener;
 import cis2901c.objects.Customer;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Unit;
@@ -16,16 +16,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class NewUnitDialog extends Dialog {
 
@@ -40,6 +36,8 @@ public class NewUnitDialog extends Dialog {
 	private MyText txtYear;
 	private MyText txtColor;
 	private MyText txtNotes;
+	private Button btnSaveUnit;
+	private Button btnCancel;
 	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
 		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
@@ -61,6 +59,7 @@ public class NewUnitDialog extends Dialog {
 	 */
 	public Object open() {
 		createContents();
+		setupListeners();
 		shlNewUnit.open();
 		shlNewUnit.layout();
 		Display display = getParent().getDisplay();
@@ -76,10 +75,15 @@ public class NewUnitDialog extends Dialog {
 		createContents();
 
 		// set txtBoxes when opening a current Unit for editing
-		if (unit.getOwner() != null)
-			txtOwner.setText(unit.getOwner());			
-		if (unit.getMake() != null)
+		// TODO remove all these null checks
+		if (unit.getOwner() != null) {
+			txtOwner.setText(unit.getOwner());
+			txtOwner.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
+		}
+		if (unit.getMake() != null) {
 			txtMake.setText(unit.getMake());
+			txtMake.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
+		}			
 		if (unit.getModelName() != null)
 			txtModelName.setText(unit.getModelName());
 		if (unit.getMileage() != 0)
@@ -103,6 +107,7 @@ public class NewUnitDialog extends Dialog {
 //		txtOwner.setData(DbServices.searchForCustomer(customerId));
 		txtOwner.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
 		
+		setupListeners();
 		// open Edit Unit dialog, customized for editing a current Unit
 		shlNewUnit.setText("Edit Unit Details");
 		shlNewUnit.open();
@@ -135,9 +140,7 @@ public class NewUnitDialog extends Dialog {
 		txtOwner.setText("");
 		txtOwner.setBounds(10, 36, 554, 26);
 		txtOwner.setEditable(false);
-		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
-		txtOwner.addMouseListener(new CustomerSearchListener(txtOwner));
-
+		
 		Label lblMake = new Label(shlNewUnit, SWT.NONE);
 		lblMake.setBounds(10, 68, 70, 20);
 		lblMake.setText("Make:");
@@ -145,97 +148,84 @@ public class NewUnitDialog extends Dialog {
 		txtMake.setBackground(SWTResourceManager.getColor(255, 102, 102));
 //		txtMake.setText("Make...");
 		txtMake.setBounds(10, 94, 270, 26);
-		txtMake.addFocusListener(new TextBoxFocusListener(txtMake));
-		txtMake.addModifyListener(new RequiredTextBoxModifyListener(txtMake));
-
+		
 		Label lblModel = new Label(shlNewUnit, SWT.NONE);
 		lblModel.setBounds(294, 68, 70, 20);
 		lblModel.setText("Model:");
 		txtModel = new MyText(shlNewUnit, SWT.BORDER);
 //		txtModel.setText("Model...");
 		txtModel.setBounds(286, 94, 270, 26);
-		txtModel.addFocusListener(new TextBoxFocusListener(txtModel));
-		txtModel.addModifyListener(new InfoTextBoxModifyListener(txtModel));
-
+		
 		Label lblModelName = new Label(shlNewUnit, SWT.NONE);
 		lblModelName.setBounds(10, 126, 90, 20);
 		lblModelName.setText("Model Name:");
 		txtModelName = new MyText(shlNewUnit, SWT.BORDER);
 //		txtModelName.setText("Model Name...");
 		txtModelName.setBounds(10, 152, 270, 26);
-		txtModelName.addFocusListener(new TextBoxFocusListener(txtModelName));
-		txtModelName.addModifyListener(new InfoTextBoxModifyListener(txtModelName));
-
+		
 		Label lblYear = new Label(shlNewUnit, SWT.NONE);
 		lblYear.setBounds(286, 126, 70, 20);
 		lblYear.setText("Year:");
 		txtYear = new MyText(shlNewUnit, SWT.BORDER);
 //		txtYear.setText("Year");
 		txtYear.setBounds(286, 152, 270, 26);
-		txtYear.addFocusListener(new TextBoxFocusListener(txtYear));
-		txtYear.addModifyListener(new InfoTextBoxModifyListener(txtYear));
-
+		
 		Label lblMileage = new Label(shlNewUnit, SWT.NONE);
 		lblMileage.setBounds(10, 184, 70, 20);
 		lblMileage.setText("Mileage:");
 		txtMileage = new MyText(shlNewUnit, SWT.BORDER);
 //		txtMileage.setText("Mileage...");
 		txtMileage.setBounds(10, 210, 270, 26);
-		txtMileage.addFocusListener(new TextBoxFocusListener(txtMileage));
-		txtMileage.addModifyListener(new InfoTextBoxModifyListener(txtMileage));
-
+		
 		Label lblColor = new Label(shlNewUnit, SWT.NONE);
 		lblColor.setBounds(286, 184, 70, 20);
 		lblColor.setText("Color:");
 		txtColor = new MyText(shlNewUnit, SWT.BORDER);
 //		txtColor.setText("Color...");
 		txtColor.setBounds(286, 210, 270, 26);
-		txtColor.addFocusListener(new TextBoxFocusListener(txtColor));
-		txtColor.addModifyListener(new InfoTextBoxModifyListener(txtColor));
-
+		
 		Label lblVinNumber = new Label(shlNewUnit, SWT.NONE);
 		lblVinNumber.setBounds(10, 242, 90, 20);
 		lblVinNumber.setText("Vin Number:");
 		txtVinNumber = new MyText(shlNewUnit, SWT.BORDER);
 //		txtVinNumber.setText("Vin Number...");
 		txtVinNumber.setBounds(10, 268, 554, 26);
-		txtVinNumber.addFocusListener(new TextBoxFocusListener(txtVinNumber));
-		txtVinNumber.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				// VIN txt box, make red if VIN isn't 17 digits long
-					// we still allow user to make shorter VINs to accommodate VINs from the '60s etc
-				Main.log(Level.INFO, "Editing unit: " + txtVinNumber.isModified());
-				if (!txtVinNumber.getText().equals("Vin Number...") && txtVinNumber.getText().length() != 17) {
-					txtVinNumber.setModified(false);
-					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
-				} else {
-					txtVinNumber.setModified(true);
-					txtVinNumber.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
-				}
-			}
-		});
-		
+				
 		Label lblNotes = new Label(shlNewUnit, SWT.NONE);
 		lblNotes.setBounds(10, 300, 70, 20);
 		lblNotes.setText("Notes:");
 		txtNotes = new MyText(shlNewUnit, SWT.BORDER | SWT.WRAP);
 //		txtNotes.setText("Notes...");
 		txtNotes.setBounds(10, 326, 554, 92);
-		txtNotes.addFocusListener(new TextBoxFocusListener(txtNotes));
-		txtNotes.addModifyListener(new InfoTextBoxModifyListener(txtNotes));
-
+		
 		// Unit dialog controls
 		Label label = new Label(shlNewUnit, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(10, 424, 546, 5);
 		
-		Button btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
-		btnSaveUnit.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
+		btnSaveUnit = new Button(shlNewUnit, SWT.NONE);
 		btnSaveUnit.setText("Save Unit");
 		btnSaveUnit.setBounds(10, 435, 413, 26);
+				
+		btnCancel = new Button(shlNewUnit, SWT.NONE);
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(429, 435, 135, 26);
+				
+		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear,
+								txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
+	}
+	
+	private void setupListeners() {
+		txtOwner.addModifyListener(new RequiredTextBoxModifyListener(txtOwner));
+		txtOwner.addMouseListener(new CustomerSearchListener(txtOwner));
+		txtMake.addModifyListener(new RequiredTextBoxModifyListener(txtMake));
+		txtModel.addModifyListener(new InfoTextBoxModifyListener(txtModel));
+		txtModelName.addModifyListener(new InfoTextBoxModifyListener(txtModelName));
+		txtYear.addModifyListener(new InfoTextBoxModifyListener(txtYear));
+		txtMileage.addModifyListener(new InfoTextBoxModifyListener(txtMileage));
+		txtColor.addModifyListener(new InfoTextBoxModifyListener(txtColor));
+		txtVinNumber.addModifyListener(new VinModifyListener(txtVinNumber));
+		txtNotes.addModifyListener(new InfoTextBoxModifyListener(txtNotes));
+		
 		btnSaveUnit.addMouseListener(new MouseAdapter() {		// in-line listener
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -250,19 +240,12 @@ public class NewUnitDialog extends Dialog {
 			}
 		});
 		
-		Button btnCancel = new Button(shlNewUnit, SWT.NONE);
-		btnCancel.setText("Cancel");
-		btnCancel.setBounds(429, 435, 135, 26);
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				shlNewUnit.close();
 			}
 		});
-		
-		shlNewUnit.setTabList(new Control[]{txtOwner, txtMake, txtModel, txtModelName, txtYear,
-								txtMileage, txtColor, txtVinNumber, txtNotes, btnSaveUnit, btnCancel});
-
 	}
 
 	protected void addNewUnit() {
@@ -282,7 +265,10 @@ public class NewUnitDialog extends Dialog {
 			return;
 		}
 		
-		if (txtMake.isModified()) {
+		// TODO we could add an "&& !txtMake.getText().equals(txtMake.startingText)" so that we wouldn't unnecessarily save this
+			// if it hasn't changed, but that would be a lot of extra code for no real benefit
+//		if (txtMake.getText().length() > 0 || txtMake.isModified()) {
+		if (txtMake.getText().length() > 0) {
 			unit.setMake(txtMake.getText());
 		} else {
 			// dialog box stating make is required

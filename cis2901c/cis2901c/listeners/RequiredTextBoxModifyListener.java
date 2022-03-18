@@ -12,18 +12,16 @@ import cis2901c.objects.MyText;
 public class RequiredTextBoxModifyListener implements ModifyListener {
 	
 	private MyText txtBox;
-	private String textBoxText;
 	
 	public RequiredTextBoxModifyListener(MyText textBox) {
 		this.txtBox = textBox;
-		this.textBoxText = textBox.getText();
 	}
 
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// set txtBox background to RED if user has not entered anything
 		Main.log(Level.INFO, Boolean.toString(txtBox.isModified()));
-		if (txtBox.getText().length() == 0 || txtBox.getText().equals(textBoxText)) {
+		if (txtBox.getText().length() == 0) {
 			txtBox.setModified(false);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
 		} else {

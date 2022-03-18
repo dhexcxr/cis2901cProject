@@ -114,6 +114,7 @@ public class RepairOrderDialog extends Dialog {
 	 */
 	public Object open() {
 		createContents();
+		setupListeners();
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
 		Display display = getParent().getDisplay();
@@ -162,6 +163,8 @@ public class RepairOrderDialog extends Dialog {
 			// TODO find and build Parts and Labor
 		}
 		
+		setupListeners();
+		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
 		Display display = getParent().getDisplay();
@@ -188,8 +191,6 @@ public class RepairOrderDialog extends Dialog {
 		roControls();
 		
 		jobTabs();
-		
-		listeners();		
 	}
 	
 	private void roDetails() {
@@ -411,7 +412,7 @@ public class RepairOrderDialog extends Dialog {
 		// END Job tabs
 	}
 	
-	private void listeners() {
+	private void setupListeners() {
 		// LISTENERS
 				txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 				
