@@ -2,6 +2,7 @@ package cis2901c.listeners;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
 
 import cis2901c.objects.MyText;
 
@@ -32,6 +33,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 		
 		if (text.getText().length() > 0 && !text.getText().equals(textBoxText)) {
 			text.setModified(true);
+			Point cursorPosition = text.getSelection();
 			ignore = true;
 			text.setText(text.getText().replaceAll(NOT_NUMBERS, ""));
 			if (text.getText().replaceAll(NOT_NUMBERS, "").length() >= 7 && text.getText().replaceAll(NOT_NUMBERS, "").length() < 10) {
@@ -46,7 +48,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 				text.setText(text.getText().replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", INTERNATIONAL_PHONE));
 			}
 			ignore = false;
-			text.setSelection(text.getText().length());
+			text.setSelection(cursorPosition);
 		} else {
 			text.setModified(false);
 		}
