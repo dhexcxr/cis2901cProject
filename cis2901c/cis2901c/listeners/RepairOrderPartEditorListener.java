@@ -32,12 +32,10 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	@Override
 	public void handleEvent(Event event) {
 		if (!ignoreFocusOut) {
-			ignoreFocusOut = true;
 			super.handleEvent(event);
 //			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 			repairOrderDialog.saveJob();
 			totalParts();
-			ignoreFocusOut = false;
 		}
 	}
 	
