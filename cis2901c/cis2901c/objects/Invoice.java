@@ -121,15 +121,6 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 		this.parts = parts;
 	}
 	
-	private BigDecimal getPartsTotal() {
-		// not used right now, need to populate Part[] parts before this is usable
-		BigDecimal partsTotal = new BigDecimal(0);
-		for (int i = 0; i < this.getParts().length; i++) {
-			partsTotal = partsTotal.add(this.getParts()[i].getRetail());
-		}
-		return partsTotal;
-	}
-	
 	public BigDecimal getTotal() {
 		return total;
 	}
@@ -140,8 +131,8 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public long getDbPk() {
-//		return invoiceNum;		// when this is called in DbServices we'll always be making a new invoice
-		return -1;					// ie you can't edit an old invoice
+		return -1;		// when this is called in DbServices we'll always be making a new invoice
+							// ie you can't edit an old invoice
 	}
 	
 	@Override
@@ -161,10 +152,8 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO finish field map method
 		Map<String, String> dataMap = new HashMap<>();
 		if (invoiceNum != -1) {
-//			dataMap.put("invoicenum", Long.toString(customerId));		// TODO figure out what bugs this may have caused
 			dataMap.put("invoicenum", Long.toString(invoiceNum));
 		}
 		dataMap.put("customerid", Long.toString(customerId));

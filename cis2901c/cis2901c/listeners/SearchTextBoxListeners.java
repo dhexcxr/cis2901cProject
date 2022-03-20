@@ -12,11 +12,10 @@ import cis2901c.objects.Part;
 
 public class SearchTextBoxListeners implements ModifyListener {
 	
-	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
 	private MyText searchBox;
 	private MyTable table;
 	private DbObjectSearchable searchObject;
-	private final int DELETE_MENU_ITEM = 0;
+	private static final int DELETE_MENU_ITEM = 0;
 	
 	public SearchTextBoxListeners(MyText textBox, MyTable table) {
 		this.searchBox = textBox;

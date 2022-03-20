@@ -118,8 +118,6 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public Map<String, String> getDataMap() {
-		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
-			// to see how to treat it when building PreparedStatements with setParameter
 		Map<String, String> dataMap = new HashMap<>();
 		
 		if (partId != -1) {

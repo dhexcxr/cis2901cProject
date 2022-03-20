@@ -30,7 +30,7 @@ public class DbServices {
 	
 	private static Connection mainDbConnection = null;
 	private static final int SQL_FAILURE = -1;
-	final static int MAX_RESULTS = 255;		// max search return results
+	static final int MAX_RESULTS = 255;		// max search return results
 	
 	private DbServices() {
 	}
@@ -84,7 +84,7 @@ public class DbServices {
 			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
 		} 
-		while (System.currentTimeMillis() - splashTime < 2000) {};		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
+		while (System.currentTimeMillis() - splashTime < 2000);		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
 		connectingToDb.close();
 	}
 	
@@ -208,7 +208,7 @@ public class DbServices {
 				} else {
 					updateQueryHelper(queryString, entry.getKey(), "?");
 				}
-				results.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+				results.add(entry.getValue().trim());
 			}
 		}
 		return results;

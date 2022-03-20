@@ -10,8 +10,7 @@ public class PhoneNumberTextBoxModifyListener implements ModifyListener{
 	private MyText text;
 	private String textBoxText;
 	
-	// this is now used here and in PartInvoiceEditorEventListener, and in Customer
-	private static final String NOT_NUMBERS = "[^0-9]";		// find a better name
+	private static final String NOT_NUMBERS = "[^0-9]";
 	private static final String SEVEN_DIGIT_PHONE = "$1-$2";
 	private static final String TEN_DIGIT_PHONE = "$1-$2-$3";
 	private static final String INTERNATIONAL_PHONE = "$1-$2-$3-$4";

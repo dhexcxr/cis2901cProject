@@ -31,7 +31,6 @@ public class CreateNewObjectListener extends MouseAdapter{
 	@Override
 	public void mouseDown(MouseEvent e) {
 		
-		// TODO change this to pass in a new Object instead of checking table type, like in Object searches
 		Main.log(Level.INFO, "Mouse down event on a table, first column: " + table.getColumn(0).getText());
 		
 		Object newObject = null;

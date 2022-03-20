@@ -39,7 +39,7 @@ public class InvoicePartEditorListener implements Listener {
 	// if there is text in Part Number column when we "double" click to open Search box
 	protected boolean ignoreFocusOut = false;
 
-	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
+	private static final String ONLY_DECIMALS = "[^0-9.]";
 
 	public InvoicePartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex, int selectedColumnIndex,
 										Text editorTxtBox, List<MyText> invoiceDetailText) {
@@ -59,7 +59,6 @@ public class InvoicePartEditorListener implements Listener {
 
 	@Override
 	public void handleEvent(Event event) {
-		// TODO streamline all these ignoreFocusOuts
 		if (ignoreFocusOut) {
 			return;
 		}
@@ -112,9 +111,6 @@ public class InvoicePartEditorListener implements Listener {
 				editedLineItem = partResults[0];
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
-				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
-					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
-					// find a better way to get shell
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				editedLineItem = (Part) partSearchDialog.open(editorTxtBox.getText());
 			}
@@ -127,11 +123,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void paintInvoiceLines(Part editedLineItem) {
 		Main.log(Level.INFO, "paintInvoiceLines called");
-		// TODO if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
-		// TODO i think if we change this to a List<TableItem> we can just do a currentTableItems.contains(editedLineItem)
-																// to find part and increase Quantity by 1
 		TableItem[] currentTableItems = partInvoiceTable.getItems();
-		// TODO if editedLineItem is already in currentTableItems, find it's index and increase Quantity by 1
 
 		if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 			// if we're not editing an already populated TableItem line item
@@ -174,7 +166,7 @@ public class InvoicePartEditorListener implements Listener {
 		ignoreFocusOut = false;
 	}
 
-	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
+	private void setPartPrice(TableItem item) {
 		item.setText(InvoicePartTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ?
 				item.getText(InvoicePartTable.PART_PRICE_COLUMN) : editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
@@ -182,7 +174,7 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void calculateInvoiceTotal() {
-		BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
+		BigDecimal taxRate = BigDecimal.valueOf(0.065);
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = partInvoiceTable.getItems();
 		for (TableItem item : items) {

@@ -10,7 +10,6 @@ import cis2901c.main.Main;
 
 public class InvoicePartTable extends MyTable{
 	
-	// TODO find out where these are being used and see if I want to move them somewhere else, these are table indecies for Invoice Table columns
 	public static final int PART_NUMBER_COLUMN = 0;
 	public static final int QUANTITY_COLUMN = 2;
 	public static final int PART_PRICE_COLUMN = 5;
@@ -35,8 +34,7 @@ public class InvoicePartTable extends MyTable{
 				return;
 			}
 			Part part = (Part) object;
-			TableItem tableItem = this.getItem(selectedTableItemIndex);
-				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
+			TableItem tableItem = this.getItem(selectedTableItemIndex);	
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
 							part.getRetail().toString()});

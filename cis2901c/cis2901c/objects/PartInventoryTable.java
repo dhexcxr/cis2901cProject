@@ -19,7 +19,6 @@ public class PartInventoryTable extends MyTable{
 
 	public PartInventoryTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -30,8 +29,6 @@ public class PartInventoryTable extends MyTable{
 
 	@Override
 	public void paint(Object part, int selectedTableItemIndex) {
-		// TODO compare this with MyPartInvoiceTable.paint(Object)
-			// e.g. where is this method called and does it matter that I'm ignoring selectedTableItemIndex
 		this.paint(new Object[] {part});
 	}
 	
@@ -50,9 +47,7 @@ public class PartInventoryTable extends MyTable{
 		}
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
-	
-	// TODO this and sort() can be moved into MyTable class, the only thing thats different in any Table Class' version of this method
-				// is the String[] values which could be moved into a custom MyTableItem class
+
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
