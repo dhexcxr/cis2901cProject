@@ -59,6 +59,10 @@ public class InvoicePartEditorListener implements Listener {
 
 	@Override
 	public void handleEvent(Event event) {
+		// TODO streamline all these ignoreFocusOuts
+		if (ignoreFocusOut) {
+			return;
+		}
 		if (event.type == SWT.MouseDown ) {
 			if (selectedColumnIndex == InvoicePartTable.PART_NUMBER_COLUMN) {
 				ignoreFocusOut = true;
@@ -149,6 +153,7 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void setPartQuantity(TableItem item) {
+		ignoreFocusOut = true;
 		Part selectedPart = (Part) partInvoiceTable.getSelection()[0].getData();
 		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
 		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
@@ -162,10 +167,13 @@ public class InvoicePartEditorListener implements Listener {
 			onHandWarningDialogBox.setMessage("Quantity entered is more than On Hand Quantity\n\nQuantity set to On Hand");
 			onHandWarningDialogBox.open();
 			editorTxtBox.setText(Integer.toString(selectedPart.getOnHand()));
+			ignoreFocusOut = false;
+			return;
 		}
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
 				new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN))).toString()));
+		ignoreFocusOut = false;
 	}
 
 	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
