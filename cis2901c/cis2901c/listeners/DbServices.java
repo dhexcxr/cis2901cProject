@@ -1,5 +1,6 @@
 package cis2901c.listeners;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ParameterMetaData;
@@ -60,13 +61,6 @@ public class DbServices {
 		String user = "TestUser";
 		String pass = "test";
 		
-		long splashTime = System.currentTimeMillis();
-		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
-		connectingToDb.setSize(980, 640);
-		connectingToDb.setBackgroundImage(new Image(Main.display(), "resources\\splash.jpg"));
-		connectingToDb.setText("Connecting to database...");
-		connectingToDb.open();
-		
 		int i = 0;
 		while (!isConnected() && i < 3) {
 			try {
@@ -83,9 +77,7 @@ public class DbServices {
 			dbConnectionError.setText("DB Error");
 			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
-		} 
-		while (System.currentTimeMillis() - splashTime < 2000);		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
-		connectingToDb.close();
+		}
 	}
 	
 	public static void disconnectFromDb() {
