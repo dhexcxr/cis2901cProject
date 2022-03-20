@@ -222,6 +222,7 @@ public class NewCustomerDialog extends Dialog {
 	private void setupListeners() {
 		txtFirstName.addModifyListener(new InfoTextBoxModifyListener(txtFirstName));
 		txtLastName.addModifyListener(new RequiredTextBoxModifyListener(txtLastName));
+		txtLastName.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
 		txtAddress.addModifyListener(new InfoTextBoxModifyListener(txtAddress));
 		txtCity.addModifyListener(new InfoTextBoxModifyListener(txtCity));
 		txtState.addModifyListener(new InfoTextBoxModifyListener(txtState));
