@@ -28,6 +28,9 @@ public class AmountDueDialog extends Dialog{
 	public boolean open(String finalTotal) {
 		createContents();
 		txtFinalTotal.setText(finalTotal);
+		if (new BigDecimal(finalTotal.replaceAll("[^-.0-9]", "")).compareTo(BigDecimal.valueOf(0)) < 0) {
+			txtAmountTendered.setText("$0");
+		}
 		shlAmountDue.open();
 		shlAmountDue.layout();
 		Display display = getParent().getDisplay();
@@ -67,7 +70,7 @@ public class AmountDueDialog extends Dialog{
 		btnCashier.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {						// TODO don't allow anything but numbers
-				BigDecimal total = new BigDecimal(txtFinalTotal.getText().replaceAll("[^.0-9]", ""));
+				BigDecimal total = new BigDecimal(txtFinalTotal.getText().replaceAll("[^-.0-9]", ""));
 				BigDecimal tendered = new BigDecimal(txtAmountTendered.getText().replace("$", ""));
 				BigDecimal chageDue = total.subtract(tendered);
 				// if not enough money entered, complain
