@@ -169,8 +169,8 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
-		item.setText(InvoicePartTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
-			editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
+		item.setText(InvoicePartTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ?
+				item.getText(InvoicePartTable.PART_PRICE_COLUMN) : editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
 				new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN))).toString()));
 	}
