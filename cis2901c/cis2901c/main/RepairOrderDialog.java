@@ -158,11 +158,15 @@ public class RepairOrderDialog extends Dialog {
 			jobLabor.removeAll(Collections.singleton(null));
 			job.setLabor(jobLabor);
 			jobTableItem.setData(job);
-			tableJobsRepairOrder.setSelection(0);
-			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+//			tableJobsRepairOrder.setSelection(0);
+//			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 			
 			// TODO find and build Parts and Labor
 		}
+		
+		tableJobsRepairOrder.setSelection(0);
+		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+		jobLaborTable.notifyListeners(SWT.MouseDown, new Event());
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
