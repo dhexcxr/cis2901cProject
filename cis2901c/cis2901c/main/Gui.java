@@ -397,17 +397,17 @@ public class Gui extends Composite {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// spawn amount due dialog box
-				if (invoicePartsTable.getItemCount() == 1) {
-					MessageBox noPartsBox = new MessageBox(shell, SWT.ICON_INFORMATION);
-					noPartsBox.setText("Notice");
-					noPartsBox.setMessage("Enter a part to invoice");
-					noPartsBox.open();
-					return;
-				} else if (txtCustomerInvoice.getData() == null) {
+				if (txtCustomerInvoice.getData() == null) {
 					MessageBox customerRequiredBox = new MessageBox(shell, SWT.ICON_INFORMATION);
 					customerRequiredBox.setText("Notice");
 					customerRequiredBox.setMessage("Please select a Customer");
 					customerRequiredBox.open();
+					return;
+				} else if (invoicePartsTable.getItemCount() == 1) {
+					MessageBox noPartsBox = new MessageBox(shell, SWT.ICON_INFORMATION);
+					noPartsBox.setText("Notice");
+					noPartsBox.setMessage("Enter a part to invoice");
+					noPartsBox.open();
 					return;
 				}
 				AmountDueDialog amountDueDialog = new AmountDueDialog(shell, getStyle());
