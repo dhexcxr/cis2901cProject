@@ -39,7 +39,7 @@ public class InvoicePartEditorListener implements Listener {
 	// if there is text in Part Number column when we "double" click to open Search box
 	protected boolean ignoreFocusOut = false;
 
-	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
+	private static final String ONLY_DECIMALS = "[^-0-9.]"; // find a better name
 
 	public InvoicePartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex, int selectedColumnIndex,
 										Text editorTxtBox, List<MyText> invoiceDetailText) {
