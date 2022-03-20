@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
@@ -41,15 +39,10 @@ import cis2901c.objects.Invoice;
 import cis2901c.objects.CustomerTable;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.PartInventoryTable;
-import cis2901c.objects.RepairOrder;
 import cis2901c.objects.InvoicePartTable;
-import cis2901c.objects.RepairOrderTable;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
-import cis2901c.objects.UnitTable;
 import cis2901c.objects.Part;
-import cis2901c.objects.Unit;
-
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.events.MouseAdapter;
@@ -57,15 +50,8 @@ import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
 
-	// TODO why are these out here? maybe move them into methods where they are used
 	private Shell shell;
 
-	
-	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
-	 */
 	public Gui(Composite parent, int style) {
 		super(parent, style);
 		
@@ -89,75 +75,9 @@ public class Gui extends Composite {
 		Composite repairOrdersComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmRepairOrders.setControl(repairOrdersComposite);
 
-		// Table for RO search results
-		RepairOrderTable roTable = new RepairOrderTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		roTable.setBounds(10, 74, 976, 631);
-		roTable.setHeaderVisible(true);
-		roTable.setLinesVisible(true);
-		roTable.addMouseListener(new OpenExistingObjectMouseListener(roTable, shell));
-
-		TableColumn tblclmnRoRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnRoRo.setText("RO #");
-		tblclmnRoRo.setWidth(75);
-
-		TableColumn tblclmnCustomerRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnCustomerRo.setText("Customer");
-		tblclmnCustomerRo.setWidth(164);
-
-		TableColumn tblclmnYearRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnYearRo.setText("Year");
-		tblclmnYearRo.setWidth(65);
-
-		TableColumn tblclmnMakeRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnMakeRo.setText("Make");
-		tblclmnMakeRo.setWidth(109);
-
-		TableColumn tblclmnModelRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnModelRo.setText("Model");
-		tblclmnModelRo.setWidth(113);
-
-		TableColumn tblclmnVinRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnVinRo.setText("VIN");
-		tblclmnVinRo.setWidth(222);
-
-		TableColumn tblclmnJobsRo = new TableColumn(roTable, SWT.NONE);
-		tblclmnJobsRo.setText("Jobs");
-		tblclmnJobsRo.setWidth(212);
-
-		// RO controls
-		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
-		roSearchBox.setText("Search...");
-		roSearchBox.setBounds(10, 10, 830, 26);
-//		roSearchBox.addModifyListener(new RepairOrderSearchBoxListeners(roSearchBox, roTable));
-		roSearchBox.addModifyListener(new SearchTextBoxListeners(roSearchBox, roTable, new RepairOrder()));
-		roSearchBox.addFocusListener(new TextBoxFocusListener(roSearchBox));
-
-		Button btnNewRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
-		btnNewRepairOrder.setBounds(846, 10, 140, 26);
-		btnNewRepairOrder.setText("New Repair Order");
-		btnNewRepairOrder.addMouseListener(new CreateNewObjectListener(roTable, roSearchBox, shell));
-
-		Button btnNewEstimate = new Button(repairOrdersComposite, SWT.NONE);
-		btnNewEstimate.setText("New Estimate");
-		btnNewEstimate.setBounds(846, 42, 140, 26);
-
-		Button btnDeleteRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
-		btnDeleteRepairOrder.setText("Delete Repair Order");
-		btnDeleteRepairOrder.setBounds(700, 42, 140, 26);
-		btnDeleteRepairOrder.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// delete Repair Order
-			}
-		});
-
-		Button btnShowCashiered = new Button(repairOrdersComposite, SWT.CHECK);
-		btnShowCashiered.setText("Show Cashiered");
-		btnShowCashiered.setBounds(10, 42, 129, 20);
-
-		Button btnShowEstimates = new Button(repairOrdersComposite, SWT.CHECK);
-		btnShowEstimates.setText("Show Estimates");
-		btnShowEstimates.setBounds(145, 42, 127, 20);
+		Label lblNotImplimentedYet = new Label(repairOrdersComposite, SWT.NONE);
+		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 	
 	private void partsTab(TabFolder tabFolder) {
@@ -252,7 +172,6 @@ public class Gui extends Composite {
 		txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtCustomerInvoice.setBounds(10, 10, 554, 128);
 		txtCustomerInvoice.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerInvoice));
-			// TODO if double clicking to search, trim just first name, we'll hafta refacter CustomerSearchListener
 		txtCustomerInvoice.addMouseListener(new CustomerSearchListener(txtCustomerInvoice));
 		
 		MyText txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
@@ -388,10 +307,6 @@ public class Gui extends Composite {
 		tblclmnExtendedPriceInvoice.setWidth(114);
 		tblclmnExtendedPriceInvoice.setText("Extended Price");
 		
-		// TODO see if I can add this to InvoicePartTable constructer
-//		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-//		TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
-		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
 		btnCashier.addMouseListener(new MouseAdapter() {
 			@Override
@@ -476,8 +391,7 @@ public class Gui extends Composite {
 			public void mouseDown(MouseEvent e) {
 				// open invoice search dialog
 				InvoiceSearchDialog invoiceSearchDialog = new InvoiceSearchDialog(Display.getDefault().getActiveShell(), SWT.NONE);
-				Invoice invoiceToEdit = (Invoice) invoiceSearchDialog.open();		// TODO check all casts
-				// populate all invoice tab fields with data from invoice to edit
+				invoiceSearchDialog.open();
 			}
 		});
 		btnSearchForInvoice.setBounds(485, 607, 105, 45);
@@ -490,6 +404,10 @@ public class Gui extends Composite {
 		
 		Composite orderComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmOrder.setControl(orderComposite);
+		
+		Label lblNotImplimentedYet = new Label(orderComposite, SWT.NONE);
+		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 		// END Order Tab
 	}
 	
@@ -522,7 +440,6 @@ public class Gui extends Composite {
 		tblclmnAddressCustomer.setWidth(100);
 		tblclmnAddressCustomer.addSelectionListener(new TableColumnSortListener(tblclmnAddressCustomer));
 		
-
 		TableColumn tblclmnCityCustomer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnCityCustomer.setText("City");
 		tblclmnCityCustomer.setWidth(100);
@@ -581,71 +498,9 @@ public class Gui extends Composite {
 		Composite unitsComposite = new Composite(tabFolder, SWT.NONE);
 		tbtmUnits.setControl(unitsComposite);
 
-		// Table for Unit search results
-		MyTable unitTable = new UnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
-		unitTable.setBounds(10, 42, 976, 663);
-		unitTable.setHeaderVisible(true);
-		unitTable.setLinesVisible(true);
-
-		TableColumn tblclmnOwnerUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnOwnerUnit.setText("Owner");
-		tblclmnOwnerUnit.setWidth(165);
-
-		TableColumn tblclmnMakeUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMakeUnit.setText("Make");
-		tblclmnMakeUnit.setWidth(119);
-		tblclmnMakeUnit.addSelectionListener(new TableColumnSortListener(tblclmnMakeUnit));
-
-		TableColumn tblclmnModelUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModelUnit.setText("Model");
-		tblclmnModelUnit.setWidth(138);
-		tblclmnModelUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelUnit));
-
-		TableColumn tblclmnModelNameUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnModelNameUnit.setText("Model Name");
-		tblclmnModelNameUnit.setWidth(148);
-		tblclmnModelNameUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelNameUnit));
-
-		TableColumn tblclmnYearUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnYearUnit.setText("Year");
-		tblclmnYearUnit.setWidth(50);
-		tblclmnYearUnit.addSelectionListener(new TableColumnSortListener(tblclmnYearUnit));
-
-		TableColumn tblclmnMileageUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnMileageUnit.setText("Mileage");
-		tblclmnMileageUnit.setWidth(85);
-		tblclmnMileageUnit.addSelectionListener(new TableColumnSortListener(tblclmnMileageUnit));
-
-		TableColumn tblclmnColorUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnColorUnit.setText("Color");
-		tblclmnColorUnit.setWidth(49);
-		tblclmnColorUnit.addSelectionListener(new TableColumnSortListener(tblclmnColorUnit));
-
-		TableColumn tblclmnVinUnit = new TableColumn(unitTable, SWT.NONE);
-		tblclmnVinUnit.setText("VIN");
-		tblclmnVinUnit.setWidth(215);
-		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
-
-		// Delete right click menu
-		Menu popupMenu = new Menu(unitTable);
-		MenuItem deleteUnit = new MenuItem(popupMenu, SWT.NONE);
-		deleteUnit.setText("Delete Unit");
-		deleteUnit.setEnabled(false);
-		deleteUnit.addSelectionListener(new DeleteObjectListener(unitTable));
-		unitTable.setMenu(popupMenu);
-		
-		// Unit controls
-		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
-		unitSearchBox.setText("Search...");
-		unitSearchBox.setBounds(10, 10, 861, 26);
-		unitSearchBox.addModifyListener(new SearchTextBoxListeners(unitSearchBox, unitTable, new Unit()));
-		unitSearchBox.addFocusListener(new TextBoxFocusListener(unitSearchBox));
-		
-		Button btnNewUnit = new Button(unitsComposite, SWT.NONE);
-		btnNewUnit.setText("New Unit");
-		btnNewUnit.setBounds(877, 10, 109, 26);
-		btnNewUnit.addMouseListener(new CreateNewObjectListener(unitTable, unitSearchBox, shell));
+		Label lblNotImplimentedYet = new Label(unitsComposite, SWT.NONE);
+		lblNotImplimentedYet.setText("Not Implimented Yet...");
+		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 	
 	private void reportsTab(TabFolder tabFolder) {

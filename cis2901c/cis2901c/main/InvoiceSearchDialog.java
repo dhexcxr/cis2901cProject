@@ -94,21 +94,8 @@ public class InvoiceSearchDialog extends Dialog {
 		tblclmnTotal.addSelectionListener(new TableColumnSortListener(tblclmnTotal));
 
 		// dialog  controls
-		Button btnOpenInvoice = new Button(shlInvoiceSearch, SWT.NONE);
-		btnOpenInvoice.setText("Open Invoice");
-		btnOpenInvoice.setBounds(10, 330, 256, 26);
-		btnOpenInvoice.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (invoiceTable.getSelection().length > 0) {
-					result =  invoiceTable.getSelection()[0].getData();
-					shlInvoiceSearch.close();
-				}
-			}
-		});
-
 		Button btnCancel = new Button(shlInvoiceSearch, SWT.NONE);
-		btnCancel.setText("Cancel");
+		btnCancel.setText("Close");
 		btnCancel.setBounds(368, 330, 256, 26);
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
