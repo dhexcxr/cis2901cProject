@@ -108,6 +108,9 @@ public class InvoicePartEditorListener implements Listener {
 				editedLineItem = partResults[0];
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
+				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
+					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
+					// find a better way to get shell
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				editedLineItem = (Part) partSearchDialog.open(editorTxtBox.getText());
 			}
@@ -147,7 +150,12 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void setPartQuantity(TableItem item) {
 		Part selectedPart = (Part) partInvoiceTable.getSelection()[0].getData();
-		if (Integer.parseInt(editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "")) > selectedPart.getOnHand()) {
+		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
+		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
+		if (newQuantity.equals("")) {
+			newQuantity = currentQuantity;
+		}
+		if (Integer.parseInt(newQuantity) > selectedPart.getOnHand()) {
 			// if quantity entered is more than OnHand, pop up dialog telling user as much and set to OnHand
 			MessageBox onHandWarningDialogBox = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
 			onHandWarningDialogBox.setText("Notice");
@@ -155,8 +163,7 @@ public class InvoicePartEditorListener implements Listener {
 			onHandWarningDialogBox.open();
 			editorTxtBox.setText(Integer.toString(selectedPart.getOnHand()));
 		}
-		item.setText(InvoicePartTable.QUANTITY_COLUMN, editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "").equals("") ? "0" :
-			editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
+		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
 				new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN))).toString()));
 	}
