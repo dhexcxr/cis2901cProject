@@ -25,19 +25,10 @@ public class Main {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Start GUI
-		
-//		DeviceData data = new DeviceData();		// Sleak
-//	    data.tracking = true;					// Sleak
-//		Display display = new Display(data);	// "data" parameter is Sleak
-//		Sleak sleak = new Sleak();				// Sleak
-//	    sleak.open();							// Sleak
-	    
-	    
 	    display = new Display();
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));

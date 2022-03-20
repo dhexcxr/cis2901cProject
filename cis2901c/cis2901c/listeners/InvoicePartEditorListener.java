@@ -166,9 +166,7 @@ public class InvoicePartEditorListener implements Listener {
 			onHandWarningDialogBox.setText("Notice");
 			onHandWarningDialogBox.setMessage("Quantity entered is more than On Hand Quantity\n\nQuantity set to On Hand");
 			onHandWarningDialogBox.open();
-			editorTxtBox.setText(Integer.toString(selectedPart.getOnHand()));
-			ignoreFocusOut = false;
-			return;
+			newQuantity = Integer.toString(selectedPart.getOnHand());
 		}
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(

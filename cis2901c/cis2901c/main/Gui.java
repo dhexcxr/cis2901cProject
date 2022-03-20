@@ -237,9 +237,9 @@ public class Gui extends Composite {
 		lblCategory.setBounds(312, 69, 63, 20);
 		lblCategory.setText("Category:");
 		
-		MyText textNotesInvoice = new MyText(grpSelectedPart, SWT.BORDER);
-		textNotesInvoice.setEditable(false);
-		textNotesInvoice.setBounds(10, 51, 296, 107);
+		MyText textPartNotesInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textPartNotesInvoice.setEditable(false);
+		textPartNotesInvoice.setBounds(10, 51, 296, 107);
 		
 		Label lblNotes = new Label(grpSelectedPart, SWT.NONE);
 		lblNotes.setBounds(10, 23, 42, 20);
@@ -257,11 +257,11 @@ public class Gui extends Composite {
 					Part selectedPart = (Part) invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData();
 					textCategoryInvoice.setText(selectedPart.getCategory());
 					textSupplierInvoice.setText(selectedPart.getSupplier());
-					textNotesInvoice.setText(selectedPart.getNotes());
+					textPartNotesInvoice.setText(selectedPart.getNotes());
 				} else {
 					textCategoryInvoice.setText("");
 					textSupplierInvoice.setText("");
-					textNotesInvoice.setText("");
+					textPartNotesInvoice.setText("");
 				}
 			}
 		});
@@ -272,7 +272,7 @@ public class Gui extends Composite {
 		invoiceDetailText.add(txtFinalTotal);
 		invoiceDetailText.add(textCategoryInvoice);
 		invoiceDetailText.add(textSupplierInvoice);
-		invoiceDetailText.add(textNotesInvoice);
+		invoiceDetailText.add(textPartNotesInvoice);
 	    invoicePartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(invoicePartsTable, invoiceDetailText));
 	    
 		invoicePartsTable.setLinesVisible(true);
@@ -332,7 +332,7 @@ public class Gui extends Composite {
 					Invoice cashieredInvoice = new Invoice();
 					cashieredInvoice.setCustomerId(((Customer) txtCustomerInvoice.getData()).getCustomerId());
 					cashieredInvoice.setCustomerData(txtCustomerInvoice.getText());
-					cashieredInvoice.setNotes(textNotesInvoice.getText());
+					cashieredInvoice.setNotes(txtInvoiceNotes.getText());
 					cashieredInvoice.setTax(new BigDecimal(txtTaxInvoice.getText().replace("$", "")));
 					cashieredInvoice.setCashiereDateTime(Timestamp.from(Instant.now()));
 					cashieredInvoice.setCashiered(true);
@@ -350,7 +350,7 @@ public class Gui extends Composite {
 					txtFinalTotal.setText("0.00");
 					textCategoryInvoice.setText("");
 					textSupplierInvoice.setText("");
-					textNotesInvoice.setText("");
+					textPartNotesInvoice.setText("");
 					invoicePartsTable.removeAll();
 					@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
 					TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
@@ -373,7 +373,7 @@ public class Gui extends Composite {
 				txtFinalTotal.setText("0.00");
 				textCategoryInvoice.setText("");
 				textSupplierInvoice.setText("");
-				textNotesInvoice.setText("");
+				textPartNotesInvoice.setText("");
 				invoicePartsTable.removeAll();
 				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
 				TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
