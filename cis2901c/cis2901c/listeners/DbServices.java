@@ -1,5 +1,6 @@
 package cis2901c.listeners;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ParameterMetaData;
@@ -37,7 +38,7 @@ public class DbServices {
 	
 	private static Connection mainDbConnection = null;
 	private static final int SQL_FAILURE = -1;
-	final static int MAX_RESULTS = 255;		// max search return results
+	private static final int MAX_RESULTS = 255;		// max search return results
 	
 	private DbServices() {
 	}
@@ -73,7 +74,7 @@ public class DbServices {
 		long splashTime = System.currentTimeMillis();
 		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
 		connectingToDb.setSize(980, 640);
-		connectingToDb.setBackgroundImage(new Image(Main.display(), "resources\\splash.jpg"));
+		connectingToDb.setBackgroundImage(new Image(Main.display(), DbServices.class.getResourceAsStream("splash.jpg")));
 		connectingToDb.setText("Connecting to database...");
 		connectingToDb.open();
 		

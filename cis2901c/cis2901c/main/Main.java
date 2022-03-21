@@ -3,6 +3,7 @@
 
 package cis2901c.main;
 
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,7 @@ public class Main {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");
-		shell.setImage(new Image(Main.display(), "resources\\icon.png"));
+		shell.setImage(new Image(Main.display(), Main.class.getResourceAsStream("icon.png")));
 		@SuppressWarnings("unused")
 		Gui gui = new Gui(shell, SWT.NONE);
 		shell.pack();
