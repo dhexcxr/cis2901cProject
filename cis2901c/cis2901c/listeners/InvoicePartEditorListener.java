@@ -118,8 +118,25 @@ public class InvoicePartEditorListener implements Listener {
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				editedLineItem = (Part) partSearchDialog.open(editorTxtBox.getText());
 			}
+			
 			if (editedLineItem != null) {
-				paintInvoiceLines(editedLineItem);	
+				// TODO this is kinda ugly, I might be able to move this into paintInvoiceLines(Part editedLineItem)
+				boolean alreadyInLineItems = false;
+				TableItem editedTableItem = null;
+				for (TableItem tableItem : partInvoiceTable.getItems()) {
+					if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))) {
+						alreadyInLineItems = true;
+						editedTableItem = tableItem;
+						partInvoiceTable.setSelection(editedTableItem);
+						int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
+						tableItem.setText(InvoicePartTableItem.QUANTITY_COLUMN, Integer.toString(quantity + 1));
+					}
+				}
+				if (alreadyInLineItems) {
+					setPartQuantity(editedTableItem);
+				} else {
+					paintInvoiceLines(editedLineItem);
+				}	
 			}
 		}
 		ignoreFocusOut = false;

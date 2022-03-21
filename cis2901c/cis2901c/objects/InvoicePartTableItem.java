@@ -10,9 +10,10 @@ public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 	
 	// this emulates the invoicepart DB table
 	
-	private static final int DESCRIPTION_COLUMN = 1;
-	private static final int QUANTITY_COLUMN = 2;
-	private static final int SOLDPRICE_COLUMN = 6;
+	public static final int PART_NUMBER_COLUMN = 0;
+	public static final int DESCRIPTION_COLUMN = 1;
+	public static final int QUANTITY_COLUMN = 2;
+	public static final int SOLDPRICE_COLUMN = 6;
 	
 	private Map<String, String> dataMap = new HashMap<>();
 
