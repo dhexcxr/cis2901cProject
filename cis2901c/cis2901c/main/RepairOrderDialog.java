@@ -46,7 +46,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.eclipse.swt.widgets.Composite;
@@ -91,6 +93,8 @@ public class RepairOrderDialog extends Dialog {
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
 	
+	private Map<String, List<Long>> detailsToDelete = new HashMap<>();
+	
 	private RepairOrder currentRepairOrder;
 	private long customerId;
 	
@@ -101,6 +105,18 @@ public class RepairOrderDialog extends Dialog {
 	
 	// TODO create isModified variable in this RepairOrderDialog object to track if ANYTHING in the underlying repairOrder has been modified
 		// so we can ask the user if they want to save before closing RepairOrderDialog
+	
+	public Map<String, List<Long>> getDetailsToDelete() {
+		return detailsToDelete;
+	}
+	
+	public void addDetailsToDelete(String table, Long primaryKey) {
+//		if (detailsToDelete.get(table) == null) {
+//			detailsToDelete.put(table, new ArrayList<>());
+//		}
+		detailsToDelete.computeIfAbsent(table, t -> new ArrayList<>()).add(primaryKey);
+//		detailsToDelete.get(table).add(primaryKey);
+	}
 	
 
 	/**
@@ -446,14 +462,20 @@ public class RepairOrderDialog extends Dialog {
 						int selectedIndex = -1;
 						if (tableJobsRepairOrder.getSelectionIndex() >= 0 && tableJobsRepairOrder.getSelectionIndex() < tableJobsRepairOrder.getItemCount()
 								&& tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData() != null) {
+
+							Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
+							// keep track of things to delete
+							addDetailsToDelete(selectedJob.getTableName(), selectedJob.getJobId());
+							
 							selectedIndex = tableJobsRepairOrder.getSelectionIndex();
 							tableJobsRepairOrder.remove(selectedIndex);
-						}
-						selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
-						tableJobsRepairOrder.setSelection(selectedIndex);
-						tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+							
+							selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
+							tableJobsRepairOrder.setSelection(selectedIndex);
+							tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 
-						calcRoTotal();
+							calcRoTotal();
+						}
 						
 						// disable Job Tabs if no jobs on Job Table
 						if (tableJobsRepairOrder.getItemCount() == 0) {
@@ -587,7 +609,16 @@ public class RepairOrderDialog extends Dialog {
 					@Override
 					public void mouseDown(MouseEvent e) {
 						// delete Labor from Labor Table
-						if (jobLaborTable.getSelectionIndex() >=0 && jobLaborTable.getSelectionIndex() < jobLaborTable.getItemCount()) {
+						if (jobLaborTable.getSelectionIndex() >=0 && jobLaborTable.getSelectionIndex() < jobLaborTable.getItemCount()
+								&& jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData() != null) {
+							JobLabor selectedJobLabor = (JobLabor) jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData();
+							// keep track of things to delete
+//							if (detailsToDelete.get("joblabor") == null) {
+//								detailsToDelete.put("joblabor", new ArrayList<>());
+//							}
+//							detailsToDelete.get("joblabor").add(selectedJobLabor.getJobLaborId());
+							addDetailsToDelete(selectedJobLabor.getTableName(), selectedJobLabor.getJobLaborId());
+							
 							int selectedIndex = jobLaborTable.getSelectionIndex();
 							jobLaborTable.remove(selectedIndex);
 							
@@ -747,6 +778,8 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	private void saveRo(RepairOrder repairOrder) {
+		
+		DbServices.deleteDetailsFromRo(detailsToDelete);
 		
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
 			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());

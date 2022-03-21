@@ -3,34 +3,39 @@ package cis2901c.listeners;
 import java.math.BigDecimal;
 
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Text;
+//import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
+import cis2901c.objects.JobPart;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
 public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLineItemListener {
 	
+	private MyTable repairOrderPartTableInvoice;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private RepairOrderDialog repairOrderDialog;
 
 	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, RepairOrderJobTable tableJobsRepairOrder,
 				RepairOrderDialog repairOrderDialog) {
 		super(repairOrderPartTableInvoice);
+		this.repairOrderPartTableInvoice = repairOrderPartTableInvoice;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.repairOrderDialog = repairOrderDialog;
 		// TODO Auto-generated constructor stub
 	}
 
-	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, Text txtPartsTotalInvoice,
-			Text txtTaxInvoice, Text txtFinalTotal) {
-		super(repairOrderPartTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal);
-		// TODO Auto-generated constructor stub
-	}
+//	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, Text txtPartsTotalInvoice,
+//			Text txtTaxInvoice, Text txtFinalTotal) {
+//		super(repairOrderPartTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal);
+//		// TODO Auto-generated constructor stub
+//	}
 	
 	@Override
 	public void mouseDown(MouseEvent event) {
+		JobPart selectedJobPart = (JobPart) repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData();
+		repairOrderDialog.addDetailsToDelete(selectedJobPart.getTableName(), selectedJobPart.getJobPartId());
 		super.mouseDown(event);
 		totalParts();
 	}

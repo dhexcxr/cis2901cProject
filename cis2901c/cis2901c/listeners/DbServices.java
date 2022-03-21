@@ -121,7 +121,7 @@ public class DbServices {
 		if (dbObject == null) {
 			return 0;		// no object passed in, so no object deleted
 		}
-		StringBuilder queryString = new StringBuilder();
+		StringBuilder queryString = new StringBuilder();		// TODO this query (below) is potentially dangerous, i'm not sanitizing getDbPk() with PrepareStatement
 		queryString.append("DELETE FROM cis2901c." + dbObject.getTableName() + " WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk());
 		return sendQueryToDb(queryString);
 	}
@@ -286,7 +286,7 @@ public class DbServices {
 			}
 			statement.execute();
 			updateCount = statement.getUpdateCount();
-			Main.log(Level.INFO, "Update Count: " + statement.getUpdateCount());
+			Main.log(Level.INFO, "Update Count: " + updateCount);
 		} catch (SQLException e) {
 			Main.log(Level.SEVERE, "SQL Error: " + queryString);
 			e.printStackTrace();
@@ -335,6 +335,43 @@ public class DbServices {
 		}
 		field.append(data);
 		queryString.insert(fieldInsertionPoint, field);
+	}
+	
+	public static int deleteDetailsFromRo(Map<String, List<Long>> detailsToDelete) {
+		int updateCount = 0;
+		for (Map.Entry<String, List<Long>> entry : detailsToDelete.entrySet()) {
+			// if Job, delete part, then labor, then job
+			if (entry.getKey().equals("job")) {
+				for (Long primaryKey : entry.getValue()) {
+					deleteObjectsByPk("part", entry.getKey() + "id", primaryKey);
+					deleteObjectsByPk("labor", entry.getKey() + "id", primaryKey);
+					deleteObjectsByPk(entry.getKey(), entry.getKey() + "id", primaryKey);
+				}
+			}
+			// if part, delete part
+			// if labor, delete labor
+		}
+		
+		return updateCount;
+	}
+	
+	private static int deleteObjectsByPk(String tableName, String primaryKeyName, Long primaryKey) {
+		int updateCount = 0;
+		if (!isConnected()) {
+			connectToDb();
+		}
+		String deleteQuery = "DELETE FROM " + tableName + " WHERE " + primaryKeyName + " = ?;";
+		
+		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(deleteQuery)) {
+			statement.setLong(1, primaryKey);
+			statement.execute();
+			updateCount = statement.getUpdateCount();
+			Main.log(Level.INFO, "Delete from " + tableName + " Count: " + updateCount);
+		} catch (SQLException e) {
+			// TODO print deleteQuery or statement
+			e.printStackTrace();
+		}
+		return updateCount;
 	}
 	
 	public static String[] sanitizer(String searchQuery) {
