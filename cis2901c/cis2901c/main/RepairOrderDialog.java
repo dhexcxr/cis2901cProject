@@ -169,6 +169,7 @@ public class RepairOrderDialog extends Dialog {
 		tableJobsRepairOrder.setSelection(0);
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 //		jobLaborTable.notifyListeners(SWT.MouseDown, new Event());
+		this.calcRoTotal();
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
@@ -672,7 +673,7 @@ public class RepairOrderDialog extends Dialog {
 		// used in tableJobsRepairOrder.addSelectionListener
 		JobLaborTableItem jobLabor = new JobLaborTableItem(jobLaborTable, getStyle());
 		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString(),
-							labor.getHours().multiply(labor.getLaborRate()).toString()});
+							labor.getHours().multiply(labor.getLaborRate()).setScale(2, RoundingMode.CEILING).toString()});
 		jobLabor.setData(labor);
 	}
 	
