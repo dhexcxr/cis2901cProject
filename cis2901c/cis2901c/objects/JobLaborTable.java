@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import cis2901c.main.Main;
 
-public class LaborTable extends MyTable {
+public class JobLaborTable extends MyTable {
 	
 	public static final int TECHNICIAN_COLUMN = 0;
 	public static final int DESCRIPTION_COLUMN = 1;
@@ -18,7 +18,7 @@ public class LaborTable extends MyTable {
 	public static final int RATE_COLUMN = 3;
 	public static final int TOTAL_COLUMN = 4;
 
-	public LaborTable(Composite parent, int style) {
+	public JobLaborTable(Composite parent, int style) {
 		super(parent, style);
 		// TODO Auto-generated constructor stub
 //		@SuppressWarnings("unused")
@@ -63,13 +63,13 @@ public class LaborTable extends MyTable {
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = this.getItems();
 		for (TableItem item : items) {
-			if (item.getText(LaborTable.TOTAL_COLUMN).equals("")) {
+			if (item.getText(JobLaborTable.TOTAL_COLUMN).equals("")) {
 				// ignore new TableItem at end of list with no data set 
 				break;
 			}
 			Main.log(Level.INFO, "labor Total before: " + total.toString());
-			total = total.add(new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)));
-			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)).toString());
+			total = total.add(new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)));
+			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)).toString());
 			Main.log(Level.INFO, "labor Total after: " + total.toString());
 		}
 		return total;

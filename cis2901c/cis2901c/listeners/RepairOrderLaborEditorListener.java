@@ -11,15 +11,15 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
 import cis2901c.main.RepairOrderDialog;
-import cis2901c.objects.LaborTable;
-import cis2901c.objects.LaborTableItem;
+import cis2901c.objects.JobLaborTable;
+import cis2901c.objects.JobLaborTableItem;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
 public class RepairOrderLaborEditorListener implements Listener {
 
-	private LaborTable jobLaborTable;
-	private LaborTableItem selectedTableItem;
+	private JobLaborTable jobLaborTable;
+	private JobLaborTableItem selectedTableItem;
 	private int selectedColumnIndex;
 	private Text editorTxtBox;
 	private RepairOrderJobTable tableJobsRepairOrder;
@@ -30,10 +30,10 @@ public class RepairOrderLaborEditorListener implements Listener {
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 
 
-	public RepairOrderLaborEditorListener(LaborTable jobLaborTable, int selectedTableItemIndex, int selectedColumnIndex,
+	public RepairOrderLaborEditorListener(JobLaborTable jobLaborTable, int selectedTableItemIndex, int selectedColumnIndex,
 			Text editorTxtBox, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex, RepairOrderDialog repairOrderDialog) {
 		this.jobLaborTable = jobLaborTable;
-		this.selectedTableItem = (LaborTableItem) jobLaborTable.getItem(selectedTableItemIndex);
+		this.selectedTableItem = (JobLaborTableItem) jobLaborTable.getItem(selectedTableItemIndex);
 		this.selectedColumnIndex = selectedColumnIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
@@ -56,24 +56,24 @@ public class RepairOrderLaborEditorListener implements Listener {
 	}
 	
 	private void setColumnData() {
-		if (selectedColumnIndex == LaborTable.TECHNICIAN_COLUMN || selectedColumnIndex == LaborTable.DESCRIPTION_COLUMN) {
+		if (selectedColumnIndex == JobLaborTable.TECHNICIAN_COLUMN || selectedColumnIndex == JobLaborTable.DESCRIPTION_COLUMN) {
 			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText());
-		} else if (selectedColumnIndex == LaborTable.HOURS_COLUMN || selectedColumnIndex == LaborTable.RATE_COLUMN) {
+		} else if (selectedColumnIndex == JobLaborTable.HOURS_COLUMN || selectedColumnIndex == JobLaborTable.RATE_COLUMN) {
 																			 // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
 			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
 				editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
 			calculateJobTotal();
 		}
-		selectedTableItem.setData(selectedTableItem.getText(LaborTable.TECHNICIAN_COLUMN), selectedTableItem.getText(LaborTable.DESCRIPTION_COLUMN),
-										new BigDecimal(selectedTableItem.getText(LaborTable.HOURS_COLUMN).replaceAll(ONLY_DECIMALS, "")),
-											new BigDecimal(selectedTableItem.getText(LaborTable.RATE_COLUMN).replaceAll(ONLY_DECIMALS, "")));
+		selectedTableItem.setData(selectedTableItem.getText(JobLaborTable.TECHNICIAN_COLUMN), selectedTableItem.getText(JobLaborTable.DESCRIPTION_COLUMN),
+										new BigDecimal(selectedTableItem.getText(JobLaborTable.HOURS_COLUMN).replaceAll(ONLY_DECIMALS, "")),
+											new BigDecimal(selectedTableItem.getText(JobLaborTable.RATE_COLUMN).replaceAll(ONLY_DECIMALS, "")));
 		editorTxtBox.dispose();
 	}
 	
 	private void calculateJobTotal() {
-		BigDecimal hours = new BigDecimal(selectedTableItem.getText(LaborTable.HOURS_COLUMN));
-		BigDecimal rate = new BigDecimal(selectedTableItem.getText(LaborTable.RATE_COLUMN));
-		selectedTableItem.setText(LaborTable.TOTAL_COLUMN, (hours.multiply(rate).toString()));
+		BigDecimal hours = new BigDecimal(selectedTableItem.getText(JobLaborTable.HOURS_COLUMN));
+		BigDecimal rate = new BigDecimal(selectedTableItem.getText(JobLaborTable.RATE_COLUMN));
+		selectedTableItem.setText(JobLaborTable.TOTAL_COLUMN, (hours.multiply(rate).toString()));
 	}
 	
 	private void setTotalLabor() {
@@ -90,13 +90,13 @@ public class RepairOrderLaborEditorListener implements Listener {
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = jobLaborTable.getItems();
 		for (TableItem item : items) {
-			if (item.getText(LaborTable.TOTAL_COLUMN).equals("")) {
+			if (item.getText(JobLaborTable.TOTAL_COLUMN).equals("")) {
 				// ignore new TableItem at end of list with no data set 
 				break;
 			}
 			Main.log(Level.INFO, "labor Total before: " + total.toString());
-			total = total.add(new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)));
-			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(LaborTable.TOTAL_COLUMN)).toString());
+			total = total.add(new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)));
+			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)).toString());
 			Main.log(Level.INFO, "labor Total after: " + total.toString());
 		}
 		return total;

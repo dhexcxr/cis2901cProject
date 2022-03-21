@@ -16,15 +16,15 @@ import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
 import cis2901c.objects.Job;
-import cis2901c.objects.Labor;
-import cis2901c.objects.LaborTable;
+import cis2901c.objects.JobLabor;
+import cis2901c.objects.JobLaborTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 import cis2901c.objects.Unit;
-import cis2901c.objects.LaborTableItem;
+import cis2901c.objects.JobLaborTableItem;
 import cis2901c.objects.MyTable;
 
 import org.eclipse.swt.widgets.TableColumn;
@@ -84,7 +84,7 @@ public class RepairOrderDialog extends Dialog {
 	private MyText txtResolution;
 	private MyText txtReccomendations;
 	private InvoicePartTable jobPartsTable;
-	private LaborTable jobLaborTable;
+	private JobLaborTable jobLaborTable;
 	
 	private RepairOrder currentRepairOrder;
 	private long customerId;
@@ -154,14 +154,16 @@ public class RepairOrderDialog extends Dialog {
 				break;
 			}
 			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-			List<Labor> jobLabor = new ArrayList<>(Arrays.asList((Labor[]) DbServices.searchForObjectsByPk(new Labor(job.getJobId()))));
+			
+			// find and build labor
+			List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
 			jobLabor.removeAll(Collections.singleton(null));
 			job.setLabor(jobLabor);
-			jobTableItem.setData(job);
-//			tableJobsRepairOrder.setSelection(0);
-//			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+						
+			// TODO find and build Parts
+//			List<Part> jobPart = new ArrayList<>(Arrays.asList((Part[]) DbServices.searchForObjectsByPk(new Part(job.getJobId()))));
 			
-			// TODO find and build Parts and Labor
+			jobTableItem.setData(job);
 		}
 		
 		tableJobsRepairOrder.setSelection(0);
@@ -386,7 +388,7 @@ public class RepairOrderDialog extends Dialog {
 		Composite jobLaborComposite = new Composite(tabFolderJobsRepairOrder, SWT.NONE);
 		tbtmLabor.setControl(jobLaborComposite);
 
-		jobLaborTable = new LaborTable(jobLaborComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		jobLaborTable = new JobLaborTable(jobLaborComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		jobLaborTable.setBounds(10, 10, 926, 243);
 		jobLaborTable.setHeaderVisible(true);
 		jobLaborTable.setLinesVisible(true);
@@ -524,7 +526,7 @@ public class RepairOrderDialog extends Dialog {
 							TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
 							
 							jobLaborTable.removeAll();
-							for (Labor labor : selectedJob.getLabor()) {
+							for (JobLabor labor : selectedJob.getLabor()) {
 								if (labor == null) {
 									break;
 								}
@@ -577,8 +579,8 @@ public class RepairOrderDialog extends Dialog {
 					public void mouseDown(MouseEvent e) {
 						// TODO add Labor to Labor Table
 						@SuppressWarnings("unused")
-						TableItem tableItem = new LaborTableItem(jobLaborTable, SWT.NONE);
-						tableItem.setData(new Labor());
+						TableItem tableItem = new JobLaborTableItem(jobLaborTable, SWT.NONE);
+						tableItem.setData(new JobLabor());
 						jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
 						jobLaborTable.notifyListeners(SWT.Selection, new Event());
 						
@@ -666,9 +668,9 @@ public class RepairOrderDialog extends Dialog {
 				part.getCost().toString(), part.getRetail().toString(), part.getRetail().toString()});
 	}
 	
-	private void addLaborToLaborTableItem(Labor labor) {
+	private void addLaborToLaborTableItem(JobLabor labor) {
 		// used in tableJobsRepairOrder.addSelectionListener
-		LaborTableItem jobLabor = new LaborTableItem(jobLaborTable, getStyle());
+		JobLaborTableItem jobLabor = new JobLaborTableItem(jobLaborTable, getStyle());
 		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString(),
 							labor.getHours().multiply(labor.getLaborRate()).toString()});
 		jobLabor.setData(labor);
@@ -697,7 +699,7 @@ public class RepairOrderDialog extends Dialog {
 
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
 			if (!currentJob.getLabor().contains(currentLaborTableItem.getData())) {
-				currentJob.addLabor((Labor) currentLaborTableItem.getData());
+				currentJob.addLabor((JobLabor) currentLaborTableItem.getData());
 			}
 		}
 	}

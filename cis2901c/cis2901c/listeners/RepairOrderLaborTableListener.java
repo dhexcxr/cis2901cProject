@@ -10,17 +10,17 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
-import cis2901c.objects.LaborTable;
+import cis2901c.objects.JobLaborTable;
 import cis2901c.objects.RepairOrderJobTable;
 
 public class RepairOrderLaborTableListener implements Listener {
 	
-	private LaborTable jobLaborTable;
+	private JobLaborTable jobLaborTable;
 	private TableEditor editor;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private RepairOrderDialog repairOrderDialog;
 
-	public RepairOrderLaborTableListener(LaborTable jobLaborTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog) {
+	public RepairOrderLaborTableListener(JobLaborTable jobLaborTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog) {
 		this.jobLaborTable = jobLaborTable;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.repairOrderDialog = repairOrderDialog;
@@ -40,8 +40,8 @@ public class RepairOrderLaborTableListener implements Listener {
         	for (int i = 0; i < jobLaborTable.getColumnCount(); i++) {		// find selected column
         		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
         		if (selectedTableItemColumnBounds.contains(clickPoint) &&
-        				(i == LaborTable.TECHNICIAN_COLUMN || i == LaborTable.DESCRIPTION_COLUMN ||
-        								i == LaborTable.HOURS_COLUMN || i == LaborTable.RATE_COLUMN)) {
+        				(i == JobLaborTable.TECHNICIAN_COLUMN || i == JobLaborTable.DESCRIPTION_COLUMN ||
+        								i == JobLaborTable.HOURS_COLUMN || i == JobLaborTable.RATE_COLUMN)) {
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(jobLaborTable, SWT.NONE);
         			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();

@@ -16,7 +16,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	
 	private List<Part> parts;
 	// TODO change this to TableLineItems, probabaly make a new Object that extends InvoiceTableLineItem so we can override dataMap and searchQuery to provide correct DB tables 
-	private List<Labor> labor;
+	private List<JobLabor> labor;
 	
 	private Map<String, String> dataMap = new HashMap<>();
 
@@ -33,7 +33,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 
 	public Job(String jobName, String complaints, String resolution, String reccomendations, List<Part> parts,
-			List<Labor> labor) {
+			List<JobLabor> labor) {
 		super();
 		this.jobName = jobName;
 		this.complaints = complaints;
@@ -110,22 +110,22 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		this.parts.remove(part);
 	}
 
-	public List<Labor> getLabor() {
+	public List<JobLabor> getLabor() {
 		if (labor == null) {
 			labor = new ArrayList<>();
 		}
 		return labor;
 	}
 
-	public void setLabor(List<Labor> labor) {
+	public void setLabor(List<JobLabor> labor) {
 		this.labor = labor;
 	}
 	
-	public void addLabor(Labor labor) {
+	public void addLabor(JobLabor labor) {
 		this.labor.add(labor);
 	}
 	
-	public void deleteLabor(Labor labor) {
+	public void deleteLabor(JobLabor labor) {
 		this.labor.remove(labor);
 	}
 

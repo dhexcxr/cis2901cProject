@@ -26,7 +26,7 @@ import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Job;
-import cis2901c.objects.Labor;
+import cis2901c.objects.JobLabor;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
@@ -201,8 +201,8 @@ public class DbServices {
 		if (jobId == -1) {
 			jobId = getLastJobId();
 		}
-		List<Labor> jobLabor = ((Job) dbObject).getLabor();
-		for (Labor labor : jobLabor) {
+		List<JobLabor> jobLabor = ((Job) dbObject).getLabor();
+		for (JobLabor labor : jobLabor) {
 			labor.getDataMap().put("jobid", Long.toString(jobId));
 			DbServices.saveObject(labor);
 		}
@@ -405,7 +405,7 @@ public class DbServices {
 			results = buildRepairOrders(queryResultSet);
 		} else if (object instanceof Job) {
 			results = buildJobs(queryResultSet);
-		} else if (object instanceof Labor) {
+		} else if (object instanceof JobLabor) {
 			results = buildLabors(queryResultSet);
 		}
 		return results;
@@ -572,11 +572,11 @@ public class DbServices {
 		return results;
 	}
 	
-	private static Labor[] buildLabors(ResultSet queryResultSet) throws SQLException {
-		Labor[] results = new Labor[MAX_RESULTS];
+	private static JobLabor[] buildLabors(ResultSet queryResultSet) throws SQLException {
+		JobLabor[] results = new JobLabor[MAX_RESULTS];
 		int i = 0;
 		while (queryResultSet.next()) {
-			Labor labor = new Labor();
+			JobLabor labor = new JobLabor();
 			labor.setLaborId(queryResultSet.getLong(1));
 			labor.setJobId(queryResultSet.getLong(2));
 			labor.setDescription(queryResultSet.getString(3));

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Labor extends DbObjectSearchable implements DbObjectSavable {
+public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 	
 	private long laborId = -1;
 	private long jobId;
@@ -15,11 +15,11 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 	
 	private Map<String, String> dataMap = new HashMap<>();
 	
-	public Labor() {
+	public JobLabor() {
 		this("", "", BigDecimal.valueOf(0), BigDecimal.valueOf(100));
 	}
 
-	public Labor(String technician, String description, BigDecimal hours, BigDecimal laborRate) {
+	public JobLabor(String technician, String description, BigDecimal hours, BigDecimal laborRate) {
 		super();
 		this.technician = technician;
 		this.description = description;
@@ -27,7 +27,7 @@ public class Labor extends DbObjectSearchable implements DbObjectSavable {
 		this.laborRate = laborRate;
 	}
 	
-	public Labor(long jobId) {
+	public JobLabor(long jobId) {
 		super.searchString = Long.toString(jobId);
 		super.searchQuery = "SELECT laborid, jobid, description, hours, hourrate, technician FROM cis2901c.joblabor WHERE jobid = ?;";
 		super.outerSearchQueryAppendix = "";

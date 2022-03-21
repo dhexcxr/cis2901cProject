@@ -84,7 +84,7 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		this.setText(PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		
 		laborTotal = BigDecimal.valueOf(0);
-		for (Labor labor : thisJob.getLabor()) {
+		for (JobLabor labor : thisJob.getLabor()) {
 			laborTotal = laborTotal.add(labor.getHours().multiply(labor.getLaborRate())).setScale(2, RoundingMode.CEILING);
 		}
 		this.setText(LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
