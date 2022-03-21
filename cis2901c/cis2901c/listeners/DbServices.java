@@ -27,6 +27,7 @@ import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Job;
 import cis2901c.objects.JobLabor;
+import cis2901c.objects.JobPart;
 import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
@@ -192,11 +193,20 @@ public class DbServices {
 		return SQL_FAILURE;
 	}
 	
-	private static void saveJobParts(DbObjectSavable dbObject ) {
-		// TODO document why this method is empty
+	private static void saveJobParts(DbObjectSavable dbObject) {
+		// UNTESTED
+		long jobId = dbObject.getDbPk();
+		if (jobId == -1) {
+			jobId = getLastJobId();
+		}
+		List<JobPart> jobParts  = ((Job) dbObject).getJobParts();
+		for (JobPart jobPart : jobParts) {
+			jobPart.getDataMap().put("jobid", Long.toString(jobId));
+			DbServices.saveObject(jobPart);
+		}
 	}
 	
-	private static void saveJobLabor(DbObjectSavable dbObject ) {
+	private static void saveJobLabor(DbObjectSavable dbObject) {
 		long jobId = dbObject.getDbPk();
 		if (jobId == -1) {
 			jobId = getLastJobId();

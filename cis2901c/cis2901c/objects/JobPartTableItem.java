@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Table;
 
 public class JobPartTableItem extends InvoicePartTableItem {
 	
-	private JobPart jobPart;
+//	private JobPart jobPart;
 	
 	public JobPartTableItem(Table parent, int style) {
 		super(parent, style);
@@ -16,14 +16,23 @@ public class JobPartTableItem extends InvoicePartTableItem {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setData(JobPart jobPart) {
-		this.jobPart = jobPart;
-		super.setData(jobPart);
+	public JobPartTableItem(Table parent, int style, JobPart jobPart) {
+		super(parent, style);
 		this.setText(PART_NUMBER_COLUMN, jobPart.getPartNumber());
 		this.setText(DESCRIPTION_COLUMN, jobPart.getDescription());
 		this.setText(QUANTITY_COLUMN, Integer.toString(jobPart.getQuantity()));
 		this.setText(SOLDPRICE_COLUMN, jobPart.getSoldPrice().toString());
 	}
+	
+	// TODO probably need to leave data on the *PartTableItems as solely Part objects
+//	public void setData(JobPart jobPart) {
+//		this.jobPart = jobPart;
+//		super.setData(jobPart);
+//		this.setText(PART_NUMBER_COLUMN, jobPart.getPartNumber());
+//		this.setText(DESCRIPTION_COLUMN, jobPart.getDescription());
+//		this.setText(QUANTITY_COLUMN, Integer.toString(jobPart.getQuantity()));
+//		this.setText(SOLDPRICE_COLUMN, jobPart.getSoldPrice().toString());
+//	}
 	
 	@Override
 	public long getDbPk() {

@@ -25,6 +25,7 @@ import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 import cis2901c.objects.Unit;
 import cis2901c.objects.JobLaborTableItem;
+import cis2901c.objects.JobPart;
 import cis2901c.objects.MyTable;
 
 import org.eclipse.swt.widgets.TableColumn;
@@ -516,12 +517,13 @@ public class RepairOrderDialog extends Dialog {
 							
 							// TODO add other methods to set up Job Detail tabs, Part tab, and Labor tab
 							jobPartsTable.removeAll();
-							for (Part part : selectedJob.getParts()) {
+//							for (Part part : selectedJob.getParts()) {
+							for (JobPart jobPart : selectedJob.getJobParts()) {
 								// TODO see how I stored quantity in Invoice, or figure out how to store quantity
-								if (part == null) {
+								if (jobPart == null) {
 									break;
 								}
-								addPartToPartTableItem(part);
+								addPartToPartTableItem(jobPart);
 							}
 							@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
 							TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
@@ -662,11 +664,13 @@ public class RepairOrderDialog extends Dialog {
 				// END setup Job modified listener
 	}
 	
-	private void addPartToPartTableItem(Part part) {
+//	private void addPartToPartTableItem(Part part) {
+	private void addPartToPartTableItem(JobPart jobPart) {
 		// used in tableJobsRepairOrder.addSelectionListener
-		InvoicePartTableItem jobPart = new InvoicePartTableItem(jobPartsTable, getStyle());
-		jobPart.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(0), Integer.toString(part.getOnHand()),
-				part.getCost().toString(), part.getRetail().toString(), part.getRetail().toString()});
+		InvoicePartTableItem jobPartTableItem = new InvoicePartTableItem(jobPartsTable, getStyle());
+		jobPartTableItem.setText(new String[] {jobPart.getPartNumber(), jobPart.getDescription(), Integer.toString(jobPart.getQuantity()),
+				Integer.toString(jobPart.getPart().getOnHand()), jobPart.getPart().getCost().toString(),
+				jobPart.getSoldPrice().toString(), jobPart.getSoldPrice().multiply(BigDecimal.valueOf(jobPart.getQuantity())).toString()});
 	}
 	
 	private void addLaborToLaborTableItem(JobLabor labor) {
@@ -693,15 +697,11 @@ public class RepairOrderDialog extends Dialog {
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
-			if (!currentJob.getParts().contains(currentPartTableItem.getData())) {
 				currentJob.addPart((Part) currentPartTableItem.getData());
-			}
 		}
 
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
-			if (!currentJob.getLabor().contains(currentLaborTableItem.getData())) {
 				currentJob.addLabor((JobLabor) currentLaborTableItem.getData());
-			}
 		}
 	}
 	

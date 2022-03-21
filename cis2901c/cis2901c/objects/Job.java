@@ -14,7 +14,8 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	private String resolution;
 	private String reccomendations;
 	
-	private List<Part> parts;
+	private List<JobPart> jobParts = new ArrayList<>();
+	private List<Part> parts = new ArrayList<>();
 	// TODO change this to TableLineItems, probabaly make a new Object that extends InvoiceTableLineItem so we can override dataMap and searchQuery to provide correct DB tables 
 	private List<JobLabor> labor;
 	
@@ -91,23 +92,57 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		this.reccomendations = reccomendations;
 	}
 
-	public List<Part> getParts() {
-		if (parts == null) {
+//	public List<Part> getParts() {
+//		if (parts == null) {
+//			parts = new ArrayList<>();
+//		}
+//		return parts;
+//	}
+	
+	public List<Part> getParts() {		// TODO this is a Big F-n Kludge, maybe try to refactor the calls to this method to getJobParts and have
+											// the calling methods handle it, or maybe this is more elegant
+		if (jobParts == null) {
 			parts = new ArrayList<>();
+		} else {
+			for (JobPart jobPart : jobParts) {
+				if (!parts.contains(jobPart.getPart())) {
+					parts.add(jobPart.getPart());
+				}
+			}
 		}
 		return parts;
 	}
 
-	public void setParts(List<Part> parts) {
-		this.parts = parts;
-	}
+//	public void setParts(List<Part> parts) {
+//		this.parts = parts;
+//	}
 	
 	public void addPart(Part part) {
-		this.parts.add(part);
+		if (part == null) {
+			return;
+		}
+//		this.parts.add(part);
+		if (!getParts().contains(part)) {
+			addJobPart(new JobPart(part));
+		}
 	}
 	
-	public void deletePart(Part part) {
-		this.parts.remove(part);
+//	public void deletePart(Part part) {
+//		this.parts.remove(part);
+//	}
+
+	public List<JobPart> getJobParts() {
+		return jobParts;
+	}
+
+	public void setJobParts(List<JobPart> jobParts) {
+		this.jobParts = jobParts;
+	}
+	
+	public void addJobPart(JobPart jobPart) {
+		if (!jobParts.contains(jobPart)) {
+			jobParts.add(jobPart);
+		}
 	}
 
 	public List<JobLabor> getLabor() {
@@ -122,7 +157,12 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	}
 	
 	public void addLabor(JobLabor labor) {
-		this.labor.add(labor);
+		if (labor == null) {
+			return;
+		}
+		if (!getLabor().contains(labor)) {
+			this.labor.add(labor);
+		}
 	}
 	
 	public void deleteLabor(JobLabor labor) {

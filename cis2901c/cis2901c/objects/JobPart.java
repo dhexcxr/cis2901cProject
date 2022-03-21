@@ -3,10 +3,8 @@ package cis2901c.objects;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class JobPart extends DbObjectSearchable implements DbObjectSavable {
-	
-	// TODO i'm not sure I need this, I think I can just use JobPartTableItem to save this stuff to the DB
-	
+public class JobPart extends InvoicePart {
+
 	// jobpart Database Table
 	
 	private long jobPartId = -1;
@@ -16,9 +14,16 @@ public class JobPart extends DbObjectSearchable implements DbObjectSavable {
 	private String description;
 	private int quantity;
 	private BigDecimal soldPrice = BigDecimal.valueOf(0);
+	
+	private Part part;
 
 	public JobPart() {
-		this("", "", 0, BigDecimal.valueOf(0));
+		this("", "", 1, BigDecimal.valueOf(0));
+	}
+	
+	public JobPart(Part part) {
+		this(-1, part.getPartId(), 0, part.getPartNumber(), part.getDescription(), 1, part.getRetail());
+		this.part = part;
 	}
 	
 	public JobPart(String partNumber, String description, int quantity,
@@ -92,6 +97,17 @@ public class JobPart extends DbObjectSearchable implements DbObjectSavable {
 
 	public void setSoldPrice(BigDecimal soldPrice) {
 		this.soldPrice = soldPrice;
+	}
+
+	public Part getPart() {
+		if (part == null) {
+			part = new Part();
+		}
+		return part;
+	}
+
+	public void setPart(Part part) {
+		this.part = part;
 	}
 
 	@Override
