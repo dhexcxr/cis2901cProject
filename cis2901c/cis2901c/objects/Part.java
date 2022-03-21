@@ -28,6 +28,16 @@ public class Part extends DbObjectSearchable implements DbObjectSavable{
 		super.querySubStringIndecies[1] = 87;
 	}
 	
+	public Part(long partId) {
+		super.searchString = Long.toString(partId);
+		super.searchQuery = """
+				SELECT partId, partNumber, supplier, category, description, notes, cost, retail, onHand FROM cis2901c.part  
+				WHERE partId = ?;""";
+		super.outerSearchQueryAppendix = "";
+		super.querySubStringIndecies[0] = 0;
+		super.querySubStringIndecies[1] = 0;
+	}
+	
 	public long getDbPk() {
 		return getPartId();
 	}

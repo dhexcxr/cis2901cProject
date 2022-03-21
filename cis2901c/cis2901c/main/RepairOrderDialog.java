@@ -161,8 +161,10 @@ public class RepairOrderDialog extends Dialog {
 			jobLabor.removeAll(Collections.singleton(null));
 			job.setLabor(jobLabor);
 						
-			// TODO find and build Parts
-//			List<Part> jobPart = new ArrayList<>(Arrays.asList((Part[]) DbServices.searchForObjectsByPk(new Part(job.getJobId()))));
+			// find and build Parts
+			List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+			jobPart.removeAll(Collections.singleton(null));
+			job.setJobParts(jobPart);
 			
 			jobTableItem.setData(job);
 		}
@@ -671,14 +673,15 @@ public class RepairOrderDialog extends Dialog {
 		jobPartTableItem.setText(new String[] {jobPart.getPartNumber(), jobPart.getDescription(), Integer.toString(jobPart.getQuantity()),
 				Integer.toString(jobPart.getPart().getOnHand()), jobPart.getPart().getCost().toString(),
 				jobPart.getSoldPrice().toString(), jobPart.getSoldPrice().multiply(BigDecimal.valueOf(jobPart.getQuantity())).toString()});
+		jobPartTableItem.setData(jobPart.getPart());
 	}
 	
-	private void addLaborToLaborTableItem(JobLabor labor) {
+	private void addLaborToLaborTableItem(JobLabor jobLabor) {
 		// used in tableJobsRepairOrder.addSelectionListener
-		JobLaborTableItem jobLabor = new JobLaborTableItem(jobLaborTable, getStyle());
-		jobLabor.setText(new String[] {labor.getTechnician(), labor.getDescription(), labor.getHours().toString(), labor.getLaborRate().toString(),
-							labor.getHours().multiply(labor.getLaborRate()).setScale(2, RoundingMode.CEILING).toString()});
-		jobLabor.setData(labor);
+		JobLaborTableItem jobLaborTableItem = new JobLaborTableItem(jobLaborTable, getStyle());
+		jobLaborTableItem.setText(new String[] {jobLabor.getTechnician(), jobLabor.getDescription(), jobLabor.getHours().toString(), jobLabor.getLaborRate().toString(),
+							jobLabor.getHours().multiply(jobLabor.getLaborRate()).setScale(2, RoundingMode.CEILING).toString()});
+		jobLaborTableItem.setData(jobLabor);
 	}
 	
 	public void calcRoTotal() {

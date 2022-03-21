@@ -194,7 +194,6 @@ public class DbServices {
 	}
 	
 	private static void saveJobParts(DbObjectSavable dbObject) {
-		// UNTESTED
 		long jobId = dbObject.getDbPk();
 		if (jobId == -1) {
 			jobId = getLastJobId();
@@ -355,6 +354,7 @@ public class DbServices {
 		return searchForObjectsByPk(object)[0];
 	}
 	
+	// TODO rename to searchForManyObjectsByPk
 	public static Object[] searchForObjectsByPk(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
@@ -372,6 +372,7 @@ public class DbServices {
 		return results;	
 	}
 	
+	// TODO rename to searchByQueryString
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
@@ -419,7 +420,9 @@ public class DbServices {
 		} else if (object instanceof Job) {
 			results = buildJobs(queryResultSet);
 		} else if (object instanceof JobLabor) {
-			results = buildLabors(queryResultSet);
+			results = buildJobLabors(queryResultSet);
+		} else if (object instanceof JobPart) {
+			results = buildJobParts(queryResultSet);
 		}
 		return results;
 	}
@@ -585,19 +588,39 @@ public class DbServices {
 		return results;
 	}
 	
-	private static JobLabor[] buildLabors(ResultSet queryResultSet) throws SQLException {
+	private static JobLabor[] buildJobLabors(ResultSet queryResultSet) throws SQLException {
 		JobLabor[] results = new JobLabor[MAX_RESULTS];
 		int i = 0;
 		while (queryResultSet.next()) {
-			JobLabor labor = new JobLabor();
-			labor.setJobLaborId(queryResultSet.getLong(1));
-			labor.setJobId(queryResultSet.getLong(2));
-			labor.setDescription(queryResultSet.getString(3));
-			labor.setHours(queryResultSet.getBigDecimal(4));
-			labor.setLaborRate(queryResultSet.getBigDecimal(5));
-			labor.setTechnician(queryResultSet.getString(6));
+			JobLabor jobLabor = new JobLabor();
+			jobLabor.setJobLaborId(queryResultSet.getLong(1));
+			jobLabor.setJobId(queryResultSet.getLong(2));
+			jobLabor.setDescription(queryResultSet.getString(3));
+			jobLabor.setHours(queryResultSet.getBigDecimal(4));
+			jobLabor.setLaborRate(queryResultSet.getBigDecimal(5));
+			jobLabor.setTechnician(queryResultSet.getString(6));
 						
-			results[i] = labor;
+			results[i] = jobLabor;
+			i++;
+		}
+		return results;
+	}
+	
+	private static JobPart[] buildJobParts(ResultSet queryResultSet) throws SQLException {
+		JobPart[] results = new JobPart[MAX_RESULTS];
+		int i = 0;
+		while (queryResultSet.next()) {
+			JobPart jobPart = new JobPart();
+			jobPart.setJobPartId(queryResultSet.getLong(1));
+			jobPart.setPartId(queryResultSet.getLong(2));
+			jobPart.setJobId(queryResultSet.getLong(3));
+			jobPart.setPartNumber(queryResultSet.getString(4));
+			jobPart.setDescription(queryResultSet.getString(5));
+			jobPart.setQuantity(queryResultSet.getInt(6));
+			jobPart.setSoldPrice(queryResultSet.getBigDecimal(7));
+			jobPart.setPart((Part) DbServices.searchForObjectByPk(new Part(jobPart.getPartId())));
+			
+			results[i] = jobPart;
 			i++;
 		}
 		return results;

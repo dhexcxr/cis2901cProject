@@ -1,6 +1,7 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class JobPart extends InvoicePart {
@@ -16,6 +17,8 @@ public class JobPart extends InvoicePart {
 	private BigDecimal soldPrice = BigDecimal.valueOf(0);
 	
 	private Part part;
+	
+	private Map<String, String> dataMap = new HashMap<>();
 
 	public JobPart() {
 		this("", "", 1, BigDecimal.valueOf(0));
@@ -43,6 +46,14 @@ public class JobPart extends InvoicePart {
 		this.soldPrice = soldPrice;
 	}
 
+	public JobPart(long jobId) {
+		super.searchString = Long.toString(jobId);
+		super.searchQuery = "SELECT jobpartid, jobid, partid, partnumber, description, quantity, soldprice FROM cis2901c.jobpart WHERE jobid = ?;";
+		super.outerSearchQueryAppendix = "";
+		super.querySubStringIndecies[0] = 0;
+		super.querySubStringIndecies[1] = 0;
+	}
+	
 	public long getJobPartId() {
 		return jobPartId;
 	}
@@ -133,7 +144,12 @@ public class JobPart extends InvoicePart {
 	@Override
 	public Map<String, String> getDataMap() {
 		// TODO Auto-generated method stub
-		return null;
+		dataMap.put("partid", Long.toString(partId));
+		dataMap.put("partnumber", partNumber);
+		dataMap.put("description", description);
+		dataMap.put("quantity", Integer.toString(quantity));
+		dataMap.put("soldprice", soldPrice.toString());
+		return dataMap;
 	}
 
 }
