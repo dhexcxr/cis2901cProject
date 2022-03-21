@@ -31,7 +31,7 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 	
 	public JobLabor(long jobId) {
 		super.searchString = Long.toString(jobId);
-		super.searchQuery = "SELECT laborid, jobid, description, hours, hourrate, technician FROM cis2901c.joblabor WHERE jobid = ?;";
+		super.searchQuery = "SELECT joblaborid, jobid, description, hours, hourrate, technician FROM cis2901c.joblabor WHERE jobid = ?;";
 		super.outerSearchQueryAppendix = "";
 		super.querySubStringIndecies[0] = 0;
 		super.querySubStringIndecies[1] = 0;
@@ -97,7 +97,7 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public String getPkName() {
-		return "laborid";
+		return "joblaborid";
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 	public Map<String, String> getDataMap() {
 		if (dataMap.isEmpty()) {
 			if (jobLaborId != -1) {
-				dataMap.put("laborid", Long.toString(jobLaborId));
+				dataMap.put("joblaborid", Long.toString(jobLaborId));
 			}
 			dataMap.put("description", description);
 			dataMap.put("hours", hours.toString());
