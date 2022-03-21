@@ -57,6 +57,7 @@ import cis2901c.objects.InvoicePartTableItem;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Text;
 
 public class RepairOrderDialog extends Dialog {
 
@@ -78,6 +79,9 @@ public class RepairOrderDialog extends Dialog {
 	private MyText textFinalTotalRepairOrder;
 	
 	private long roId = -1;
+	private Text textRoNum;
+	private Text textCreatedDate;
+	private Text textCashieredDate;
 	private MyText txtCustomerRepairOrder;
 	private MyText txtUnitRepairOrder;
 	private MyText txtJobName;
@@ -162,16 +166,40 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	private void roDetails() {
+		Group grpRepairOrderNum = new Group(shlRepairOrder, SWT.NONE);
+		grpRepairOrderNum.setText("Repair Order");
+		grpRepairOrderNum.setBounds(861, 10, 103, 61);
+		
+		textRoNum = new Text(grpRepairOrderNum, SWT.BORDER);
+		textRoNum.setEditable(false);
+		textRoNum.setBounds(10, 25, 83, 26);
+		
+		Group grpCreatedDate = new Group(shlRepairOrder, SWT.NONE);
+		grpCreatedDate.setText("Created Date");
+		grpCreatedDate.setBounds(676, 77, 288, 62);
+		
+		textCreatedDate = new Text(grpCreatedDate, SWT.BORDER);
+		textCreatedDate.setEditable(false);
+		textCreatedDate.setBounds(10, 26, 268, 26);
+		
+		Group grpCashieredDate = new Group(shlRepairOrder, SWT.NONE);
+		grpCashieredDate.setText("Cashiered Date");
+		grpCashieredDate.setBounds(676, 144, 288, 62);
+		
+		textCashieredDate = new Text(grpCashieredDate, SWT.BORDER);
+		textCashieredDate.setEditable(false);
+		textCashieredDate.setBounds(10, 26, 268, 26);
+		
 		// Customer Data
 		txtCustomerRepairOrder = new MyText(shlRepairOrder, SWT.BORDER | SWT.WRAP);
 		txtCustomerRepairOrder.setEditable(false);
 		txtCustomerRepairOrder.setText("Customer...");
-		txtCustomerRepairOrder.setBounds(10, 10, 466, 128);
+		txtCustomerRepairOrder.setBounds(10, 10, 334, 128);
 		
 		txtUnitRepairOrder = new MyText(shlRepairOrder, SWT.BORDER | SWT.WRAP);
 		txtUnitRepairOrder.setEditable(false);
 		txtUnitRepairOrder.setText("Unit...");
-		txtUnitRepairOrder.setBounds(498, 10, 466, 128);
+		txtUnitRepairOrder.setBounds(370, 10, 300, 128);
 		// END Customer Data
 
 		// Totals
@@ -228,25 +256,25 @@ public class RepairOrderDialog extends Dialog {
 		tblclmnJobTotal.setText("Job Total");
 
 		btnAddJob = new Button(shlRepairOrder, SWT.NONE);
-		btnAddJob.setBounds(676, 144, 140, 94);
+		btnAddJob.setBounds(676, 212, 140, 74);
 		btnAddJob.setText("Add Job");
 
 		btnDeleteJob = new Button(shlRepairOrder, SWT.NONE);
-		btnDeleteJob.setBounds(824, 144, 140, 47);
+		btnDeleteJob.setBounds(733, 292, 83, 52);
 		btnDeleteJob.setText("Delete Job");
 		// END Jobs table
 
 		// RO Controls
 		Button btnCashierRo = new Button(shlRepairOrder, SWT.NONE);
-		btnCashierRo.setBounds(676, 244, 140, 47);
+		btnCashierRo.setBounds(676, 10, 179, 64);
 		btnCashierRo.setText("Cashier");
 
 		btnSaveRo = new Button(shlRepairOrder, SWT.NONE);
-		btnSaveRo.setBounds(822, 197, 142, 94);
+		btnSaveRo.setBounds(822, 212, 142, 132);
 		btnSaveRo.setText("Save");
 
 		btnCancel = new Button(shlRepairOrder, SWT.NONE);
-		btnCancel.setBounds(784, 297, 70, 47);
+		btnCancel.setBounds(676, 292, 53, 52);
 		btnCancel.setText("Cancel");
 		// END RO controls
 	}
@@ -629,45 +657,47 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void loadRoFromDb(RepairOrder repairOrder) {
 		// set Dialog boxes and stuff from repairOrder fields
-				currentRepairOrder = repairOrder;
-				roId = repairOrder.getRepairOrderId();
-				if (repairOrder.getCustomerId() != 0) {
-					customerId = repairOrder.getCustomerId();
-					// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
-					txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
-				}
-				if (repairOrder.getCustomerData() != null) {
-					txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
-				}
-				
-				if (repairOrder.getUnitId() != 0) {
-					txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
-												repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-					txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
-				}
-				
-				for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
-					if (job == null) {
-						break;
-					}
-					RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-					
-					// find and build labor
-					List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
-					jobLabor.removeAll(Collections.singleton(null));
-					job.setLabor(jobLabor);
-								
-					// find and build Parts
-					List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
-					jobPart.removeAll(Collections.singleton(null));
-					job.setJobParts(jobPart);
-					
-					jobTableItem.setData(job);
-				}
-				
-				tableJobsRepairOrder.setSelection(0);
-				tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-				this.calcRoTotal();
+		currentRepairOrder = repairOrder;
+		roId = repairOrder.getRepairOrderId();
+		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
+		textRoNum.setText(Long.toString(roId));
+		if (repairOrder.getCustomerId() != 0) {
+			customerId = repairOrder.getCustomerId();
+			// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
+			txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
+		}
+		if (repairOrder.getCustomerData() != null) {
+			txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
+		}
+
+		if (repairOrder.getUnitId() != 0) {
+			txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
+					repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
+			txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
+		}
+
+		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
+			if (job == null) {
+				break;
+			}
+			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+
+			// find and build labor
+			List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
+			jobLabor.removeAll(Collections.singleton(null));
+			job.setLabor(jobLabor);
+
+			// find and build Parts
+			List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+			jobPart.removeAll(Collections.singleton(null));
+			job.setJobParts(jobPart);
+
+			jobTableItem.setData(job);
+		}
+
+		tableJobsRepairOrder.setSelection(0);
+		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+		this.calcRoTotal();
 	}
 	
 //	private void addPartToPartTableItem(Part part) {
@@ -748,6 +778,7 @@ public class RepairOrderDialog extends Dialog {
 		}
 		
 		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));
+		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
 		// setClosedTime
 		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
 		repairOrder.setTotal(new BigDecimal(textFinalTotalRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
@@ -756,6 +787,7 @@ public class RepairOrderDialog extends Dialog {
 		// send RepairOrder object to DbServices
 		DbServices.saveObject(repairOrder);
 		roId = repairOrder.getRepairOrderId();
+		textRoNum.setText(Long.toString(roId));
 		result = repairOrder;
 //		shlRepairOrder.close();
 	}
