@@ -6,7 +6,9 @@ import java.util.Map;
 
 public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 	
-	private long laborId = -1;
+	// joblabor Database Table
+	
+	private long jobLaborId = -1;
 	private long jobId;
 	private String technician;
 	private String description;
@@ -35,12 +37,12 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 		super.querySubStringIndecies[1] = 0;
 	}
 
-	public long getLaborId() {
-		return laborId;
+	public long getJobLaborId() {
+		return jobLaborId;
 	}
 
-	public void setLaborId(long laborId) {
-		this.laborId = laborId;
+	public void setJobLaborId(long jobLaborId) {
+		this.jobLaborId = jobLaborId;
 	}
 
 	public long getJobId() {
@@ -85,12 +87,12 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public long getDbPk() {
-		return getLaborId();
+		return getJobLaborId();
 	}
 	
 	@Override
 	public void setDbPk(long dbPk) {
-		laborId = dbPk;
+		jobLaborId = dbPk;
 	}
 
 	@Override
@@ -106,8 +108,8 @@ public class JobLabor extends DbObjectSearchable implements DbObjectSavable {
 	@Override
 	public Map<String, String> getDataMap() {
 		if (dataMap.isEmpty()) {
-			if (laborId != -1) {
-				dataMap.put("laborid", Long.toString(laborId));
+			if (jobLaborId != -1) {
+				dataMap.put("laborid", Long.toString(jobLaborId));
 			}
 			dataMap.put("description", description);
 			dataMap.put("hours", hours.toString());

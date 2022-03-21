@@ -55,6 +55,8 @@ public class JobLaborTableItem extends TableItem implements DbObjectSavable {
 		return null;
 	}
 	
+	// TODO create setData(Job job)
+	
 	public void setData(String technician, String description, BigDecimal hours, BigDecimal rate) {
 		if (this.getData() == null) {
 			super.setData(new JobLabor(technician, description, hours, rate));
@@ -65,7 +67,6 @@ public class JobLaborTableItem extends TableItem implements DbObjectSavable {
 			tableItemLabor.setHours(hours);
 			tableItemLabor.setLaborRate(rate);
 		}
-
 	}
 	
 	@Override

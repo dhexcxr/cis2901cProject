@@ -1,6 +1,5 @@
 package cis2901c.listeners;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ParameterMetaData;
@@ -24,6 +23,7 @@ import cis2901c.objects.Customer;
 import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
+import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Job;
 import cis2901c.objects.JobLabor;
@@ -232,9 +232,12 @@ public class DbServices {
 			if (invoiceLineItem.getData() == null) {
 				break;
 			}
-			InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
-			myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
-			saveObject(myInvoiceLineItem);
+//			InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
+//			myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
+//			saveObject(myInvoiceLineItem);
+			InvoicePart invoicePart = new InvoicePart((InvoicePartTableItem) invoiceLineItem);
+			invoicePart.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
+			saveObject(invoicePart);
 		}
 		sellInvoicePartsOutOfInventory(invoiceNumber);
 	}
@@ -577,7 +580,7 @@ public class DbServices {
 		int i = 0;
 		while (queryResultSet.next()) {
 			JobLabor labor = new JobLabor();
-			labor.setLaborId(queryResultSet.getLong(1));
+			labor.setJobLaborId(queryResultSet.getLong(1));
 			labor.setJobId(queryResultSet.getLong(2));
 			labor.setDescription(queryResultSet.getString(3));
 			labor.setHours(queryResultSet.getBigDecimal(4));

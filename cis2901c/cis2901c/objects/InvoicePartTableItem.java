@@ -43,6 +43,11 @@ public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String getFkName() {
+		// TODO Auto-generated method stub
+		return "invoicenum";
+	}
 
 	@Override
 	public String getTableName() {
