@@ -10,6 +10,10 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	private InvoicePartTableItem invoicePartTableItem;
 	private Map<String, String> dataMap = new HashMap<>();
 	
+	public InvoicePart() {
+		
+	}
+	
 	public InvoicePart(InvoicePartTableItem invoicePartTableItem) {
 		this.invoicePartTableItem = invoicePartTableItem;
 	}

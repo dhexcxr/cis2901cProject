@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class InvoicePartTableItem extends TableItem implements DbObjectSavable{
 	
+	// TODO clean this up, most of this is no longer needed
 	// this emulates the invoicepart DB table
 	
 	public static final int PART_NUMBER_COLUMN = 0;

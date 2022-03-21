@@ -3,7 +3,6 @@
 
 package cis2901c.main;
 
-import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
