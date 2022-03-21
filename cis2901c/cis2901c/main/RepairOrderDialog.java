@@ -166,7 +166,7 @@ public class RepairOrderDialog extends Dialog {
 		
 		tableJobsRepairOrder.setSelection(0);
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-		jobLaborTable.notifyListeners(SWT.MouseDown, new Event());
+//		jobLaborTable.notifyListeners(SWT.MouseDown, new Event());
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();

@@ -1,6 +1,7 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Table;
@@ -10,10 +11,10 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 	
 	// TODO I don't think this needs to implement DbObjectSavable
 	
-	private static final int JOB_NAME_COLUMN = 0;
-	private static final int PART_TOTAL_COLUMN = 1;
-	private static final int LABOR_TOTAL_COLUMN = 2;
-	private static final int JOB_TOTAL_COLUMN = 3;
+	public static final int JOB_NAME_COLUMN = 0;
+	public static final int PART_TOTAL_COLUMN = 1;
+	public static final int LABOR_TOTAL_COLUMN = 2;
+	public static final int JOB_TOTAL_COLUMN = 3;
 	
 	private BigDecimal partTotal;
 	private BigDecimal laborTotal;
@@ -78,13 +79,13 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		
 		partTotal = BigDecimal.valueOf(0);
 		for (Part part : thisJob.getParts()) {
-			partTotal = partTotal.add(part.getRetail());
+			partTotal = partTotal.add(part.getRetail()).setScale(2, RoundingMode.CEILING);
 		}
 		this.setText(PART_TOTAL_COLUMN, "$" + partTotal.toString());
 		
 		laborTotal = BigDecimal.valueOf(0);
-		for (Part part : thisJob.getParts()) {
-			laborTotal = partTotal.add(part.getRetail());
+		for (Labor labor : thisJob.getLabor()) {
+			laborTotal = laborTotal.add(labor.getHours().multiply(labor.getLaborRate())).setScale(2, RoundingMode.CEILING);
 		}
 		this.setText(LABOR_TOTAL_COLUMN, "$" + laborTotal.toString());
 		
