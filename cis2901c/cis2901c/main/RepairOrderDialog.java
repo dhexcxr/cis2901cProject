@@ -65,7 +65,7 @@ public class RepairOrderDialog extends Dialog {
 	
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private Button btnSaveRo;
-	private Button btnCloseRo;
+	private Button btnCancel;
 	private Button btnAddJob;
 	private Button btnDeleteJob;
 	private Button btnDeleteLineItem; 
@@ -131,48 +131,7 @@ public class RepairOrderDialog extends Dialog {
 		createContents();
 		setupListeners();
 		
-		// TODO set Dialog boxes and stuff from repairOrder fields
-		currentRepairOrder = repairOrder;
-		roId = repairOrder.getRepairOrderId();
-		if (repairOrder.getCustomerId() != 0) {
-			customerId = repairOrder.getCustomerId();
-			// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
-//			txtCustomerRepairOrder.setData(DbServices.searchForCustomer(customerId));
-			txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
-		}
-		if (repairOrder.getCustomerData() != null) {
-			txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
-		}
-		
-		if (repairOrder.getUnitId() != 0) {
-			txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
-										repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-			txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
-		}
-		
-		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
-			if (job == null) {
-				break;
-			}
-			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-			
-			// find and build labor
-			List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
-			jobLabor.removeAll(Collections.singleton(null));
-			job.setLabor(jobLabor);
-						
-			// find and build Parts
-			List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
-			jobPart.removeAll(Collections.singleton(null));
-			job.setJobParts(jobPart);
-			
-			jobTableItem.setData(job);
-		}
-		
-		tableJobsRepairOrder.setSelection(0);
-		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-//		jobLaborTable.notifyListeners(SWT.MouseDown, new Event());
-		this.calcRoTotal();
+		loadRoFromDb(repairOrder);
 		
 		shlRepairOrder.open();
 		shlRepairOrder.layout();
@@ -286,9 +245,9 @@ public class RepairOrderDialog extends Dialog {
 		btnSaveRo.setBounds(822, 197, 142, 94);
 		btnSaveRo.setText("Save");
 
-		btnCloseRo = new Button(shlRepairOrder, SWT.NONE);
-		btnCloseRo.setBounds(749, 297, 140, 47);
-		btnCloseRo.setText("Close");
+		btnCancel = new Button(shlRepairOrder, SWT.NONE);
+		btnCancel.setBounds(784, 297, 70, 47);
+		btnCancel.setText("Cancel");
 		// END RO controls
 	}
 	
@@ -569,11 +528,13 @@ public class RepairOrderDialog extends Dialog {
 					}
 				});
 				
-				btnCloseRo.addMouseListener(new MouseAdapter() {
+				btnCancel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						// TODO if there are unsaved changes, prompt to save before closing
-						shlRepairOrder.close();
+//						// TODO if there are unsaved changes, prompt to save before closing
+//						shlRepairOrder.close();
+						tableJobsRepairOrder.removeAll();
+						loadRoFromDb(currentRepairOrder);
 					}
 				});
 				
@@ -664,6 +625,49 @@ public class RepairOrderDialog extends Dialog {
 				txtResolution.addModifyListener(jobDetailsModifiedListener);
 				txtReccomendations.addModifyListener(jobDetailsModifiedListener);
 				// END setup Job modified listener
+	}
+	
+	private void loadRoFromDb(RepairOrder repairOrder) {
+		// set Dialog boxes and stuff from repairOrder fields
+				currentRepairOrder = repairOrder;
+				roId = repairOrder.getRepairOrderId();
+				if (repairOrder.getCustomerId() != 0) {
+					customerId = repairOrder.getCustomerId();
+					// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
+					txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
+				}
+				if (repairOrder.getCustomerData() != null) {
+					txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
+				}
+				
+				if (repairOrder.getUnitId() != 0) {
+					txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
+												repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
+					txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
+				}
+				
+				for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
+					if (job == null) {
+						break;
+					}
+					RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+					
+					// find and build labor
+					List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
+					jobLabor.removeAll(Collections.singleton(null));
+					job.setLabor(jobLabor);
+								
+					// find and build Parts
+					List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+					jobPart.removeAll(Collections.singleton(null));
+					job.setJobParts(jobPart);
+					
+					jobTableItem.setData(job);
+				}
+				
+				tableJobsRepairOrder.setSelection(0);
+				tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+				this.calcRoTotal();
 	}
 	
 //	private void addPartToPartTableItem(Part part) {
