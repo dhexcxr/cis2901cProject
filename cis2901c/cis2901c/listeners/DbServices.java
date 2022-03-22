@@ -340,16 +340,9 @@ public class DbServices {
 	public static int deleteDetailsFromRo(Map<String, List<Long>> detailsToDelete) {
 		int updateCount = 0;
 		for (Map.Entry<String, List<Long>> entry : detailsToDelete.entrySet()) {
-			// if Job, delete part, then labor, then job
-			if (entry.getKey().equals("job")) {
-				for (Long primaryKey : entry.getValue()) {
-					deleteObjectsByPk("part", entry.getKey() + "id", primaryKey);
-					deleteObjectsByPk("labor", entry.getKey() + "id", primaryKey);
-					deleteObjectsByPk(entry.getKey(), entry.getKey() + "id", primaryKey);
-				}
+			for (Long primaryKey : entry.getValue()) {
+				deleteObjectsByPk(entry.getKey(), entry.getKey() + "id", primaryKey);
 			}
-			// if part, delete part
-			// if labor, delete labor
 		}
 		
 		return updateCount;
