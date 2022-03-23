@@ -89,12 +89,12 @@ public class InvoicePartEditorListener implements Listener {
 			findPartNumber();
 			calculateInvoiceTotal();
 		} else if (selectedColumnIndex == InvoicePartTable.QUANTITY_COLUMN &&
-				(partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals(""))) {
+				(selectedTableItem.getData() != null && !editorTxtBox.getText().equals(""))) {
 			// we entered a part quantity
 				setPartQuantity(selectedTableItem);
 				calculateInvoiceTotal();
 		} else if (selectedColumnIndex == InvoicePartTable.PART_PRICE_COLUMN &&
-				(partInvoiceTable.getSelection()[0].getData() != null && !editorTxtBox.getText().equals(""))) {
+				(selectedTableItem.getData() != null && !editorTxtBox.getText().equals(""))) {
 			// we entered a part price
 			setPartPrice(selectedTableItem);
 			calculateInvoiceTotal();
@@ -174,7 +174,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void setPartQuantity(TableItem item) {
 		ignoreFocusOut = true;
-		InvoicePart selectedInvoicePart = (InvoicePart) partInvoiceTable.getSelection()[0].getData(); 
+		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData(); 
 		Part selectedPart = selectedInvoicePart.getPart();
 		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
 		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
