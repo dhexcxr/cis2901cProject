@@ -39,13 +39,18 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	@Override
 	public void handleEvent(Event event) {
 		if (!ignoreFocusOut) {
+			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
+				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
+			}
 			super.handleEvent(event);
 //			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() != null) {
-				Part part = ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData()).getPart();
-				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(part));
+//				Part part = ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData()).getPart();
+//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(part));
 //				InvoicePart invoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData();
-//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
+				JobPart invoicePart = (JobPart) partInvoiceTable.getItem(selectedTableItemIndex).getData();
+//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(invoicePart));
+				partInvoiceTable.getItem(selectedTableItemIndex).setData(invoicePart);
 				repairOrderDialog.saveJob();
 				totalParts();
 			}

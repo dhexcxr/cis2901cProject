@@ -108,16 +108,23 @@ public class InvoicePartEditorListener implements Listener {
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
 			Part[] partResults = (Part[]) DbServices.searchForObject(new Part(editorTxtBox.getText()));
-			InvoicePart editedLineItem = null;
+//			InvoicePart editedLineItem = null;
+			InvoicePart editedLineItem = (InvoicePart) selectedTableItem.getData();
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
-				editedLineItem = new InvoicePart(partResults[0]);
+//				editedLineItem = new InvoicePart(partResults[0]);
+				if (editedLineItem == null) {
+					editedLineItem = new InvoicePart(partResults[0]);
+				} else {
+					editedLineItem.setPart(partResults[0]);
+				}
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
 				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
 					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
 					// find a better way to get shell
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
-				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
+//				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
+				editedLineItem.setPart((Part) partSearchDialog.open(editorTxtBox.getText()));
 			}
 			
 			if (editedLineItem != null) {
@@ -127,6 +134,7 @@ public class InvoicePartEditorListener implements Listener {
 				for (TableItem tableItem : partInvoiceTable.getItems()) {
 					if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
 							&& !tableItem.equals(selectedTableItem)) {
+						selectedTableItem = tableItem;
 						alreadyInLineItems = true;
 						editedTableItem = tableItem;
 						partInvoiceTable.setSelection(editedTableItem);
@@ -172,6 +180,10 @@ public class InvoicePartEditorListener implements Listener {
 		TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());	// so we can continue selecting and adding parts
 	}
 
+	
+	// TODO refactor into private void setPartQuantity(TableItem item, int quantity)
+		// and this one v calls that one ^ with setPartQuantity(item, editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""))
+		// then the Dupe Part Quantity Code in findPartNumber() can call setPartQuantity(editedTableItem, quantity)
 	private void setPartQuantity(TableItem item) {
 		ignoreFocusOut = true;
 		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData(); 

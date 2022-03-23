@@ -778,9 +778,9 @@ public class RepairOrderDialog extends Dialog {
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
 //				currentJob.addPart((Part) currentPartTableItem.getData());
 			JobPart currentTIPart = (JobPart) currentPartTableItem.getData();
-			List<Part> currentParts = currentJob.getParts();
+			List<JobPart> currentParts = currentJob.getJobParts();
 //			if (currentPartTableItem.getData() != null && !currentJob.getJobParts().contains(currentPartTableItem.getData())) {
-			if (currentTIPart != null && !currentParts.contains(currentTIPart.getPart())) {
+			if (currentTIPart != null && !currentParts.contains(currentTIPart)) {
 				currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 			}
 		}
