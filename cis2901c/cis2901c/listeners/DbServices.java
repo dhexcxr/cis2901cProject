@@ -642,8 +642,8 @@ public class DbServices {
 		while (queryResultSet.next()) {
 			JobPart jobPart = new JobPart();
 			jobPart.setJobPartId(queryResultSet.getLong(1));
-			jobPart.setPartId(queryResultSet.getLong(2));
-			jobPart.setJobId(queryResultSet.getLong(3));
+			jobPart.setJobId(queryResultSet.getLong(2));
+			jobPart.setPartId(queryResultSet.getLong(3));
 			jobPart.setPartNumber(queryResultSet.getString(4));
 			jobPart.setDescription(queryResultSet.getString(5));
 			jobPart.setQuantity(queryResultSet.getInt(6));
