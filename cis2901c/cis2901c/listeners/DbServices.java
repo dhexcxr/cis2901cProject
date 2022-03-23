@@ -341,7 +341,7 @@ public class DbServices {
 		int updateCount = 0;
 		for (Map.Entry<String, List<Long>> entry : detailsToDelete.entrySet()) {
 			for (Long primaryKey : entry.getValue()) {
-				deleteObjectsByPk(entry.getKey(), entry.getKey() + "id", primaryKey);
+				updateCount += deleteObjectsByPk(entry.getKey(), entry.getKey() + "id", primaryKey);
 			}
 		}
 		
