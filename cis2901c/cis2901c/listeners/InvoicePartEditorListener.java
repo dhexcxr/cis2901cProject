@@ -174,7 +174,8 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void setPartQuantity(TableItem item) {
 		ignoreFocusOut = true;
-		Part selectedPart = ((InvoicePart) partInvoiceTable.getSelection()[0].getData()).getPart();
+		InvoicePart selectedInvoicePart = (InvoicePart) partInvoiceTable.getSelection()[0].getData(); 
+		Part selectedPart = selectedInvoicePart.getPart();
 		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
 		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
 		if (newQuantity.equals("")) {
@@ -189,8 +190,10 @@ public class InvoicePartEditorListener implements Listener {
 			newQuantity = Integer.toString(selectedPart.getOnHand());
 		}
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
-		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
-				new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN))).toString()));
+		selectedInvoicePart.setQuantity(Integer.parseInt(newQuantity));
+		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
+		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (extendedPrice.toString()));
+		selectedInvoicePart.setSoldPrice(extendedPrice);
 		ignoreFocusOut = false;
 	}
 
