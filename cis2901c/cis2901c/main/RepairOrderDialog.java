@@ -765,11 +765,16 @@ public class RepairOrderDialog extends Dialog {
 	public void saveJob() {
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
+		currentJob.setJobParts(new ArrayList<>());
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
 //				currentJob.addPart((Part) currentPartTableItem.getData());
+			if (currentPartTableItem.getData() == null) {
+				break;
+			}
 			currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 		}
 
+		currentJob.setLabor(new ArrayList<>());
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
 				currentJob.addLabor((JobLabor) currentLaborTableItem.getData());
 		}
@@ -808,7 +813,9 @@ public class RepairOrderDialog extends Dialog {
 		
 		if (tableJobsRepairOrder.getItemCount() > 0) {
 			for (TableItem jobTableItem : tableJobsRepairOrder.getItems()) {
-				repairOrder.addJob((Job) jobTableItem.getData());
+				if (!repairOrder.getJobs().contains(jobTableItem.getData())) {
+					repairOrder.addJob((Job) jobTableItem.getData());
+				}
 			}
 		}
 		
@@ -823,6 +830,7 @@ public class RepairOrderDialog extends Dialog {
 		DbServices.saveObject(repairOrder);
 		roId = repairOrder.getRepairOrderId();
 		textRoNum.setText(Long.toString(roId));
+		detailsToDelete = new HashMap<>();
 		result = repairOrder;
 //		shlRepairOrder.close();
 	}
