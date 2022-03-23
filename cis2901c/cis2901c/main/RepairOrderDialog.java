@@ -692,6 +692,9 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void loadRoFromDb(RepairOrder repairOrder) {
 		// set Dialog boxes and stuff from repairOrder fields
+		if (repairOrder == null) {
+			repairOrder = new RepairOrder();
+		}
 		currentRepairOrder = repairOrder;
 		roId = repairOrder.getRepairOrderId();
 		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
