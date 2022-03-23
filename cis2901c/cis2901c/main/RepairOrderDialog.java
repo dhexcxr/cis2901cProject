@@ -768,19 +768,23 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	public void saveJob() {
+		// TODO big work in progress
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
-		currentJob.setJobParts(new ArrayList<>());
+//		currentJob.setJobParts(new ArrayList<>());
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
 //				currentJob.addPart((Part) currentPartTableItem.getData());
-			if (currentPartTableItem.getData() == null) {
-				break;
+			JobPart currentTIPart = (JobPart) currentPartTableItem.getData();
+			List<Part> currentParts = currentJob.getParts();
+//			if (currentPartTableItem.getData() != null && !currentJob.getJobParts().contains(currentPartTableItem.getData())) {
+			if (currentTIPart != null && !currentParts.contains(currentTIPart.getPart())) {
+				currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 			}
-			currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 		}
 
-		currentJob.setLabor(new ArrayList<>());
+//		currentJob.setLabor(new ArrayList<>());
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
+			if (!currentJob.getLabor().contains(currentLaborTableItem.getData()))
 				currentJob.addLabor((JobLabor) currentLaborTableItem.getData());
 		}
 	}

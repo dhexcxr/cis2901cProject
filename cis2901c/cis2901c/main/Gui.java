@@ -430,6 +430,7 @@ public class Gui extends Composite {
 					// clear entire Invoice Tab
 					txtCustomerInvoice.setData(null);
 					txtCustomerInvoice.setText("Customer...");
+					// TODO set customer to RED again
 					txtInvoiceNotes.setText("Invoice Notes...");
 					txtPartsTotalInvoice.setText("0.00");
 					txtTaxInvoice.setText("0.00");
