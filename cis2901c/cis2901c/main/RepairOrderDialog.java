@@ -793,7 +793,9 @@ public class RepairOrderDialog extends Dialog {
 		
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
 			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());
-			repairOrder.setCustomerData(txtCustomerRepairOrder.getText());
+			repairOrder.setCustomerName(txtCustomerRepairOrder.getText(0, txtCustomerRepairOrder.getText().indexOf('\n')).split(","));
+//			txtCustomerRepairOrder.getText(0, txtCustomerRepairOrder.getText().indexOf('\n')).split(" ");
+			repairOrder.setCustomerData(txtCustomerRepairOrder.getText().substring(txtCustomerRepairOrder.getText().indexOf('\n')));
 		} else {
 			// if we haven't selected a Customer, complain - an RO Customer is required
 			MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
@@ -816,7 +818,7 @@ public class RepairOrderDialog extends Dialog {
 		
 		if (tableJobsRepairOrder.getItemCount() > 0) {
 			for (TableItem jobTableItem : tableJobsRepairOrder.getItems()) {
-				if (!repairOrder.getJobs().contains(jobTableItem.getData())) {
+				if (!repairOrder.getJobs().contains(jobTableItem.getData())) {		// maybe use HashSet here
 					repairOrder.addJob((Job) jobTableItem.getData());
 				}
 			}

@@ -87,6 +87,13 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 		}
 		this.customerName = lastname + firstname;
 	}
+	
+	public void setCustomerName(String[] name) {
+		if (name[1] != null) {
+			name[1] = name[1].equals("") ? name[1] : ", " + name[1].replaceFirst("[^a-zA-Z0-9'-]", "");
+		}
+		this.customerName = name[0] + name[1];
+	}
 
 	public String getCustomerData() {
 		return customerData;
