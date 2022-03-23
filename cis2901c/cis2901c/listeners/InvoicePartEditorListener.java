@@ -68,7 +68,7 @@ public class InvoicePartEditorListener implements Listener {
 			if (selectedColumnIndex == InvoicePartTable.PART_NUMBER_COLUMN) {
 				ignoreFocusOut = true;
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
-				Part selectedPart = (Part) partSearchDialog.open(editorTxtBox.getText());
+				InvoicePart selectedPart = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				if (selectedPart != null) {
 					paintInvoiceLines(selectedPart);  
 				}
@@ -108,16 +108,16 @@ public class InvoicePartEditorListener implements Listener {
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
 			Part[] partResults = (Part[]) DbServices.searchForObject(new Part(editorTxtBox.getText()));
-			Part editedLineItem = null;
+			InvoicePart editedLineItem = null;
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
-				editedLineItem = partResults[0];
+				editedLineItem = new InvoicePart(partResults[0]);
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
 				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
 					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
 					// find a better way to get shell
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
-				editedLineItem = (Part) partSearchDialog.open(editorTxtBox.getText());
+				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 			}
 			
 			if (editedLineItem != null) {
@@ -144,7 +144,7 @@ public class InvoicePartEditorListener implements Listener {
 		ignoreFocusOut = false;
 	}
 
-	private void paintInvoiceLines(Part editedLineItem) {
+	private void paintInvoiceLines(InvoicePart editedLineItem) {
 		Main.log(Level.INFO, "paintInvoiceLines called");
 		// TODO if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
 		// TODO i think if we change this to a List<TableItem> we can just do a currentTableItems.contains(editedLineItem)
@@ -161,13 +161,13 @@ public class InvoicePartEditorListener implements Listener {
 			for (int i = 0; i < currentTableItems.length; i++) {
 				currentParts[i] = (InvoicePart) currentTableItems[i].getData();
 			}			
-			currentParts[selectedTableItemIndex] = new InvoicePart(editedLineItem);
+			currentParts[selectedTableItemIndex] = editedLineItem;
 			partInvoiceTable.removeAll();
 			partInvoiceTable.paint(currentParts);
 		}
-		textCategoryInvoice.setText(editedLineItem.getCategory());
-		textSupplierInvoice.setText(editedLineItem.getSupplier());
-		textNotesInvoice.setText(editedLineItem.getNotes());
+		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
+		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
+		textNotesInvoice.setText(editedLineItem.getPart().getNotes());
 		@SuppressWarnings("unused")									// this adds another new, empty TableItem at the end of the Invoice Line Items
 		TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());	// so we can continue selecting and adding parts
 	}

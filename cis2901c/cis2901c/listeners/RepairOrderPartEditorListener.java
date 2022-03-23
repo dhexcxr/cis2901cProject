@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
+import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.JobPart;
 import cis2901c.objects.MyText;
@@ -41,7 +42,8 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 			super.handleEvent(event);
 //			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() != null) {
-//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart((Part) partInvoiceTable.getItem(selectedTableItemIndex).getData()));
+				Part part = ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData()).getPart();
+				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(part));
 				repairOrderDialog.saveJob();
 				totalParts();
 			}
