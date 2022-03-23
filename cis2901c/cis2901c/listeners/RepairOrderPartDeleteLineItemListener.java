@@ -34,10 +34,13 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 	
 	@Override
 	public void mouseDown(MouseEvent event) {
-		JobPart selectedJobPart = (JobPart) repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData();
-		repairOrderDialog.addDetailsToDelete(selectedJobPart.getTableName(), selectedJobPart.getJobPartId());
-		super.mouseDown(event);
-		totalParts();
+		if (repairOrderPartTableInvoice.getSelectionIndex() >= 0 && repairOrderPartTableInvoice.getSelectionIndex() < repairOrderPartTableInvoice.getItemCount() &&
+				repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData() != null) {
+			JobPart selectedJobPart = (JobPart) repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData();
+			repairOrderDialog.addDetailsToDelete(selectedJobPart.getTableName(), selectedJobPart.getJobPartId());
+			super.mouseDown(event);
+			totalParts();
+		}
 	}
 	
 	private void totalParts() {

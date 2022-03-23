@@ -34,27 +34,28 @@ public class InvoicePartTable extends MyTable{
 			if (object == null) {
 				return;
 			}
-			Part part = (Part) object;
+			Part part = ((InvoicePart) object).getPart();
 			TableItem tableItem = this.getItem(selectedTableItemIndex);
 				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
 							part.getRetail().toString()});
-			tableItem.setData(part);
+			tableItem.setData(new InvoicePart(part));
 	}
 	
 	@Override
 	public void paint(Object[] partResults) {
 		// build each TableItem to fill Unit Table
-		for (Part part : (Part[]) partResults) {
-			if (part == null) {
+		for (InvoicePart invoicePart : (InvoicePart[]) partResults) {
+			if (invoicePart == null) {
 				return;
 			}
+			Part part = invoicePart.getPart();
 			TableItem tableItem = new TableItem(this, SWT.NONE);
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 													Integer.toString(part.getOnHand()), part.getCost().toString(),
 														part.getRetail().toString(), part.getRetail().toString()});
-			tableItem.setData(part);
+			tableItem.setData(invoicePart);
 		}
 	}
 	

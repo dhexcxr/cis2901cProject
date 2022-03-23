@@ -244,7 +244,7 @@ public class DbServices {
 //			InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
 //			myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 //			saveObject(myInvoiceLineItem);
-			InvoicePart invoicePart = new InvoicePart((InvoicePartTableItem) invoiceLineItem);
+			InvoicePart invoicePart = (InvoicePart) invoiceLineItem.getData();
 			invoicePart.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 			saveObject(invoicePart);
 		}

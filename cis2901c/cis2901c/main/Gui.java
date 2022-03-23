@@ -38,6 +38,7 @@ import cis2901c.listeners.TableColumnSortListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.objects.Customer;
 import cis2901c.objects.Invoice;
+import cis2901c.objects.InvoicePart;
 import cis2901c.objects.CustomerTable;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.PartInventoryTable;
@@ -335,7 +336,7 @@ public class Gui extends Composite {
 				if (invoicePartsTable.getSelectionIndex() >= 0 &&
 						invoicePartsTable.getSelectionIndex() < invoicePartsTable.getItemCount() &&
 							invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData() != null) {
-					Part selectedPart = (Part) invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData();
+					Part selectedPart = ((InvoicePart) invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData()).getPart();
 					textCategoryInvoice.setText(selectedPart.getCategory());
 					textSupplierInvoice.setText(selectedPart.getSupplier());
 					textPartNotesInvoice.setText(selectedPart.getNotes());

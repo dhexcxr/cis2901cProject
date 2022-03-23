@@ -738,7 +738,8 @@ public class RepairOrderDialog extends Dialog {
 		jobPartTableItem.setText(new String[] {jobPart.getPartNumber(), jobPart.getDescription(), Integer.toString(jobPart.getQuantity()),
 				Integer.toString(jobPart.getPart().getOnHand()), jobPart.getPart().getCost().toString(),
 				jobPart.getSoldPrice().toString(), jobPart.getSoldPrice().multiply(BigDecimal.valueOf(jobPart.getQuantity())).toString()});
-		jobPartTableItem.setData(jobPart.getPart());
+//		jobPartTableItem.setData(jobPart.getPart());
+		jobPartTableItem.setData(jobPart);
 	}
 	
 	private void addLaborToLaborTableItem(JobLabor jobLabor) {
@@ -765,7 +766,8 @@ public class RepairOrderDialog extends Dialog {
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
-				currentJob.addPart((Part) currentPartTableItem.getData());
+//				currentJob.addPart((Part) currentPartTableItem.getData());
+			currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 		}
 
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
@@ -810,7 +812,7 @@ public class RepairOrderDialog extends Dialog {
 			}
 		}
 		
-		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));
+		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));		// TODO move this into newRO, so we don't modify this everytime we save the RO
 		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
 		// setClosedTime
 		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));

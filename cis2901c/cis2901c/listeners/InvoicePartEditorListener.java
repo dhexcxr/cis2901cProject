@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.Main;
 import cis2901c.main.PartSearchDialog;
+import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.MyText;
@@ -124,7 +125,8 @@ public class InvoicePartEditorListener implements Listener {
 				boolean alreadyInLineItems = false;
 				TableItem editedTableItem = null;
 				for (TableItem tableItem : partInvoiceTable.getItems()) {
-					if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))) {
+					if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
+							&& !tableItem.equals(selectedTableItem)) {
 						alreadyInLineItems = true;
 						editedTableItem = tableItem;
 						partInvoiceTable.setSelection(editedTableItem);
@@ -154,11 +156,12 @@ public class InvoicePartEditorListener implements Listener {
 			// if we're not editing an already populated TableItem line item
 			partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
 		} else {
-			Part[] currentParts = new Part[currentTableItems.length];
+//			Part[] currentParts = new Part[currentTableItems.length];
+			InvoicePart[] currentParts = new InvoicePart[currentTableItems.length];
 			for (int i = 0; i < currentTableItems.length; i++) {
-				currentParts[i] = (Part) currentTableItems[i].getData();
+				currentParts[i] = (InvoicePart) currentTableItems[i].getData();
 			}			
-			currentParts[selectedTableItemIndex] = editedLineItem;
+			currentParts[selectedTableItemIndex] = new InvoicePart(editedLineItem);
 			partInvoiceTable.removeAll();
 			partInvoiceTable.paint(currentParts);
 		}
@@ -171,7 +174,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void setPartQuantity(TableItem item) {
 		ignoreFocusOut = true;
-		Part selectedPart = (Part) partInvoiceTable.getSelection()[0].getData();
+		Part selectedPart = ((InvoicePart) partInvoiceTable.getSelection()[0].getData()).getPart();
 		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
 		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
 		if (newQuantity.equals("")) {

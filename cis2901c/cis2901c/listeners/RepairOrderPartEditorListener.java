@@ -8,12 +8,16 @@ import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.InvoicePartTable;
+import cis2901c.objects.JobPart;
 import cis2901c.objects.MyText;
+import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
 public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
+	private InvoicePartTable partInvoiceTable;
+	private int selectedTableItemIndex;
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
@@ -23,6 +27,8 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex, RepairOrderDialog repairOrderDialog) {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
 		// TODO connect Job Part total
+		this.partInvoiceTable = partInvoiceTable;
+		this.selectedTableItemIndex = selectedTableItemIndex;
 		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
@@ -34,8 +40,11 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		if (!ignoreFocusOut) {
 			super.handleEvent(event);
 //			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
-			repairOrderDialog.saveJob();
-			totalParts();
+			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() != null) {
+//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart((Part) partInvoiceTable.getItem(selectedTableItemIndex).getData()));
+				repairOrderDialog.saveJob();
+				totalParts();
+			}
 		}
 	}
 	
