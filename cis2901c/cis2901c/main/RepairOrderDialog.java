@@ -711,6 +711,7 @@ public class RepairOrderDialog extends Dialog {
 			txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
 		}
 
+		List<Job> roJobs = new ArrayList<>();
 		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
 			if (job == null) {
 				break;
@@ -726,10 +727,10 @@ public class RepairOrderDialog extends Dialog {
 			List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
 			jobPart.removeAll(Collections.singleton(null));
 			job.setJobParts(jobPart);
-
+			roJobs.add(job);
 			jobTableItem.setData(job);
 		}
-
+		repairOrder.setJobs(roJobs);
 		tableJobsRepairOrder.setSelection(0);
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 		this.calcRoTotal();
