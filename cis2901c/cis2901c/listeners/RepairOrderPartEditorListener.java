@@ -44,6 +44,8 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() != null) {
 				Part part = ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData()).getPart();
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(part));
+//				InvoicePart invoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData();
+//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
 				repairOrderDialog.saveJob();
 				totalParts();
 			}

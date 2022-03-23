@@ -29,6 +29,11 @@ public class JobPart extends InvoicePart {
 		this.part = part;
 	}
 	
+	public JobPart(InvoicePart invoicePart) {
+		this(invoicePart.getDbPk(), invoicePart.getPartId(), 0, invoicePart.getPartNumber(),
+				invoicePart.getDescription(), invoicePart.getQuantity(), invoicePart.getSoldPrice());
+	}
+	
 	public JobPart(String partNumber, String description, int quantity,
 			BigDecimal soldPrice) {
 		this(-1, 0, 0, partNumber, description, quantity, soldPrice);
