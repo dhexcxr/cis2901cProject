@@ -469,7 +469,10 @@ public class RepairOrderDialog extends Dialog {
 							
 							selectedIndex = tableJobsRepairOrder.getSelectionIndex();
 							tableJobsRepairOrder.remove(selectedIndex);
-							
+							// remove Job we just deleted from tabFolder
+							if (selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
+								tabFolderJobsRepairOrder.setData(null);
+							}
 							selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
 							tableJobsRepairOrder.setSelection(selectedIndex);
 							tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
@@ -584,6 +587,7 @@ public class RepairOrderDialog extends Dialog {
 //						// TODO if there are unsaved changes, prompt to save before closing
 //						shlRepairOrder.close();
 						tableJobsRepairOrder.removeAll();
+						detailsToDelete = new HashMap<>();
 						loadRoFromDb(currentRepairOrder);
 					}
 				});
