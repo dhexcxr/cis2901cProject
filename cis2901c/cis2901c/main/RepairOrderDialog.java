@@ -781,11 +781,14 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	private void saveNewRo() {
-		saveRo(new RepairOrder());
+		RepairOrder repairOrder = new RepairOrder();
+		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));
+		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
+		saveRo(repairOrder);
 	}
 	
 	private void saveRo(RepairOrder repairOrder) {
-		
+		// TODO do someting with the returned updateCount
 		DbServices.deleteDetailsFromRo(detailsToDelete);
 		
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
@@ -819,8 +822,6 @@ public class RepairOrderDialog extends Dialog {
 			}
 		}
 		
-		repairOrder.setCreatedDate(Timestamp.from(Instant.now()));		// TODO move this into newRO, so we don't modify this everytime we save the RO
-		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
 		// setClosedTime
 		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
 		repairOrder.setTotal(new BigDecimal(textFinalTotalRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
