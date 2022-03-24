@@ -584,8 +584,7 @@ public class RepairOrderDialog extends Dialog {
 				btnCancel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-//						// TODO if there are unsaved changes, prompt to save before closing
-//						shlRepairOrder.close();
+						// TODO make a method that clears the entire RO, call from here
 						tableJobsRepairOrder.removeAll();
 						detailsToDelete = new HashMap<>();
 						loadRoFromDb(currentRepairOrder);
@@ -692,9 +691,9 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void loadRoFromDb(RepairOrder repairOrder) {
 		// set Dialog boxes and stuff from repairOrder fields
-		if (repairOrder == null) {
-			repairOrder = new RepairOrder();
-		}
+		if (repairOrder != null) {
+//			repairOrder = new RepairOrder();
+//		}
 		currentRepairOrder = repairOrder;
 		roId = repairOrder.getRepairOrderId();
 		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
@@ -737,6 +736,7 @@ public class RepairOrderDialog extends Dialog {
 		tableJobsRepairOrder.setSelection(0);
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 		this.calcRoTotal();
+		}
 	}
 	
 //	private void addPartToPartTableItem(Part part) {
