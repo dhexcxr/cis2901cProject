@@ -18,6 +18,7 @@ import cis2901c.main.PartSearchDialog;
 import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.InvoicePartTableItem;
+import cis2901c.objects.JobPart;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 
@@ -112,6 +113,10 @@ public class InvoicePartEditorListener implements Listener {
 			InvoicePart editedLineItem = (InvoicePart) selectedTableItem.getData();
 			if (editedLineItem == null) {
 				editedLineItem = new InvoicePart();
+			} else if (editedLineItem instanceof JobPart && editedLineItem.getPart() == null) {
+				// if this is a new, blank JobPart, setData(null) so we can correctly add
+					// another new blank line in paintInvoiceLines(InvoicePart editedLineItem)  
+				selectedTableItem.setData(null);
 			}
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
 					editedLineItem.setPart(partResults[0]);
@@ -155,33 +160,20 @@ public class InvoicePartEditorListener implements Listener {
 		// TODO if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
 		// TODO i think if we change this to a List<TableItem> we can just do a currentTableItems.contains(editedLineItem)
 																// to find part and increase Quantity by 1
-		TableItem[] currentTableItems = partInvoiceTable.getItems();
+
 		// TODO if editedLineItem is already in currentTableItems, find it's index and increase Quantity by 1
 
-		if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
-			// if we're not editing an already populated TableItem line item
-			partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
-		} else {
-//			Part[] currentParts = new Part[currentTableItems.length];
-			InvoicePart[] currentParts = new InvoicePart[currentTableItems.length];
-			for (int i = 0; i < currentTableItems.length; i++) {
-				currentParts[i] = (InvoicePart) currentTableItems[i].getData();
-			}			
-			currentParts[selectedTableItemIndex] = editedLineItem;
-			partInvoiceTable.removeAll();
-			partInvoiceTable.paint(currentParts);
+		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
+			// if we're editing an empty TableItem line item
+			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
+			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());	
 		}
+		partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
 		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
 		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
 		textNotesInvoice.setText(editedLineItem.getPart().getNotes());
-		@SuppressWarnings("unused")									// this adds another new, empty TableItem at the end of the Invoice Line Items
-		TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());	// so we can continue selecting and adding parts
 	}
 
-	
-	// TODO refactor into private void setPartQuantity(TableItem item, int quantity)
-		// and this one v calls that one ^ with setPartQuantity(item, editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""))
-		// then the Dupe Part Quantity Code in findPartNumber() can call setPartQuantity(editedTableItem, quantity)
 	private void setPartQuantity(TableItem item) {
 //		setPartQuantity(item, Integer.parseInt(item.getText(InvoicePartTable.QUANTITY_COLUMN)));
 		setPartQuantity(item, Integer.parseInt(editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "")));	// <--------

@@ -40,7 +40,8 @@ public class InvoicePartTable extends MyTable{
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
 							part.getRetail().toString()});
-			tableItem.setData(new InvoicePart(part));
+//			tableItem.setData(new InvoicePart(part));
+			tableItem.setData(object);
 	}
 	
 	@Override
