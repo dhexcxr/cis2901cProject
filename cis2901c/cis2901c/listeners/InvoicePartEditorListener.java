@@ -69,7 +69,8 @@ public class InvoicePartEditorListener implements Listener {
 				ignoreFocusOut = true;
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				InvoicePart selectedPart = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
-				if (selectedPart != null) {
+				if (selectedPart.getPart() != null) {
+					editorTxtBox.setText(selectedPart.getPartNumber());
 					paintInvoiceLines(selectedPart);  
 				}
 				ignoreFocusOut = false;
@@ -123,8 +124,12 @@ public class InvoicePartEditorListener implements Listener {
 					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
 					// find a better way to get shell
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
+				Part part = (Part) partSearchDialog.open(editorTxtBox.getText());
+				if (part == null) {
+					return;
+				}
 //				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
-				editedLineItem.setPart((Part) partSearchDialog.open(editorTxtBox.getText()));
+				editedLineItem.setPart(part);
 			}
 			
 			if (editedLineItem != null) {

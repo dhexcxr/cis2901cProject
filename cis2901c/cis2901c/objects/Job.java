@@ -105,7 +105,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 			parts = new ArrayList<>();
 		} else {
 			for (JobPart jobPart : jobParts) {
-				if (!parts.contains(jobPart.getPart())) {
+				if (jobPart.getPart() != null && !parts.contains(jobPart.getPart())) {
 					parts.add(jobPart.getPart());
 				}
 			}

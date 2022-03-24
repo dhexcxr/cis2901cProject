@@ -3,9 +3,12 @@ package cis2901c.objects;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+
+import cis2901c.main.Main;
 
 public class RepairOrderJobTableItem extends TableItem implements DbObjectSavable {
 	
@@ -79,6 +82,10 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		
 		partTotal = BigDecimal.valueOf(0);
 		for (Part part : thisJob.getParts()) {
+			if (part == null) {
+				Main.log(Level.INFO, "Null part in ROJobTableItem.setData");
+				break;
+			}
 			partTotal = partTotal.add(part.getRetail()).setScale(2, RoundingMode.CEILING);
 		}
 		this.setText(PART_TOTAL_COLUMN, "$" + partTotal.toString());

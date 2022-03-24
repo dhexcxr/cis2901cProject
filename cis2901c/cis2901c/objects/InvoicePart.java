@@ -24,6 +24,9 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	}
 	
 	public InvoicePart(Part part) {
+		if (part == null) {
+			return;
+		}
 		this.partId = part.getPartId();
 		this.partNumber = part.getPartNumber();
 		this.description = part.getDescription();

@@ -47,7 +47,7 @@ public class InvoicePartTable extends MyTable{
 	public void paint(Object[] partResults) {
 		// build each TableItem to fill Unit Table
 		for (InvoicePart invoicePart : (InvoicePart[]) partResults) {
-			if (invoicePart == null) {
+			if (invoicePart == null || invoicePart.getPart() == null) {
 				return;
 			}
 			Part part = invoicePart.getPart();
