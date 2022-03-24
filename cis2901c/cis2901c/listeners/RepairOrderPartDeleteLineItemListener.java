@@ -6,6 +6,7 @@ import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
+import cis2901c.objects.Job;
 import cis2901c.objects.JobPart;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.RepairOrderJobTable;
@@ -38,6 +39,8 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 				repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData() != null) {
 			JobPart selectedJobPart = (JobPart) repairOrderPartTableInvoice.getItem(repairOrderPartTableInvoice.getSelectionIndex()).getData();
 			repairOrderDialog.addDetailsToDelete(selectedJobPart.getTableName(), selectedJobPart.getJobPartId());
+			// remove the selected JobPart from Job.getJobParts
+			((Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData()).getJobParts().remove(selectedJobPart);
 			super.mouseDown(event);
 			totalParts();
 		}
