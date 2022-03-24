@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.MouseAdapter;
@@ -171,6 +172,14 @@ public class RepairOrderDialog extends Dialog {
 		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlRepairOrder.setSize(992, 736);
 		shlRepairOrder.setText(getText());
+		shlRepairOrder.addListener(SWT.Traverse, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.detail == SWT.TRAVERSE_ESCAPE) {
+					event.doit = false;
+				}
+			}
+		});
 		
 		Gui.setDialogAtCenter(shlRepairOrder);
 		
