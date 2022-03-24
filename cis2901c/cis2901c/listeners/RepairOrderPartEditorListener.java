@@ -11,7 +11,6 @@ import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.JobPart;
 import cis2901c.objects.MyText;
-import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 
@@ -19,17 +18,21 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	private InvoicePartTable partInvoiceTable;
 	private int selectedTableItemIndex;
+	private Text editorTxtBox;
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
 	private RepairOrderDialog repairOrderDialog;
 
 	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
-			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex, RepairOrderDialog repairOrderDialog) {
+			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText,
+				RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex,
+					RepairOrderDialog repairOrderDialog) {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
 		// TODO connect Job Part total
 		this.partInvoiceTable = partInvoiceTable;
 		this.selectedTableItemIndex = selectedTableItemIndex;
+		this.editorTxtBox = editorTxtBox;
 		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
@@ -38,23 +41,24 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	@Override
 	public void handleEvent(Event event) {
-		if (!ignoreFocusOut) {
+		if (!ignoreFocusOut && editorTxtBox.getText().length() > 0) {
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
 			}
 			super.handleEvent(event);
-//			tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
-			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() != null) {
-//				Part part = ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData()).getPart();
-//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(part));
-//				InvoicePart invoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData();
-				JobPart invoicePart = (JobPart) partInvoiceTable.getItem(selectedTableItemIndex).getData();
-//				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart(invoicePart));
-				partInvoiceTable.getItem(selectedTableItemIndex).setData(invoicePart);
+			InvoicePart newInvoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData(); 
+			if (newInvoicePart != null && newInvoicePart.getPart() != null) {
 				repairOrderDialog.saveJob();
 				totalParts();
+			} else {
+				partInvoiceTable.getItem(selectedTableItemIndex).setData(null);
+//				editorTxtBox.dispose();
+//				partInvoiceTable.setSelection(-1);
+//				partInvoiceTable.setFocus();
 			}
-		}
+		} /* else {
+			editorTxtBox.dispose();
+		} */
 	}
 	
 	private void totalParts() {

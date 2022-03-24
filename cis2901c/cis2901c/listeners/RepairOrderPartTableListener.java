@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
+import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.RepairOrderJobTable;
@@ -59,8 +60,13 @@ public class RepairOrderPartTableListener implements Listener{
         	final TableItem selectedTableItem = partInvoiceTable.getItem(currentPartTableItemIndex);
         	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
         		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
-        		if (selectedTableItemColumnBounds.contains(clickPoint) &&
-        				(i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
+        		if (selectedTableItemColumnBounds.contains(clickPoint)
+        				&& (i == InvoicePartTable.PART_NUMBER_COLUMN || (i == InvoicePartTable.QUANTITY_COLUMN && selectedTableItem.getData() != null)
+        						|| (i == InvoicePartTable.PART_PRICE_COLUMN && selectedTableItem.getData() != null))) {
+        			if ((i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)
+        					&& ((InvoicePart) selectedTableItem.getData()).getPart() == null) {
+        				return;		// this IF is what finally did it, the whole not editing QTY or Price without an associated Part
+        			}
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
         			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
