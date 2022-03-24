@@ -52,13 +52,9 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 				totalParts();
 			} else {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(null);
-//				editorTxtBox.dispose();
-//				partInvoiceTable.setSelection(-1);
-//				partInvoiceTable.setFocus();
 			}
-		} /* else {
-			editorTxtBox.dispose();
-		} */
+		}
+		editorTxtBox.dispose();
 	}
 	
 	private void totalParts() {
