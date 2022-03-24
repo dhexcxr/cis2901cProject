@@ -61,10 +61,9 @@ public class RepairOrderPartTableListener implements Listener{
         	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
         		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
         		if (selectedTableItemColumnBounds.contains(clickPoint)
-        				&& (i == InvoicePartTable.PART_NUMBER_COLUMN || (i == InvoicePartTable.QUANTITY_COLUMN && selectedTableItem.getData() != null)
-        						|| (i == InvoicePartTable.PART_PRICE_COLUMN && selectedTableItem.getData() != null))) {
+        				&& (i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
         			if ((i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)
-        					&& ((InvoicePart) selectedTableItem.getData()).getPart() == null) {
+        					&& (selectedTableItem.getData() == null || ((InvoicePart) selectedTableItem.getData()).getPart() == null)) {
         				return;		// this IF is what finally did it, the whole not editing QTY or Price without an associated Part
         			}
         			final int selectedColumnIndex = i;
