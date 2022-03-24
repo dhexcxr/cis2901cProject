@@ -109,15 +109,12 @@ public class InvoicePartEditorListener implements Listener {
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
 			Part[] partResults = (Part[]) DbServices.searchForObject(new Part(editorTxtBox.getText()));
-//			InvoicePart editedLineItem = null;
 			InvoicePart editedLineItem = (InvoicePart) selectedTableItem.getData();
+			if (editedLineItem == null) {
+				editedLineItem = new InvoicePart();
+			}
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
-//				editedLineItem = new InvoicePart(partResults[0]);
-				if (editedLineItem == null) {
-					editedLineItem = new InvoicePart(partResults[0]);
-				} else {
 					editedLineItem.setPart(partResults[0]);
-				}
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
 				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
@@ -126,33 +123,29 @@ public class InvoicePartEditorListener implements Listener {
 				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
 				Part part = (Part) partSearchDialog.open(editorTxtBox.getText());
 				if (part == null) {
+					ignoreFocusOut = false;
 					return;
 				}
 //				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				editedLineItem.setPart(part);
 			}
 			
-			if (editedLineItem != null) {
-				// TODO this is kinda ugly, I might be able to move this into paintInvoiceLines(Part editedLineItem)
-				boolean alreadyInLineItems = false;
-				TableItem editedTableItem = null;
-				for (TableItem tableItem : partInvoiceTable.getItems()) {
-					if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
-							&& !tableItem.equals(selectedTableItem)) {
-						selectedTableItem = tableItem;
-						alreadyInLineItems = true;
-						editedTableItem = tableItem;
-						partInvoiceTable.setSelection(editedTableItem);
-						int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
-						tableItem.setText(InvoicePartTableItem.QUANTITY_COLUMN, Integer.toString(quantity + 1));
-					}
+			// TODO this is kinda ugly, I might be able to move this into paintInvoiceLines(Part editedLineItem)
+			TableItem editedTableItem = null;
+			for (TableItem tableItem : partInvoiceTable.getItems()) {
+				if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
+						&& !tableItem.equals(selectedTableItem)) {
+					selectedTableItem = tableItem;
+					editedTableItem = tableItem;
+					partInvoiceTable.setSelection(editedTableItem);
+					int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
+					tableItem.setText(InvoicePartTableItem.QUANTITY_COLUMN, Integer.toString(quantity + 1));
+					setPartQuantity(editedTableItem, quantity + 1);
+					ignoreFocusOut = false;
+					return;
 				}
-				if (alreadyInLineItems) {
-					setPartQuantity(editedTableItem);
-				} else {
-					paintInvoiceLines(editedLineItem);
-				}	
 			}
+			paintInvoiceLines(editedLineItem);
 		}
 		ignoreFocusOut = false;
 	}
