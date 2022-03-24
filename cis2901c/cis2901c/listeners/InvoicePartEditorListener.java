@@ -190,11 +190,18 @@ public class InvoicePartEditorListener implements Listener {
 		// and this one v calls that one ^ with setPartQuantity(item, editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""))
 		// then the Dupe Part Quantity Code in findPartNumber() can call setPartQuantity(editedTableItem, quantity)
 	private void setPartQuantity(TableItem item) {
-		ignoreFocusOut = true;
-		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData(); 
+//		setPartQuantity(item, Integer.parseInt(item.getText(InvoicePartTable.QUANTITY_COLUMN)));
+		setPartQuantity(item, Integer.parseInt(editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "")));	// <--------
+	}																										//		|
+																											// 		|
+	private void setPartQuantity(TableItem item, int quantity) {		// TODO change Quantity to a String so this | does not throw a NumberFormatExcept
+		ignoreFocusOut = true;												// we can parse to an int in this method where necessary, and set to [something]
+		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();		// if it turns to "" after removing all but decimals
 		Part selectedPart = selectedInvoicePart.getPart();
-		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
-		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
+//		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
+		String currentQuantity = Integer.toString(quantity);
+//		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
+		String newQuantity = currentQuantity;
 		if (newQuantity.equals("")) {
 			newQuantity = currentQuantity;
 		}
@@ -207,18 +214,25 @@ public class InvoicePartEditorListener implements Listener {
 			newQuantity = Integer.toString(selectedPart.getOnHand());
 		}
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
-		selectedInvoicePart.setQuantity(Integer.parseInt(newQuantity));
+		selectedInvoicePart.setQuantity(quantity);
 		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (extendedPrice.toString()));
-		selectedInvoicePart.setSoldPrice(extendedPrice);
+//		selectedInvoicePart.setSoldPrice(extendedPrice);
 		ignoreFocusOut = false;
 	}
 
 	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
-		item.setText(InvoicePartTable.PART_PRICE_COLUMN, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ?
-				item.getText(InvoicePartTable.PART_PRICE_COLUMN) : editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
-		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(
-				new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN))).toString()));
+		ignoreFocusOut = true;
+		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();
+		String partPrice = editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ?
+								item.getText(InvoicePartTable.PART_PRICE_COLUMN) : editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
+		item.setText(InvoicePartTable.PART_PRICE_COLUMN, partPrice);
+		selectedInvoicePart.setSoldPrice(new BigDecimal(partPrice));
+		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN))
+										.multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
+		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, extendedPrice.toString());
+
+		ignoreFocusOut = false;
 	}
 
 	private void calculateInvoiceTotal() {
