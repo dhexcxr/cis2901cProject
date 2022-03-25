@@ -28,8 +28,9 @@ public class RepairOrderPartTableListener implements Listener{
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private RepairOrderDialog repairOrderDialog;
+	private Shell parent;
 
-	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog) {
+	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog, Shell parent) {
 		this(invoicePartTable, new ArrayList<>());
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));		// I think this is a total hack way to do this
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));
@@ -39,6 +40,7 @@ public class RepairOrderPartTableListener implements Listener{
 		this.invoiceDetailText.add(new MyText(new Shell(), 0));
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.repairOrderDialog = repairOrderDialog;
+		this.parent = parent;
 	}
 
 	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
@@ -70,7 +72,7 @@ public class RepairOrderPartTableListener implements Listener{
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
         			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
         			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, invoiceDetailText,
+        																		editorTxtBox, invoiceDetailText, parent,
         																		tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);

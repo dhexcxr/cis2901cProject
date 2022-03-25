@@ -355,7 +355,7 @@ public class Gui extends Composite {
 		invoiceDetailText.add(textCategoryInvoice);
 		invoiceDetailText.add(textSupplierInvoice);
 		invoiceDetailText.add(textPartNotesInvoice);
-	    invoicePartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(invoicePartsTable, invoiceDetailText));
+	    invoicePartsTable.addListener(SWT.MouseDown, new InvoicePartTableListener(invoicePartsTable, invoiceDetailText, shell));
 	    
 		invoicePartsTable.setLinesVisible(true);
 		invoicePartsTable.setHeaderVisible(true);

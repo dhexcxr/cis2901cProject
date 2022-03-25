@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -36,6 +37,7 @@ public class InvoicePartEditorListener implements Listener {
 	private Text textCategoryInvoice;
 	private Text textSupplierInvoice;
 	private Text textNotesInvoice;
+	private Shell parent;
 
 	// this allows us to ignore the FocusOut listener so we don't call PartSearchDialog twice
 	// if there is text in Part Number column when we "double" click to open Search box
@@ -44,7 +46,7 @@ public class InvoicePartEditorListener implements Listener {
 	private static final String ONLY_DECIMALS = "[^-0-9.]"; // find a better name
 
 	public InvoicePartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex, int selectedColumnIndex,
-										Text editorTxtBox, List<MyText> invoiceDetailText) {
+										Text editorTxtBox, List<MyText> invoiceDetailText, Shell parent) {
 		this.partInvoiceTable = partInvoiceTable;
 		this.selectedTableItem = partInvoiceTable.getItem(selectedTableItemIndex);
 		this.selectedTableItemIndex = selectedTableItemIndex;
@@ -57,6 +59,8 @@ public class InvoicePartEditorListener implements Listener {
 		this.textCategoryInvoice = invoiceDetailText.get(3);
 		this.textSupplierInvoice = invoiceDetailText.get(4);
 		this.textNotesInvoice = invoiceDetailText.get(5);
+		
+		this.parent = parent;
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class InvoicePartEditorListener implements Listener {
 		if (event.type == SWT.MouseDown ) {
 			if (selectedColumnIndex == InvoicePartTable.PART_NUMBER_COLUMN) {
 				ignoreFocusOut = true;
-				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
+				PartSearchDialog partSearchDialog = new PartSearchDialog(parent,SWT.NONE);
 				InvoicePart selectedPart = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				if (selectedPart.getPart() != null) {
 					editorTxtBox.setText(selectedPart.getPartNumber());
@@ -122,10 +126,7 @@ public class InvoicePartEditorListener implements Listener {
 					editedLineItem.setPart(partResults[0]);
 			} else {
 				// if there's more than 1 result, or no results returned, call Item Search Box and show result
-				// TODO fix bug, if there is data entered into part number box, and then the app looses focus (ie, click task bar)
-					// there is then no Active Shell associated with application (Display.getDefault().getActiveShell() returns null)
-					// find a better way to get shell
-				PartSearchDialog partSearchDialog = new PartSearchDialog(Display.getDefault().getActiveShell(),SWT.NONE);
+				PartSearchDialog partSearchDialog = new PartSearchDialog(parent,SWT.NONE);
 				Part part = (Part) partSearchDialog.open(editorTxtBox.getText());
 				if (part == null) {
 					ignoreFocusOut = false;
@@ -192,7 +193,7 @@ public class InvoicePartEditorListener implements Listener {
 		}
 		if (Integer.parseInt(newQuantity) > selectedPart.getOnHand()) {
 			// if quantity entered is more than OnHand, pop up dialog telling user as much and set to OnHand
-			MessageBox onHandWarningDialogBox = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
+			MessageBox onHandWarningDialogBox = new MessageBox(parent, SWT.ICON_INFORMATION);
 			onHandWarningDialogBox.setText("Notice");
 			onHandWarningDialogBox.setMessage("Quantity entered is more than On Hand Quantity\n\nQuantity set to On Hand");
 			onHandWarningDialogBox.open();

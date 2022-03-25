@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
@@ -20,20 +21,22 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	private int selectedTableItemIndex;
 	private Text editorTxtBox;
 	private List<MyText> invoiceDetailText;
+	private Shell parent;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
 	private RepairOrderDialog repairOrderDialog;
 
 	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
-			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText,
+			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, Shell parent,
 				RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex,
 					RepairOrderDialog repairOrderDialog) {
-		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText);
+		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText, parent);
 		// TODO connect Job Part total
 		this.partInvoiceTable = partInvoiceTable;
 		this.selectedTableItemIndex = selectedTableItemIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.invoiceDetailText = invoiceDetailText;
+		this.parent = parent;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
 		this.repairOrderDialog = repairOrderDialog;

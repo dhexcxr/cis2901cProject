@@ -7,6 +7,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
@@ -18,10 +19,12 @@ public class InvoicePartTableListener implements Listener {
 	private InvoicePartTable partInvoiceTable;
 	private TableEditor editor;
 	private List<MyText> invoiceDetailText;
+	private Shell parent;
 	
-	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
+	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText, Shell parent) {
 		this.partInvoiceTable = invoicePartTable;
 		this.invoiceDetailText = invoiceDetailText;
+		this.parent = parent;
 		
 		this.editor = new TableEditor(partInvoiceTable);
 		editor.horizontalAlignment = SWT.LEFT;
@@ -43,7 +46,7 @@ public class InvoicePartTableListener implements Listener {
         			final int selectedColumnIndex = i;
         			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
         			Listener textListener = new InvoicePartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, invoiceDetailText);
+        																		editorTxtBox, invoiceDetailText, parent);
         			editor.setEditor(editorTxtBox, selectedTableItem, i);
         			editorTxtBox.addListener(SWT.FocusOut, textListener);
         			editorTxtBox.addListener(SWT.Traverse, textListener);

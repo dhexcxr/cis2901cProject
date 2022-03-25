@@ -676,7 +676,7 @@ public class RepairOrderDialog extends Dialog {
 				
 				txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
 				
-				jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this));
+				jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder));
 
 				jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this));
 				// END LISTENERS
