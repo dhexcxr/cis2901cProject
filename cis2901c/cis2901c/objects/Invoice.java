@@ -120,16 +120,7 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 	public void setParts(Part[] parts) {
 		this.parts = parts;
 	}
-	
-	private BigDecimal getPartsTotal() {
-		// not used right now, need to populate Part[] parts before this is usable
-		BigDecimal partsTotal = new BigDecimal(0);
-		for (int i = 0; i < this.getParts().length; i++) {
-			partsTotal = partsTotal.add(this.getParts()[i].getRetail());
-		}
-		return partsTotal;
-	}
-	
+		
 	public BigDecimal getTotal() {
 		return total;
 	}

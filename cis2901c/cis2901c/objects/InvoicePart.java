@@ -7,8 +7,6 @@ import java.util.Map;
 public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	
 	// invoicepart Database Table
-
-	private InvoicePartTableItem invoicePartTableItem;
 	private Map<String, String> dataMap = new HashMap<>();
 	private long invoicePartId = -1;
 	private long partId;

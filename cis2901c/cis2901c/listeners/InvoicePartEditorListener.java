@@ -19,7 +19,6 @@ import cis2901c.main.PartSearchDialog;
 import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.InvoicePartTableItem;
-import cis2901c.objects.JobPart;
 import cis2901c.objects.MyText;
 import cis2901c.objects.Part;
 
@@ -117,10 +116,6 @@ public class InvoicePartEditorListener implements Listener {
 			InvoicePart editedLineItem = (InvoicePart) selectedTableItem.getData();
 			if (editedLineItem == null) {
 				editedLineItem = new InvoicePart();
-			} else if (editedLineItem instanceof JobPart && editedLineItem.getPart() == null) {
-				// if this is a new, blank JobPart, setData(null) so we can correctly add
-					// another new blank line in paintInvoiceLines(InvoicePart editedLineItem)  
-				selectedTableItem.setData(null);
 			}
 			if (partResults[1] == null && partResults[0] != null) {		// if there's only 1 result
 					editedLineItem.setPart(partResults[0]);

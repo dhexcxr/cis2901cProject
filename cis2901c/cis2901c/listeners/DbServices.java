@@ -25,11 +25,7 @@ import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePart;
 import cis2901c.objects.InvoicePartTableItem;
-import cis2901c.objects.Job;
-import cis2901c.objects.JobLabor;
-import cis2901c.objects.JobPart;
 import cis2901c.objects.Part;
-import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class DbServices {
@@ -152,84 +148,7 @@ public class DbServices {
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
 //			((Invoice) dbObject).setInvoiceNum(getLastInvoiceNum());
 			saveInvoiceLineItems(dbObject);
-		} else if (dbObject instanceof RepairOrder) {
-			if (dbObject.getDbPk() == -1 ) {
-				dbObject.setDbPk(getLastRoNum());
-			}
-			saveRoJobs(dbObject);
-		} else if (dbObject instanceof Job) {
-			if (dbObject.getDbPk() == -1 ) {
-				dbObject.setDbPk(getLastJobId());
-			}
-			saveJobParts(dbObject);
-			saveJobLabor(dbObject);
 		}
-	}
-	
-	private static void saveRoJobs(DbObjectSavable dbObject ) {
-		long roNum = dbObject.getDbPk();
-		if (roNum == -1) {
-			roNum = getLastRoNum();
-		}
-		List<Job> roJobs = ((RepairOrder) dbObject).getJobs();
-		for (Job job : roJobs) {
-			job.getDataMap().put("roid", Long.toString(roNum));
-			DbServices.saveObject(job);
-		}
-	}
-	
-	private static int getLastRoNum() {
-		ResultSet results = null;
-		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(roid) FROM cis2901c.ro;")) {
-			results = lastInvoiceNumStatement.executeQuery();
-			while (results.next()) {
-				return results.getInt(1);		// we should always return here
-			}
-		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
-			e.printStackTrace();
-		}
-		// if we get here something went wrong
-		return SQL_FAILURE;
-	}
-	
-	private static void saveJobParts(DbObjectSavable dbObject) {
-		long jobId = dbObject.getDbPk();
-		if (jobId == -1) {
-			jobId = getLastJobId();
-		}
-		List<JobPart> jobParts  = ((Job) dbObject).getJobParts();
-		for (JobPart jobPart : jobParts) {
-			jobPart.getDataMap().put("jobid", Long.toString(jobId));
-			DbServices.saveObject(jobPart);
-		}
-	}
-	
-	private static void saveJobLabor(DbObjectSavable dbObject) {
-		long jobId = dbObject.getDbPk();
-		if (jobId == -1) {
-			jobId = getLastJobId();
-		}
-		List<JobLabor> jobLabor = ((Job) dbObject).getLabor();
-		for (JobLabor labor : jobLabor) {
-			labor.getDataMap().put("jobid", Long.toString(jobId));
-			DbServices.saveObject(labor);
-		}
-	}
-	
-	private static int getLastJobId() {
-		ResultSet results = null;
-		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement("SELECT MAX(jobid) FROM cis2901c.job;")) {
-			results = lastInvoiceNumStatement.executeQuery();
-			while (results.next()) {
-				return results.getInt(1);		// we should always return here
-			}
-		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastJobId");
-			e.printStackTrace();
-		}
-		// if we get here something went wrong
-		return SQL_FAILURE;
 	}
 	
 	private static void saveInvoiceLineItems(DbObjectSavable dbObject) {
@@ -445,14 +364,6 @@ public class DbServices {
 			results = buildUnits(queryResultSet);
 		} else if (object instanceof Invoice) {
 			results = buildInvoices(queryResultSet);
-		} else if (object instanceof RepairOrder) {
-			results = buildRepairOrders(queryResultSet);
-		} else if (object instanceof Job) {
-			results = buildJobs(queryResultSet);
-		} else if (object instanceof JobLabor) {
-			results = buildJobLabors(queryResultSet);
-		} else if (object instanceof JobPart) {
-			results = buildJobParts(queryResultSet);
 		}
 		return results;
 	}
@@ -561,96 +472,6 @@ public class DbServices {
 			
 			invoice.setTotal(queryResultSet.getBigDecimal(17)); 
 			results[i] = invoice;
-			i++;
-		}
-		return results;
-	}
-	
-	private static RepairOrder[] buildRepairOrders(ResultSet queryResultSet) throws SQLException {
-		RepairOrder[] results = new RepairOrder[MAX_RESULTS];
-		int i = 0;
-		while (queryResultSet.next()) {
-			// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
-			RepairOrder repairOrder = new RepairOrder();
-			repairOrder.setRepairOrderId(queryResultSet.getLong(1));
-			repairOrder.setCustomerId(queryResultSet.getLong(2));
-			
-			String lastname = queryResultSet.getString(3);
-			String firstname = queryResultSet.getString(4);
-			repairOrder.setCustomerName(lastname, firstname);
-			
-			// TODO see if we can use TextBlocks here
-			String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
-					queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
-					queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
-			repairOrder.setCustomerData(customerData);
-			
-			repairOrder.setUnitId(queryResultSet.getLong(12));
-			repairOrder.setUnitYear(queryResultSet.getString(13));
-			repairOrder.setUnitMake(queryResultSet.getString(14));
-			repairOrder.setUnitModel(queryResultSet.getString(15));
-			repairOrder.setUnitVin(queryResultSet.getString(16));
-			
-			repairOrder.setCreatedDate(queryResultSet.getTimestamp(17));
-			repairOrder.setClosedDate(queryResultSet.getTimestamp(17));
-						
-			results[i] = repairOrder;
-			i++;
-		}
-		return results;
-	}
-	
-	private static Job[] buildJobs(ResultSet queryResultSet) throws SQLException {
-		Job[] results = new Job[MAX_RESULTS];
-		int i = 0;
-		while (queryResultSet.next()) {
-			Job job = new Job();
-			job.setJobId(queryResultSet.getLong(1));
-			job.setRoId(queryResultSet.getLong(2));
-			job.setJobName(queryResultSet.getString(3));
-			job.setComplaints(queryResultSet.getString(4));
-			job.setResolution(queryResultSet.getString(5));
-			job.setReccomendations(queryResultSet.getString(6));
-			
-			results[i] = job;
-			i++;
-		}
-		return results;
-	}
-	
-	private static JobLabor[] buildJobLabors(ResultSet queryResultSet) throws SQLException {
-		JobLabor[] results = new JobLabor[MAX_RESULTS];
-		int i = 0;
-		while (queryResultSet.next()) {
-			JobLabor jobLabor = new JobLabor();
-			jobLabor.setJobLaborId(queryResultSet.getLong(1));
-			jobLabor.setJobId(queryResultSet.getLong(2));
-			jobLabor.setDescription(queryResultSet.getString(3));
-			jobLabor.setHours(queryResultSet.getBigDecimal(4));
-			jobLabor.setLaborRate(queryResultSet.getBigDecimal(5));
-			jobLabor.setTechnician(queryResultSet.getString(6));
-						
-			results[i] = jobLabor;
-			i++;
-		}
-		return results;
-	}
-	
-	private static JobPart[] buildJobParts(ResultSet queryResultSet) throws SQLException {
-		JobPart[] results = new JobPart[MAX_RESULTS];
-		int i = 0;
-		while (queryResultSet.next()) {
-			JobPart jobPart = new JobPart();
-			jobPart.setJobPartId(queryResultSet.getLong(1));
-			jobPart.setJobId(queryResultSet.getLong(2));
-			jobPart.setPartId(queryResultSet.getLong(3));
-			jobPart.setPartNumber(queryResultSet.getString(4));
-			jobPart.setDescription(queryResultSet.getString(5));
-			jobPart.setQuantity(queryResultSet.getInt(6));
-			jobPart.setSoldPrice(queryResultSet.getBigDecimal(7));
-			jobPart.setPart((Part) DbServices.searchForObjectByPk(new Part(jobPart.getPartId())));
-			
-			results[i] = jobPart;
 			i++;
 		}
 		return results;
