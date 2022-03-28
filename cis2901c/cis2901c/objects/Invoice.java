@@ -131,8 +131,7 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public long getDbPk() {
-//		return invoiceNum;		// when this is called in DbServices we'll always be making a new invoice
-		return -1;					// ie you can't edit an old invoice
+		return -1;		// when this is called in DbServices we'll always be making a new invoice, ie you can't edit an old invoice
 	}
 	
 	@Override
@@ -152,10 +151,8 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO finish field map method
 		Map<String, String> dataMap = new HashMap<>();
 		if (invoiceNum != -1) {
-//			dataMap.put("invoicenum", Long.toString(customerId));		// TODO figure out what bugs this may have caused
 			dataMap.put("invoicenum", Long.toString(invoiceNum));
 		}
 		dataMap.put("customerid", Long.toString(customerId));

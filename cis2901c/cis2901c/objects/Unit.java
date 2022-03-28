@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	
-	// might not need this
 	private long unitId = -1;
 	private long customerId;
 	private String make;
@@ -16,7 +15,6 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 	private String color;
 	private String vin;
 	private String notes;
-	
 	private String owner;
 	
 	public Unit() {
@@ -151,8 +149,6 @@ public class Unit extends DbObjectSearchable implements DbObjectSavable{
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO we might need to make these Maps into <String, Object>, then instanceof on the Object value
-			// to see how to treat it when building PreparedStatements with setParameter
 		Map<String, String> dataMap = new HashMap<>();
 		if (unitId != -1) {
 			dataMap.put("unitId", Long.toString(unitId));

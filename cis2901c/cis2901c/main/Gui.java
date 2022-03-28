@@ -372,6 +372,7 @@ public class Gui extends Composite {
 				// clear entire Invoice Tab
 				txtCustomerInvoice.setData(null);
 				txtCustomerInvoice.setText("Customer...");
+				txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 				txtInvoiceNotes.setText("Invoice Notes...");
 				txtPartsTotalInvoice.setText("0.00");
 				txtTaxInvoice.setText("0.00");

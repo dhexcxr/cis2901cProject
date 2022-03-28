@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-//import org.eclipse.swt.graphics.DeviceData;		// Sleak
 
 import cis2901c.listeners.DbServices;
 
@@ -29,13 +28,6 @@ public class Main {
 		}
 
 		// Start GUI
-		
-//		DeviceData data = new DeviceData();		// Sleak
-//	    data.tracking = true;					// Sleak
-//		Display display = new Display(data);	// "data" parameter is Sleak
-//		Sleak sleak = new Sleak();				// Sleak
-//	    sleak.open();							// Sleak
-	    
 	    
 	    display = new Display();
 		Shell shell = new Shell(display);

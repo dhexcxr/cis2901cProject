@@ -18,26 +18,15 @@ import cis2901c.objects.PartInventoryTable;
 
 public class PartSearchDialog extends Dialog{
 
-	// TODO make a SearchDialog class, extend PartSearch and CustomerSearch from that class
-
-	protected Object result;		// TODO probably change this to Part, wouldn't need cast for results
+	protected Object result;
 	protected Shell shlPartSearch;
 	private PartInventoryTable partTableSearchDialog;
 	private MyText partSearchTextBox;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public PartSearchDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shlPartSearch.open();
@@ -67,9 +56,6 @@ public class PartSearchDialog extends Dialog{
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlPartSearch = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlPartSearch.setText("Part Search");

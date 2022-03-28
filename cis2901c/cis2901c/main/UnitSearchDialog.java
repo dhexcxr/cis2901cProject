@@ -24,20 +24,11 @@ public class UnitSearchDialog extends Dialog {
 	private UnitTable unitTable;
 	private MyText unitSearchTextBox;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public UnitSearchDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("Unit Search");
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shell.open();
@@ -79,7 +70,6 @@ public class UnitSearchDialog extends Dialog {
 		Gui.setDialogAtCenter(shell);
 		
 		unitTable = new UnitTable(shell, SWT.BORDER | SWT.FULL_SELECTION);
-//		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
 		unitTable.setBounds(10, 42, 976, 282);
 		unitTable.setHeaderVisible(true);
 		unitTable.setLinesVisible(true);
@@ -169,6 +159,5 @@ public class UnitSearchDialog extends Dialog {
 				shell.close();
 			}
 		});
-
 	}
 }

@@ -47,10 +47,7 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 			partTableInvoice.setSelection(selectedIndex);
 			partTableInvoice.notifyListeners(SWT.Selection, new Event());
 			
-			// TODO the following copied from InvoicePartEditorEventListener, need to find a better way to calc invoice total
-					// we could do this by making InvoicePartEditorEventListener.calculateInvoiceTotal a method of the invoicePartTable
-					// but that would require some re-figuring for txtPartsTotalInvoice, txtTaxInvoice, and txtFinalTotal
-			BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
+			BigDecimal taxRate = BigDecimal.valueOf(0.065);
 			BigDecimal total = BigDecimal.valueOf(0);
 			TableItem[] items = partTableInvoice.getItems();
 			for (TableItem item : items) {
@@ -66,7 +63,6 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 			txtPartsTotalInvoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());
 			txtTaxInvoice.setText("$" + taxRate.multiply(total).setScale(2, RoundingMode.CEILING).toString());
 			txtFinalTotal.setText("$" + taxRate.multiply(total).add(total).setScale(2, RoundingMode.CEILING).toString());
-			// END copied section
 		}
 	}
 }

@@ -23,7 +23,6 @@ public class AmountDueDialog extends Dialog{
 
 	public AmountDueDialog(Shell parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean open(String finalTotal) {
@@ -70,7 +69,7 @@ public class AmountDueDialog extends Dialog{
 		Button btnCashier = new Button(shlAmountDue, SWT.NONE);
 		btnCashier.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDown(MouseEvent e) {						// TODO don't allow anything but numbers
+			public void mouseDown(MouseEvent e) {
 				BigDecimal total = new BigDecimal(txtFinalTotal.getText().replaceAll("[^-.0-9]", ""));
 				BigDecimal tendered = new BigDecimal(txtAmountTendered.getText().replace("$", ""));
 				BigDecimal chageDue = total.subtract(tendered);

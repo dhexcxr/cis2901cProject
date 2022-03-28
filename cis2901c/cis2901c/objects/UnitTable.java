@@ -21,7 +21,6 @@ public class UnitTable extends MyTable{
 
 	public UnitTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -32,7 +31,6 @@ public class UnitTable extends MyTable{
 
 	@Override
 	public void paint(Object customer, int selectedTableItemIndex) {
-		// TODO compare this with MyPartInvoiceTable.paint(Object)
 		this.paint(new Object[] {customer});
 	}
 	
@@ -52,9 +50,6 @@ public class UnitTable extends MyTable{
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
 	
-	
-	// TODO this and sort() can be moved into MyTable class, the only thing thats different in any Table Class' version of this method
-				// is the String[] values which could be moved into a custom MyTableItem class
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();

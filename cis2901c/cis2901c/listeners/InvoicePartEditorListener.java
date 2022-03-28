@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
@@ -64,7 +63,6 @@ public class InvoicePartEditorListener implements Listener {
 
 	@Override
 	public void handleEvent(Event event) {
-		// TODO streamline all these ignoreFocusOuts
 		if (ignoreFocusOut) {
 			return;
 		}
@@ -127,7 +125,6 @@ public class InvoicePartEditorListener implements Listener {
 					ignoreFocusOut = false;
 					return;
 				}
-//				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				editedLineItem.setPart(part);
 			}
 			

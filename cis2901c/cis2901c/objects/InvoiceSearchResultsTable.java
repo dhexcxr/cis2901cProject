@@ -18,7 +18,6 @@ public class InvoiceSearchResultsTable extends MyTable {
 		
 	public InvoiceSearchResultsTable(Composite parent, int style) {	
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public void paint(Object object) {
@@ -28,7 +27,6 @@ public class InvoiceSearchResultsTable extends MyTable {
 
 	@Override
 	public void paint(Object part, int selectedTableItemIndex) {
-		// TODO compare this with MyPartInvoiceTable.paint(Object)
 		this.paint(new Object[] {part});
 	}
 	
@@ -40,7 +38,6 @@ public class InvoiceSearchResultsTable extends MyTable {
 				break;
 			}
 			TableItem tableItem = new TableItem(this, SWT.NONE);
-				// TODO set date/time display to something nicer
 			tableItem.setText(new String[] {Long.toString(invoice.getInvoiceNum()), invoice.getCustomerName(),
 					invoice.getCashiereDateTime().toString(), Integer.toString(invoice.getParts().length), "$" + invoice.getTotal().toString()});
 			tableItem.setData(invoice);
@@ -48,9 +45,6 @@ public class InvoiceSearchResultsTable extends MyTable {
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);
 	}
 	
-	
-	// TODO this and sort() can be moved into MyTable class, the only thing thats different in any Table Class' version of this method
-				// is the String[] values which could be moved into a custom MyTableItem class
 	private void initialSortOnPaint(int sortColumn, int sortDirection) {
 		// sort table results by 0-indexed column
 		TableItem[] items = this.getItems();
