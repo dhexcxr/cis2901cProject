@@ -81,11 +81,12 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		this.setText(JOB_NAME_COLUMN, thisJob.getJobName());
 		
 		partTotal = BigDecimal.valueOf(0);
+		// TODO i'm pretty sure this usage of getParts() instead of getJobParts() will be problematic
 		for (Part part : thisJob.getParts()) {
 			if (part == null) {
 				Main.log(Level.INFO, "Null part in ROJobTableItem.setData");
 				break;
-			}
+			}		// here, it gets a part total from each part's retail, instead of the JobPart's current soldPrice
 			partTotal = partTotal.add(part.getRetail()).setScale(2, RoundingMode.CEILING);
 		}
 		this.setText(PART_TOTAL_COLUMN, "$" + partTotal.toString());

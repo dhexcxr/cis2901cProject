@@ -430,7 +430,7 @@ public class Gui extends Composite {
 					// clear entire Invoice Tab
 					txtCustomerInvoice.setData(null);
 					txtCustomerInvoice.setText("Customer...");
-					// TODO set customer to RED again
+					txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 					txtInvoiceNotes.setText("Invoice Notes...");
 					txtPartsTotalInvoice.setText("0.00");
 					txtTaxInvoice.setText("0.00");
@@ -451,9 +451,11 @@ public class Gui extends Composite {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
+				// TODO make a clearInvoice() method, call it here and at the end of the invoice cashier listener
 				// clear entire Invoice Tab
 				txtCustomerInvoice.setData(null);
 				txtCustomerInvoice.setText("Customer...");
+				txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 				txtInvoiceNotes.setText("Invoice Notes...");
 				txtPartsTotalInvoice.setText("0.00");
 				txtTaxInvoice.setText("0.00");
