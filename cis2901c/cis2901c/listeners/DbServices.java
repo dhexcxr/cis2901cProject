@@ -24,7 +24,6 @@ import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePart;
-import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Part;
 import cis2901c.objects.Unit;
 
@@ -145,12 +144,33 @@ public class DbServices {
 		// build query Statement and fill parameters
 		sendQueryToDb(queryString, dbFields);
 		
+		if (creatingNewObject) {
+			// get latest dbObject.Table.dbPk, set dbObject.setPk
+			dbObject.setDbPk(getLastSavedDbObject(dbObject));
+		}
+		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
 //			((Invoice) dbObject).setInvoiceNum(getLastInvoiceNum());
 			saveInvoiceLineItems(dbObject);
 		}
 	}
 	
+	private static long getLastSavedDbObject(DbObjectSavable dbObject) {
+		ResultSet results = null;
+		try (PreparedStatement lastInvoiceNumStatement = DbServices.getDbConnection().prepareStatement(
+									"SELECT MAX(" + dbObject.getPkName() + ") FROM cis2901c." + dbObject.getTableName() + ";")) {
+			results = lastInvoiceNumStatement.executeQuery();
+			while (results.next()) {
+				return results.getLong(1);		// we should always return here
+			}
+		} catch (SQLException e) {
+			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
+			e.printStackTrace();
+		}
+		// if we get here something went wrong
+		return SQL_FAILURE;
+	}
+		
 	private static void saveInvoiceLineItems(DbObjectSavable dbObject) {
 		int invoiceNumber = getLastInvoiceNum();
 		// insert individual part invoice line items into invoicepart table
