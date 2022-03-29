@@ -65,6 +65,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		for (int i = 0; i < table.getItems().length; i++) {
 			tableObjects[i] = table.getItems()[i].getData();
 		}
+		// TODO paint just at the selectedTableIndex, this will require us to implement paint(Object object, int selectedTableItemIndex)
+			// in all MyTable objects as it is implemented in InvoicePartTable
 		table.removeAll();
 		table.paint(tableObjects);
 	}

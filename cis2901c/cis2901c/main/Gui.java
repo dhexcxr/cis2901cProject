@@ -216,12 +216,7 @@ public class Gui extends Composite {
 		tblclmnRetailPriceInventory.addSelectionListener(new TableColumnSortListener(tblclmnRetailPriceInventory));
 		
 		// Delete right click menu
-		Menu popupMenu = new Menu(partTableInventory);
-		MenuItem deletePart = new MenuItem(popupMenu, SWT.NONE);
-		deletePart.setText("Delete Part");
-		deletePart.setEnabled(false);
-		deletePart.addSelectionListener(new DeleteObjectListener(partTableInventory));
-		partTableInventory.setMenu(popupMenu);
+		setupRightClickMenu(partTableInventory);
 		
 		// Inventory controls
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
@@ -555,12 +550,7 @@ public class Gui extends Composite {
 		tblclmnEmailCustomer.addSelectionListener(new TableColumnSortListener(tblclmnEmailCustomer));
 
 		// Delete right click menu
-		Menu popupMenu = new Menu(customerTable);
-		MenuItem deleteCustomer = new MenuItem(popupMenu, SWT.NONE);
-		deleteCustomer.setText("Delete Customer");
-		deleteCustomer.setEnabled(false);
-		deleteCustomer.addSelectionListener(new DeleteObjectListener(customerTable));
-		customerTable.setMenu(popupMenu);
+		setupRightClickMenu(customerTable);
 		
 		// Customer controls
 		MyText customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
@@ -630,12 +620,7 @@ public class Gui extends Composite {
 		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
 
 		// Delete right click menu
-		Menu popupMenu = new Menu(unitTable);
-		MenuItem deleteUnit = new MenuItem(popupMenu, SWT.NONE);
-		deleteUnit.setText("Delete Unit");
-		deleteUnit.setEnabled(false);
-		deleteUnit.addSelectionListener(new DeleteObjectListener(unitTable));
-		unitTable.setMenu(popupMenu);
+		setupRightClickMenu(unitTable);
 		
 		// Unit controls
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
@@ -660,6 +645,15 @@ public class Gui extends Composite {
 		Label lblNotImplimentedYet = new Label(reportsComposite, SWT.NONE);
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
+	}
+	
+	private void setupRightClickMenu(MyTable table) {
+		Menu popupMenu = new Menu(table);
+		MenuItem deletePart = new MenuItem(popupMenu, SWT.NONE);
+		deletePart.setText("Delete Part");
+		deletePart.setEnabled(false);
+		deletePart.addSelectionListener(new DeleteObjectListener(table));
+		table.setMenu(popupMenu);
 	}
 		
 	@Override
