@@ -18,7 +18,6 @@ public class SearchTextBoxListeners implements ModifyListener {
 	private MyText searchBox;
 	private MyTable table;
 	private DbObjectSearchable searchObject;
-	private final int DELETE_MENU_ITEM = 0;
 	
 	public SearchTextBoxListeners(MyText textBox, MyTable table) {
 		this.searchBox = textBox;
@@ -46,9 +45,6 @@ public class SearchTextBoxListeners implements ModifyListener {
 				searchObject = new Invoice(searchBox.getText());
 			} else if (searchObject instanceof RepairOrder) {
 				searchObject = new RepairOrder(searchBox.getText());
-			}
-			if (table.getMenu() != null && !(searchObject instanceof RepairOrder)) {		// enable Delete right click menu when there are things in the table
-				table.getMenu().getItem(DELETE_MENU_ITEM).setEnabled(true);
 			}
 			table.paint(DbServices.searchForObject(searchObject));
 		} else if (queryLength == 0) {
