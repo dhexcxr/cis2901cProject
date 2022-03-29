@@ -40,20 +40,11 @@ public class NewPartDialog extends Dialog {
 	private long partId = -1;
 	private Part part;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public NewPartDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		setupListeners();
@@ -105,9 +96,6 @@ public class NewPartDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlAddPart = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlAddPart.setSize(592, 408);

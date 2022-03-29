@@ -61,12 +61,6 @@ public class Gui extends Composite {
 	// TODO why are these out here? maybe move them into methods where they are used
 	private Shell shell;
 
-	
-	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
-	 */
 	public Gui(Composite parent, int style) {
 		super(parent, style);
 		

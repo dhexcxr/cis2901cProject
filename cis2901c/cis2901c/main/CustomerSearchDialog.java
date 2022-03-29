@@ -27,19 +27,10 @@ public class CustomerSearchDialog extends Dialog {
 	private CustomerTable customerTable;
 	private MyText customerSearchTextBox;
 	
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public CustomerSearchDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shlCustomerSearch.open();
@@ -69,9 +60,6 @@ public class CustomerSearchDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlCustomerSearch = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlCustomerSearch.setText("Customer Search");

@@ -44,19 +44,10 @@ public class NewUnitDialog extends Dialog {
 	private long customerId = -1;
 	private Unit unit;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public NewUnitDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		setupListeners();
@@ -121,9 +112,6 @@ public class NewUnitDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlNewUnit = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlNewUnit.setText("Add Unit");
@@ -146,56 +134,48 @@ public class NewUnitDialog extends Dialog {
 		lblMake.setText("Make:");
 		txtMake = new MyText(shlNewUnit, SWT.BORDER);
 		txtMake.setBackground(SWTResourceManager.getColor(255, 102, 102));
-//		txtMake.setText("Make...");
 		txtMake.setBounds(10, 94, 270, 26);
 		
 		Label lblModel = new Label(shlNewUnit, SWT.NONE);
 		lblModel.setBounds(294, 68, 70, 20);
 		lblModel.setText("Model:");
 		txtModel = new MyText(shlNewUnit, SWT.BORDER);
-//		txtModel.setText("Model...");
 		txtModel.setBounds(286, 94, 270, 26);
 		
 		Label lblModelName = new Label(shlNewUnit, SWT.NONE);
 		lblModelName.setBounds(10, 126, 90, 20);
 		lblModelName.setText("Model Name:");
 		txtModelName = new MyText(shlNewUnit, SWT.BORDER);
-//		txtModelName.setText("Model Name...");
 		txtModelName.setBounds(10, 152, 270, 26);
 		
 		Label lblYear = new Label(shlNewUnit, SWT.NONE);
 		lblYear.setBounds(286, 126, 70, 20);
 		lblYear.setText("Year:");
 		txtYear = new MyText(shlNewUnit, SWT.BORDER);
-//		txtYear.setText("Year");
 		txtYear.setBounds(286, 152, 270, 26);
 		
 		Label lblMileage = new Label(shlNewUnit, SWT.NONE);
 		lblMileage.setBounds(10, 184, 70, 20);
 		lblMileage.setText("Mileage:");
 		txtMileage = new MyText(shlNewUnit, SWT.BORDER);
-//		txtMileage.setText("Mileage...");
 		txtMileage.setBounds(10, 210, 270, 26);
 		
 		Label lblColor = new Label(shlNewUnit, SWT.NONE);
 		lblColor.setBounds(286, 184, 70, 20);
 		lblColor.setText("Color:");
 		txtColor = new MyText(shlNewUnit, SWT.BORDER);
-//		txtColor.setText("Color...");
 		txtColor.setBounds(286, 210, 270, 26);
 		
 		Label lblVinNumber = new Label(shlNewUnit, SWT.NONE);
 		lblVinNumber.setBounds(10, 242, 90, 20);
 		lblVinNumber.setText("Vin Number:");
 		txtVinNumber = new MyText(shlNewUnit, SWT.BORDER);
-//		txtVinNumber.setText("Vin Number...");
 		txtVinNumber.setBounds(10, 268, 554, 26);
 				
 		Label lblNotes = new Label(shlNewUnit, SWT.NONE);
 		lblNotes.setBounds(10, 300, 70, 20);
 		lblNotes.setText("Notes:");
 		txtNotes = new MyText(shlNewUnit, SWT.BORDER | SWT.WRAP);
-//		txtNotes.setText("Notes...");
 		txtNotes.setBounds(10, 326, 554, 92);
 		
 		// Unit dialog controls

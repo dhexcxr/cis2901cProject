@@ -120,20 +120,11 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public RepairOrderDialog(Shell parent, int style) {
 		super(parent, style);		// TODO set customer name or RO number in setText
 		setText("Repair Order Details");
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		setupListeners();
@@ -165,9 +156,6 @@ public class RepairOrderDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlRepairOrder.setSize(992, 736);

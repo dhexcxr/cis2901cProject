@@ -24,20 +24,11 @@ public class UnitSearchDialog extends Dialog {
 	private UnitTable unitTable;
 	private MyText unitSearchTextBox;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public UnitSearchDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("Unit Search");
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shell.open();
@@ -67,9 +58,6 @@ public class UnitSearchDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shell.setText("Unit Search");

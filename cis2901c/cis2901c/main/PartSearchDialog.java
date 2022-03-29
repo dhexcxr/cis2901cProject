@@ -25,19 +25,10 @@ public class PartSearchDialog extends Dialog{
 	private PartInventoryTable partTableSearchDialog;
 	private MyText partSearchTextBox;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public PartSearchDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shlPartSearch.open();
@@ -67,9 +58,6 @@ public class PartSearchDialog extends Dialog{
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlPartSearch = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlPartSearch.setText("Part Search");

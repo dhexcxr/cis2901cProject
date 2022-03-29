@@ -43,19 +43,10 @@ public class NewCustomerDialog extends Dialog {
 	private long customerId = -1;
 	private Customer customer;
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public NewCustomerDialog(Shell parent, int style) {
 		super(parent, style);
 	}
 	
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		setupListeners();
@@ -111,9 +102,6 @@ public class NewCustomerDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlNewCustomer = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlNewCustomer.setSize(592, 389);
@@ -123,85 +111,65 @@ public class NewCustomerDialog extends Dialog {
 		
 		// customer detail text boxes
 		Label lblFirstname = new Label(shlNewCustomer, SWT.NONE);
-//		lblFirstname.setAlignment(SWT.RIGHT);
 		lblFirstname.setBounds(10, 10, 192, 20);
 		lblFirstname.setText("FirstName:");
 		txtFirstName = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtFirstName.setText("First Name...");
 		txtFirstName.setBounds(10, 36, 272, 26);
 				
 		Label lblLastNameCompanyName = new Label(shlNewCustomer, SWT.NONE);
-//		lblLastNamecompanyName.setAlignment(SWT.RIGHT);
 		lblLastNameCompanyName.setBounds(292, 10, 192, 20);
 		lblLastNameCompanyName.setText("Last Name/Company Name:");
 		txtLastName = new MyText(shlNewCustomer, SWT.BORDER);
 		txtLastName.setBackground(SWTResourceManager.getColor(255, 102, 102));
-//		txtLastName.setText("Last Name/Company Name...");
 		txtLastName.setBounds(292, 36, 272, 26);
 		
 		Label lblAddress = new Label(shlNewCustomer, SWT.NONE);
-//		lblAddress.setAlignment(SWT.RIGHT);
 		lblAddress.setBounds(10, 68, 56, 20);
 		lblAddress.setText("Address:");
 		txtAddress = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtAddress.setText("Address...");
 		txtAddress.setBounds(10, 94, 554, 26);
 		
 		Label lblCity = new Label(shlNewCustomer, SWT.NONE);
-//		lblCity.setAlignment(SWT.RIGHT);
 		lblCity.setBounds(10, 126, 192, 20);
 		lblCity.setText("City:");
 		txtCity = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtCity.setText("City...");
 		txtCity.setBounds(10, 152, 272, 26);
 		
 		Label lblState = new Label(shlNewCustomer, SWT.NONE);
-//		lblState.setAlignment(SWT.RIGHT);
 		lblState.setBounds(292, 126, 37, 20);
 		lblState.setText("State:");
 		txtState = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtState.setText("State...");
 		txtState.setBounds(292, 152, 74, 26);
 		
 		Label lblZipCode = new Label(shlNewCustomer, SWT.NONE);
-//		lblZipCode.setAlignment(SWT.RIGHT);
 		lblZipCode.setBounds(372, 126, 192, 20);
 		lblZipCode.setText("Zip Code:");
 		txtZipCode = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtZipCode.setText("Zip Code...");
 		txtZipCode.setBounds(372, 152, 192, 26);
 		
 		Label lblHomePhone = new Label(shlNewCustomer, SWT.NONE);
-//		lblHomePhone.setAlignment(SWT.RIGHT);
 		lblHomePhone.setBounds(10, 184, 192, 20);
 		lblHomePhone.setText("Home Phone:");
 		txtHomePhone = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtHomePhone.setText("Home Phone...");
 		txtHomePhone.setBounds(10, 210, 272, 26);
 		
 		Label lblWorkPhone = new Label(shlNewCustomer, SWT.NONE);
-//		lblWorkPhone.setAlignment(SWT.RIGHT);
 		lblWorkPhone.setBounds(292, 184, 192, 20);
 		lblWorkPhone.setText("Work Phone:");
 		txtWorkPhone = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtWorkPhone.setText("Work Phone...");
 		txtWorkPhone.setBounds(292, 210, 272, 26);
 		
 		Label lblCellPhone = new Label(shlNewCustomer, SWT.NONE);
-//		lblCellPhone.setAlignment(SWT.RIGHT);
 		lblCellPhone.setBounds(10, 242, 192, 20);
 		lblCellPhone.setText("Cell Phone:");
 		txtCellPhone = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtCellPhone.setText("Cell Phone...");
 		txtCellPhone.setBounds(10, 268, 272, 26);
 		
 		
 		Label lblEmail = new Label(shlNewCustomer, SWT.NONE);
-//		lblEmail.setAlignment(SWT.RIGHT);
 		lblEmail.setBounds(292, 242, 192, 20);
 		lblEmail.setText("E-Mail:");
 		txtEmail = new MyText(shlNewCustomer, SWT.BORDER);
-//		txtEmail.setText("E-Mail...");
 		txtEmail.setBounds(292, 268, 272, 26);
 		
 		// New Customer dialog controls
