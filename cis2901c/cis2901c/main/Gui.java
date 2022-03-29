@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import cis2901c.listeners.CreateNewObjectListener;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
+import cis2901c.listeners.DeleteEnableListener;
 import cis2901c.listeners.DeleteObjectListener;
 import cis2901c.listeners.InvoicePartDeleteLineItemListener;
 import cis2901c.listeners.InfoTextBoxModifyListener;
@@ -106,6 +107,7 @@ public class Gui extends Composite {
 		partTableInventory.setHeaderVisible(true);
 		partTableInventory.setBounds(10, 42, 948, 610);
 		partTableInventory.addMouseListener(new OpenExistingObjectMouseListener(partTableInventory, shell));
+		partTableInventory.addMenuDetectListener(new DeleteEnableListener(partTableInventory));
 		
 		TableColumn tblclmnPartNumberInventory = new TableColumn(partTableInventory, SWT.NONE);
 		tblclmnPartNumberInventory.setWidth(126);
@@ -426,6 +428,7 @@ public class Gui extends Composite {
 		customerTable.setHeaderVisible(true);
 		customerTable.setLinesVisible(true);
 		customerTable.addMouseListener(new OpenExistingObjectMouseListener(customerTable, shell));
+		customerTable.addMenuDetectListener(new DeleteEnableListener(customerTable));
 
 		TableColumn tblclmnFirstNameCustomer = new TableColumn(customerTable, SWT.NONE);
 		tblclmnFirstNameCustomer.setText("First Name");
@@ -503,10 +506,11 @@ public class Gui extends Composite {
 
 		// Table for Unit search results
 		MyTable unitTable = new UnitTable(unitsComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
 		unitTable.setBounds(10, 42, 976, 663);
 		unitTable.setHeaderVisible(true);
 		unitTable.setLinesVisible(true);
+		unitTable.addMouseListener(new OpenExistingObjectMouseListener(unitTable, shell));
+		unitTable.addMenuDetectListener(new DeleteEnableListener(unitTable));
 
 		TableColumn tblclmnOwnerUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnOwnerUnit.setText("Owner");
