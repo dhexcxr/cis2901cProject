@@ -216,7 +216,7 @@ public class Gui extends Composite {
 		tblclmnRetailPriceInventory.addSelectionListener(new TableColumnSortListener(tblclmnRetailPriceInventory));
 		
 		// Delete right click menu
-		setupRightClickMenu(partTableInventory);
+		setupRightClickMenu(partTableInventory, "Part");
 		
 		// Inventory controls
 		MyText partSearchTextBox = new MyText(inventoryComposite, SWT.BORDER);
@@ -550,7 +550,7 @@ public class Gui extends Composite {
 		tblclmnEmailCustomer.addSelectionListener(new TableColumnSortListener(tblclmnEmailCustomer));
 
 		// Delete right click menu
-		setupRightClickMenu(customerTable);
+		setupRightClickMenu(customerTable, "Customer");
 		
 		// Customer controls
 		MyText customerSearchTextBox = new MyText(customerComposite, SWT.BORDER);
@@ -583,6 +583,7 @@ public class Gui extends Composite {
 		TableColumn tblclmnOwnerUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnOwnerUnit.setText("Owner");
 		tblclmnOwnerUnit.setWidth(165);
+		tblclmnOwnerUnit.addSelectionListener(new TableColumnSortListener(tblclmnOwnerUnit));
 
 		TableColumn tblclmnMakeUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnMakeUnit.setText("Make");
@@ -591,12 +592,12 @@ public class Gui extends Composite {
 
 		TableColumn tblclmnModelUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelUnit.setText("Model");
-		tblclmnModelUnit.setWidth(138);
+		tblclmnModelUnit.setWidth(135);
 		tblclmnModelUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelUnit));
 
 		TableColumn tblclmnModelNameUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelNameUnit.setText("Model Name");
-		tblclmnModelNameUnit.setWidth(148);
+		tblclmnModelNameUnit.setWidth(135);
 		tblclmnModelNameUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelNameUnit));
 
 		TableColumn tblclmnYearUnit = new TableColumn(unitTable, SWT.NONE);
@@ -611,16 +612,16 @@ public class Gui extends Composite {
 
 		TableColumn tblclmnColorUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnColorUnit.setText("Color");
-		tblclmnColorUnit.setWidth(49);
+		tblclmnColorUnit.setWidth(92);
 		tblclmnColorUnit.addSelectionListener(new TableColumnSortListener(tblclmnColorUnit));
 
 		TableColumn tblclmnVinUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnVinUnit.setText("VIN");
-		tblclmnVinUnit.setWidth(215);
+		tblclmnVinUnit.setWidth(188);
 		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
 
 		// Delete right click menu
-		setupRightClickMenu(unitTable);
+		setupRightClickMenu(unitTable, "Unit");
 		
 		// Unit controls
 		MyText unitSearchBox = new MyText(unitsComposite, SWT.BORDER);
@@ -647,10 +648,10 @@ public class Gui extends Composite {
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
 	}
 	
-	private void setupRightClickMenu(MyTable table) {
+	private void setupRightClickMenu(MyTable table, String deleteString) {
 		Menu popupMenu = new Menu(table);
 		MenuItem deletePart = new MenuItem(popupMenu, SWT.NONE);
-		deletePart.setText("Delete Part");
+		deletePart.setText("Delete " + deleteString);
 		deletePart.setEnabled(false);
 		deletePart.addSelectionListener(new DeleteObjectListener(table));
 		table.setMenu(popupMenu);
