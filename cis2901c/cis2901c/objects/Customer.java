@@ -3,9 +3,6 @@ package cis2901c.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.swt.widgets.Table;
-import cis2901c.listeners.DbServices;
-
 public class Customer extends DbObjectSearchable implements DbObjectSavable{
 	
 	// might not need this
