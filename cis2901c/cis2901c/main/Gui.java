@@ -523,12 +523,12 @@ public class Gui extends Composite {
 
 		TableColumn tblclmnModelUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelUnit.setText("Model");
-		tblclmnModelUnit.setWidth(138);
+		tblclmnModelUnit.setWidth(135);
 		tblclmnModelUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelUnit));
 
 		TableColumn tblclmnModelNameUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnModelNameUnit.setText("Model Name");
-		tblclmnModelNameUnit.setWidth(148);
+		tblclmnModelNameUnit.setWidth(135);
 		tblclmnModelNameUnit.addSelectionListener(new TableColumnSortListener(tblclmnModelNameUnit));
 
 		TableColumn tblclmnYearUnit = new TableColumn(unitTable, SWT.NONE);
@@ -543,12 +543,12 @@ public class Gui extends Composite {
 
 		TableColumn tblclmnColorUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnColorUnit.setText("Color");
-		tblclmnColorUnit.setWidth(49);
+		tblclmnColorUnit.setWidth(92);
 		tblclmnColorUnit.addSelectionListener(new TableColumnSortListener(tblclmnColorUnit));
 
 		TableColumn tblclmnVinUnit = new TableColumn(unitTable, SWT.NONE);
 		tblclmnVinUnit.setText("VIN");
-		tblclmnVinUnit.setWidth(215);
+		tblclmnVinUnit.setWidth(188);
 		tblclmnVinUnit.addSelectionListener(new TableColumnSortListener(tblclmnVinUnit));
 
 		// Delete right click menu
