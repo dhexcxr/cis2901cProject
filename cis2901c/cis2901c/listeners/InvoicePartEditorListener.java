@@ -144,6 +144,13 @@ public class InvoicePartEditorListener implements Listener {
 	}
 	
 	private boolean duplicatePartPresent(InvoicePart editedLineItem) {
+		// TODO i might be able to call this from paintInvoiceLines, and therefore catch the bugs
+		/* if a part is added a second time bby double clicking Part Number box it will be on its own line,
+		 * it will not increase first instance sell quantity
+		 * 
+		 * perhaps related, if there are two seperate parts, then the second is change to the part number of the first,
+		 * there will then be two seperate line items with the same part
+		 */
 		for (TableItem tableItem : partInvoiceTable.getItems()) {
 			if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
 					&& !tableItem.equals(selectedTableItem)) {
