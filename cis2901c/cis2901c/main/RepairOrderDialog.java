@@ -9,6 +9,7 @@ import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
+import cis2901c.listeners.RepairOrderJobAddListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
@@ -69,6 +70,7 @@ public class RepairOrderDialog extends Dialog {
 	protected Shell shlRepairOrder;
 	
 	private RepairOrderJobTable tableJobsRepairOrder;
+	
 	private Button btnSaveRo;
 	private Button btnCancel;
 	private Button btnAddJob;
@@ -78,7 +80,7 @@ public class RepairOrderDialog extends Dialog {
 	private Button btnAddLaborLine;
 	private Button btnDeleteLaborLine;
 	private TabFolder tabFolderJobsRepairOrder;
-	
+
 	private MyText txtSubTotalRepairOrder;
 	private MyText textTaxRepairOrder;
 	private MyText textFinalTotalRepairOrder;
@@ -93,6 +95,7 @@ public class RepairOrderDialog extends Dialog {
 	private MyText txtComplaints;
 	private MyText txtResolution;
 	private MyText txtReccomendations;
+	
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
 	
@@ -108,6 +111,32 @@ public class RepairOrderDialog extends Dialog {
 	
 	// TODO create isModified variable in this RepairOrderDialog object to track if ANYTHING in the underlying repairOrder has been modified
 		// so we can ask the user if they want to save before closing RepairOrderDialog
+	
+	
+	
+	// RO getters
+	public RepairOrderJobTable getTableJobsRepairOrder() {
+		return tableJobsRepairOrder;
+	}
+	
+	public TabFolder getTabFolderJobsRepairOrder() {
+		return tabFolderJobsRepairOrder;
+	}
+	
+	public List<MyText> getJobDetailsText() {
+		return List.of(txtJobName, txtComplaints, txtResolution, txtReccomendations);
+	}
+	
+	public InvoicePartTable getJobPartsTable() {
+		return jobPartsTable;
+	}
+	
+	public JobLaborTable getJobLaborTable() {
+		return jobLaborTable;
+	}
+	// END RO getters
+
+	
 	
 	public Map<String, List<Long>> getDetailsToDelete() {
 		return detailsToDelete;
@@ -431,28 +460,8 @@ public class RepairOrderDialog extends Dialog {
 				
 				txtUnitRepairOrder.addMouseListener(new UnitSearchListener(txtUnitRepairOrder));
 				
-				btnAddJob.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// TODO judging by the comment on 2 lines below I think this might should've been for tableJobsRepairOrder
-							// but it seems to be working fine so I don't know that its actually needed
-						tabFolderJobsRepairOrder.notifyListeners(SWT.Selection, new Event());		// trigger saving Job details
-						// create new Job on Job Table
-						RepairOrderJobTableItem job = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-						job.setData(new Job());
-						tableJobsRepairOrder.setSelection(tableJobsRepairOrder.getItemCount() - 1);
-						tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-						
-						txtJobName.setText("Job Name...");
-						txtComplaints.setText("Complaints...");
-						txtResolution.setText("Resolution...");
-						txtReccomendations.setText("Reccomendations...");
-						jobPartsTable.removeAll();
-						@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-						TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
-						jobLaborTable.removeAll();
-					}
-				});
+				MouseAdapter jobAddListener = new RepairOrderJobAddListener(this);
+				btnAddJob.addMouseListener(jobAddListener);
 				
 				btnDeleteJob.addMouseListener(new MouseAdapter() {
 					@Override
