@@ -56,13 +56,14 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 			return;
 		}
 		
+		// remove listeners so we don't run them when text boxes are modified
 		jobDetailsText.get(JOB_NAME_TEXT).removeModifyListener(roDialog.getJobNameModifiedListener());
 		jobDetailsText.get(JOB_NAME_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_COMPLAINT_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_RESOLUTION_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
 		
-		// job selected
+		// enable job tabls widgets
 		jobDetailsText.get(JOB_NAME_TEXT).setEnabled(true);
 		jobDetailsText.get(JOB_COMPLAINT_TEXT).setEnabled(true);
 		jobDetailsText.get(JOB_RESOLUTION_TEXT).setEnabled(true);
@@ -71,48 +72,58 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 		jobLaborTable.setEnabled(true);
 		
 		if (roDialog.getTextCashieredDate().getText().equals("")) {
+			// if this RO is not cashiered, also enable Parts and Labor buttons
 			jobDetailsButtons.get(DELETE_LINE_ITEM_BUTTON).setEnabled(true);
 			jobDetailsButtons.get(ADD_LABOR_BUTTON).setEnabled(true);
 			jobDetailsButtons.get(DELETE_LABOR_BUTTON).setEnabled(true);
 		}
 		
 		Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
-		// copy selected Job to Job Tabs
 		if (selectedJob != null && !selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
-			tabFolderJobsRepairOrder.setData(selectedJob);
-			// set Job data into Job Tabs
-			jobDetailsText.get(JOB_NAME_TEXT).setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
-			jobDetailsText.get(JOB_COMPLAINT_TEXT).setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
-			jobDetailsText.get(JOB_RESOLUTION_TEXT).setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
-			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
-			
-			// TODO add other methods to set up Job Detail tabs, Part tab, and Labor tab
-			jobPartsTable.removeAll();
-			for (JobPart jobPart : selectedJob.getJobParts()) {
-				// TODO see how I stored quantity in Invoice, or figure out how to store quantity
-				if (jobPart == null) {
-					break;
-				}
-				addPartToPartTableItem(jobPart);
-			}
-			@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-			TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
-			
-			jobLaborTable.removeAll();
-			for (JobLabor labor : selectedJob.getLabor()) {
-				if (labor == null) {
-					break;
-				}
-				addLaborToLaborTableItem(labor);
-			}
+			copyJobAndData(selectedJob);
 		}
 
-		
+		// re-setup the text box ModifyListeners
 		jobDetailsText.get(JOB_NAME_TEXT).addModifyListener(roDialog.getJobNameModifiedListener());
 		jobDetailsText.get(JOB_NAME_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_COMPLAINT_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_RESOLUTION_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
 		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
+	}
+	
+	private void copyJobAndData(Job selectedJob) {
+		tabFolderJobsRepairOrder.setData(selectedJob);
+		
+		jobDetailsText.get(JOB_NAME_TEXT).setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
+		jobDetailsText.get(JOB_COMPLAINT_TEXT).setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
+		jobDetailsText.get(JOB_RESOLUTION_TEXT).setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
+		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
+		
+		setupJobPartsTable(selectedJob);
+		setupJobLaborTable(selectedJob);
+	}
+	
+	private void setupJobPartsTable(Job selectedJob) {
+		jobPartsTable.removeAll();
+		for (JobPart jobPart : selectedJob.getJobParts()) {
+			// TODO see how I stored quantity in Invoice, or figure out how to store quantity
+			if (jobPart == null) {
+				break;
+			}
+			addPartToPartTableItem(jobPart);
+		}
+		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+		TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
+	}
+	
+	private void setupJobLaborTable(Job selectedJob) {
+		jobLaborTable.removeAll();
+		for (JobLabor labor : selectedJob.getLabor()) {
+			if (labor == null) {
+				break;
+			}
+			addLaborToLaborTableItem(labor);
+		}
 	}
 	
 	private void addPartToPartTableItem(JobPart jobPart) {
