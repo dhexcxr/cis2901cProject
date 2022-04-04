@@ -128,6 +128,10 @@ public class RepairOrderDialog extends Dialog {
 		return List.of(txtJobName, txtComplaints, txtResolution, txtReccomendations);
 	}
 	
+	public List<Button> getJobDetailsButtons() {
+		return List.of(btnDeleteLineItem, btnAddLaborLine, btnDeleteLaborLine);
+	}
+	
 	public InvoicePartTable getJobPartsTable() {
 		return jobPartsTable;
 	}
@@ -331,16 +335,19 @@ public class RepairOrderDialog extends Dialog {
 		btnDeleteLineItem.setBounds(386, 350, 121, 56);
 		btnDeleteLineItem.setText("Delete Line Item");
 		btnDeleteLineItem.setVisible(false);
+		btnDeleteLineItem.setEnabled(false);
 
 		btnAddLaborLine = new Button(shlRepairOrder, SWT.NONE);
 		btnAddLaborLine.setBounds(255, 350, 121, 56);
 		btnAddLaborLine.setText("Add Labor");
 		btnAddLaborLine.setVisible(false);
+		btnAddLaborLine.setEnabled(false);
 
 		btnDeleteLaborLine = new Button(shlRepairOrder, SWT.NONE);
 		btnDeleteLaborLine.setBounds(386, 350, 121, 56);
 		btnDeleteLaborLine.setText("Delete Labor");
 		btnDeleteLaborLine.setVisible(false);
+		btnDeleteLaborLine.setEnabled(false);
 		// END Job Tabs Buttons
 
 		// Job tabs
@@ -487,6 +494,10 @@ public class RepairOrderDialog extends Dialog {
 						txtReccomendations.setEnabled(true);
 						jobPartsTable.setEnabled(true);
 						jobLaborTable.setEnabled(true);
+						
+						btnDeleteLineItem.setEnabled(true);
+						btnAddLaborLine.setEnabled(true);
+						btnDeleteLaborLine.setEnabled(true);
 						
 						Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
 						// copy selected Job to Job Tabs

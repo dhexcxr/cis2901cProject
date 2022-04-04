@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -23,6 +24,7 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 	private List<MyText> jobDetailsText;
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
+	private List<Button> jobDetailsButtons;
 
 	public RepairOrderJobDeleteListener(RepairOrderDialog roDialog) {
 		this.roDialog = roDialog;
@@ -31,6 +33,7 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 		this.jobDetailsText = roDialog.getJobDetailsText();
 		this.jobPartsTable = roDialog.getJobPartsTable();
 		this.jobLaborTable = roDialog.getJobLaborTable();
+		this.jobDetailsButtons = roDialog.getJobDetailsButtons();
 	}
 	
 	@Override
@@ -71,6 +74,9 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 			jobPartsTable.removeAll();
 			jobLaborTable.setEnabled(false);
 			jobLaborTable.removeAll();
+			jobDetailsButtons.get(0).setEnabled(false);
+			jobDetailsButtons.get(1).setEnabled(false);
+			jobDetailsButtons.get(2).setEnabled(false);
 		} 
 	}
 
