@@ -28,10 +28,7 @@ import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
 import cis2901c.objects.Unit;
-import cis2901c.objects.JobLaborTableItem;
 import cis2901c.objects.JobPart;
-import cis2901c.objects.MyTable;
-
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Button;
@@ -59,14 +56,10 @@ import java.util.logging.Level;
 import org.eclipse.swt.widgets.Composite;
 
 import cis2901c.objects.Customer;
-import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTable;
-import cis2901c.objects.InvoicePartTableItem;
-
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 public class RepairOrderDialog extends Dialog {
 
@@ -108,7 +101,11 @@ public class RepairOrderDialog extends Dialog {
 	private RepairOrder currentRepairOrder;
 	private long customerId;
 	
+	private CustomerSearchListener customerSearchListener;
+	private UnitSearchListener unitSearchListener;
 	private JobNameModifiedListener jobNameModifiedListener;
+	private RepairOrderPartTableListener repairOrderPartTableListener;
+	private RepairOrderLaborTableListener repairOrderLaborTableListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
 	
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
@@ -119,6 +116,10 @@ public class RepairOrderDialog extends Dialog {
 	
 	
 	// RO getters
+	public Text getTextCashieredDate() {
+		return textCashieredDate;
+	}
+	
 	public RepairOrderJobTable getTableJobsRepairOrder() {
 		return tableJobsRepairOrder;
 	}
@@ -473,10 +474,10 @@ public class RepairOrderDialog extends Dialog {
 		// LISTENERS
 		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 
-		CustomerSearchListener customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
+		customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
 		txtCustomerRepairOrder.addMouseListener(customerSearchListener);
 
-		UnitSearchListener unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
+		unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
 		txtUnitRepairOrder.addMouseListener(unitSearchListener);
 
 		btnAddJob.addMouseListener(new RepairOrderJobAddListener(this));
@@ -565,9 +566,11 @@ public class RepairOrderDialog extends Dialog {
 
 		txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
 
-		jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder));
+		repairOrderPartTableListener = new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder);
+		jobPartsTable.addListener(SWT.MouseDown, repairOrderPartTableListener);
 
-		jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this));
+		repairOrderLaborTableListener = new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this);
+		jobLaborTable.addListener(SWT.MouseDown, repairOrderLaborTableListener);
 		// END LISTENERS
 
 		// setup Job modified listener
@@ -582,58 +585,70 @@ public class RepairOrderDialog extends Dialog {
 	private void loadRoFromDb(RepairOrder repairOrder) {		
 		// set Dialog boxes and stuff from repairOrder fields
 		if (repairOrder != null) {
-//			repairOrder = new RepairOrder();
-//		}
-		currentRepairOrder = repairOrder;
-		roId = repairOrder.getRepairOrderId();
-		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
-		textCashieredDate.setText(repairOrder.getClosedDate() == null ? "" : repairOrder.getClosedDate().toString());
-		
-		if (textCashieredDate.getText().equals("")) {
-			// TODO load everything as normal and disable editing of text boxes
-				// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
+			currentRepairOrder = repairOrder;
+			roId = repairOrder.getRepairOrderId();
+			textRoNum.setText(Long.toString(roId));
 			
-		}
-		
-		textRoNum.setText(Long.toString(roId));
-		if (repairOrder.getCustomerId() != 0) {
-			customerId = repairOrder.getCustomerId();
-			// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
-			txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
-		}
-		if (repairOrder.getCustomerData() != null) {
-			txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
-		}
-
-		if (repairOrder.getUnitId() != 0) {
-			txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
-					repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-			txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
-		}
-
-		List<Job> roJobs = new ArrayList<>();
-		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
-			if (job == null) {
-				break;
+			textCreatedDate.setText(repairOrder.getCreatedDate().toString());
+			textCashieredDate.setText(repairOrder.getClosedDate() == null ? "" : repairOrder.getClosedDate().toString());
+			
+			if (repairOrder.getCustomerId() != 0) {
+				customerId = repairOrder.getCustomerId();
+				// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
+				txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
+				txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
 			}
-			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
 
-			// find and build labor
-			List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
-			jobLabor.removeAll(Collections.singleton(null));
-			job.setLabor(jobLabor);
+			if (repairOrder.getUnitId() != 0) {
+				txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
+						repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
+				txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
+			}
 
-			// find and build Parts
-			List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
-			jobPart.removeAll(Collections.singleton(null));
-			job.setJobParts(jobPart);
-			roJobs.add(job);
-			jobTableItem.setData(job);
-		}
-		repairOrder.setJobs(roJobs);
-		tableJobsRepairOrder.setSelection(0);
-		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-		this.calcRoTotal();
+			List<Job> roJobs = new ArrayList<>();
+			for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
+				if (job == null) {
+					break;
+				}
+				RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+
+				// find and build labor
+				List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
+				jobLabor.removeAll(Collections.singleton(null));
+				job.setLabor(jobLabor);
+
+				// find and build Parts
+				List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+				jobPart.removeAll(Collections.singleton(null));
+				job.setJobParts(jobPart);
+				roJobs.add(job);
+				jobTableItem.setData(job);
+			}
+			repairOrder.setJobs(roJobs);
+			tableJobsRepairOrder.setSelection(0);
+			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
+			this.calcRoTotal();
+			
+			if (!textCashieredDate.getText().equals("")) {
+				// TODO load everything as normal and disable editing of text boxes
+					// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
+				txtCustomerRepairOrder.removeMouseListener(customerSearchListener);
+				txtUnitRepairOrder.removeMouseListener(unitSearchListener);
+				btnCashierRo.setEnabled(false);
+				btnAddJob.setEnabled(false);
+				btnDeleteJob.setEnabled(false);
+				btnCancel.setEnabled(false);
+				btnSaveRo.setEnabled(false);
+				btnDeleteLineItem.setEnabled(false);
+				btnAddLaborLine.setEnabled(false);
+				btnDeleteLaborLine.setEnabled(false);
+				txtJobName.setEditable(false);
+				txtComplaints.setEditable(false);
+				txtResolution.setEditable(false);
+				txtReccomendations.setEditable(false);
+				jobPartsTable.removeListener(SWT.MouseDown, repairOrderPartTableListener);
+				jobLaborTable.removeListener(SWT.MouseDown, repairOrderLaborTableListener);
+			}
 		}
 	}
 	
