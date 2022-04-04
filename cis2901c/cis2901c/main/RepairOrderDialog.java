@@ -517,7 +517,7 @@ public class RepairOrderDialog extends Dialog {
 
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDown(MouseEvent e) {
+			public void mouseDoubleClick(MouseEvent e) {
 				tableJobsRepairOrder.removeAll();
 				disableJobTabs();
 				detailsToDelete = new HashMap<>();
