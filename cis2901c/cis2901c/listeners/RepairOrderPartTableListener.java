@@ -29,6 +29,8 @@ public class RepairOrderPartTableListener implements Listener{
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private RepairOrderDialog repairOrderDialog;
 	private Shell parent;
+	
+	private boolean visible = false;
 
 	public RepairOrderPartTableListener(InvoicePartTable invoicePartTable, RepairOrderJobTable tableJobsRepairOrder, RepairOrderDialog repairOrderDialog, Shell parent) {
 		this(invoicePartTable, new ArrayList<>());
@@ -55,42 +57,46 @@ public class RepairOrderPartTableListener implements Listener{
 	@Override
 	public void handleEvent(Event event) {
         int currentPartTableItemIndex = partInvoiceTable.getSelectionIndex();
-        Rectangle tableWidgetArea = partInvoiceTable.getClientArea();
         Point clickPoint = new Point(event.x, event.y);
         while (currentPartTableItemIndex < partInvoiceTable.getItemCount() && currentPartTableItemIndex >= 0) {		// scan through Invoice Part's TableItems
-        	boolean visible = false;
-        	final TableItem selectedTableItem = partInvoiceTable.getItem(currentPartTableItemIndex);
-        	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
-        		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
-        		if (selectedTableItemColumnBounds.contains(clickPoint)
-        				&& (i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
-        			if ((i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)
-        					&& (selectedTableItem.getData() == null || ((InvoicePart) selectedTableItem.getData()).getPart() == null)) {
-        				return;		// this IF is what finally did it, the whole not editing QTY or Price without an associated Part
-        			}
-        			final int selectedColumnIndex = i;
-        			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
-        			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
-        			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
-        																		editorTxtBox, invoiceDetailText, parent,
-        																		tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
-        			editor.setEditor(editorTxtBox, selectedTableItem, i);
-        			editorTxtBox.addListener(SWT.FocusOut, textListener);
-        			editorTxtBox.addListener(SWT.Traverse, textListener);
-        			editorTxtBox.addListener(SWT.MouseDown, textListener);
-        			editorTxtBox.setText(selectedTableItem.getText(i));
-        			editorTxtBox.selectAll();
-        			editorTxtBox.setFocus();
-        			return;
-        		}
-        		if (!visible && selectedTableItemColumnBounds.intersects(tableWidgetArea)) {
-        			visible = true;
-        		}
+        	if (findColumn(currentPartTableItemIndex, clickPoint)) {
+        		return;
         	}
         	if (!visible)
         		return;
         	currentPartTableItemIndex++;
         }
-//        tableJobsRepairOrder.notifyListeners(SWT.BUTTON4, new Event());		// save Parts and Labor
+	}
+	
+	private boolean findColumn(int currentPartTableItemIndex, Point clickPoint) {
+		final TableItem selectedTableItem = partInvoiceTable.getItem(currentPartTableItemIndex);
+		for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
+    		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
+    		if (selectedTableItemColumnBounds.contains(clickPoint)
+    				&& (i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
+    			if ((i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)
+    					&& (selectedTableItem.getData() == null || ((InvoicePart) selectedTableItem.getData()).getPart() == null)) {
+    				return true;		// this IF is what finally did it, the whole not editing QTY or Price without an associated Part
+    			}
+    			final int selectedColumnIndex = i;
+    			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
+    			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
+    			Listener textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentPartTableItemIndex, selectedColumnIndex,
+    																		editorTxtBox, invoiceDetailText, parent,
+    																		tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
+    			editor.setEditor(editorTxtBox, selectedTableItem, i);
+    			editorTxtBox.addListener(SWT.FocusOut, textListener);
+    			editorTxtBox.addListener(SWT.Traverse, textListener);
+    			editorTxtBox.addListener(SWT.MouseDown, textListener);
+    			editorTxtBox.setText(selectedTableItem.getText(i));
+    			editorTxtBox.selectAll();
+    			editorTxtBox.setFocus();
+    			return true;
+    		}
+    		if (!visible && selectedTableItemColumnBounds.intersects(partInvoiceTable.getClientArea())) {
+    			visible = true;
+    		}
+    	}
+		return false;
 	}
 }
