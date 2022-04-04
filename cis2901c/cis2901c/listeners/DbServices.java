@@ -613,7 +613,7 @@ public class DbServices {
 			repairOrder.setUnitVin(queryResultSet.getString(16));
 			
 			repairOrder.setCreatedDate(queryResultSet.getTimestamp(17));
-			repairOrder.setClosedDate(queryResultSet.getTimestamp(17));
+			repairOrder.setClosedDate(queryResultSet.getTimestamp(18));
 						
 			results[i] = repairOrder;
 			i++;

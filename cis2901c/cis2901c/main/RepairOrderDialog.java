@@ -19,7 +19,6 @@ import cis2901c.objects.Job;
 import cis2901c.objects.JobLabor;
 import cis2901c.objects.JobLaborTable;
 import cis2901c.objects.MyText;
-import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.RepairOrderJobTable;
 import cis2901c.objects.RepairOrderJobTableItem;
@@ -55,12 +54,14 @@ import java.util.logging.Level;
 import org.eclipse.swt.widgets.Composite;
 
 import cis2901c.objects.Customer;
+import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.InvoicePartTableItem;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class RepairOrderDialog extends Dialog {
 
@@ -72,6 +73,7 @@ public class RepairOrderDialog extends Dialog {
 	private Button btnCancel;
 	private Button btnAddJob;
 	private Button btnDeleteJob;
+	private Button btnCashierRo;
 	private Button btnDeleteLineItem; 
 	private Button btnAddLaborLine;
 	private Button btnDeleteLaborLine;
@@ -278,7 +280,7 @@ public class RepairOrderDialog extends Dialog {
 		// END Jobs table
 
 		// RO Controls
-		Button btnCashierRo = new Button(shlRepairOrder, SWT.NONE);
+		btnCashierRo = new Button(shlRepairOrder, SWT.NONE);
 		btnCashierRo.setBounds(676, 10, 179, 64);
 		btnCashierRo.setText("Cashier");
 
@@ -557,6 +559,29 @@ public class RepairOrderDialog extends Dialog {
 					}
 				});
 				
+				btnCashierRo.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseDown(MouseEvent e) {
+						// spawn amount due dialog box
+						if (txtCustomerRepairOrder.getData() == null) {
+							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
+							customerRequiredBox.setText("Notice");
+							customerRequiredBox.setMessage("Please select a Customer");
+							customerRequiredBox.open();
+							return;
+						}
+						AmountDueDialog amountDueDialog = new AmountDueDialog(shlRepairOrder, getStyle());
+						boolean cashiered = amountDueDialog.open(textFinalTotalRepairOrder.getText());
+						
+						if (cashiered) {
+							Main.log(Level.INFO, "RO Cashiered");
+							currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
+							saveRo(currentRepairOrder);
+							shlRepairOrder.close();
+						}
+					}
+				});
+				
 				btnSaveRo.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
@@ -686,7 +711,7 @@ public class RepairOrderDialog extends Dialog {
 				// END setup Job modified listener
 	}
 	
-	private void loadRoFromDb(RepairOrder repairOrder) {
+	private void loadRoFromDb(RepairOrder repairOrder) {		
 		// set Dialog boxes and stuff from repairOrder fields
 		if (repairOrder != null) {
 //			repairOrder = new RepairOrder();
@@ -694,6 +719,14 @@ public class RepairOrderDialog extends Dialog {
 		currentRepairOrder = repairOrder;
 		roId = repairOrder.getRepairOrderId();
 		textCreatedDate.setText(repairOrder.getCreatedDate().toString());
+		textCashieredDate.setText(repairOrder.getClosedDate() == null ? "" : repairOrder.getClosedDate().toString());
+		
+		if (textCashieredDate.getText().equals("")) {
+			// TODO load everything as normal and disable editing of text boxes
+				// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
+			
+		}
+		
 		textRoNum.setText(Long.toString(roId));
 		if (repairOrder.getCustomerId() != 0) {
 			customerId = repairOrder.getCustomerId();
@@ -797,8 +830,6 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	private void saveRo(RepairOrder repairOrder) {
-		// TODO do someting with the returned updateCount
-		DbServices.deleteDetailsFromRo(detailsToDelete);
 		
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
 			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());
@@ -825,6 +856,9 @@ public class RepairOrderDialog extends Dialog {
 			return;
 		}
 		
+		// TODO do something with the returned updateCount
+		DbServices.deleteDetailsFromRo(detailsToDelete);
+		
 		if (tableJobsRepairOrder.getItemCount() > 0) {
 			for (TableItem jobTableItem : tableJobsRepairOrder.getItems()) {
 				if (!repairOrder.getJobs().contains(jobTableItem.getData())) {		// maybe use HashSet here
@@ -833,10 +867,8 @@ public class RepairOrderDialog extends Dialog {
 			}
 		}
 		
-		// setClosedTime
 		repairOrder.setTax(new BigDecimal(textTaxRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
 		repairOrder.setTotal(new BigDecimal(textFinalTotalRepairOrder.getText().replaceAll(ONLY_DECIMALS, "")));
-		
 		
 		// send RepairOrder object to DbServices
 		DbServices.saveObject(repairOrder);
