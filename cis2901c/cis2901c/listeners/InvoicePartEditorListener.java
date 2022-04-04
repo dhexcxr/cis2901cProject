@@ -134,24 +134,29 @@ public class InvoicePartEditorListener implements Listener {
 				editedLineItem.setPart(part);
 			}
 			
-			// TODO this is kinda ugly, I might be able to move this into paintInvoiceLines(Part editedLineItem)
-			TableItem editedTableItem = null;
-			for (TableItem tableItem : partInvoiceTable.getItems()) {
-				if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
-						&& !tableItem.equals(selectedTableItem)) {
-					selectedTableItem = tableItem;
-					editedTableItem = tableItem;
-					partInvoiceTable.setSelection(editedTableItem);
-					int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
-					tableItem.setText(InvoicePartTableItem.QUANTITY_COLUMN, Integer.toString(quantity + 1));
-					setPartQuantity(editedTableItem, quantity + 1);
-					ignoreFocusOut = false;
-					return;
-				}
+			if (duplicatePartPresent(editedLineItem)) {
+				return;
 			}
+			
 			paintInvoiceLines(editedLineItem);
 		}
 		ignoreFocusOut = false;
+	}
+	
+	private boolean duplicatePartPresent(InvoicePart editedLineItem) {
+		for (TableItem tableItem : partInvoiceTable.getItems()) {
+			if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
+					&& !tableItem.equals(selectedTableItem)) {
+				selectedTableItem = tableItem;
+				partInvoiceTable.setSelection(selectedTableItem);
+				int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
+				tableItem.setText(InvoicePartTableItem.QUANTITY_COLUMN, Integer.toString(quantity + 1));
+				setPartQuantity(selectedTableItem, quantity + 1);
+				ignoreFocusOut = false;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void paintInvoiceLines(InvoicePart editedLineItem) {
