@@ -7,21 +7,19 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.TabFolder;
 import cis2901c.main.Main;
+import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.Job;
 import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 
 public class JobDetailsModifiedListener implements ModifyListener {
 
-	TabFolder tabFolderJobsRepairOrder;
-	List<MyText> jobDetailWidgets;
-	List<MyTable> jobTables;
-
-	public JobDetailsModifiedListener(TabFolder tabFolderJobsRepairOrder, List<MyText> jobDetailWidgets,
-			List<MyTable> jobTables) {
-		this.tabFolderJobsRepairOrder = tabFolderJobsRepairOrder;
-		this.jobDetailWidgets = jobDetailWidgets;
-		this.jobTables = jobTables;
+	private TabFolder tabFolderJobsRepairOrder;
+	private List<MyText> jobDetailWidgets;
+	
+	public JobDetailsModifiedListener(RepairOrderDialog roDialog) {
+		this.tabFolderJobsRepairOrder = roDialog.getTabFolderJobsRepairOrder();
+		this.jobDetailWidgets = roDialog.getJobDetailsText();
 	}
 
 	@Override

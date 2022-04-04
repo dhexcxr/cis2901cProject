@@ -571,10 +571,7 @@ public class RepairOrderDialog extends Dialog {
 		// END LISTENERS
 
 		// setup Job modified listener
-		List<MyTable> jobTables = new ArrayList<>(); 
-		jobTables.add(jobPartsTable);
-		jobTables.add(jobLaborTable);
-		jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, getJobDetailsText(), jobTables);
+		jobDetailsModifiedListener = new JobDetailsModifiedListener(this);
 		txtJobName.addModifyListener(jobDetailsModifiedListener);
 		txtComplaints.addModifyListener(jobDetailsModifiedListener);
 		txtResolution.addModifyListener(jobDetailsModifiedListener);
