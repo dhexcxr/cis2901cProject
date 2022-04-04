@@ -10,6 +10,7 @@ import cis2901c.listeners.DbServices;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderJobAddListener;
+import cis2901c.listeners.RepairOrderJobDeleteListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
@@ -463,48 +464,8 @@ public class RepairOrderDialog extends Dialog {
 				MouseAdapter jobAddListener = new RepairOrderJobAddListener(this);
 				btnAddJob.addMouseListener(jobAddListener);
 				
-				btnDeleteJob.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// create new Job on Job Table
-						int selectedIndex = -1;
-						if (tableJobsRepairOrder.getSelectionIndex() >= 0 && tableJobsRepairOrder.getSelectionIndex() < tableJobsRepairOrder.getItemCount()
-								&& tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData() != null) {
-
-							Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
-							// keep track of things to delete
-							addDetailsToDelete(selectedJob.getTableName(), selectedJob.getJobId());
-							
-							selectedIndex = tableJobsRepairOrder.getSelectionIndex();
-							tableJobsRepairOrder.remove(selectedIndex);
-							// remove Job we just deleted from tabFolder
-							if (selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
-								tabFolderJobsRepairOrder.setData(null);
-							}
-							selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
-							tableJobsRepairOrder.setSelection(selectedIndex);
-							tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
-
-							calcRoTotal();
-						}
-						
-						// disable Job Tabs if no jobs on Job Table
-						if (tableJobsRepairOrder.getItemCount() == 0) {
-							txtJobName.setEnabled(false);
-							txtJobName.setText("Job Name...");
-							txtComplaints.setEnabled(false);
-							txtComplaints.setText("Complaints...");
-							txtResolution.setEnabled(false);
-							txtResolution.setText("Resolution...");
-							txtReccomendations.setEnabled(false);
-							txtReccomendations.setText("Reccomendations...");
-							jobPartsTable.setEnabled(false);
-							jobPartsTable.removeAll();
-							jobLaborTable.setEnabled(false);
-							jobLaborTable.removeAll();
-						} 
-					}
-				});
+				MouseAdapter jobDeleteListener = new RepairOrderJobDeleteListener(this);
+				btnDeleteJob.addMouseListener(jobDeleteListener);
 				
 				tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
 					@Override

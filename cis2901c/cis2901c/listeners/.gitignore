@@ -50,3 +50,4 @@
 /VinModifyListener.class
 /DeleteEnableListener.class
 /RepairOrderJobAddListener.class
+/RepairOrderJobDeleteListener.class
