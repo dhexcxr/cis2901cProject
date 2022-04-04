@@ -121,6 +121,7 @@ public class Invoice extends DbObjectSearchable implements DbObjectSavable{
 		this.parts = parts;
 	}
 	
+	@SuppressWarnings("unused")
 	private BigDecimal getPartsTotal() {
 		// not used right now, need to populate Part[] parts before this is usable
 		BigDecimal partsTotal = new BigDecimal(0);

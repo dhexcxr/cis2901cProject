@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import cis2901c.main.Main;
 import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.Job;
-import cis2901c.objects.MyTable;
 import cis2901c.objects.MyText;
 
 public class JobDetailsModifiedListener implements ModifyListener {

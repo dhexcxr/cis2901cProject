@@ -26,6 +26,11 @@ public class RepairOrderJobAddListener extends MouseAdapter {
 	private List<MyText> jobDetailsText;
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
+	
+	private static final int JOB_NAME_TEXT = 0;
+	private static final int JOB_COMPLAINT_TEXT = 1;
+	private static final int JOB_RESOLUTION_TEXT = 2;
+	private static final int JOB_RECOMMENDATIONS_TEXT = 3;
 
 	public RepairOrderJobAddListener(RepairOrderDialog roDialog) {
 		this.roDialog = roDialog;
@@ -48,10 +53,10 @@ public class RepairOrderJobAddListener extends MouseAdapter {
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 		
 		
-		jobDetailsText.get(0).setText("Job Name...");
-		jobDetailsText.get(1).setText("Complaints...");
-		jobDetailsText.get(2).setText("Resolution...");
-		jobDetailsText.get(3).setText("Reccomendations...");
+		jobDetailsText.get(JOB_NAME_TEXT).setText("Job Name...");
+		jobDetailsText.get(JOB_COMPLAINT_TEXT).setText("Complaints...");
+		jobDetailsText.get(JOB_RESOLUTION_TEXT).setText("Resolution...");
+		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText("Reccomendations...");
 		jobPartsTable.removeAll();
 		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
 		TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts

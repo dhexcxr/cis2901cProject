@@ -7,8 +7,6 @@ import java.util.Map;
 public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	
 	// invoicepart Database Table
-
-	private InvoicePartTableItem invoicePartTableItem;
 	private Map<String, String> dataMap = new HashMap<>();
 	private long invoicePartId = -1;
 	private long partId;
@@ -18,6 +16,8 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	private BigDecimal soldPrice = BigDecimal.valueOf(0);
 	
 	private Part part;
+	
+	private static final String FOREIGN_KEY = "invoicenum";
 	
 	public InvoicePart() {
 		
@@ -34,10 +34,6 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 		this.soldPrice = part.getRetail();
 		this.part = part;
 	}
-	
-//	public InvoicePart(InvoicePartTableItem invoicePartTableItem) {
-//		this.invoicePartTableItem = invoicePartTableItem;
-//	}
 
 	public long getInvoicePartId() {
 		return invoicePartId;
@@ -110,7 +106,7 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public void setDbPk(long dbPk) {
-		return;		// similarly, we don't need to set the Primary Key
+		// similarly, we don't need to set the Primary Key
 	}
 
 	@Override
@@ -121,7 +117,7 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 	
 	public String getFkName() {
 		// TODO Auto-generated method stub
-		return "invoicenum";
+		return FOREIGN_KEY;
 	}
 
 	@Override

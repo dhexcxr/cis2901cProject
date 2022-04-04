@@ -24,7 +24,6 @@ import cis2901c.objects.DbObjectSavable;
 import cis2901c.objects.DbObjectSearchable;
 import cis2901c.objects.Invoice;
 import cis2901c.objects.InvoicePart;
-import cis2901c.objects.InvoicePartTableItem;
 import cis2901c.objects.Job;
 import cis2901c.objects.JobLabor;
 import cis2901c.objects.JobPart;
@@ -155,7 +154,6 @@ public class DbServices {
 		}
 		
 		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
-//			((Invoice) dbObject).setInvoiceNum(getLastInvoiceNum());
 			saveInvoiceLineItems(dbObject);
 		} else if (dbObject instanceof RepairOrder) {
 			if (dbObject.getDbPk() == -1 ) {
@@ -262,9 +260,6 @@ public class DbServices {
 			if (invoiceLineItem.getData() == null) {
 				break;
 			}
-//			InvoicePartTableItem myInvoiceLineItem = (InvoicePartTableItem) invoiceLineItem;
-//			myInvoiceLineItem.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
-//			saveObject(myInvoiceLineItem);
 			InvoicePart invoicePart = (InvoicePart) invoiceLineItem.getData();
 			invoicePart.getDataMap().put("invoicenum", Integer.toString(invoiceNumber));
 			saveObject(invoicePart);
@@ -392,13 +387,6 @@ public class DbServices {
 		// simple regex to remove chars i don't want to search for
 			// !!!! this is not to be taken as SQL Injection protection
 		return searchQuery.replaceAll("[^a-zA-Z0-9 %'-]", "").split(" ");
-	}
-	
-			// TODO see if we need this anywhere
-	private static String numberSanitizer(String searchQuery) {		// originally used in searchForCustomer, refactoring may have made it unnecessary
-		// simple regex to remove chars i don't want to search for
-			// !!!! this is not to be taken as SQL Injection protection
-		return searchQuery.replaceAll("[^0-9]", "");
 	}
 	
 	public static Object searchForObjectByPk(DbObjectSearchable object) {

@@ -21,7 +21,6 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	private int selectedTableItemIndex;
 	private Text editorTxtBox;
 	private List<MyText> invoiceDetailText;
-	private Shell parent;
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
 	private RepairOrderDialog repairOrderDialog;
@@ -36,7 +35,6 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		this.selectedTableItemIndex = selectedTableItemIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.invoiceDetailText = invoiceDetailText;
-		this.parent = parent;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.currentJobTableItemIndex = currentJobTableItemIndex;
 		this.repairOrderDialog = repairOrderDialog;

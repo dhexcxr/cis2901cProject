@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
@@ -132,7 +131,6 @@ public class InvoicePartEditorListener implements Listener {
 					ignoreFocusOut = false;
 					return;
 				}
-//				editedLineItem = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				editedLineItem.setPart(part);
 			}
 			
@@ -176,7 +174,6 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void setPartQuantity(TableItem item) {
-//		setPartQuantity(item, Integer.parseInt(item.getText(InvoicePartTable.QUANTITY_COLUMN)));
 		setPartQuantity(item, Integer.parseInt(editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "")));	// <--------
 	}																										//		|
 																											// 		|
@@ -184,9 +181,7 @@ public class InvoicePartEditorListener implements Listener {
 		ignoreFocusOut = true;												// we can parse to an int in this method where necessary, and set to [something]
 		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();		// if it turns to "" after removing all but decimals
 		Part selectedPart = selectedInvoicePart.getPart();
-//		String currentQuantity = item.getText(InvoicePartTable.QUANTITY_COLUMN);
 		String currentQuantity = Integer.toString(quantity);
-//		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
 		String newQuantity = currentQuantity;
 		if (newQuantity.equals("")) {
 			newQuantity = currentQuantity;
@@ -203,7 +198,6 @@ public class InvoicePartEditorListener implements Listener {
 		selectedInvoicePart.setQuantity(quantity);
 		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (extendedPrice.toString()));
-//		selectedInvoicePart.setSoldPrice(extendedPrice);
 		ignoreFocusOut = false;
 	}
 

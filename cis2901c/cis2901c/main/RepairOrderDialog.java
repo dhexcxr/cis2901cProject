@@ -99,7 +99,7 @@ public class RepairOrderDialog extends Dialog {
 	private Map<String, List<Long>> detailsToDelete = new HashMap<>();
 	
 	private RepairOrder currentRepairOrder;
-	private long customerId;
+//	private long customerId;
 	
 	private CustomerSearchListener customerSearchListener;
 	private UnitSearchListener unitSearchListener;
@@ -158,11 +158,7 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	public void addDetailsToDelete(String table, Long primaryKey) {
-//		if (detailsToDelete.get(table) == null) {
-//			detailsToDelete.put(table, new ArrayList<>());
-//		}
 		detailsToDelete.computeIfAbsent(table, t -> new ArrayList<>()).add(primaryKey);
-//		detailsToDelete.get(table).add(primaryKey);
 	}
 	
 
@@ -206,14 +202,12 @@ public class RepairOrderDialog extends Dialog {
 		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlRepairOrder.setSize(992, 736);
 		shlRepairOrder.setText(getText());
-		shlRepairOrder.addListener(SWT.Traverse, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (event.detail == SWT.TRAVERSE_ESCAPE) {
-					event.doit = false;
-				}
+		shlRepairOrder.addListener(SWT.Traverse, event -> {
+			if (event.detail == SWT.TRAVERSE_ESCAPE) {
+				event.doit = false;
 			}
 		});
+		
 		
 		Gui.setDialogAtCenter(shlRepairOrder);
 		
@@ -297,6 +291,7 @@ public class RepairOrderDialog extends Dialog {
 		tableJobsRepairOrder.setBounds(10, 144, 660, 200);
 		tableJobsRepairOrder.setHeaderVisible(true);
 		tableJobsRepairOrder.setLinesVisible(true);
+		tableJobsRepairOrder.setFocus();
 
 		TableColumn tblclmnJobName = new TableColumn(tableJobsRepairOrder, SWT.NONE);
 		tblclmnJobName.setWidth(330);
@@ -593,9 +588,9 @@ public class RepairOrderDialog extends Dialog {
 			textCashieredDate.setText(repairOrder.getClosedDate() == null ? "" : repairOrder.getClosedDate().toString());
 			
 			if (repairOrder.getCustomerId() != 0) {
-				customerId = repairOrder.getCustomerId();
+//				customerId = repairOrder.getCustomerId();
 				// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
-				txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
+				txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(repairOrder.getCustomerId())));
 				txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
 			}
 
@@ -668,18 +663,14 @@ public class RepairOrderDialog extends Dialog {
 		// TODO big work in progress
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
-//		currentJob.setJobParts(new ArrayList<>());
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {
-//				currentJob.addPart((Part) currentPartTableItem.getData());
 			JobPart currentTIPart = (JobPart) currentPartTableItem.getData();
 			List<JobPart> currentParts = currentJob.getJobParts();
-//			if (currentPartTableItem.getData() != null && !currentJob.getJobParts().contains(currentPartTableItem.getData())) {
 			if (currentTIPart != null && !currentParts.contains(currentTIPart)) {
 				currentJob.addJobPart((JobPart) currentPartTableItem.getData());
 			}
 		}
 
-//		currentJob.setLabor(new ArrayList<>());
 		for (TableItem currentLaborTableItem : jobLaborTable.getItems()) {
 			if (!currentJob.getLabor().contains(currentLaborTableItem.getData()))
 				currentJob.addLabor((JobLabor) currentLaborTableItem.getData());
@@ -698,7 +689,6 @@ public class RepairOrderDialog extends Dialog {
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
 			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());
 			repairOrder.setCustomerName(txtCustomerRepairOrder.getText(0, txtCustomerRepairOrder.getText().indexOf('\n')).split(","));
-//			txtCustomerRepairOrder.getText(0, txtCustomerRepairOrder.getText().indexOf('\n')).split(" ");
 			repairOrder.setCustomerData(txtCustomerRepairOrder.getText().substring(txtCustomerRepairOrder.getText().indexOf('\n')));
 		} else {
 			// if we haven't selected a Customer, complain - an RO Customer is required
@@ -740,6 +730,5 @@ public class RepairOrderDialog extends Dialog {
 		textRoNum.setText(Long.toString(roId));
 		detailsToDelete = new HashMap<>();
 		result = repairOrder;
-//		shlRepairOrder.close();
 	}
 }

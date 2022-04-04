@@ -25,6 +25,14 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
 	private List<Button> jobDetailsButtons;
+	
+	private static final int JOB_NAME_TEXT = 0;
+	private static final int JOB_COMPLAINT_TEXT = 1;
+	private static final int JOB_RESOLUTION_TEXT = 2;
+	private static final int JOB_RECOMMENDATIONS_TEXT = 3;
+	private static final int DELETE_LINE_ITEM_BUTTON = 0;
+	private static final int ADD_LABOR_BUTTON = 1;
+	private static final int DELETE_LABOR_BUTTON = 2;
 
 	public RepairOrderJobDeleteListener(RepairOrderDialog roDialog) {
 		this.roDialog = roDialog;
@@ -62,21 +70,21 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 		
 		// disable Job Tabs if no jobs on Job Table
 		if (tableJobsRepairOrder.getItemCount() == 0) {
-			jobDetailsText.get(0).setEnabled(false);
-			jobDetailsText.get(0).setText("Job Name...");
-			jobDetailsText.get(1).setEnabled(false);
-			jobDetailsText.get(1).setText("Complaints...");
-			jobDetailsText.get(2).setEnabled(false);
-			jobDetailsText.get(2).setText("Resolution...");
-			jobDetailsText.get(3).setEnabled(false);
-			jobDetailsText.get(3).setText("Reccomendations...");
+			jobDetailsText.get(JOB_NAME_TEXT).setEnabled(false);
+			jobDetailsText.get(JOB_NAME_TEXT).setText("Job Name...");
+			jobDetailsText.get(JOB_COMPLAINT_TEXT).setEnabled(false);
+			jobDetailsText.get(JOB_COMPLAINT_TEXT).setText("Complaints...");
+			jobDetailsText.get(JOB_RESOLUTION_TEXT).setEnabled(false);
+			jobDetailsText.get(JOB_RESOLUTION_TEXT).setText("Resolution...");
+			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setEnabled(false);
+			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText("Reccomendations...");
 			jobPartsTable.setEnabled(false);
 			jobPartsTable.removeAll();
 			jobLaborTable.setEnabled(false);
 			jobLaborTable.removeAll();
-			jobDetailsButtons.get(0).setEnabled(false);
-			jobDetailsButtons.get(1).setEnabled(false);
-			jobDetailsButtons.get(2).setEnabled(false);
+			jobDetailsButtons.get(DELETE_LINE_ITEM_BUTTON).setEnabled(false);
+			jobDetailsButtons.get(ADD_LABOR_BUTTON).setEnabled(false);
+			jobDetailsButtons.get(DELETE_LABOR_BUTTON).setEnabled(false);
 		} 
 	}
 

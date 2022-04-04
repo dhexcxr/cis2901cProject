@@ -124,7 +124,6 @@ public class Gui extends Composite {
 		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
 		roSearchBox.setText("Search...");
 		roSearchBox.setBounds(10, 10, 830, 26);
-//		roSearchBox.addModifyListener(new RepairOrderSearchBoxListeners(roSearchBox, roTable));
 		roSearchBox.addModifyListener(new SearchTextBoxListeners(roSearchBox, roTable, new RepairOrder()));
 		roSearchBox.addFocusListener(new TextBoxFocusListener(roSearchBox));
 
@@ -471,6 +470,7 @@ public class Gui extends Composite {
 			public void mouseDown(MouseEvent e) {
 				// open invoice search dialog
 				InvoiceSearchDialog invoiceSearchDialog = new InvoiceSearchDialog(Display.getDefault().getActiveShell(), SWT.NONE);
+				@SuppressWarnings("unused")
 				Invoice invoiceToEdit = (Invoice) invoiceSearchDialog.open();		// TODO check all casts
 				// populate all invoice tab fields with data from invoice to edit
 			}

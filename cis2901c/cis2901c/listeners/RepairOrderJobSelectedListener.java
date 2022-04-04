@@ -31,6 +31,14 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 	private InvoicePartTable jobPartsTable;
 	private JobLaborTable jobLaborTable;
 	private List<Button> jobDetailsButtons;
+	
+	private static final int JOB_NAME_TEXT = 0;
+	private static final int JOB_COMPLAINT_TEXT = 1;
+	private static final int JOB_RESOLUTION_TEXT = 2;
+	private static final int JOB_RECOMMENDATIONS_TEXT = 3;
+	private static final int DELETE_LINE_ITEM_BUTTON = 0;
+	private static final int ADD_LABOR_BUTTON = 1;
+	private static final int DELETE_LABOR_BUTTON = 2;
 
 	public RepairOrderJobSelectedListener(RepairOrderDialog roDialog) {
 		this.roDialog = roDialog;
@@ -48,37 +56,38 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 			return;
 		}
 		
-		jobDetailsText.get(0).removeModifyListener(roDialog.getJobNameModifiedListener());
-		jobDetailsText.get(0).removeModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(1).removeModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(2).removeModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(3).removeModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_NAME_TEXT).removeModifyListener(roDialog.getJobNameModifiedListener());
+		jobDetailsText.get(JOB_NAME_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_COMPLAINT_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_RESOLUTION_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).removeModifyListener(roDialog.getJobDetailsModifiedListener());
 		
 		// job selected
-		jobDetailsText.get(0).setEnabled(true);
-		jobDetailsText.get(1).setEnabled(true);
-		jobDetailsText.get(2).setEnabled(true);
-		jobDetailsText.get(3).setEnabled(true);
+		jobDetailsText.get(JOB_NAME_TEXT).setEnabled(true);
+		jobDetailsText.get(JOB_COMPLAINT_TEXT).setEnabled(true);
+		jobDetailsText.get(JOB_RESOLUTION_TEXT).setEnabled(true);
+		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setEnabled(true);
 		jobPartsTable.setEnabled(true);
 		jobLaborTable.setEnabled(true);
 		
-		jobDetailsButtons.get(0).setEnabled(true);
-		jobDetailsButtons.get(1).setEnabled(true);
-		jobDetailsButtons.get(2).setEnabled(true);
+		if (roDialog.getTextCashieredDate().getText().equals("")) {
+			jobDetailsButtons.get(DELETE_LINE_ITEM_BUTTON).setEnabled(true);
+			jobDetailsButtons.get(ADD_LABOR_BUTTON).setEnabled(true);
+			jobDetailsButtons.get(DELETE_LABOR_BUTTON).setEnabled(true);
+		}
 		
 		Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
 		// copy selected Job to Job Tabs
 		if (selectedJob != null && !selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
 			tabFolderJobsRepairOrder.setData(selectedJob);
 			// set Job data into Job Tabs
-			jobDetailsText.get(0).setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
-			jobDetailsText.get(1).setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
-			jobDetailsText.get(2).setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
-			jobDetailsText.get(3).setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
+			jobDetailsText.get(JOB_NAME_TEXT).setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
+			jobDetailsText.get(JOB_COMPLAINT_TEXT).setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
+			jobDetailsText.get(JOB_RESOLUTION_TEXT).setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
+			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
 			
 			// TODO add other methods to set up Job Detail tabs, Part tab, and Labor tab
 			jobPartsTable.removeAll();
-//			for (Part part : selectedJob.getParts()) {
 			for (JobPart jobPart : selectedJob.getJobParts()) {
 				// TODO see how I stored quantity in Invoice, or figure out how to store quantity
 				if (jobPart == null) {
@@ -99,26 +108,22 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 		}
 
 		
-		jobDetailsText.get(0).addModifyListener(roDialog.getJobNameModifiedListener());
-		jobDetailsText.get(0).addModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(1).addModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(2).addModifyListener(roDialog.getJobDetailsModifiedListener());
-		jobDetailsText.get(3).addModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_NAME_TEXT).addModifyListener(roDialog.getJobNameModifiedListener());
+		jobDetailsText.get(JOB_NAME_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_COMPLAINT_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_RESOLUTION_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
+		jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).addModifyListener(roDialog.getJobDetailsModifiedListener());
 	}
 	
-//	private void addPartToPartTableItem(Part part) {
 	private void addPartToPartTableItem(JobPart jobPart) {
-		// used in tableJobsRepairOrder.addSelectionListener
 		InvoicePartTableItem jobPartTableItem = new InvoicePartTableItem(jobPartsTable, roDialog.getStyle());
 		jobPartTableItem.setText(new String[] {jobPart.getPartNumber(), jobPart.getDescription(), Integer.toString(jobPart.getQuantity()),
 				Integer.toString(jobPart.getPart().getOnHand()), jobPart.getPart().getCost().toString(),
 				jobPart.getSoldPrice().toString(), jobPart.getSoldPrice().multiply(BigDecimal.valueOf(jobPart.getQuantity())).toString()});
-//		jobPartTableItem.setData(jobPart.getPart());
 		jobPartTableItem.setData(jobPart);
 	}
 	
 	private void addLaborToLaborTableItem(JobLabor jobLabor) {
-		// used in tableJobsRepairOrder.addSelectionListener
 		JobLaborTableItem jobLaborTableItem = new JobLaborTableItem(jobLaborTable, roDialog.getStyle());
 		jobLaborTableItem.setText(new String[] {jobLabor.getTechnician(), jobLabor.getDescription(), jobLabor.getHours().toString(), jobLabor.getLaborRate().toString(),
 							jobLabor.getHours().multiply(jobLabor.getLaborRate()).setScale(2, RoundingMode.CEILING).toString()});
