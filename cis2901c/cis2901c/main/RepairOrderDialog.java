@@ -519,6 +519,7 @@ public class RepairOrderDialog extends Dialog {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				tableJobsRepairOrder.removeAll();
+				disableJobTabs();
 				detailsToDelete = new HashMap<>();
 				loadRoFromDb(currentRepairOrder);
 			}
@@ -625,7 +626,7 @@ public class RepairOrderDialog extends Dialog {
 			this.calcRoTotal();
 			
 			if (!textCashieredDate.getText().equals("")) {
-				// TODO load everything as normal and disable editing of text boxes
+				// load everything as normal and disable editing of text boxes
 					// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
 				txtCustomerRepairOrder.removeMouseListener(customerSearchListener);
 				txtUnitRepairOrder.removeMouseListener(unitSearchListener);
@@ -645,6 +646,24 @@ public class RepairOrderDialog extends Dialog {
 				jobLaborTable.removeListener(SWT.MouseDown, repairOrderLaborTableListener);
 			}
 		}
+	}
+	
+	public void disableJobTabs() {
+		txtJobName.setEnabled(false);
+		txtJobName.setText("Job Name...");
+		txtComplaints.setEnabled(false);
+		txtComplaints.setText("Complaints...");
+		txtResolution.setEnabled(false);
+		txtResolution.setText("Resolution...");
+		txtReccomendations.setEnabled(false);
+		txtReccomendations.setText("Reccomendations...");
+		jobPartsTable.setEnabled(false);
+		jobPartsTable.removeAll();
+		jobLaborTable.setEnabled(false);
+		jobLaborTable.removeAll();
+		btnDeleteLineItem.setEnabled(false);
+		btnAddLaborLine.setEnabled(false);
+		btnDeleteLaborLine.setEnabled(false);
 	}
 	
 	public void calcRoTotal() {
@@ -685,7 +704,6 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	private void saveRo(RepairOrder repairOrder) {
-		
 		if (txtCustomerRepairOrder.getData() != null && ((Customer) txtCustomerRepairOrder.getData()).getCustomerId() != -1) {
 			repairOrder.setCustomerId(((Customer) txtCustomerRepairOrder.getData()).getCustomerId());
 			repairOrder.setCustomerName(txtCustomerRepairOrder.getText(0, txtCustomerRepairOrder.getText().indexOf('\n')).split(","));

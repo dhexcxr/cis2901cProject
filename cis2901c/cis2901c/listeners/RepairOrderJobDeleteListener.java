@@ -70,21 +70,7 @@ public class RepairOrderJobDeleteListener extends MouseAdapter {
 		
 		// disable Job Tabs if no jobs on Job Table
 		if (tableJobsRepairOrder.getItemCount() == 0) {
-			jobDetailsText.get(JOB_NAME_TEXT).setEnabled(false);
-			jobDetailsText.get(JOB_NAME_TEXT).setText("Job Name...");
-			jobDetailsText.get(JOB_COMPLAINT_TEXT).setEnabled(false);
-			jobDetailsText.get(JOB_COMPLAINT_TEXT).setText("Complaints...");
-			jobDetailsText.get(JOB_RESOLUTION_TEXT).setEnabled(false);
-			jobDetailsText.get(JOB_RESOLUTION_TEXT).setText("Resolution...");
-			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setEnabled(false);
-			jobDetailsText.get(JOB_RECOMMENDATIONS_TEXT).setText("Reccomendations...");
-			jobPartsTable.setEnabled(false);
-			jobPartsTable.removeAll();
-			jobLaborTable.setEnabled(false);
-			jobLaborTable.removeAll();
-			jobDetailsButtons.get(DELETE_LINE_ITEM_BUTTON).setEnabled(false);
-			jobDetailsButtons.get(ADD_LABOR_BUTTON).setEnabled(false);
-			jobDetailsButtons.get(DELETE_LABOR_BUTTON).setEnabled(false);
+			roDialog.disableJobTabs();
 		} 
 	}
 
