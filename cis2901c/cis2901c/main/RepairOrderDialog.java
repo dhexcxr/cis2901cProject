@@ -12,6 +12,8 @@ import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderJobAddListener;
 import cis2901c.listeners.RepairOrderJobDeleteListener;
 import cis2901c.listeners.RepairOrderJobSelectedListener;
+import cis2901c.listeners.RepairOrderLaborAddListener;
+import cis2901c.listeners.RepairOrderLaborDeleteListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
@@ -469,156 +471,115 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void setupListeners() {
 		// LISTENERS
-				txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
-				
-				txtCustomerRepairOrder.addMouseListener(new CustomerSearchListener(txtCustomerRepairOrder));
-				
-				txtUnitRepairOrder.addMouseListener(new UnitSearchListener(txtUnitRepairOrder));
-				
-				MouseAdapter jobAddListener = new RepairOrderJobAddListener(this);
-				btnAddJob.addMouseListener(jobAddListener);
-				
-				MouseAdapter jobDeleteListener = new RepairOrderJobDeleteListener(this);
-				btnDeleteJob.addMouseListener(jobDeleteListener);
-				
-				SelectionAdapter jobSelectedListener = new RepairOrderJobSelectedListener(this);
-				tableJobsRepairOrder.addSelectionListener(jobSelectedListener);
-				
-				btnCashierRo.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// spawn amount due dialog box
-						if (txtCustomerRepairOrder.getData() == null) {
-							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
-							customerRequiredBox.setText("Notice");
-							customerRequiredBox.setMessage("Please select a Customer");
-							customerRequiredBox.open();
-							return;
-						}
-						AmountDueDialog amountDueDialog = new AmountDueDialog(shlRepairOrder, getStyle());
-						boolean cashiered = amountDueDialog.open(textFinalTotalRepairOrder.getText());
-						
-						if (cashiered) {
-							Main.log(Level.INFO, "RO Cashiered");
-							currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
-							saveRo(currentRepairOrder);
-							shlRepairOrder.close();
-						}
-					}
-				});
-				
-				btnSaveRo.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						if (roId == -1) {
-							saveNewRo();
-						} else {
-							saveRo(currentRepairOrder);
-						}
-					}
-				});
-				
-				btnCancel.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// TODO make a method that clears the entire RO, call from here
-						tableJobsRepairOrder.removeAll();
-						detailsToDelete = new HashMap<>();
-						loadRoFromDb(currentRepairOrder);
-					}
-				});
-				
-				btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder, this));
-				
-				btnAddLaborLine.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						TableItem tableItem = new JobLaborTableItem(jobLaborTable, SWT.NONE);
-						tableItem.setData(new JobLabor());
-						jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
-						jobLaborTable.notifyListeners(SWT.Selection, new Event());
-						
-						jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-						calcRoTotal();
-					}
-				});
-				
-				btnDeleteLaborLine.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseDown(MouseEvent e) {
-						// delete Labor from Labor Table
-						if (jobLaborTable.getSelectionIndex() >=0 && jobLaborTable.getSelectionIndex() < jobLaborTable.getItemCount()
-								&& jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData() != null) {
-							JobLabor selectedJobLabor = (JobLabor) jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData();
+		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 
-							// keep track of things to delete
-							addDetailsToDelete(selectedJobLabor.getTableName(), selectedJobLabor.getJobLaborId());
-							
-							int selectedIndex = jobLaborTable.getSelectionIndex();
-							jobLaborTable.remove(selectedIndex);
-							
-							selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
-							jobLaborTable.setSelection(selectedIndex);
-							
-							jobLaborTable.setTotalLabor(tableJobsRepairOrder);
-							calcRoTotal();
-							
-							// TODO recalculate total for Job labor
-						}
-					}
-				});
-				
-				tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
-					@Override		// set visibility of Tab function buttons
-					public void widgetSelected(SelectionEvent e) {
-						if (tabFolderJobsRepairOrder.getSelectionIndex() == 0) {		// Job Details tab
-							btnDeleteLineItem.setVisible(false);
-							btnAddLaborLine.setVisible(false);
-							btnDeleteLaborLine.setVisible(false);
-						} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 1) {		// Parts tab
-							Main.log(Level.INFO, "Repair Order Parts tab selected");
-							btnDeleteLineItem.setVisible(true);
-							btnAddLaborLine.setVisible(false);
-							btnDeleteLaborLine.setVisible(false);
-						} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 2) {		// Labor tab
-							Main.log(Level.INFO, "Repair Order Labor tab selected");
-							btnDeleteLineItem.setVisible(false);
-							btnAddLaborLine.setVisible(true);
-							btnDeleteLaborLine.setVisible(true);
-						}
-					}
-				});
-				
-				jobNameModifiedListener = new JobNameModifiedListener(txtJobName, tableJobsRepairOrder);
-				txtJobName.addModifyListener(jobNameModifiedListener);
-				txtJobName.addFocusListener(new TextBoxFocusListener(txtJobName));
-				
-				txtComplaints.addFocusListener(new TextBoxFocusListener(txtComplaints));
-				
-				txtResolution.addFocusListener(new TextBoxFocusListener(txtResolution));
-				
-				txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
-				
-				jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder));
+		CustomerSearchListener customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
+		txtCustomerRepairOrder.addMouseListener(customerSearchListener);
 
-				jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this));
-				// END LISTENERS
-				
-				// setup Job modified listener
-				List<MyText> jobDetailWidgets = new ArrayList<>();
-				jobDetailWidgets.add(txtJobName);
-				jobDetailWidgets.add(txtComplaints);
-				jobDetailWidgets.add(txtResolution);
-				jobDetailWidgets.add(txtReccomendations);
-				List<MyTable> jobTables = new ArrayList<>(); 
-				jobTables.add(jobPartsTable);
-				jobTables.add(jobLaborTable);
-				jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, jobDetailWidgets, jobTables);
-				txtJobName.addModifyListener(jobDetailsModifiedListener);
-				txtComplaints.addModifyListener(jobDetailsModifiedListener);
-				txtResolution.addModifyListener(jobDetailsModifiedListener);
-				txtReccomendations.addModifyListener(jobDetailsModifiedListener);
-				// END setup Job modified listener
+		UnitSearchListener unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
+		txtUnitRepairOrder.addMouseListener(unitSearchListener);
+
+		btnAddJob.addMouseListener(new RepairOrderJobAddListener(this));
+
+		btnDeleteJob.addMouseListener(new RepairOrderJobDeleteListener(this));
+
+		tableJobsRepairOrder.addSelectionListener(new RepairOrderJobSelectedListener(this));
+
+		btnCashierRo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// spawn amount due dialog box
+				if (txtCustomerRepairOrder.getData() == null) {
+					MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
+					customerRequiredBox.setText("Notice");
+					customerRequiredBox.setMessage("Please select a Customer");
+					customerRequiredBox.open();
+					return;
+				}
+				AmountDueDialog amountDueDialog = new AmountDueDialog(shlRepairOrder, getStyle());
+				boolean cashiered = amountDueDialog.open(textFinalTotalRepairOrder.getText());
+
+				if (cashiered) {
+					Main.log(Level.INFO, "RO Cashiered");
+					currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
+					saveRo(currentRepairOrder);
+					shlRepairOrder.close();
+				}
+			}
+		});
+
+		btnSaveRo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (roId == -1) {
+					saveNewRo();
+				} else {
+					saveRo(currentRepairOrder);
+				}
+			}
+		});
+
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				tableJobsRepairOrder.removeAll();
+				detailsToDelete = new HashMap<>();
+				loadRoFromDb(currentRepairOrder);
+			}
+		});
+
+		btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder, this));
+
+		btnAddLaborLine.addMouseListener(new RepairOrderLaborAddListener(this));
+
+		btnDeleteLaborLine.addMouseListener(new RepairOrderLaborDeleteListener(this));
+
+		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
+			@Override		// set visibility of Tab function buttons
+			public void widgetSelected(SelectionEvent e) {
+				if (tabFolderJobsRepairOrder.getSelectionIndex() == 0) {		// Job Details tab
+					btnDeleteLineItem.setVisible(false);
+					btnAddLaborLine.setVisible(false);
+					btnDeleteLaborLine.setVisible(false);
+				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 1) {		// Parts tab
+					Main.log(Level.INFO, "Repair Order Parts tab selected");
+					btnDeleteLineItem.setVisible(true);
+					btnAddLaborLine.setVisible(false);
+					btnDeleteLaborLine.setVisible(false);
+				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 2) {		// Labor tab
+					Main.log(Level.INFO, "Repair Order Labor tab selected");
+					btnDeleteLineItem.setVisible(false);
+					btnAddLaborLine.setVisible(true);
+					btnDeleteLaborLine.setVisible(true);
+				}
+			}
+		});
+
+		jobNameModifiedListener = new JobNameModifiedListener(txtJobName, tableJobsRepairOrder);
+		txtJobName.addModifyListener(jobNameModifiedListener);
+		txtJobName.addFocusListener(new TextBoxFocusListener(txtJobName));
+
+		txtComplaints.addFocusListener(new TextBoxFocusListener(txtComplaints));
+
+		txtResolution.addFocusListener(new TextBoxFocusListener(txtResolution));
+
+		txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
+
+		jobPartsTable.addListener(SWT.MouseDown, new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder));
+
+		jobLaborTable.addListener(SWT.MouseDown, new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this));
+		// END LISTENERS
+
+		// setup Job modified listener
+		List<MyTable> jobTables = new ArrayList<>(); 
+		jobTables.add(jobPartsTable);
+		jobTables.add(jobLaborTable);
+		jobDetailsModifiedListener = new JobDetailsModifiedListener(tabFolderJobsRepairOrder, getJobDetailsText(), jobTables);
+		txtJobName.addModifyListener(jobDetailsModifiedListener);
+		txtComplaints.addModifyListener(jobDetailsModifiedListener);
+		txtResolution.addModifyListener(jobDetailsModifiedListener);
+		txtReccomendations.addModifyListener(jobDetailsModifiedListener);
+		// END setup Job modified listener
 	}
 	
 	private void loadRoFromDb(RepairOrder repairOrder) {		
