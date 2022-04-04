@@ -11,6 +11,7 @@ import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderJobAddListener;
 import cis2901c.listeners.RepairOrderJobDeleteListener;
+import cis2901c.listeners.RepairOrderJobSelectedListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
 import cis2901c.listeners.RepairOrderPartTableListener;
@@ -139,10 +140,16 @@ public class RepairOrderDialog extends Dialog {
 	public JobLaborTable getJobLaborTable() {
 		return jobLaborTable;
 	}
+	
+	public JobNameModifiedListener getJobNameModifiedListener() {
+		return jobNameModifiedListener;
+	}
+
+	public JobDetailsModifiedListener getJobDetailsModifiedListener() {
+		return jobDetailsModifiedListener;
+	}
 	// END RO getters
 
-	
-	
 	public Map<String, List<Long>> getDetailsToDelete() {
 		return detailsToDelete;
 	}
@@ -474,71 +481,8 @@ public class RepairOrderDialog extends Dialog {
 				MouseAdapter jobDeleteListener = new RepairOrderJobDeleteListener(this);
 				btnDeleteJob.addMouseListener(jobDeleteListener);
 				
-				tableJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (tableJobsRepairOrder.getSelectionIndex() < 0 || tableJobsRepairOrder.getSelectionIndex() >= tableJobsRepairOrder.getItemCount()) {
-							return;
-						}
-						
-						txtJobName.removeModifyListener(jobNameModifiedListener);
-						txtJobName.removeModifyListener(jobDetailsModifiedListener);
-						txtComplaints.removeModifyListener(jobDetailsModifiedListener);
-						txtResolution.removeModifyListener(jobDetailsModifiedListener);
-						txtReccomendations.removeModifyListener(jobDetailsModifiedListener);
-						
-						// job selected
-						txtJobName.setEnabled(true);
-						txtComplaints.setEnabled(true);
-						txtResolution.setEnabled(true);
-						txtReccomendations.setEnabled(true);
-						jobPartsTable.setEnabled(true);
-						jobLaborTable.setEnabled(true);
-						
-						btnDeleteLineItem.setEnabled(true);
-						btnAddLaborLine.setEnabled(true);
-						btnDeleteLaborLine.setEnabled(true);
-						
-						Job selectedJob = (Job) tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex()).getData();
-						// copy selected Job to Job Tabs
-						if (selectedJob != null && !selectedJob.equals(tabFolderJobsRepairOrder.getData())) {
-							tabFolderJobsRepairOrder.setData(selectedJob);
-							// set Job data into Job Tabs
-							txtJobName.setText(selectedJob.getJobName().equals("") ? "Job Name..." : selectedJob.getJobName());
-							txtComplaints.setText(selectedJob.getComplaints().equals("") ? "Complaints..." : selectedJob.getComplaints());
-							txtResolution.setText(selectedJob.getResolution().equals("") ? "Resolution..." : selectedJob.getResolution());
-							txtReccomendations.setText(selectedJob.getReccomendations().equals("") ? "Reccomendations..." : selectedJob.getReccomendations());
-							
-							// TODO add other methods to set up Job Detail tabs, Part tab, and Labor tab
-							jobPartsTable.removeAll();
-//							for (Part part : selectedJob.getParts()) {
-							for (JobPart jobPart : selectedJob.getJobParts()) {
-								// TODO see how I stored quantity in Invoice, or figure out how to store quantity
-								if (jobPart == null) {
-									break;
-								}
-								addPartToPartTableItem(jobPart);
-							}
-							@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-							TableItem tableItem = new InvoicePartTableItem(jobPartsTable, SWT.NONE);	// so we can add parts
-							
-							jobLaborTable.removeAll();
-							for (JobLabor labor : selectedJob.getLabor()) {
-								if (labor == null) {
-									break;
-								}
-								addLaborToLaborTableItem(labor);
-							}
-						}
-
-						
-						txtJobName.addModifyListener(jobNameModifiedListener);
-						txtJobName.addModifyListener(jobDetailsModifiedListener);
-						txtComplaints.addModifyListener(jobDetailsModifiedListener);
-						txtResolution.addModifyListener(jobDetailsModifiedListener);
-						txtReccomendations.addModifyListener(jobDetailsModifiedListener);
-					}
-				});
+				SelectionAdapter jobSelectedListener = new RepairOrderJobSelectedListener(this);
+				tableJobsRepairOrder.addSelectionListener(jobSelectedListener);
 				
 				btnCashierRo.addMouseListener(new MouseAdapter() {
 					@Override
@@ -566,21 +510,11 @@ public class RepairOrderDialog extends Dialog {
 				btnSaveRo.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						// TODO Auto-generated method stub
-//						 spawn amount due dialog box
-//						if (txtCustomerRepairOrder.getData() == null) {
-//							MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
-//							customerRequiredBox.setText("Notice");
-//							customerRequiredBox.setMessage("Please select a Customer");
-//							customerRequiredBox.open();
-//							return;
-//						} else {
-							if (roId == -1) {
-								saveNewRo();
-							} else {
-								saveRo(currentRepairOrder);
-							}
-//						}
+						if (roId == -1) {
+							saveNewRo();
+						} else {
+							saveRo(currentRepairOrder);
+						}
 					}
 				});
 				
@@ -599,8 +533,6 @@ public class RepairOrderDialog extends Dialog {
 				btnAddLaborLine.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseDown(MouseEvent e) {
-						// TODO add Labor to Labor Table
-						@SuppressWarnings("unused")
 						TableItem tableItem = new JobLaborTableItem(jobLaborTable, SWT.NONE);
 						tableItem.setData(new JobLabor());
 						jobLaborTable.setSelection(jobLaborTable.getItemCount() - 1);
@@ -618,11 +550,8 @@ public class RepairOrderDialog extends Dialog {
 						if (jobLaborTable.getSelectionIndex() >=0 && jobLaborTable.getSelectionIndex() < jobLaborTable.getItemCount()
 								&& jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData() != null) {
 							JobLabor selectedJobLabor = (JobLabor) jobLaborTable.getItem(jobLaborTable.getSelectionIndex()).getData();
+
 							// keep track of things to delete
-//							if (detailsToDelete.get("joblabor") == null) {
-//								detailsToDelete.put("joblabor", new ArrayList<>());
-//							}
-//							detailsToDelete.get("joblabor").add(selectedJobLabor.getJobLaborId());
 							addDetailsToDelete(selectedJobLabor.getTableName(), selectedJobLabor.getJobLaborId());
 							
 							int selectedIndex = jobLaborTable.getSelectionIndex();
@@ -748,25 +677,6 @@ public class RepairOrderDialog extends Dialog {
 		tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 		this.calcRoTotal();
 		}
-	}
-	
-//	private void addPartToPartTableItem(Part part) {
-	private void addPartToPartTableItem(JobPart jobPart) {
-		// used in tableJobsRepairOrder.addSelectionListener
-		InvoicePartTableItem jobPartTableItem = new InvoicePartTableItem(jobPartsTable, getStyle());
-		jobPartTableItem.setText(new String[] {jobPart.getPartNumber(), jobPart.getDescription(), Integer.toString(jobPart.getQuantity()),
-				Integer.toString(jobPart.getPart().getOnHand()), jobPart.getPart().getCost().toString(),
-				jobPart.getSoldPrice().toString(), jobPart.getSoldPrice().multiply(BigDecimal.valueOf(jobPart.getQuantity())).toString()});
-//		jobPartTableItem.setData(jobPart.getPart());
-		jobPartTableItem.setData(jobPart);
-	}
-	
-	private void addLaborToLaborTableItem(JobLabor jobLabor) {
-		// used in tableJobsRepairOrder.addSelectionListener
-		JobLaborTableItem jobLaborTableItem = new JobLaborTableItem(jobLaborTable, getStyle());
-		jobLaborTableItem.setText(new String[] {jobLabor.getTechnician(), jobLabor.getDescription(), jobLabor.getHours().toString(), jobLabor.getLaborRate().toString(),
-							jobLabor.getHours().multiply(jobLabor.getLaborRate()).setScale(2, RoundingMode.CEILING).toString()});
-		jobLaborTableItem.setData(jobLabor);
 	}
 	
 	public void calcRoTotal() {

@@ -51,3 +51,4 @@
 /DeleteEnableListener.class
 /RepairOrderJobAddListener.class
 /RepairOrderJobDeleteListener.class
+/RepairOrderJobSelectedListener.class
