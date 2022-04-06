@@ -202,10 +202,17 @@ public class RepairOrderDialog extends Dialog {
 		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlRepairOrder.setSize(992, 736);
 		shlRepairOrder.setText(getText());
-		shlRepairOrder.addListener(SWT.Traverse, event -> {
+		shlRepairOrder.addListener(SWT.Traverse, event -> {		// disable pressing [Esc] to close the dialog
 			if (event.detail == SWT.TRAVERSE_ESCAPE) {
 				event.doit = false;
 			}
+		});
+		shlRepairOrder.addListener (SWT.Close, event -> {		// ask for confirmation to close on [X] click
+			int style = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
+			MessageBox messageBox = new MessageBox (shlRepairOrder, style);
+			messageBox.setText ("Close?");
+			messageBox.setMessage ("Close the Repair Order?");
+			event.doit = messageBox.open () == SWT.YES;
 		});
 		
 		
