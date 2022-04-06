@@ -107,6 +107,11 @@ public class RepairOrderDialog extends Dialog {
 	private RepairOrderPartTableListener repairOrderPartTableListener;
 	private RepairOrderLaborTableListener repairOrderLaborTableListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
+	private TextBoxFocusListener jobNameFocusListener;
+	private TextBoxFocusListener complaintsFocusListener;
+	private TextBoxFocusListener resolutionFocusListener;
+	private TextBoxFocusListener reccomendationsFocusListener;
+	
 	
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 	
@@ -573,13 +578,17 @@ public class RepairOrderDialog extends Dialog {
 
 		jobNameModifiedListener = new JobNameModifiedListener(txtJobName, tableJobsRepairOrder);
 		txtJobName.addModifyListener(jobNameModifiedListener);
-		txtJobName.addFocusListener(new TextBoxFocusListener(txtJobName));
+		jobNameFocusListener = new TextBoxFocusListener(txtJobName);
+		txtJobName.addFocusListener(jobNameFocusListener);
 
-		txtComplaints.addFocusListener(new TextBoxFocusListener(txtComplaints));
+		complaintsFocusListener = new TextBoxFocusListener(txtComplaints);
+		txtComplaints.addFocusListener(complaintsFocusListener);
 
-		txtResolution.addFocusListener(new TextBoxFocusListener(txtResolution));
-
-		txtReccomendations.addFocusListener(new TextBoxFocusListener(txtReccomendations));
+		resolutionFocusListener = new TextBoxFocusListener(txtResolution);
+		txtResolution.addFocusListener(resolutionFocusListener);
+		
+		reccomendationsFocusListener = new TextBoxFocusListener(txtReccomendations);
+		txtReccomendations.addFocusListener(reccomendationsFocusListener);
 
 		repairOrderPartTableListener = new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder);
 		jobPartsTable.addListener(SWT.MouseDown, repairOrderPartTableListener);
@@ -660,9 +669,13 @@ public class RepairOrderDialog extends Dialog {
 				btnAddLaborLine.setEnabled(false);
 				btnDeleteLaborLine.setEnabled(false);
 				txtJobName.setEditable(false);
+				txtJobName.removeFocusListener(jobNameFocusListener);
 				txtComplaints.setEditable(false);
+				txtComplaints.removeFocusListener(complaintsFocusListener);
 				txtResolution.setEditable(false);
+				txtResolution.removeFocusListener(resolutionFocusListener);
 				txtReccomendations.setEditable(false);
+				txtReccomendations.removeFocusListener(reccomendationsFocusListener);
 				jobPartsTable.removeListener(SWT.MouseDown, repairOrderPartTableListener);
 				jobLaborTable.removeListener(SWT.MouseDown, repairOrderLaborTableListener);
 			}
