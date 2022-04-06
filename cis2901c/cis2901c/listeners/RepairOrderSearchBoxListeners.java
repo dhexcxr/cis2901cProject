@@ -15,6 +15,8 @@ import cis2901c.main.Main;
 
 public class RepairOrderSearchBoxListeners implements ModifyListener, FocusListener {
 	
+	// TODO completely unused now
+	
 	// TODO combine with SearchBoxListener
 	private Text searchBox;
 	private Table table;

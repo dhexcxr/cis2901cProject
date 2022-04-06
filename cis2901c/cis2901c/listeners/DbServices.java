@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -160,6 +159,10 @@ public class DbServices {
 				dbObject.setDbPk(getLastRoNum());
 			}
 			saveRoJobs(dbObject);
+			RepairOrder thisRo = (RepairOrder) dbObject;
+			if (thisRo.getClosedDate() != null) {
+				sellRoPartsOutOfInventory(thisRo.getRepairOrderId());
+			}
 		} else if (dbObject instanceof Job) {
 			if (dbObject.getDbPk() == -1 ) {
 				dbObject.setDbPk(getLastJobId());
@@ -285,7 +288,14 @@ public class DbServices {
 	private static void sellInvoicePartsOutOfInventory(int invoiceNumber) {
 		StringBuilder query = new StringBuilder("UPDATE part p JOIN invoicepart ip ON p.partid = ip.partid "
 				+ "SET p.onhand = p.onhand - ip.quantity WHERE ip.invoicenum = ?;");
-		sendQueryToDb(query, new ArrayList<>(Arrays.asList(Integer.toString(invoiceNumber))));
+		sendQueryToDb(query, new ArrayList<>(List.of(Integer.toString(invoiceNumber))));
+	}
+	
+	private static void sellRoPartsOutOfInventory(long roNumber) {
+		StringBuilder query = new StringBuilder("UPDATE cis2901c.part p JOIN cis2901c.jobpart jp ON p.partid = jp.partid "
+				+ "JOIN cis2901c.job j ON jp.jobid = j.jobid "
+				+ "SET p.onhand = p.onhand - jp.quantity WHERE j.roid = ?;");
+		sendQueryToDb(query, new ArrayList<>(List.of(Long.toString(roNumber))));
 	}
 	
 	private static int sendQueryToDb(StringBuilder queryString) {

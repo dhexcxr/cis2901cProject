@@ -78,7 +78,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getCustomerName() {
-		return customerName;
+		return customerName == null ? "" : customerName;
 	}
 
 	public void setCustomerName(String firstname, String lastname) {
@@ -96,7 +96,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getCustomerData() {
-		return customerData;
+		return customerData == null ? "" : customerData;
 	}
 
 	public void setCustomerData(String customerData) {
@@ -120,7 +120,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getUnitYear() {
-		return unitYear;
+		return unitYear == null ? "" : unitYear;
 	}
 
 	public void setUnitYear(String unitYear) {
@@ -128,7 +128,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getUnitMake() {
-		return unitMake;
+		return unitMake == null ? "" : unitMake;
 	}
 
 	public void setUnitMake(String unitMake) {
@@ -136,7 +136,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getUnitModel() {
-		return unitModel;
+		return unitModel == null ? "" : unitModel;
 	}
 
 	public void setUnitModel(String unitModel) {
@@ -144,7 +144,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getUnitVin() {
-		return unitVin;
+		return unitVin == null ? "" : unitVin;
 	}
 
 	public void setUnitVin(String unitVin) {
@@ -152,7 +152,7 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 
 	public String getUnitData() {
-		return unitYear + " " + unitMake + " " + unitModel + "\n" + unitVin;
+		return getUnitYear() + " " + getUnitMake() + " " + getUnitModel() + "\n" + getUnitVin();
 	}
 
 	public Timestamp getCreatedDate() {
