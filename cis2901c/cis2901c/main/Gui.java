@@ -91,6 +91,7 @@ public class Gui extends Composite {
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
 		roTable.addMouseListener(new OpenExistingObjectMouseListener(roTable, shell));
+		roTable.addMenuDetectListener(new DeleteEnableListener(roTable));
 
 		TableColumn tblclmnRoRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnRoRo.setText("RO #");
@@ -127,6 +128,9 @@ public class Gui extends Composite {
 		tblclmnJobsRo.setWidth(212);
 		tblclmnJobsRo.addSelectionListener(new TableColumnSortListener(tblclmnJobsRo));
 
+		// Delete right click menu
+		setupRightClickMenu(roTable, "Repair Order");
+		
 		// RO controls
 		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);
 		roSearchBox.setText("Search...");
