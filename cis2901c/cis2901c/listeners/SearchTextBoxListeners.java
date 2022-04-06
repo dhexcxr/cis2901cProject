@@ -18,6 +18,7 @@ public class SearchTextBoxListeners implements ModifyListener {
 	private MyText searchBox;
 	private MyTable table;
 	private DbObjectSearchable searchObject;
+	private String textBoxStartingText;
 	
 	public SearchTextBoxListeners(MyText textBox, MyTable table) {
 		this.searchBox = textBox;
@@ -28,6 +29,7 @@ public class SearchTextBoxListeners implements ModifyListener {
 		this.searchBox = textBox;
 		this.table = table;
 		this.searchObject = searchObject;
+		this.textBoxStartingText = textBox.getText();
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class SearchTextBoxListeners implements ModifyListener {
 		// TODO refactor this listener, call searchObject.setSearchString(searchBox.getText()) then pass that to 
 			// DbServices.searchForObject(searchObject), then we can remove all these conditionals
 		int queryLength = searchBox.getText().trim().length();
-		if (queryLength > 0) {
+		if (queryLength > 0 && !searchBox.getText().equals(textBoxStartingText)) {
 			table.removeAll();
 			if (searchObject instanceof Customer) {
 				searchObject = new Customer(searchBox.getText());
