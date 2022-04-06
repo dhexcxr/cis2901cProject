@@ -37,7 +37,8 @@ public class RepairOrderTable extends MyTable {
 		}
 		RepairOrder repairOrder= (RepairOrder) object;
 		TableItem tableItem = this.getItem(selectedTableItemIndex);	
-		tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName() /*, year, make, model, vin, jobs */ });
+		tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName(),
+				repairOrder.getUnitYear(), repairOrder.getUnitMake(), repairOrder.getUnitModel(), repairOrder.getUnitVin(), repairOrder.getJobNames()});
 		tableItem.setData(repairOrder);
 	}
 
@@ -49,7 +50,7 @@ public class RepairOrderTable extends MyTable {
 			}
 			TableItem tableItem =  new TableItem(this, SWT.NONE);	
 			tableItem.setText(new String[] {Long.toString(repairOrder.getRepairOrderId()), repairOrder.getCustomerName(),
-					repairOrder.getUnitYear(), repairOrder.getUnitMake(), repairOrder.getUnitModel(), repairOrder.getUnitVin() /* jobs */ });
+					repairOrder.getUnitYear(), repairOrder.getUnitMake(), repairOrder.getUnitModel(), repairOrder.getUnitVin(), repairOrder.getJobNames()});
 			tableItem.setData(repairOrder);
 		}
 		initialSortOnPaint(currentSortedColumn, currentSortDirection);

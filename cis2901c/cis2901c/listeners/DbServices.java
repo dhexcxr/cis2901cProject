@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -612,6 +614,10 @@ public class DbServices {
 			
 			repairOrder.setCreatedDate(queryResultSet.getTimestamp(17));
 			repairOrder.setClosedDate(queryResultSet.getTimestamp(18));
+			
+			List<Job> roJobs =  new ArrayList<>(Arrays.asList((Job[]) DbServices.searchForObjectsByPk(new Job(repairOrder.getRepairOrderId()))));
+			roJobs.removeAll(Collections.singleton(null));
+			repairOrder.setJobs(roJobs);
 						
 			results[i] = repairOrder;
 			i++;

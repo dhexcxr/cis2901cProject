@@ -198,6 +198,17 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 		this.jobs = jobs;
 	}
 	
+	public String getJobNames() {
+		StringBuilder jobNames = new StringBuilder();
+		for (Job job : getJobs()) {
+			if (jobNames.length() > 0) {
+				jobNames.append(", ");
+			}
+			jobNames.append(job.getJobName());
+		}
+		return jobNames.toString();
+	}
+	
 	public void addJob(Job job) {
 		if (jobs == null) {
 			jobs = new ArrayList<>();
