@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.MouseAdapter;
@@ -70,6 +69,7 @@ public class RepairOrderDialog extends Dialog {
 	
 	private Button btnSaveRo;
 	private Button btnCancel;
+	private Button btnClose;
 	private Button btnAddJob;
 	private Button btnDeleteJob;
 	private Button btnCashierRo;
@@ -202,20 +202,7 @@ public class RepairOrderDialog extends Dialog {
 		shlRepairOrder = new Shell(getParent(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
 		shlRepairOrder.setSize(992, 736);
 		shlRepairOrder.setText(getText());
-		shlRepairOrder.addListener(SWT.Traverse, event -> {		// disable pressing [Esc] to close the dialog
-			if (event.detail == SWT.TRAVERSE_ESCAPE) {
-				event.doit = false;
-			}
-		});
-		shlRepairOrder.addListener (SWT.Close, event -> {		// ask for confirmation to close on [X] click
-			int style = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
-			MessageBox messageBox = new MessageBox (shlRepairOrder, style);
-			messageBox.setText ("Close?");
-			messageBox.setMessage ("Close the Repair Order?");
-			event.doit = messageBox.open () == SWT.YES;
-		});
-		
-		
+				
 		Gui.setDialogAtCenter(shlRepairOrder);
 		
 		roDetails();
@@ -327,7 +314,7 @@ public class RepairOrderDialog extends Dialog {
 
 		// RO Controls
 		btnCashierRo = new Button(shlRepairOrder, SWT.NONE);
-		btnCashierRo.setBounds(676, 10, 179, 64);
+		btnCashierRo.setBounds(676, 10, 103, 64);
 		btnCashierRo.setText("Cashier");
 
 		btnSaveRo = new Button(shlRepairOrder, SWT.NONE);
@@ -337,6 +324,10 @@ public class RepairOrderDialog extends Dialog {
 		btnCancel = new Button(shlRepairOrder, SWT.NONE);
 		btnCancel.setBounds(676, 292, 53, 52);
 		btnCancel.setText("Cancel");
+		
+		btnClose = new Button(shlRepairOrder, SWT.NONE);
+		btnClose.setText("Close");
+		btnClose.setBounds(785, 10, 70, 64);
 		// END RO controls
 	}
 	
@@ -474,6 +465,27 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void setupListeners() {
 		// LISTENERS
+		shlRepairOrder.addListener(SWT.Traverse, event -> {		// disable pressing [Esc] to close the dialog
+			if (event.detail == SWT.TRAVERSE_ESCAPE) {
+				event.doit = false;
+			}
+		});
+		shlRepairOrder.addListener(SWT.Close, event -> {		// ask for confirmation to close on [X] click
+				Main.log(Level.INFO, event.widget.toString());
+				MessageBox messageBox = new MessageBox (shlRepairOrder, SWT.APPLICATION_MODAL | SWT.YES | SWT.NO);
+				messageBox.setText ("Close?");
+				messageBox.setMessage ("Close the Repair Order?");
+				event.doit = messageBox.open () == SWT.YES;
+		});
+		
+		btnClose.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				shlRepairOrder.removeListener(SWT.Close, shlRepairOrder.getListeners(SWT.Close)[0]);
+				shlRepairOrder.close();
+			}
+		});
+		
 		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 
 		customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
