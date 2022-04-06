@@ -95,30 +95,37 @@ public class Gui extends Composite {
 		TableColumn tblclmnRoRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnRoRo.setText("RO #");
 		tblclmnRoRo.setWidth(75);
+		tblclmnRoRo.addSelectionListener(new TableColumnSortListener(tblclmnRoRo));
 
 		TableColumn tblclmnCustomerRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnCustomerRo.setText("Customer");
 		tblclmnCustomerRo.setWidth(164);
+		tblclmnCustomerRo.addSelectionListener(new TableColumnSortListener(tblclmnCustomerRo));
 
 		TableColumn tblclmnYearRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnYearRo.setText("Year");
 		tblclmnYearRo.setWidth(65);
+		tblclmnYearRo.addSelectionListener(new TableColumnSortListener(tblclmnYearRo));
 
 		TableColumn tblclmnMakeRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnMakeRo.setText("Make");
 		tblclmnMakeRo.setWidth(109);
+		tblclmnMakeRo.addSelectionListener(new TableColumnSortListener(tblclmnMakeRo));
 
 		TableColumn tblclmnModelRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnModelRo.setText("Model");
 		tblclmnModelRo.setWidth(113);
+		tblclmnModelRo.addSelectionListener(new TableColumnSortListener(tblclmnModelRo));
 
 		TableColumn tblclmnVinRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnVinRo.setText("VIN");
 		tblclmnVinRo.setWidth(222);
+		tblclmnVinRo.addSelectionListener(new TableColumnSortListener(tblclmnVinRo));
 
 		TableColumn tblclmnJobsRo = new TableColumn(roTable, SWT.NONE);
 		tblclmnJobsRo.setText("Jobs");
 		tblclmnJobsRo.setWidth(212);
+		tblclmnJobsRo.addSelectionListener(new TableColumnSortListener(tblclmnJobsRo));
 
 		// RO controls
 		MyText roSearchBox = new MyText(repairOrdersComposite, SWT.BORDER);

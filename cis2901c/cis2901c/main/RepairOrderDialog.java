@@ -616,6 +616,8 @@ public class RepairOrderDialog extends Dialog {
 				// find and build Parts
 				List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
 				jobPart.removeAll(Collections.singleton(null));
+				// TODO check each jobPart and see if current jobPart.quantity > jobPart.getPart.getOnHand, if so inform user
+					// with warning dialog and change quantity to onHand
 				job.setJobParts(jobPart);
 				roJobs.add(job);
 				jobTableItem.setData(job);
