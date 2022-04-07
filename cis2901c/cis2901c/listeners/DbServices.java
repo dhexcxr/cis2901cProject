@@ -50,10 +50,10 @@ public class DbServices {
 		try {
 			isConnected = mainDbConnection.isValid(5);
 		} catch (SQLException e) {
-			Main.log(Level.FINER, "DbServices.isConnected: mainDbConnection SQL Exception");
+			Main.getLogger().log(Level.FINER, "DbServices.isConnected: mainDbConnection SQL Exception");
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			Main.log(Level.SEVERE, "DbServices.isConnected: mainDbConnection Null Pointer Exception");
+			Main.getLogger().log(Level.SEVERE, "DbServices.isConnected: mainDbConnection Null Pointer Exception");
 			e.printStackTrace();
 		}
 		return isConnected;
@@ -84,7 +84,7 @@ public class DbServices {
 			try {
 				mainDbConnection = DriverManager.getConnection(url, user, pass);
 			} catch (SQLException e) {
-				Main.log(Level.SEVERE, "Error connecting to database");
+				Main.getLogger().log(Level.SEVERE, "Error connecting to database");
 				e.printStackTrace();
 			}
 			i++;
@@ -106,10 +106,10 @@ public class DbServices {
 		try {
 			mainDbConnection.close();
 		} catch (SQLException e) {
-			Main.log(Level.FINER, "DbServices.disconnectFromDb: mainDbConnection SQL Exception");
+			Main.getLogger().log(Level.FINER, "DbServices.disconnectFromDb: mainDbConnection SQL Exception");
 			e.printStackTrace();
 		} catch (NullPointerException e) {
-			Main.log(Level.SEVERE, "DbServices.disconnectFromDb: mainDbConnection Null Pointer Exception");
+			Main.getLogger().log(Level.SEVERE, "DbServices.disconnectFromDb: mainDbConnection Null Pointer Exception");
 			e.printStackTrace();
 		}
 	}
@@ -183,7 +183,7 @@ public class DbServices {
 				return results.getLong(1);		// we should always return here
 			}
 		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
+			Main.getLogger().log(Level.SEVERE, "SQL Error: getLastSavedDbObject");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -210,7 +210,7 @@ public class DbServices {
 				return results.getInt(1);		// we should always return here
 			}
 		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastRoNum");
+			Main.getLogger().log(Level.SEVERE, "SQL Error: getLastRoNum");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -249,7 +249,7 @@ public class DbServices {
 				return results.getInt(1);		// we should always return here
 			}
 		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastJobId");
+			Main.getLogger().log(Level.SEVERE, "SQL Error: getLastJobId");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -280,7 +280,7 @@ public class DbServices {
 				return results.getInt(1);		// we should always return here
 			}
 		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: getLastInvoiceNum");
+			Main.getLogger().log(Level.SEVERE, "SQL Error: getLastInvoiceNum");
 			e.printStackTrace();
 		}
 		// if we get here something went wrong
@@ -314,9 +314,9 @@ public class DbServices {
 			}
 			statement.execute();
 			updateCount = statement.getUpdateCount();
-			Main.log(Level.INFO, "Update Count: " + updateCount);
+			Main.getLogger().log(Level.INFO, "Update Count: {0}", updateCount);
 		} catch (SQLException e) {
-			Main.log(Level.SEVERE, "SQL Error: " + queryString);
+			Main.getLogger().log(Level.SEVERE, "SQL Error: {0}", queryString);
 			e.printStackTrace();
 		}
 		return updateCount;
@@ -387,7 +387,7 @@ public class DbServices {
 			statement.setLong(1, primaryKey);
 			statement.execute();
 			updateCount = statement.getUpdateCount();
-			Main.log(Level.INFO, "Delete from " + tableName + " Count: " + updateCount);
+			Main.getLogger().log(Level.INFO, "Delete from {0}. Count: {1}", new Object[] {tableName, updateCount});
 		} catch (SQLException e) {
 			// TODO print deleteQuery or statement
 			e.printStackTrace();

@@ -58,10 +58,10 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 					// ignore new TableItem at end of list with no part data set 
 					break;
 				}
-				Main.log(Level.INFO, "Total before: " + total.toString());
+				Main.getLogger().log(Level.INFO, "Total before: {0}", total);
 				total = total.add(new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)));
-				Main.log(Level.INFO, "Item price to BD: " + new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)).toString());
-				Main.log(Level.INFO, "Total after: " + total.toString());
+				Main.getLogger().log(Level.INFO, "Item price to BigDecimal: {0}", new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)));
+				Main.getLogger().log(Level.INFO, "Total after: {0}", total);
 			}
 			txtPartsTotalInvoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());
 			txtTaxInvoice.setText("$" + taxRate.multiply(total).setScale(2, RoundingMode.CEILING).toString());

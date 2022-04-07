@@ -207,7 +207,7 @@ public class NewCustomerDialog extends Dialog {
 					// create a new Customer
 					addNewCustomer();
 				} else {
-					Main.log(Level.INFO, "Save existing customer");
+					Main.getLogger().log(Level.INFO, "Save existing customer");
 					// save modifications to existing customer
 					saveCustomer(customer);
 				}

@@ -19,7 +19,7 @@ public class TextBoxFocusListener implements FocusListener {
 	
 	@Override
 	public void focusGained(FocusEvent e) {
-		Main.log(Level.INFO, textBoxText + " box focused gained");
+		Main.getLogger().log(Level.INFO, "{0} box focused gained", textBoxText);
 		// enable "flashy" text box effects
 		if (txtBox.getText().equals(textBoxText)) {
 			txtBox.setText("");
@@ -28,7 +28,7 @@ public class TextBoxFocusListener implements FocusListener {
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		Main.log(Level.INFO, textBoxText + " box focused lost");
+		Main.getLogger().log(Level.INFO, "{0} box focused lost", textBoxText);
 		// enable "flashy" text box effects
 		if (txtBox.getText().equals("")) {
 			txtBox.setText(textBoxText);

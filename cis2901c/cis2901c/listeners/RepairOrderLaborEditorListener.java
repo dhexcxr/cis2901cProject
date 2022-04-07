@@ -94,10 +94,10 @@ public class RepairOrderLaborEditorListener implements Listener {
 				// ignore new TableItem at end of list with no data set 
 				break;
 			}
-			Main.log(Level.INFO, "labor Total before: " + total.toString());
+			Main.getLogger().log(Level.INFO, "labor Total before: {0}", total);
 			total = total.add(new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)));
-			Main.log(Level.INFO, "labor price to BD: " + new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)).toString());
-			Main.log(Level.INFO, "labor Total after: " + total.toString());
+			Main.getLogger().log(Level.INFO, "labor price to BigDecimal: {0}", new BigDecimal(item.getText(JobLaborTable.TOTAL_COLUMN)));
+			Main.getLogger().log(Level.INFO, "labor Total after: {0}", total);
 		}
 		return total;
 	}

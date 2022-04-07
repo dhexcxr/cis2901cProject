@@ -476,11 +476,11 @@ public class RepairOrderDialog extends Dialog {
 			}
 		});
 		shlRepairOrder.addListener(SWT.Close, event -> {		// ask for confirmation to close on [X] click
-				Main.log(Level.INFO, event.widget.toString());
-				MessageBox messageBox = new MessageBox (shlRepairOrder, SWT.APPLICATION_MODAL | SWT.YES | SWT.NO);
-				messageBox.setText ("Close?");
-				messageBox.setMessage ("Close the Repair Order?");
-				event.doit = messageBox.open () == SWT.YES;
+			Main.getLogger().log(Level.INFO, "Close RO {0}", event.widget);
+			MessageBox messageBox = new MessageBox (shlRepairOrder, SWT.APPLICATION_MODAL | SWT.YES | SWT.NO);
+			messageBox.setText ("Close?");
+			messageBox.setMessage ("Close the Repair Order?");
+			event.doit = messageBox.open () == SWT.YES;
 		});
 		
 		btnClose.addMouseListener(new MouseAdapter() {
@@ -520,7 +520,7 @@ public class RepairOrderDialog extends Dialog {
 				boolean cashiered = amountDueDialog.open(textFinalTotalRepairOrder.getText());
 
 				if (cashiered) {
-					Main.log(Level.INFO, "RO Cashiered");
+					Main.getLogger().log(Level.INFO, "RO Cashiered");
 					currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
 					saveRo(currentRepairOrder);
 					shlRepairOrder.close();
@@ -563,12 +563,12 @@ public class RepairOrderDialog extends Dialog {
 					btnAddLaborLine.setVisible(false);
 					btnDeleteLaborLine.setVisible(false);
 				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 1) {		// Parts tab
-					Main.log(Level.INFO, "Repair Order Parts tab selected");
+					Main.getLogger().log(Level.INFO, "Repair Order Parts tab selected");
 					btnDeleteLineItem.setVisible(true);
 					btnAddLaborLine.setVisible(false);
 					btnDeleteLaborLine.setVisible(false);
 				} else if (tabFolderJobsRepairOrder.getSelectionIndex() == 2) {		// Labor tab
-					Main.log(Level.INFO, "Repair Order Labor tab selected");
+					Main.getLogger().log(Level.INFO, "Repair Order Labor tab selected");
 					btnDeleteLineItem.setVisible(false);
 					btnAddLaborLine.setVisible(true);
 					btnDeleteLaborLine.setVisible(true);

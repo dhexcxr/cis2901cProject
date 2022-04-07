@@ -213,7 +213,7 @@ public class NewUnitDialog extends Dialog {
 					// save new Unit with current text boxes
 					addNewUnit();
 				} else {
-					Main.log(Level.INFO, "Save existing unit");
+					Main.getLogger().log(Level.INFO, "Save existing unit");
 					// save modifications to existing customer
 					saveUnit(unit);
 				}

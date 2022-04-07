@@ -23,7 +23,7 @@ public class JobDetailsModifiedListener implements ModifyListener {
 
 	@Override
 	public void modifyText(ModifyEvent e) {
-		Main.log(Level.INFO, "JobModifyListener called by:\n" + e.widget);
+		Main.getLogger().log(Level.INFO, "JobDetailModifiedListener called by: {0}", e.widget);
 		saveJobDetails();
 	}
 

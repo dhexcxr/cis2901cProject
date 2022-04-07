@@ -84,7 +84,7 @@ public class RepairOrderJobTableItem extends TableItem implements DbObjectSavabl
 		// TODO i'm pretty sure this usage of getParts() instead of getJobParts() will be problematic
 		for (Part part : thisJob.getParts()) {
 			if (part == null) {
-				Main.log(Level.INFO, "Null part in ROJobTableItem.setData");
+				Main.getLogger().log(Level.INFO, "Null part in ROJobTableItem.setData");
 				break;
 			}		// here, it gets a part total from each part's retail, instead of the JobPart's current soldPrice
 			partTotal = partTotal.add(part.getRetail()).setScale(2, RoundingMode.CEILING);

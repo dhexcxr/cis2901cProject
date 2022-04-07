@@ -41,7 +41,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
 		// open saved object for editing
-		Main.log(Level.INFO, "Double clicked to open an existing object");
+		Main.getLogger().log(Level.INFO, "Double clicked to open an existing object");
 		Object[] tableObjects = null;
 		// TODO there might be a better way to check what type we're searching
 			// just like in DbServices.searchForObject
@@ -75,8 +75,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openCustomer(Table table) {
 		// get object saved in TableItem Data
 		Customer customer = (Customer) table.getSelection()[0].getData();
-		Main.log(Level.INFO, "Opened: " + customer.getFirstName());
-		Main.log(Level.INFO, Long.toString(customer.getCustomerId()));
+		Main.getLogger().log(Level.INFO, "Opened: {0}", customer.getFirstName());
+		Main.getLogger().log(Level.INFO, "Customer ID: {0}", Long.toString(customer.getCustomerId()));
 
 		// open customer for editing
 		NewCustomerDialog modifyExistingCustomerDialog = new NewCustomerDialog(shell, SWT.NONE);
@@ -86,9 +86,9 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openUnit(Table table) {
 		// get object saved in TableItem Data
 		Unit unit = (Unit) table.getSelection()[0].getData();
-		Main.log(Level.INFO, "Open unit: " + unit.getMake());
-		Main.log(Level.INFO, unit.getModel());
-		Main.log(Level.INFO, unit.getVin());
+		Main.getLogger().log(Level.INFO, "Open unit: {0}", unit.getMake());
+		Main.getLogger().log(Level.INFO, "Unit Model: {0}", unit.getModel());
+		Main.getLogger().log(Level.INFO, "Unit VIN: {0}", unit.getVin());
 
 		NewUnitDialog modifyExistingUnitDialog = new NewUnitDialog(shell, SWT.NONE);
 		modifyExistingUnitDialog.open(unit);
@@ -97,8 +97,8 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openPart(Table table) {
 		// get object saved in TableItem Data
 		Part part= (Part) table.getSelection()[0].getData();
-		Main.log(Level.INFO, "Open part: " + part.getPartNumber());
-		Main.log(Level.INFO, part.getDescription());
+		Main.getLogger().log(Level.INFO, "Open part: {0}", part.getPartNumber());
+		Main.getLogger().log(Level.INFO, "Part Description: {0}", part.getDescription());
 		
 		NewPartDialog modifyExistingPartDialog = new NewPartDialog(shell, SWT.NONE);
 		modifyExistingPartDialog.open(part);
@@ -107,7 +107,7 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	private void openRo(Table table) {
 		// get object saved in TableItem Data
 		RepairOrder repairOrder= (RepairOrder) table.getSelection()[0].getData();
-		Main.log(Level.INFO, "Open RO: " + repairOrder.getRepairOrderId());
+		Main.getLogger().log(Level.INFO, "Open RO: {0}", repairOrder.getRepairOrderId());
 		
 		RepairOrderDialog modifyExistingRepairOrder= new RepairOrderDialog(shell, SWT.NONE);
 		modifyExistingRepairOrder.open(repairOrder);

@@ -20,7 +20,6 @@ public class RequiredTextBoxModifyListener implements ModifyListener {
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// set txtBox background to RED if user has not entered anything
-		Main.log(Level.INFO, Boolean.toString(txtBox.isModified()));
 		if (txtBox.getText().length() == 0) {
 			txtBox.setModified(false);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
@@ -29,5 +28,6 @@ public class RequiredTextBoxModifyListener implements ModifyListener {
 			txtBox.setModified(true);
 			txtBox.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
 		}
+		Main.getLogger().log(Level.INFO, "txtBox.isModified: {0}", Boolean.toString(txtBox.isModified()));
 	}
 }

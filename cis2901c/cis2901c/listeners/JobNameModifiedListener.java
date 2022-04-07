@@ -26,7 +26,7 @@ public class JobNameModifiedListener extends InfoTextBoxModifyListener {
 		// help track if text box has been modified
 		super.modifyText(e);
 		if (super.txtBox.isModified()) {
-			Main.log(Level.INFO, "Job Name modified subclass is working");
+			Main.getLogger().log(Level.INFO, "Job Name modified subclass is working");
 			TableItem selectedJob = tableJobsRepairOrder.getItem(tableJobsRepairOrder.getSelectionIndex());
 			selectedJob.setText(0, super.txtBox.getText());
 			((Job) selectedJob.getData()).setJobName(super.txtBox.getText());

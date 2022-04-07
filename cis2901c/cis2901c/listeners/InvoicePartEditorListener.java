@@ -109,7 +109,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void findPartNumber() {
 		ignoreFocusOut = true;
-		Main.log(Level.INFO, "findPartNumber called");
+		Main.getLogger().log(Level.INFO, "findPartNumber called");
 		// search for part, populate selected TableItem fields, add new TableItem, calculate total
 		if (editorTxtBox.getText().length() > 0) {
 			Part[] partResults = (Part[]) DbServices.searchForObject(new Part(editorTxtBox.getText()));
@@ -167,7 +167,7 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void paintInvoiceLines(InvoicePart editedLineItem) {
-		Main.log(Level.INFO, "paintInvoiceLines called");
+		Main.getLogger().log(Level.INFO, "paintInvoiceLines called");
 		// TODO if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
 		// TODO i think if we change this to a List<TableItem> we can just do a currentTableItems.contains(editedLineItem)
 																// to find part and increase Quantity by 1
@@ -236,10 +236,10 @@ public class InvoicePartEditorListener implements Listener {
 				// ignore new TableItem at end of list with no part data set 
 				break;
 			}
-			Main.log(Level.INFO, "Total before: " + total.toString());
+			Main.getLogger().log(Level.INFO, "Total before: {0}", total);
 			total = total.add(new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)));
-			Main.log(Level.INFO, "Item price to BD: " + new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)).toString());
-			Main.log(Level.INFO, "Total after: " + total.toString());
+			Main.getLogger().log(Level.INFO, "Item price to BigDecimal: {0}", new BigDecimal(item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN)));
+			Main.getLogger().log(Level.INFO, "Total after: {0}", total);
 		}
 		txtPartsTotalInvoice.setText("$" + total.setScale(2, RoundingMode.CEILING).toString());
 		txtTaxInvoice.setText("$" + taxRate.multiply(total).setScale(2, RoundingMode.CEILING).toString());
