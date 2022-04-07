@@ -1,12 +1,10 @@
 package cis2901c.objects;
 
 import java.math.BigDecimal;
-import java.util.Map;
-
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public class JobLaborTableItem extends TableItem implements DbObjectSavable {
+public class JobLaborTableItem extends TableItem {
 	
 //	private static final int TECHNICIAN_COLUMN = 0;
 //	private static final int DESCRIPTION_COLUMN = 1;
@@ -24,35 +22,6 @@ public class JobLaborTableItem extends TableItem implements DbObjectSavable {
 	public JobLaborTableItem(Table parent, int style, int index) {
 		super(parent, style, index);
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public long getDbPk() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public void setDbPk(long dbPk) {
-//		laborId = dbPk;
-	}
-
-	@Override
-	public String getPkName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getTableName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	// TODO create setData(Job job)
