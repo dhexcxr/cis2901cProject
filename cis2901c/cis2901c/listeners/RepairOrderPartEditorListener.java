@@ -42,35 +42,33 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	@Override
 	public void handleEvent(Event event) {
-//		if (!ignoreFocusOut && editorTxtBox.getText().length() > 0) {
 		if (!ignoreFocusOut) {
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
 			}
 			super.handleEvent(event);
+			
 			InvoicePart newInvoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData(); 
-//			if (newInvoicePart != null && newInvoicePart.getPart() != null) {
-//				repairOrderDialog.saveJob();
-//				totalParts();
-//			} else {
 			if (newInvoicePart == null || newInvoicePart.getPart() == null) {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(null);
 			}
+			
 			repairOrderDialog.saveJob();
 			totalParts();
 			editorTxtBox.dispose();
 		}
-//		editorTxtBox.dispose();
 	}
 	
 	private void totalParts() {
 		RepairOrderJobTableItem selectedJobTableItem = (RepairOrderJobTableItem) tableJobsRepairOrder.getItem(currentJobTableItemIndex);
 		String textToParse = invoiceDetailText.get(0).getText();
 		textToParse = textToParse.replaceAll("[^0-9.]", "");
-		BigDecimal partTotal = new BigDecimal(textToParse);
-		selectedJobTableItem.setPartTotal(partTotal);
-		selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
-		selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
+		if (!textToParse.equals("")) {
+			BigDecimal partTotal = new BigDecimal(textToParse);
+			selectedJobTableItem.setPartTotal(partTotal);
+			selectedJobTableItem.setText(RepairOrderJobTable.PART_TOTAL_COLUMN, "$" + partTotal.toString());
+			selectedJobTableItem.setText(RepairOrderJobTable.JOB_TOTAL_COLUMN, "$" + (partTotal.add(selectedJobTableItem.getLaborTotal()).toString()));
+		}
 		repairOrderDialog.calcRoTotal();
 	}
 
