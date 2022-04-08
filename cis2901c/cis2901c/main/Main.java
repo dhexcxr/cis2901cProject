@@ -66,6 +66,7 @@ public class Main {
 	}
 	
 	public static void log(Level level, String msg) {
+		// TODO remove, unused
 		LOGGER.log(level, msg);
 	}
 	

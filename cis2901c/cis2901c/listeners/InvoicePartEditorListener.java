@@ -26,7 +26,7 @@ public class InvoicePartEditorListener implements Listener {
 
 	private InvoicePartTable partInvoiceTable;
 	private TableItem selectedTableItem;
-	private int selectedTableItemIndex;
+	protected int selectedTableItemIndex;
 	private int selectedColumnIndex;
 	private Text editorTxtBox;
 	
@@ -75,9 +75,11 @@ public class InvoicePartEditorListener implements Listener {
 				InvoicePart selectedPart = new InvoicePart((Part) partSearchDialog.open(editorTxtBox.getText()));
 				if (selectedPart.getPart() != null) {
 					editorTxtBox.setText(selectedPart.getPartNumber());
-					paintInvoiceLines(selectedPart);  
+					paintInvoiceLines(selectedPart); 
+					calculateInvoiceTotal();
 				}
 				ignoreFocusOut = false;
+				editorTxtBox.dispose();
 			}
 		} else if (event.type == SWT.FocusOut) {
 			setColumnData();
@@ -132,12 +134,7 @@ public class InvoicePartEditorListener implements Listener {
 					return;
 				}
 				editedLineItem.setPart(part);
-			}
-			
-			if (duplicatePartPresent(editedLineItem)) {
-				return;
-			}
-			
+			}			
 			paintInvoiceLines(editedLineItem);
 		}
 		ignoreFocusOut = false;
@@ -152,7 +149,7 @@ public class InvoicePartEditorListener implements Listener {
 		 * there will then be two seperate line items with the same part
 		 */
 		for (TableItem tableItem : partInvoiceTable.getItems()) {
-			if (editedLineItem.getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
+			if (editedLineItem.getPart().getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
 					&& !tableItem.equals(selectedTableItem)) {
 				selectedTableItem = tableItem;
 				partInvoiceTable.setSelection(selectedTableItem);
@@ -173,16 +170,20 @@ public class InvoicePartEditorListener implements Listener {
 																// to find part and increase Quantity by 1
 
 		// TODO if editedLineItem is already in currentTableItems, find it's index and increase Quantity by 1
-
-		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
-			// if we're editing an empty TableItem line item
-			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
-			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());	
-		}
-		partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
+		
 		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
 		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
 		textNotesInvoice.setText(editedLineItem.getPart().getNotes());
+		
+		if (duplicatePartPresent(editedLineItem)) {
+			return;
+		}
+		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
+			// if we're editing an empty TableItem line item
+			partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
+			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
+			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());
+		}
 	}
 
 	private void setPartQuantity(TableItem item) {

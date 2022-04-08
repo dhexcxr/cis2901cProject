@@ -18,7 +18,7 @@ import cis2901c.objects.RepairOrderJobTableItem;
 public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	private InvoicePartTable partInvoiceTable;
-	private int selectedTableItemIndex;
+//	private int selectedTableItemIndex;
 	private Text editorTxtBox;
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
@@ -32,7 +32,7 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText, parent);
 		// TODO connect Job Part total
 		this.partInvoiceTable = partInvoiceTable;
-		this.selectedTableItemIndex = selectedTableItemIndex;
+		super.selectedTableItemIndex = selectedTableItemIndex;
 		this.editorTxtBox = editorTxtBox;
 		this.invoiceDetailText = invoiceDetailText;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
@@ -42,20 +42,25 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	@Override
 	public void handleEvent(Event event) {
-		if (!ignoreFocusOut && editorTxtBox.getText().length() > 0) {
+//		if (!ignoreFocusOut && editorTxtBox.getText().length() > 0) {
+		if (!ignoreFocusOut) {
 			if (partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(new JobPart());
 			}
 			super.handleEvent(event);
 			InvoicePart newInvoicePart = (InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData(); 
-			if (newInvoicePart != null && newInvoicePart.getPart() != null) {
-				repairOrderDialog.saveJob();
-				totalParts();
-			} else {
+//			if (newInvoicePart != null && newInvoicePart.getPart() != null) {
+//				repairOrderDialog.saveJob();
+//				totalParts();
+//			} else {
+			if (newInvoicePart == null || newInvoicePart.getPart() == null) {
 				partInvoiceTable.getItem(selectedTableItemIndex).setData(null);
 			}
+			repairOrderDialog.saveJob();
+			totalParts();
+			editorTxtBox.dispose();
 		}
-		editorTxtBox.dispose();
+//		editorTxtBox.dispose();
 	}
 	
 	private void totalParts() {
