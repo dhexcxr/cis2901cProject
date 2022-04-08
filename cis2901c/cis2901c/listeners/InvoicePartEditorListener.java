@@ -186,27 +186,24 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void setPartQuantity(TableItem item, int quantity) {
-		ignoreFocusOut = true;
 		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();
 		Part selectedPart = selectedInvoicePart.getPart();
-		String currentQuantity = Integer.toString(quantity);
-		String newQuantity = currentQuantity;
-		if (newQuantity.equals("")) {
-			newQuantity = currentQuantity;
-		}
-		if (Integer.parseInt(newQuantity) > selectedPart.getOnHand()) {
+		
+		if (quantity > selectedPart.getOnHand()) {
 			// if quantity entered is more than OnHand, pop up dialog telling user as much and set to OnHand
+			ignoreFocusOut = true;
 			MessageBox onHandWarningDialogBox = new MessageBox(parent, SWT.ICON_INFORMATION);
 			onHandWarningDialogBox.setText("Notice");
 			onHandWarningDialogBox.setMessage("Quantity entered is more than On Hand Quantity\n\nQuantity set to On Hand");
 			onHandWarningDialogBox.open();
-			newQuantity = Integer.toString(selectedPart.getOnHand());
+			quantity = selectedPart.getOnHand();
+			ignoreFocusOut = false;
 		}
+		String newQuantity = Integer.toString(quantity);
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
 		selectedInvoicePart.setQuantity(quantity);
 		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (extendedPrice.toString()));
-		ignoreFocusOut = false;
 	}
 
 	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
