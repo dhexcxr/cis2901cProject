@@ -141,16 +141,12 @@ public class InvoicePartEditorListener implements Listener {
 	}
 	
 	private boolean duplicatePartPresent(InvoicePart editedLineItem) {
-		// TODO i might be able to call this from paintInvoiceLines, and therefore catch the bugs
-		/* if a part is added a second time bby double clicking Part Number box it will be on its own line,
-		 * it will not increase first instance sell quantity
-		 * 
-		 * perhaps related, if there are two seperate parts, then the second is change to the part number of the first,
-		 * there will then be two seperate line items with the same part
-		 */
 		for (TableItem tableItem : partInvoiceTable.getItems()) {
 			if (editedLineItem.getPart().getPartNumber().equals(tableItem.getText(InvoicePartTableItem.PART_NUMBER_COLUMN))
 					&& !tableItem.equals(selectedTableItem)) {
+				if (selectedTableItem.getData() != null) {
+					partInvoiceTable.remove(partInvoiceTable.indexOf(selectedTableItem));
+				}
 				selectedTableItem = tableItem;
 				partInvoiceTable.setSelection(selectedTableItem);
 				int quantity = Integer.parseInt(tableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN));
@@ -165,11 +161,6 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void paintInvoiceLines(InvoicePart editedLineItem) {
 		Main.getLogger().log(Level.INFO, "paintInvoiceLines called");
-		// TODO if entered part number matches a part number already on invoice, get TableItem, get quantity column, increase by 1
-		// TODO i think if we change this to a List<TableItem> we can just do a currentTableItems.contains(editedLineItem)
-																// to find part and increase Quantity by 1
-
-		// TODO if editedLineItem is already in currentTableItems, find it's index and increase Quantity by 1
 		
 		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
 		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
