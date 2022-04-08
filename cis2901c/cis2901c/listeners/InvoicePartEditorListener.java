@@ -171,10 +171,10 @@ public class InvoicePartEditorListener implements Listener {
 		}
 		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 			// if we're editing an empty TableItem line item
-			partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
 			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
 			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());
 		}
+		partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
 	}
 
 	private void setPartQuantity(TableItem item) {
