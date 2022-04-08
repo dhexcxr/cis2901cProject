@@ -139,6 +139,25 @@ public class InvoicePartEditorListener implements Listener {
 		}
 		ignoreFocusOut = false;
 	}
+
+	private void paintInvoiceLines(InvoicePart editedLineItem) {
+		Main.getLogger().log(Level.INFO, "paintInvoiceLines called");
+		
+		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
+		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
+		textNotesInvoice.setText(editedLineItem.getPart().getNotes());
+		
+		if (duplicatePartPresent(editedLineItem)) {
+			return;
+		}					// TODO I'm pretty sure we can just use selectedTableItem.getData() here
+		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
+			// if we're editing an empty TableItem line item
+			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
+			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());
+		}
+		editedLineItem.setQuantity(checkValidQuantity(editedLineItem, editedLineItem.getQuantity()));
+		partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
+	}
 	
 	private boolean duplicatePartPresent(InvoicePart editedLineItem) {
 		for (TableItem tableItem : partInvoiceTable.getItems()) {
@@ -159,24 +178,6 @@ public class InvoicePartEditorListener implements Listener {
 		return false;
 	}
 
-	private void paintInvoiceLines(InvoicePart editedLineItem) {
-		Main.getLogger().log(Level.INFO, "paintInvoiceLines called");
-		
-		textCategoryInvoice.setText(editedLineItem.getPart().getCategory());
-		textSupplierInvoice.setText(editedLineItem.getPart().getSupplier());
-		textNotesInvoice.setText(editedLineItem.getPart().getNotes());
-		
-		if (duplicatePartPresent(editedLineItem)) {
-			return;
-		}
-		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
-			// if we're editing an empty TableItem line item
-			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
-			TableItem tableItem = new InvoicePartTableItem(partInvoiceTable, SWT.NONE, partInvoiceTable.getItemCount());
-		}
-		partInvoiceTable.paint(editedLineItem, selectedTableItemIndex);
-	}
-
 	private void setPartQuantity(TableItem item) {
 		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
 		String currentQuantity = selectedTableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN);
@@ -187,23 +188,28 @@ public class InvoicePartEditorListener implements Listener {
 
 	private void setPartQuantity(TableItem item, int quantity) {
 		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();
-		Part selectedPart = selectedInvoicePart.getPart();
-		
-		if (quantity > selectedPart.getOnHand()) {
-			// if quantity entered is more than OnHand, pop up dialog telling user as much and set to OnHand
-			ignoreFocusOut = true;
-			MessageBox onHandWarningDialogBox = new MessageBox(parent, SWT.ICON_INFORMATION);
-			onHandWarningDialogBox.setText("Notice");
-			onHandWarningDialogBox.setMessage("Quantity entered is more than On Hand Quantity\n\nQuantity set to On Hand");
-			onHandWarningDialogBox.open();
-			quantity = selectedPart.getOnHand();
-			ignoreFocusOut = false;
-		}
+		quantity = checkValidQuantity(selectedInvoicePart, quantity);
 		String newQuantity = Integer.toString(quantity);
 		item.setText(InvoicePartTable.QUANTITY_COLUMN, newQuantity);
 		selectedInvoicePart.setQuantity(quantity);
 		BigDecimal extendedPrice = new BigDecimal(item.getText(InvoicePartTable.QUANTITY_COLUMN)).multiply(new BigDecimal(item.getText(InvoicePartTable.PART_PRICE_COLUMN)));
 		item.setText(InvoicePartTable.EXTENDED_PRICE_COLUMN, (extendedPrice.toString()));
+	}
+	
+	private int checkValidQuantity(InvoicePart selectedInvoicePart, int quantity) {
+		// checjk if sell quantity is greater than Part On Hand
+		Part selectedPart = selectedInvoicePart.getPart();
+		if (quantity > selectedPart.getOnHand()) {
+			// if quantity entered is more than OnHand, pop up dialog telling user as much and set to OnHand
+			ignoreFocusOut = true;
+			MessageBox onHandWarningDialogBox = new MessageBox(parent, SWT.ICON_INFORMATION);
+			onHandWarningDialogBox.setText("Notice");
+			onHandWarningDialogBox.setMessage("Sell Quantity is greater than On Hand Quantity\n\nSell Quantity set to On Hand Quantity");
+			onHandWarningDialogBox.open();
+			quantity = selectedPart.getOnHand();
+			ignoreFocusOut = false;
+		}
+		return quantity;
 	}
 
 	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS

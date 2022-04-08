@@ -30,14 +30,16 @@ public class InvoicePartTable extends MyTable{
 
 	@Override
 	public void paint(Object object, int selectedTableItemIndex) {
+		// this is called only when adding a new part to a blank TableItem
 		// build each TableItem to fill Unit Table
 			if (object == null) {
 				return;
 			}
-			Part part = ((InvoicePart) object).getPart();
+			InvoicePart invoicePart = (InvoicePart) object;
+			Part part = invoicePart.getPart();
 			TableItem tableItem = this.getItem(selectedTableItemIndex);
 				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
-			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(1),
+			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(invoicePart.getQuantity()),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
 							part.getRetail().toString()});
 //			tableItem.setData(new InvoicePart(part));
