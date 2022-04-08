@@ -178,12 +178,16 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void setPartQuantity(TableItem item) {
-		setPartQuantity(item, Integer.parseInt(editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "")));	// <--------
-	}																										//		|
-																											// 		|
-	private void setPartQuantity(TableItem item, int quantity) {		// TODO change Quantity to a String so this | does not throw a NumberFormatExcept
-		ignoreFocusOut = true;												// we can parse to an int in this method where necessary, and set to [something]
-		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();		// if it turns to "" after removing all but decimals
+		String newQuantity = editorTxtBox.getText().replaceAll(ONLY_DECIMALS, "");
+		String currentQuantity = selectedTableItem.getText(InvoicePartTableItem.QUANTITY_COLUMN);
+		int quantity = newQuantity.equals("") ? 
+				Integer.parseInt(currentQuantity) : Integer.parseInt(newQuantity);
+		setPartQuantity(item, quantity);
+	}
+
+	private void setPartQuantity(TableItem item, int quantity) {
+		ignoreFocusOut = true;
+		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();
 		Part selectedPart = selectedInvoicePart.getPart();
 		String currentQuantity = Integer.toString(quantity);
 		String newQuantity = currentQuantity;
