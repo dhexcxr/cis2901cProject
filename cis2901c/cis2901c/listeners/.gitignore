@@ -54,3 +54,5 @@
 /RepairOrderJobSelectedListener.class
 /RepairOrderLaborAddListener.class
 /RepairOrderLaborDeleteListener.class
+/RepairOrderCloseListener.class
+/RepairOrderCancelListener.class

@@ -9,6 +9,8 @@ import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
+import cis2901c.listeners.RepairOrderCancelListener;
+import cis2901c.listeners.RepairOrderCloseListener;
 import cis2901c.listeners.RepairOrderJobAddListener;
 import cis2901c.listeners.RepairOrderJobDeleteListener;
 import cis2901c.listeners.RepairOrderJobSelectedListener;
@@ -121,10 +123,22 @@ public class RepairOrderDialog extends Dialog {
 	
 	
 	// RO getters
+	public Shell getRoDialogShell() {
+		return shlRepairOrder;
+	}
+	
 	public Text getTextCashieredDate() {
 		return textCashieredDate;
 	}
 	
+	public MyText getTxtCustomerRepairOrder() {
+		return txtCustomerRepairOrder;
+	}
+
+	public MyText getTxtUnitRepairOrder() {
+		return txtUnitRepairOrder;
+	}
+
 	public RepairOrderJobTable getTableJobsRepairOrder() {
 		return tableJobsRepairOrder;
 	}
@@ -160,6 +174,10 @@ public class RepairOrderDialog extends Dialog {
 
 	public Map<String, List<Long>> getDetailsToDelete() {
 		return detailsToDelete;
+	}
+	
+	public void setDetailsToDelete(Map<String, List<Long>> newDetailsToDelete) {
+		detailsToDelete = newDetailsToDelete;
 	}
 	
 	public void addDetailsToDelete(String table, Long primaryKey) {
@@ -470,27 +488,26 @@ public class RepairOrderDialog extends Dialog {
 	
 	private void setupListeners() {
 		// LISTENERS
+		// RO Controls
 		shlRepairOrder.addListener(SWT.Traverse, event -> {		// disable pressing [Esc] to close the dialog
 			if (event.detail == SWT.TRAVERSE_ESCAPE) {
 				event.doit = false;
 			}
 		});
-		shlRepairOrder.addListener(SWT.Close, event -> {		// ask for confirmation to close on [X] click
-			Main.getLogger().log(Level.INFO, "Close RO {0}", event.widget);
-			boolean skipCloseConfirm = Main.getSettings().skipCloseConfirm();
-			boolean close = true;
-			if (!skipCloseConfirm) {
-				ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);
-				boolean[] response = confirmDialogBox.open();
-				close = response[0];
-				skipCloseConfirm = response[1];
-				
-				if (skipCloseConfirm) {
-					// do not ask to confirm again
-					Main.getSettings().setSkipCloseConfirm(true);
+		
+		shlRepairOrder.addListener(SWT.Close, new RepairOrderCloseListener(shlRepairOrder));
+
+		btnCancel.addMouseListener(new RepairOrderCancelListener(this));
+		
+		btnSaveRo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (roId == -1) {
+					saveNewRo();
+				} else {
+					saveRo(currentRepairOrder);
 				}
 			}
-			event.doit = close; 
 		});
 		
 		btnClose.addMouseListener(new MouseAdapter() {
@@ -500,21 +517,8 @@ public class RepairOrderDialog extends Dialog {
 			}
 		});
 		
-		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
-
-		customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
-		txtCustomerRepairOrder.addMouseListener(customerSearchListener);
-
-		unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
-		txtUnitRepairOrder.addMouseListener(unitSearchListener);
-
-		btnAddJob.addMouseListener(new RepairOrderJobAddListener(this));
-
-		btnDeleteJob.addMouseListener(new RepairOrderJobDeleteListener(this));
-
-		tableJobsRepairOrder.addSelectionListener(new RepairOrderJobSelectedListener(this));
-
 		btnCashierRo.addMouseListener(new MouseAdapter() {
+			// TODO refactor into it's own class
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// spawn amount due dialog box
@@ -536,45 +540,22 @@ public class RepairOrderDialog extends Dialog {
 				}
 			}
 		});
+		
+		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 
-		btnSaveRo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				if (roId == -1) {
-					saveNewRo();
-				} else {
-					saveRo(currentRepairOrder);
-				}
-			}
-		});
+		customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
+		txtCustomerRepairOrder.addMouseListener(customerSearchListener);
 
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				boolean skipCancelConfirm = Main.getSettings().skipCancelConfirm();
-				boolean cancelChanges = true;
-				if (!skipCancelConfirm) {
-					ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);
-					confirmDialogBox.setText("Undo Changes?");
-					confirmDialogBox.setMessage("Undo all changes?");
-					boolean[] response = confirmDialogBox.open();
-					cancelChanges = response[0];
-					skipCancelConfirm = response[1];
-					
-					if (skipCancelConfirm) {
-						// do not ask to confirm again
-						Main.getSettings().setSkipCancelConfirm(true);
-					}
-				}
-				
-				if (cancelChanges) {
-					tableJobsRepairOrder.removeAll();
-					disableJobTabs();
-					detailsToDelete = new HashMap<>();
-					loadRoFromDb(currentRepairOrder);
-				}
-			}
-		});
+		unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
+		txtUnitRepairOrder.addMouseListener(unitSearchListener);
+		// END RO Controls
+		
+		// Job Controls
+		btnAddJob.addMouseListener(new RepairOrderJobAddListener(this));
+
+		btnDeleteJob.addMouseListener(new RepairOrderJobDeleteListener(this));
+
+		tableJobsRepairOrder.addSelectionListener(new RepairOrderJobSelectedListener(this));
 
 		btnDeleteLineItem.addMouseListener(new RepairOrderPartDeleteLineItemListener(jobPartsTable, tableJobsRepairOrder, this));
 
@@ -583,6 +564,7 @@ public class RepairOrderDialog extends Dialog {
 		btnDeleteLaborLine.addMouseListener(new RepairOrderLaborDeleteListener(this));
 
 		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
+			// TODO refactor into it's own class
 			@Override		// set visibility of Tab function buttons
 			public void widgetSelected(SelectionEvent e) {
 				if (tabFolderJobsRepairOrder.getSelectionIndex() == 0) {		// Job Details tab
@@ -622,15 +604,18 @@ public class RepairOrderDialog extends Dialog {
 
 		repairOrderLaborTableListener = new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this);
 		jobLaborTable.addListener(SWT.MouseDown, repairOrderLaborTableListener);
-		// END LISTENERS
 
-		// setup Job modified listener
 		jobDetailsModifiedListener = new JobDetailsModifiedListener(this);
 		txtJobName.addModifyListener(jobDetailsModifiedListener);
 		txtComplaints.addModifyListener(jobDetailsModifiedListener);
 		txtResolution.addModifyListener(jobDetailsModifiedListener);
 		txtReccomendations.addModifyListener(jobDetailsModifiedListener);
-		// END setup Job modified listener
+		
+		// END LISTENERS
+	}
+	
+	public void reloadRo() {
+		loadRoFromDb(currentRepairOrder);
 	}
 	
 	private void loadRoFromDb(RepairOrder repairOrder) {		
