@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="resources/" kind="src" path=""/>
+	<classpathentry kind="src" path=""/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.swt">
 		<attributes>
 			<attribute name="module" value="true"/>

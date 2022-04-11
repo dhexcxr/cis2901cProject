@@ -41,7 +41,7 @@ public class Main {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Service Salamander");
-		shell.setImage(new Image(Main.display(), Main.class.getResourceAsStream("icon.png")));
+		shell.setImage(new Image(Main.display(), Main.class.getClassLoader().getResourceAsStream("resources/icon.png")));
 		@SuppressWarnings("unused")
 		Gui gui = new Gui(shell, SWT.NONE);
 		shell.pack();
