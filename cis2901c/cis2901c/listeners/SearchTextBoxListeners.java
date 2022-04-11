@@ -14,7 +14,6 @@ import cis2901c.objects.Unit;
 
 public class SearchTextBoxListeners implements ModifyListener {
 	
-	// TODO separate FocusListener from this class and combine with RoSearchBox FocusListener
 	private MyText searchBox;
 	private MyTable table;
 	private DbObjectSearchable searchObject;

@@ -67,6 +67,7 @@ public class NewUnitDialog extends Dialog {
 
 		// set txtBoxes when opening a current Unit for editing
 		// TODO remove all these null checks
+			// and make sure unit checks for a null in getters with ternaries, i.e. make == null ? "" : make 
 		if (unit.getOwner() != null) {
 			txtOwner.setText(unit.getOwner());
 			txtOwner.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
@@ -95,7 +96,6 @@ public class NewUnitDialog extends Dialog {
 			customerId = unit.getCustomerId();
 		this.unit = unit;
 		
-//		txtOwner.setData(DbServices.searchForCustomer(customerId));
 		txtOwner.setData(DbServices.searchForObjectByPk(new Customer(customerId)));
 		
 		setupListeners();
@@ -247,7 +247,6 @@ public class NewUnitDialog extends Dialog {
 		
 		// TODO we could add an "&& !txtMake.getText().equals(txtMake.startingText)" so that we wouldn't unnecessarily save this
 			// if it hasn't changed, but that would be a lot of extra code for no real benefit
-//		if (txtMake.getText().length() > 0 || txtMake.isModified()) {
 		if (txtMake.getText().length() > 0) {
 			unit.setMake(txtMake.getText());
 		} else {
@@ -259,9 +258,9 @@ public class NewUnitDialog extends Dialog {
 			return;
 		}
 		
-		if (txtModelName.isModified()) {
+//		if (txtModelName.isModified()) {
 			unit.setModelName(txtModelName.getText());
-		}
+//		}
 		
 		if (txtMileage.isModified()) {
 			try {
@@ -271,13 +270,13 @@ public class NewUnitDialog extends Dialog {
 			}
 		}
 		
-		if (txtVinNumber.isModified()) {
+//		if (txtVinNumber.isModified()) {
 			unit.setVin(txtVinNumber.getText());
-		}
+//		}
 
-		if (txtModel.isModified()) {
+//		if (txtModel.isModified()) {
 			unit.setModel(txtModel.getText());
-		}
+//		}
 
 		if (txtYear.isModified()) {
 			try {
@@ -287,9 +286,9 @@ public class NewUnitDialog extends Dialog {
 			}
 		}
 		
-		if (txtColor.isModified()) {
+//		if (txtColor.isModified()) {
 			unit.setColor(txtColor.getText());
-		}
+//		}
 		
 		if (txtNotes.isModified()) {
 			unit.setNotes(txtNotes.getText());

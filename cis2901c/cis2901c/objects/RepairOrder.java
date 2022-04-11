@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
-	private long repairOrderId = -1;		// TODO add this Pk into DB
-//	private long repairOrderNumber;
+	private long repairOrderId = -1;
 	private long customerId;
 	private Customer customer;
 	private String customerName;
@@ -33,11 +32,6 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	
 	public RepairOrder(String searchString) {
 		super.searchString = searchString;
-		// TODO searchQuery is preliminary
-		// TODO get job names to display in search results
-//		super.searchQuery = """
-//				SELECT roId, customerId, unitId, createdTime, closedTime, cashiered FROM cis2901c.ro 
-//				WHERE roId LIKE ?;""";
 		super.searchQuery = """
 				SELECT r.roId, r.customerId,
 				c.firstname, c.lastname, c.address, c.city, c.state, c.zipcode, c.homephone, c.cellphone, c.email,
@@ -49,7 +43,6 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 				""";
 		super.outerSearchQueryAppendix = " AND roId IN (";
 		super.querySubStringIndecies[0] = 11;
-//		super.querySubStringIndecies[1] = 67;
 		super.querySubStringIndecies[1] = 210;
 	}
 	
@@ -237,7 +230,6 @@ public class RepairOrder extends DbObjectSearchable implements DbObjectSavable{
 	}
 	
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
 		Map<String, String> dataMap = new HashMap<>();
 		if (repairOrderId != -1) {
 			dataMap.put("roid", Long.toString(repairOrderId));

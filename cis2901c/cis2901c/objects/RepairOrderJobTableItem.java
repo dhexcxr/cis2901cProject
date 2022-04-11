@@ -11,8 +11,6 @@ import cis2901c.main.Main;
 
 public class RepairOrderJobTableItem extends TableItem {
 	
-	// TODO I don't think this needs to implement DbObjectSavable
-	
 	public static final int JOB_NAME_COLUMN = 0;
 	public static final int PART_TOTAL_COLUMN = 1;
 	public static final int LABOR_TOTAL_COLUMN = 2;
@@ -23,8 +21,6 @@ public class RepairOrderJobTableItem extends TableItem {
 
 	public RepairOrderJobTableItem(Table parent, int style) {
 		super(parent, style);
-		
-		// TODO Auto-generated constructor stub
 	}
 
 	public BigDecimal getPartTotal() {

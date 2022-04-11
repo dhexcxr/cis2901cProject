@@ -20,9 +20,6 @@ public class JobLaborTable extends MyTable {
 
 	public JobLaborTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
-//		@SuppressWarnings("unused")
-//		TableItem tableItem = new LaborTableItem(this, SWT.NONE);
 	}
 
 	@Override

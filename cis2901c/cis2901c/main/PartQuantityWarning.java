@@ -21,7 +21,6 @@ public class PartQuantityWarning extends Dialog {
 
 	protected Object result;
 	protected Shell shlSellQuantityMore;
-	private Text textAffectedPartsList;
 	private String affectedPartsList = "";
 
 	/**
@@ -31,7 +30,6 @@ public class PartQuantityWarning extends Dialog {
 	 */
 	public PartQuantityWarning(Shell parent, int style) {
 		super(parent, style);
-//		setText("SWT Dialog");
 	}
 
 	/**
@@ -79,7 +77,7 @@ public class PartQuantityWarning extends Dialog {
 		lblAffectedParts.setBounds(10, 105, 95, 20);
 		lblAffectedParts.setText("Affected Parts:");
 		
-		textAffectedPartsList = new Text(shlSellQuantityMore, SWT.BORDER | SWT.WRAP);
+		Text textAffectedPartsList = new Text(shlSellQuantityMore, SWT.BORDER | SWT.WRAP);
 		textAffectedPartsList.setEditable(false);
 		textAffectedPartsList.setBounds(10, 131, 455, 123);
 		textAffectedPartsList.setText(affectedPartsList);
@@ -88,7 +86,6 @@ public class PartQuantityWarning extends Dialog {
 	public void setParts(Map<String, List<JobPart>> changedParts) {
 		StringBuilder changedPartsList = new StringBuilder();
 		for (Entry<String, List<JobPart>> part : changedParts.entrySet()) {
-//			changedPartsList.append("Part: " + part.getKey() + " - " + part.getValue() + "\n");
 			changedPartsList.append("Job Name: " + part.getKey() + "\n");
 			for (JobPart jobPart : part.getValue()) {
 				changedPartsList.append("\tPart: " + jobPart.getPartNumber() + " - " + jobPart.getDescription() + "\n");

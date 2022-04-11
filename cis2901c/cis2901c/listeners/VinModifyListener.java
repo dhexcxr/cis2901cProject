@@ -24,18 +24,13 @@ public class VinModifyListener implements ModifyListener {
 		// VIN txt box, make red if VIN isn't 17 digits long
 		// we still allow user to make shorter VINs to accommodate VINs from the '60s etc
 		Main.getLogger().log(Level.INFO, "Editing unit: {0}", txtBox.isModified());
-		//	if (!txtVinNumber.getText().equals("Vin Number...") && txtVinNumber.getText().length() != 17) {
 		if (txtBox.getText().length() != 17) {
 			txtBox.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
 		} else {
 			txtBox.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
 		}
-
-		if (!txtBox.getText().equals(txtBoxStartingText)) {
-			txtBox.setModified(true);
-		} else {
-			txtBox.setModified(false);
-		}
+		
+		txtBox.setModified(!txtBox.getText().equals(txtBoxStartingText));
 		
 	}
 

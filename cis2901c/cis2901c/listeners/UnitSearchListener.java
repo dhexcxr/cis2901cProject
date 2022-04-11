@@ -28,11 +28,7 @@ public class UnitSearchListener extends MouseAdapter{
 			selectedUnit = (Unit) unitSearchDialog.open(((Unit) txtBox.getData()).getOwner());
 		} else {
 			// open normal, empty Unit Search Dialog
-//			if (customerData != null) {
-//				selectedUnit = (Unit) unitSearchDialog.open([customerName]);
-//			} else {
 				selectedUnit = (Unit) unitSearchDialog.open();
-//			}
 		}
 		if (selectedUnit instanceof Unit) {
 			StringBuilder unitData = new StringBuilder(selectedUnit.getYear() + " " + selectedUnit.getMake() + "\n" +

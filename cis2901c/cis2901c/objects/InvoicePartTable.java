@@ -38,11 +38,9 @@ public class InvoicePartTable extends MyTable{
 			InvoicePart invoicePart = (InvoicePart) object;
 			Part part = invoicePart.getPart();
 			TableItem tableItem = this.getItem(selectedTableItemIndex);
-				// TODO break out all tables into classes so we can correctly paint all without conditional paint	
 			tableItem.setText(new String[] {part.getPartNumber(), part.getDescription(), Integer.toString(invoicePart.getQuantity()),
 					Integer.toString(part.getOnHand()),	part.getCost().toString(), part.getRetail().toString(),
 							part.getRetail().toString()});
-//			tableItem.setData(new InvoicePart(part));
 			tableItem.setData(object);
 	}
 	

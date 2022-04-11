@@ -6,11 +6,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class JobLaborTableItem extends TableItem {
 	
-//	private static final int TECHNICIAN_COLUMN = 0;
-//	private static final int DESCRIPTION_COLUMN = 1;
 	private static final int HOURS_COLUMN = 2;
 	private static final int RATE_COLUMN = 3;
-//	private static final int TOTAL_COLUMN = 4;
 
 	public JobLaborTableItem(Table parent, int style) {
 		super(parent, style);
@@ -21,7 +18,6 @@ public class JobLaborTableItem extends TableItem {
 
 	public JobLaborTableItem(Table parent, int style, int index) {
 		super(parent, style, index);
-		// TODO Auto-generated constructor stub
 	}
 	
 	// TODO create setData(Job job)

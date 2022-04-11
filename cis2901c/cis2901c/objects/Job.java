@@ -91,13 +91,6 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	public void setReccomendations(String reccomendations) {
 		this.reccomendations = reccomendations;
 	}
-
-//	public List<Part> getParts() {
-//		if (parts == null) {
-//			parts = new ArrayList<>();
-//		}
-//		return parts;
-//	}
 	
 	public List<Part> getParts() {		// TODO this is a Big F-n Kludge, maybe try to refactor the calls to this method to getJobParts and have
 											// the calling methods handle it, or maybe this is more elegant
@@ -121,7 +114,6 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		if (part == null) {
 			return;
 		}
-//		this.parts.add(part);
 		if (!getParts().contains(part)) {
 			addJobPart(new JobPart(part));
 		}

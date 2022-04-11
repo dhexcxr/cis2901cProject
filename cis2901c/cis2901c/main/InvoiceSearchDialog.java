@@ -23,7 +23,6 @@ public class InvoiceSearchDialog extends Dialog {
 
 	public InvoiceSearchDialog(Shell parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Object open() {

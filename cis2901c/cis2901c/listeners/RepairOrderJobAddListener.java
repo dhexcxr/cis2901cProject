@@ -43,7 +43,7 @@ public class RepairOrderJobAddListener extends MouseAdapter {
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
-		// TODO judging by the comment on 2 lines below I think this might should've been for tableJobsRepairOrder
+		// TODO judging by the comment on 2 lines below I think this notifyListeners might should've been for tableJobsRepairOrder
 			// but it seems to be working fine so I don't know that its actually needed
 		tabFolderJobsRepairOrder.notifyListeners(SWT.Selection, new Event());		// trigger saving Job details
 		// create new Job on Job Table

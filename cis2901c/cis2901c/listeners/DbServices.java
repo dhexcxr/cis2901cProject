@@ -411,7 +411,7 @@ public class DbServices {
 			connectToDb();
 		}
 		
-		Object[] results = new Object[1];		// TODO we can move this into Objects, make an object.getSelectedIdQuery()
+		Object[] results = new Object[1];		// TODO we can move this into each DbSearchableObjects in our application, make an object.getSelectedIdQuery()
 											// this will allow us to make a polymorphic select by Primary Key search - MOSTLY DONE
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setLong(1, Long.parseLong(object.getSearchString()));
@@ -429,7 +429,6 @@ public class DbServices {
 			connectToDb();
 		}
 		
-//		final int MAX_RESULTS = 255;		// max search return results
 		Object[] results = new Object[1];
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setMaxRows(MAX_RESULTS);
@@ -591,7 +590,6 @@ public class DbServices {
 		RepairOrder[] results = new RepairOrder[MAX_RESULTS];
 		int i = 0;
 		while (queryResultSet.next()) {
-			// TODO this is tightly coupled with searchQuery in RepairOrder(String searchString) 
 			RepairOrder repairOrder = new RepairOrder();
 			repairOrder.setRepairOrderId(queryResultSet.getLong(1));
 			repairOrder.setCustomerId(queryResultSet.getLong(2));

@@ -20,7 +20,6 @@ public class RepairOrderTable extends MyTable {
 	
 	public RepairOrderTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

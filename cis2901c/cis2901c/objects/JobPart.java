@@ -67,10 +67,12 @@ public class JobPart extends InvoicePart {
 		this.jobPartId = jobPartId;
 	}
 
+	@Override
 	public long getPartId() {
 		return partId;
 	}
 
+	@Override
 	public void setPartId(long partId) {
 		this.partId = partId;
 	}
@@ -83,43 +85,48 @@ public class JobPart extends InvoicePart {
 		this.jobId = jobId;
 	}
 
+	@Override
 	public String getPartNumber() {
 		return partNumber;
 	}
 
+	@Override
 	public void setPartNumber(String partNumber) {
 		this.partNumber = partNumber;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	@Override
 	public int getQuantity() {
 		return quantity;
 	}
 
+	@Override
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 
+	@Override
 	public BigDecimal getSoldPrice() {
 		return soldPrice;
 	}
 
+	@Override
 	public void setSoldPrice(BigDecimal soldPrice) {
 		this.soldPrice = soldPrice;
 	}
 
 	@Override
 	public Part getPart() {
-//		if (part == null) {
-//			part = new Part();
-//		}
 		return part;
 	}
 
@@ -160,7 +167,6 @@ public class JobPart extends InvoicePart {
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
 		dataMap.put("partid", Long.toString(partId));
 		dataMap.put("partnumber", partNumber);
 		dataMap.put("description", description);

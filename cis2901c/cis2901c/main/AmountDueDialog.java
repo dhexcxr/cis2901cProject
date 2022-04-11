@@ -23,7 +23,6 @@ public class AmountDueDialog extends Dialog{
 
 	public AmountDueDialog(Shell parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	public boolean open(String finalTotal) {

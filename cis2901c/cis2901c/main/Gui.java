@@ -394,10 +394,6 @@ public class Gui extends Composite {
 		tblclmnExtendedPriceInvoice.setWidth(114);
 		tblclmnExtendedPriceInvoice.setText("Extended Price");
 		
-		// TODO see if I can add this to InvoicePartTable constructer
-//		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-//		TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
-		
 		Button btnCashier = new Button(invoiceComposite, SWT.NONE);
 		btnCashier.addMouseListener(new MouseAdapter() {
 			@Override

@@ -61,6 +61,7 @@ import cis2901c.objects.InvoicePartTable;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class RepairOrderDialog extends Dialog {
 
@@ -102,7 +103,6 @@ public class RepairOrderDialog extends Dialog {
 	
 	private RepairOrder currentRepairOrder;
 	private boolean cashiered = false;
-//	private long customerId;
 	
 	private CustomerSearchListener customerSearchListener;
 	private UnitSearchListener unitSearchListener;
@@ -120,8 +120,6 @@ public class RepairOrderDialog extends Dialog {
 	
 	// TODO create isModified variable in this RepairOrderDialog object to track if ANYTHING in the underlying repairOrder has been modified
 		// so we can ask the user if they want to save before closing RepairOrderDialog
-	
-	
 	
 	// RO getters
 	public Shell getRoDialogShell() {
@@ -269,11 +267,13 @@ public class RepairOrderDialog extends Dialog {
 		txtCustomerRepairOrder.setEditable(false);
 		txtCustomerRepairOrder.setText("Customer...");
 		txtCustomerRepairOrder.setBounds(10, 10, 334, 128);
+		txtCustomerRepairOrder.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
 		
 		txtUnitRepairOrder = new MyText(shlRepairOrder, SWT.BORDER | SWT.WRAP);
 		txtUnitRepairOrder.setEditable(false);
 		txtUnitRepairOrder.setText("Unit...");
 		txtUnitRepairOrder.setBounds(370, 10, 300, 128);
+		txtUnitRepairOrder.setBackground(SWTResourceManager.getColor(255, 102, 102));		// RED
 		// END Customer Data
 
 		// Totals
@@ -534,9 +534,9 @@ public class RepairOrderDialog extends Dialog {
 					return;
 				}
 				AmountDueDialog amountDueDialog = new AmountDueDialog(shlRepairOrder, getStyle());
-				boolean cashiered = amountDueDialog.open(textFinalTotalRepairOrder.getText());
+				boolean cashieredNow = amountDueDialog.open(textFinalTotalRepairOrder.getText());
 
-				if (cashiered) {
+				if (cashieredNow) {
 					Main.getLogger().log(Level.INFO, "RO Cashiered");
 					currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
 					saveRo(currentRepairOrder);
@@ -622,7 +622,7 @@ public class RepairOrderDialog extends Dialog {
 		loadRoFromDb(currentRepairOrder);
 	}
 	
-	private void loadRoFromDb(RepairOrder repairOrder) {		
+	private void loadRoFromDb(RepairOrder repairOrder) {
 		// set Dialog boxes and stuff from repairOrder fields
 		if (repairOrder != null) {
 			currentRepairOrder = repairOrder;
@@ -632,8 +632,11 @@ public class RepairOrderDialog extends Dialog {
 			textCreatedDate.setText(repairOrder.getCreatedDate().toString());
 			textCashieredDate.setText(repairOrder.getClosedDate() == null ? "" : repairOrder.getClosedDate().toString());
 			
+			if (!textCashieredDate.getText().equals("")) {
+				disableRoControls();
+			}
+			
 			if (repairOrder.getCustomerId() != 0) {
-//				customerId = repairOrder.getCustomerId();
 				// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
 				txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(repairOrder.getCustomerId())));
 				txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
@@ -645,78 +648,87 @@ public class RepairOrderDialog extends Dialog {
 				txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
 			}
 
-			List<Job> roJobs = new ArrayList<>();
-			for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
-				if (job == null) {
-					break;
-				}
-				RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
-
-				// find and build labor
-				List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
-				jobLabor.removeAll(Collections.singleton(null));
-				job.setLabor(jobLabor);
-
-				// find and build Parts
-				List<JobPart> jobParts = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
-				jobParts.removeAll(Collections.singleton(null));
-				// TODO check each jobPart and see if current jobPart.quantity > jobPart.getPart.getOnHand, if so inform user
-					// with warning dialog and change quantity to onHand
-				boolean partsOnHandChanged = false;
-				Map<String, List<JobPart>> changedParts = new HashMap<>();
-				
-				for (JobPart jobPart : jobParts) {
-					if (jobPart.getQuantity() > jobPart.getPart().getOnHand()) {
-						partsOnHandChanged = true;
-						
-//						changedParts.put(job.getJobName(), Long.parseLong(jobPart.getPartNumber()), jobPart.getDescription());
-						changedParts.computeIfAbsent(job.getJobName(), jp -> new ArrayList<>()).add(jobPart);
-						jobPart.setQuantity(jobPart.getPart().getOnHand());
-					}
-				}
-				if (partsOnHandChanged) {
-					PartQuantityWarning partQuantityWarning = new PartQuantityWarning(shlRepairOrder, getStyle());
-					partQuantityWarning.setParts(changedParts);
-					partQuantityWarning.open();
-				}
-				
-				job.setJobParts(jobParts);
-				roJobs.add(job);
-				jobTableItem.setData(job);
-			}
+			List<Job> roJobs = loadRoJobsFromDb();
 			repairOrder.setJobs(roJobs);
 			tableJobsRepairOrder.setSelection(0);
 			tableJobsRepairOrder.notifyListeners(SWT.Selection, new Event());
 			this.calcRoTotal();
-			
-			if (!textCashieredDate.getText().equals("")) {
-				// load everything as normal and disable editing of text boxes
-					// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
-				cashiered = true;
-				txtCustomerRepairOrder.removeMouseListener(customerSearchListener);
-				txtUnitRepairOrder.removeMouseListener(unitSearchListener);
-				btnCashierRo.setEnabled(false);
-				btnAddJob.setEnabled(false);
-				btnDeleteJob.setEnabled(false);
-				btnCancel.setEnabled(false);
-				btnSaveRo.setEnabled(false);
-				btnDeleteLineItem.setEnabled(false);
-				btnAddLaborLine.setEnabled(false);
-				btnDeleteLaborLine.setEnabled(false);
-				txtJobName.setEditable(false);
-				txtJobName.removeFocusListener(jobNameFocusListener);
-				txtComplaints.setEditable(false);
-				txtComplaints.removeFocusListener(complaintsFocusListener);
-				txtResolution.setEditable(false);
-				txtResolution.removeFocusListener(resolutionFocusListener);
-				txtReccomendations.setEditable(false);
-				txtReccomendations.removeFocusListener(reccomendationsFocusListener);
-				jobPartsTable.removeListener(SWT.MouseDown, repairOrderPartTableListener);
-				jobLaborTable.removeListener(SWT.MouseDown, repairOrderLaborTableListener);
-			}
 		}
 	}
+
+	private void disableRoControls() {
+		// disable editing of text boxes, disable buttons
+			// remove listeners from Customer and Unit text box and from Parts and Labor tables
+		cashiered = true;
+		txtCustomerRepairOrder.removeMouseListener(customerSearchListener);
+		txtUnitRepairOrder.removeMouseListener(unitSearchListener);
+		btnCashierRo.setEnabled(false);
+		btnAddJob.setEnabled(false);
+		btnDeleteJob.setEnabled(false);
+		btnCancel.setEnabled(false);
+		btnSaveRo.setEnabled(false);
+		btnDeleteLineItem.setEnabled(false);
+		btnAddLaborLine.setEnabled(false);
+		btnDeleteLaborLine.setEnabled(false);
+		txtJobName.setEditable(false);
+		txtJobName.removeFocusListener(jobNameFocusListener);
+		txtComplaints.setEditable(false);
+		txtComplaints.removeFocusListener(complaintsFocusListener);
+		txtResolution.setEditable(false);
+		txtResolution.removeFocusListener(resolutionFocusListener);
+		txtReccomendations.setEditable(false);
+		txtReccomendations.removeFocusListener(reccomendationsFocusListener);
+		jobPartsTable.removeListener(SWT.MouseDown, repairOrderPartTableListener);
+		jobLaborTable.removeListener(SWT.MouseDown, repairOrderLaborTableListener);		
+	}
 	
+	private List<Job> loadRoJobsFromDb() {
+		List<Job> roJobs = new ArrayList<>();
+		for (Job job : (Job[]) DbServices.searchForObjectsByPk(new Job(roId))) {
+			if (job == null) {
+				break;
+			}
+			RepairOrderJobTableItem jobTableItem = new RepairOrderJobTableItem(tableJobsRepairOrder, getStyle());
+
+			// find and build labor
+			List<JobLabor> jobLabor = new ArrayList<>(Arrays.asList((JobLabor[]) DbServices.searchForObjectsByPk(new JobLabor(job.getJobId()))));
+			jobLabor.removeAll(Collections.singleton(null));
+			job.setLabor(jobLabor);
+
+			// find and build Parts
+			List<JobPart> listOfJobParts = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+			listOfJobParts.removeAll(Collections.singleton(null));
+			if (!cashiered) {
+				checkPartsOnHand(job, listOfJobParts);
+			}
+			
+			job.setJobParts(listOfJobParts);
+			roJobs.add(job);
+			jobTableItem.setData(job);
+		}
+		return roJobs;
+	}
+
+	private void checkPartsOnHand(Job job, List<JobPart> jobParts) {
+		// check each jobPart and see if current jobPart.quantity > jobPart.getPart.getOnHand, if so inform user
+			// with warning dialog and change quantity to onHand
+		boolean partsOnHandChanged = false;
+		Map<String, List<JobPart>> changedParts = new HashMap<>();
+
+		for (JobPart jobPart : jobParts) {
+			if (jobPart.getQuantity() > jobPart.getPart().getOnHand()) {
+				partsOnHandChanged = true;
+				changedParts.computeIfAbsent(job.getJobName(), jp -> new ArrayList<>()).add(jobPart);
+				jobPart.setQuantity(jobPart.getPart().getOnHand());
+			}
+		}
+		if (partsOnHandChanged) {
+			PartQuantityWarning partQuantityWarning = new PartQuantityWarning(shlRepairOrder, getStyle());
+			partQuantityWarning.setParts(changedParts);
+			partQuantityWarning.open();
+		}		
+	}
+
 	public void disableJobTabs() {
 		txtJobName.setEnabled(false);
 		txtJobName.setText("Job Name...");
@@ -748,7 +760,6 @@ public class RepairOrderDialog extends Dialog {
 	}
 	
 	public void saveJob() {
-		// TODO big work in progress
 		Job currentJob = (Job) tabFolderJobsRepairOrder.getData();
 
 		for (TableItem currentPartTableItem : jobPartsTable.getItems()) {

@@ -3,7 +3,6 @@
 
 package cis2901c.main;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
@@ -65,11 +64,6 @@ public class Main {
 
 	public static Logger getLogger() {
 		return LOGGER;
-	}
-	
-	public static void log(Level level, String msg) {
-		// TODO remove, unused
-		LOGGER.log(level, msg);
 	}
 
 	public static final Display display() {

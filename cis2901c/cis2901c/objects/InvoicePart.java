@@ -111,24 +111,20 @@ public class InvoicePart extends DbObjectSearchable implements DbObjectSavable {
 
 	@Override
 	public String getPkName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	public String getFkName() {
-		// TODO Auto-generated method stub
 		return FOREIGN_KEY;
 	}
 
 	@Override
 	public String getTableName() {
-		// TODO Auto-generated method stub
 		return "invoicepart";
 	}
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
 		dataMap.put("partid", Long.toString(partId));
 		dataMap.put("description", description);
 		dataMap.put("quantity", Integer.toString(quantity));

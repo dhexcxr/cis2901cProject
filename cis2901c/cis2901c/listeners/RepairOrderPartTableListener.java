@@ -19,8 +19,6 @@ import cis2901c.objects.InvoicePartTable;
 import cis2901c.objects.MyText;
 import cis2901c.objects.RepairOrderJobTable;
 
-// TODO i don't think I need this
-
 public class RepairOrderPartTableListener implements Listener{
 	
 	private InvoicePartTable partInvoiceTable;

@@ -71,7 +71,6 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 		table.paint(tableObjects);
 	}
 
-	// TODO take out print statements, combine openCustomer and openUnit
 	private void openCustomer(Table table) {
 		// get object saved in TableItem Data
 		Customer customer = (Customer) table.getSelection()[0].getData();
