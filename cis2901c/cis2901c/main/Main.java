@@ -57,7 +57,8 @@ public class Main {
 			}
 		}
 		
-		// disconnect from SQL DB before close
+		// save settings and disconnect from SQL DB before close
+		settings.save();
 		DbServices.disconnectFromDb();
 		display.close();
 	}

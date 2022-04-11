@@ -1,16 +1,17 @@
 package cis2901c.main;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 
 public class Settings {
 	
-//	private String result = "";
-	InputStream inputStream;
-	
+	private InputStream inputStream;
 	private String propFileName = "resources/settings.properties";
+	private Properties prop;
 	private String database = "";
 	private boolean skipCancelConfirm = false;
 	private boolean skipCloseConfirm = false;
@@ -18,7 +19,7 @@ public class Settings {
 
 	public Settings() {
 		try {
-			Properties prop = new Properties();
+			prop = new Properties();
 			inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 			
 			if (inputStream != null) {
@@ -39,12 +40,30 @@ public class Settings {
 		return database;
 	}
 	
-	public boolean skipCancelConfirm() {
+	public boolean getSkipCancelConfirm() {
 		return skipCancelConfirm;
 	}
 	
-	public boolean skipCloseConfirm() {
+	public void setSkipCancelConfirm(boolean newSetting) {
+		skipCancelConfirm = newSetting;
+		prop.setProperty("skipCancelConfirm", Boolean.toString(skipCancelConfirm));
+	}
+	
+	public boolean getSkipCloseConfirm() {
 		return skipCloseConfirm;
+	}
+	
+	public void setSkipCloseConfirm(boolean newSetting) {
+		skipCloseConfirm = newSetting;
+		prop.setProperty("skipCloseConfirm", Boolean.toString(skipCloseConfirm));
+	}
+	
+	public void save() {
+		try (FileOutputStream settingsFileOuput = new FileOutputStream(propFileName)) {
+			prop.store(settingsFileOuput, "Service Salamander Settings");
+		} catch (IOException e) {
+			Main.getLogger().log(Level.SEVERE, e.toString());
+		}
 	}
 
 }
