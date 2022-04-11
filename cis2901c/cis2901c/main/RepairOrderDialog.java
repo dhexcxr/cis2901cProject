@@ -477,16 +477,25 @@ public class RepairOrderDialog extends Dialog {
 		});
 		shlRepairOrder.addListener(SWT.Close, event -> {		// ask for confirmation to close on [X] click
 			Main.getLogger().log(Level.INFO, "Close RO {0}", event.widget);
-			MessageBox messageBox = new MessageBox (shlRepairOrder, SWT.APPLICATION_MODAL | SWT.YES | SWT.NO);
-			messageBox.setText ("Close?");
-			messageBox.setMessage ("Close the Repair Order?");
-			event.doit = messageBox.open () == SWT.YES;
+			boolean skipCloseConfirm = Main.getSettings().getSkipCloseConfirm();
+			boolean close = true;
+			if (!skipCloseConfirm) {
+				ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);
+				boolean[] response = confirmDialogBox.open();
+				close = response[0];
+				skipCloseConfirm = response[1];
+				
+				if (skipCloseConfirm) {
+					// do not ask to confirm again
+					Main.getSettings().setSkipCloseConfirm(true);
+				}
+			}
+			event.doit = close; 
 		});
 		
 		btnClose.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				shlRepairOrder.removeListener(SWT.Close, shlRepairOrder.getListeners(SWT.Close)[0]);
+			public void mouseDown(MouseEvent e) {
 				shlRepairOrder.close();
 			}
 		});
@@ -541,11 +550,29 @@ public class RepairOrderDialog extends Dialog {
 
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDoubleClick(MouseEvent e) {
-				tableJobsRepairOrder.removeAll();
-				disableJobTabs();
-				detailsToDelete = new HashMap<>();
-				loadRoFromDb(currentRepairOrder);
+			public void mouseDown(MouseEvent e) {
+				boolean skipCancelConfirm = Main.getSettings().getSkipCancelConfirm();
+				boolean cancelChanges = true;
+				if (!skipCancelConfirm) {
+					ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);
+					confirmDialogBox.setText("Undo Changes?");
+					confirmDialogBox.setMessage("Undo all changes?");
+					boolean[] response = confirmDialogBox.open();
+					cancelChanges = response[0];
+					skipCancelConfirm = response[1];
+					
+					if (skipCancelConfirm) {
+						// do not ask to confirm again
+						Main.getSettings().setSkipCancelConfirm(true);
+					}
+				}
+				
+				if (cancelChanges) {
+					tableJobsRepairOrder.removeAll();
+					disableJobTabs();
+					detailsToDelete = new HashMap<>();
+					loadRoFromDb(currentRepairOrder);
+				}
 			}
 		});
 
