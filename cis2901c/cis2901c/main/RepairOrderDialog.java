@@ -477,7 +477,7 @@ public class RepairOrderDialog extends Dialog {
 		});
 		shlRepairOrder.addListener(SWT.Close, event -> {		// ask for confirmation to close on [X] click
 			Main.getLogger().log(Level.INFO, "Close RO {0}", event.widget);
-			boolean skipCloseConfirm = Main.getSettings().getSkipCloseConfirm();
+			boolean skipCloseConfirm = Main.getSettings().skipCloseConfirm();
 			boolean close = true;
 			if (!skipCloseConfirm) {
 				ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);
@@ -551,7 +551,7 @@ public class RepairOrderDialog extends Dialog {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				boolean skipCancelConfirm = Main.getSettings().getSkipCancelConfirm();
+				boolean skipCancelConfirm = Main.getSettings().skipCancelConfirm();
 				boolean cancelChanges = true;
 				if (!skipCancelConfirm) {
 					ConfirmDialog confirmDialogBox = new ConfirmDialog (shlRepairOrder, SWT.APPLICATION_MODAL);

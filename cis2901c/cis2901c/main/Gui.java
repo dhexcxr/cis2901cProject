@@ -76,6 +76,7 @@ public class Gui extends Composite {
 		customersTab(tabFolderGui);
 		unitsTab(tabFolderGui);
 		reportsTab(tabFolderGui);
+		settingsTab(tabFolderGui);
 	}
 	
 	private void rosTab(TabFolder tabFolder) {
@@ -657,6 +658,32 @@ public class Gui extends Composite {
 		Label lblNotImplimentedYet = new Label(reportsComposite, SWT.NONE);
 		lblNotImplimentedYet.setText("Not Implimented Yet...");
 		lblNotImplimentedYet.setBounds(10, 10, 147, 20);
+	}
+	
+	private void settingsTab(TabFolder tabFolder) {
+		TabItem tbtmSettings = new TabItem(tabFolder, SWT.NONE);
+		tbtmSettings.setText("Settings");
+		
+		Composite composite = new Composite(tabFolder, SWT.NONE);
+		tbtmSettings.setControl(composite);
+		
+		Group group = new Group(composite, SWT.NONE);
+		group.setBounds(10, 10, 323, 98);
+		
+		Button btnResetConfirmDialog = new Button(group, SWT.NONE);
+		btnResetConfirmDialog.setBounds(10, 17, 260, 30);
+		btnResetConfirmDialog.setText("Reset Confirmation Dialog Settings");
+		btnResetConfirmDialog.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Main.getSettings().setSkipCancelConfirm(false);
+				Main.getSettings().setSkipCloseConfirm(false);
+			}
+		});
+		
+		Label lblResetConfirmDialog = new Label(group, SWT.WRAP);
+		lblResetConfirmDialog.setBounds(10, 53, 310, 42);
+		lblResetConfirmDialog.setText("This will re-enable the Repair Order Close and Cancel Changes confirmation dialog boxes.");
 	}
 	
 	private void setupRightClickMenu(MyTable table, String deleteString) {

@@ -40,7 +40,7 @@ public class Settings {
 		return database;
 	}
 	
-	public boolean getSkipCancelConfirm() {
+	public boolean skipCancelConfirm() {
 		return skipCancelConfirm;
 	}
 	
@@ -49,7 +49,7 @@ public class Settings {
 		prop.setProperty("skipCancelConfirm", Boolean.toString(skipCancelConfirm));
 	}
 	
-	public boolean getSkipCloseConfirm() {
+	public boolean skipCloseConfirm() {
 		return skipCloseConfirm;
 	}
 	
