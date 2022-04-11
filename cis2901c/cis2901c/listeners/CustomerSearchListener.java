@@ -26,7 +26,7 @@ public class CustomerSearchListener extends MouseAdapter{
 		Customer selectedCustomer;
 		if (!txtBox.getText().equals(txtBoxStartingText)) {
 			// if we're editing a current unit, pass Owner name to Customer Search Dialog
-			selectedCustomer = (Customer) customerSearchDialog.open(txtBox.getText());
+			selectedCustomer = (Customer) customerSearchDialog.open(txtBox.getText().split("\n")[0]);
 		} else {
 			// open normal, empty Customer Search Dialog
 			selectedCustomer = (Customer) customerSearchDialog.open();
