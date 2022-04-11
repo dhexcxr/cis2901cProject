@@ -68,12 +68,14 @@ public class DbServices {
 			// or rollback if an exception is caught
 		// TODO offer some customization options in application like actual DB options
 		Main.getLogger().log(Level.INFO, "Connecting to Database");
-		String url = "jdbc:mysql://localhost:3306/cis2901c";
+//		String url = "jdbc:mysql://localhost:3306/cis2901c";
+		String url = Main.getSettings().getDatabase();
 		String user = "TestUser";
 		String pass = "test";
 		
 		long splashTime = System.currentTimeMillis();
-		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
+//		Shell connectingToDb = new Shell(Main.display(), SWT.ON_TOP | SWT.TOOL | SWT.NO_FOCUS);
+		Shell connectingToDb = new Shell(Main.display(), SWT.APPLICATION_MODAL | SWT.TOOL | SWT.NO_FOCUS);
 		connectingToDb.setSize(980, 640);
 		connectingToDb.setBackgroundImage(new Image(Main.display(), DbServices.class.getClassLoader().getResourceAsStream("resources/splash.jpg")));
 		connectingToDb.setText("Connecting to database...");

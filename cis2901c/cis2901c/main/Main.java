@@ -19,6 +19,7 @@ public class Main {
 	
 	private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private static Display display;
+	private static final Settings settings = new Settings();
 
 	public static void main(String[] args) {
 		
@@ -69,8 +70,12 @@ public class Main {
 		// TODO remove, unused
 		LOGGER.log(level, msg);
 	}
-	
+
 	public static final Display display() {
 		return display;
+	}
+	
+	public static Settings getSettings() {
+		return settings;
 	}
 }
