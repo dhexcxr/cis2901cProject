@@ -101,6 +101,7 @@ public class RepairOrderDialog extends Dialog {
 	private Map<String, List<Long>> detailsToDelete = new HashMap<>();
 	
 	private RepairOrder currentRepairOrder;
+	private boolean cashiered = false;
 //	private long customerId;
 	
 	private CustomerSearchListener customerSearchListener;
@@ -170,7 +171,6 @@ public class RepairOrderDialog extends Dialog {
 	public JobDetailsModifiedListener getJobDetailsModifiedListener() {
 		return jobDetailsModifiedListener;
 	}
-	// END RO getters
 
 	public Map<String, List<Long>> getDetailsToDelete() {
 		return detailsToDelete;
@@ -184,6 +184,10 @@ public class RepairOrderDialog extends Dialog {
 		detailsToDelete.computeIfAbsent(table, t -> new ArrayList<>()).add(primaryKey);
 	}
 	
+	public boolean cashiered() {
+		return cashiered;
+	}
+	// END RO getters
 
 	public RepairOrderDialog(Shell parent, int style) {
 		super(parent, style);		// TODO set customer name or RO number in setText
@@ -495,7 +499,7 @@ public class RepairOrderDialog extends Dialog {
 			}
 		});
 		
-		shlRepairOrder.addListener(SWT.Close, new RepairOrderCloseListener(shlRepairOrder));
+		shlRepairOrder.addListener(SWT.Close, new RepairOrderCloseListener(this));
 
 		btnCancel.addMouseListener(new RepairOrderCancelListener(this));
 		
@@ -688,6 +692,7 @@ public class RepairOrderDialog extends Dialog {
 			if (!textCashieredDate.getText().equals("")) {
 				// load everything as normal and disable editing of text boxes
 					// disable buttons, remove listeners from Customer and Unit text box and from Parts and Labor tables
+				cashiered = true;
 				txtCustomerRepairOrder.removeMouseListener(customerSearchListener);
 				txtUnitRepairOrder.removeMouseListener(unitSearchListener);
 				btnCashierRo.setEnabled(false);

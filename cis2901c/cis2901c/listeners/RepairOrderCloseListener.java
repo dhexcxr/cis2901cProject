@@ -9,13 +9,16 @@ import org.eclipse.swt.widgets.Shell;
 
 import cis2901c.main.ConfirmDialog;
 import cis2901c.main.Main;
+import cis2901c.main.RepairOrderDialog;
 
 public class RepairOrderCloseListener implements Listener {
 	
+	private RepairOrderDialog roDialog;
 	private Shell shell;
 
-	public RepairOrderCloseListener(Shell shell) {
-		this.shell = shell;
+	public RepairOrderCloseListener(RepairOrderDialog roDialog) {
+		this.roDialog = roDialog;
+		this.shell = roDialog.getRoDialogShell();
 	}
 
 	@Override
@@ -23,7 +26,7 @@ public class RepairOrderCloseListener implements Listener {
 		Main.getLogger().log(Level.INFO, "Close RO {0}", event.widget);
 		boolean skipCloseConfirm = Main.getSettings().skipCloseConfirm();
 		boolean close = true;
-		if (!skipCloseConfirm) {
+		if (!skipCloseConfirm && !roDialog.cashiered()) {
 			ConfirmDialog confirmDialogBox = new ConfirmDialog (shell, SWT.APPLICATION_MODAL);
 			boolean[] response = confirmDialogBox.open();
 			close = response[0];
