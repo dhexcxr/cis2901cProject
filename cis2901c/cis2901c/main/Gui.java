@@ -59,8 +59,16 @@ import org.eclipse.swt.events.MouseEvent;
 
 public class Gui extends Composite {
 
-	// TODO why are these out here? maybe move them into methods where they are used
 	private Shell shell;
+	private MyText txtCustomerInvoice;
+	private MyText txtInvoiceNotes;
+	private MyText txtPartsTotalInvoice;
+	private MyText txtTaxInvoice;
+	private MyText txtFinalTotal;
+	private MyText textCategoryInvoice;
+	private MyText textSupplierInvoice;
+	private MyText textPartNotesInvoice;
+	private InvoicePartTable invoicePartsTable;
 
 	public Gui(Composite parent, int style) {
 		super(parent, style);
@@ -249,16 +257,15 @@ public class Gui extends Composite {
 		Composite invoiceComposite = new Composite(tabFolderParts, SWT.NONE);
 		tbtmInvoice.setControl(invoiceComposite);
 		
-		MyText txtCustomerInvoice = new MyText(invoiceComposite, SWT.BORDER | SWT.WRAP);
+		txtCustomerInvoice = new MyText(invoiceComposite, SWT.BORDER | SWT.WRAP);
 		txtCustomerInvoice.setText("Customer...");
 		txtCustomerInvoice.setEditable(false);
 		txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
 		txtCustomerInvoice.setBounds(10, 10, 554, 128);
 		txtCustomerInvoice.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerInvoice));
-			// TODO if double clicking to search, trim just first name, we'll hafta refacter CustomerSearchListener
 		txtCustomerInvoice.addMouseListener(new CustomerSearchListener(txtCustomerInvoice));
 		
-		MyText txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
+		txtInvoiceNotes = new MyText(invoiceComposite, SWT.BORDER);
 		txtInvoiceNotes.setText("Invoice Notes...");
 		txtInvoiceNotes.setBounds(570, 10, 388, 128);
 		txtInvoiceNotes.addModifyListener(new InfoTextBoxModifyListener(txtInvoiceNotes));
@@ -267,10 +274,6 @@ public class Gui extends Composite {
 		Group grpTotals = new Group(invoiceComposite, SWT.NONE);
 		grpTotals.setText("Totals");
 		grpTotals.setBounds(728, 501, 230, 151);
-		
-		MyText txtPartsTotalInvoice;
-		MyText txtTaxInvoice;
-		MyText txtFinalTotal;
 		
 		txtPartsTotalInvoice = new MyText(grpTotals, SWT.BORDER);
 		txtPartsTotalInvoice.setEditable(false);
@@ -304,11 +307,11 @@ public class Gui extends Composite {
 		btnDeleteLineItem.setBounds(333, 106, 126, 52);
 		btnDeleteLineItem.setText("Delete Line Item");
 		
-		MyText textCategoryInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textCategoryInvoice = new MyText(grpSelectedPart, SWT.BORDER);
 		textCategoryInvoice.setEditable(false);
 		textCategoryInvoice.setBounds(381, 66, 78, 26);
 		
-		MyText textSupplierInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textSupplierInvoice = new MyText(grpSelectedPart, SWT.BORDER);
 		textSupplierInvoice.setEditable(false);
 		textSupplierInvoice.setText("");
 		textSupplierInvoice.setBounds(381, 20, 78, 26);
@@ -321,7 +324,7 @@ public class Gui extends Composite {
 		lblCategory.setBounds(312, 69, 63, 20);
 		lblCategory.setText("Category:");
 		
-		MyText textPartNotesInvoice = new MyText(grpSelectedPart, SWT.BORDER);
+		textPartNotesInvoice = new MyText(grpSelectedPart, SWT.BORDER);
 		textPartNotesInvoice.setEditable(false);
 		textPartNotesInvoice.setBounds(10, 51, 296, 107);
 		
@@ -329,7 +332,7 @@ public class Gui extends Composite {
 		lblNotes.setBounds(10, 23, 42, 20);
 		lblNotes.setText("Notes:");
 		
-		InvoicePartTable invoicePartsTable = new InvoicePartTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
+		invoicePartsTable = new InvoicePartTable(invoiceComposite, SWT.BORDER | SWT.FULL_SELECTION);
 		invoicePartsTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -429,20 +432,7 @@ public class Gui extends Composite {
 					// send invoice obj to DbServices
 					DbServices.saveObject(cashieredInvoice);
 					
-					// clear entire Invoice Tab
-					txtCustomerInvoice.setData(null);
-					txtCustomerInvoice.setText("Customer...");
-					txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
-					txtInvoiceNotes.setText("Invoice Notes...");
-					txtPartsTotalInvoice.setText("0.00");
-					txtTaxInvoice.setText("0.00");
-					txtFinalTotal.setText("0.00");
-					textCategoryInvoice.setText("");
-					textSupplierInvoice.setText("");
-					textPartNotesInvoice.setText("");
-					invoicePartsTable.removeAll();
-					@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-					TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
+					clearInvoiceGui();
 				}
 			}
 		});
@@ -453,21 +443,7 @@ public class Gui extends Composite {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				// TODO make a clearInvoice() method, call it here and at the end of the invoice cashier listener
-				// clear entire Invoice Tab
-				txtCustomerInvoice.setData(null);
-				txtCustomerInvoice.setText("Customer...");
-				txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
-				txtInvoiceNotes.setText("Invoice Notes...");
-				txtPartsTotalInvoice.setText("0.00");
-				txtTaxInvoice.setText("0.00");
-				txtFinalTotal.setText("0.00");
-				textCategoryInvoice.setText("");
-				textSupplierInvoice.setText("");
-				textPartNotesInvoice.setText("");
-				invoicePartsTable.removeAll();
-				@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
-				TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts
+				clearInvoiceGui();
 			}
 		});
 		btnCancel.setBounds(596, 607, 126, 45);
@@ -500,6 +476,22 @@ public class Gui extends Composite {
 		// END Order Tab
 	}
 	
+	protected void clearInvoiceGui() {
+		txtCustomerInvoice.setData(null);
+		txtCustomerInvoice.setText("Customer...");
+		txtCustomerInvoice.setBackground(SWTResourceManager.getColor(255, 102, 102));
+		txtInvoiceNotes.setText("Invoice Notes...");
+		txtPartsTotalInvoice.setText("0.00");
+		txtTaxInvoice.setText("0.00");
+		txtFinalTotal.setText("0.00");
+		textCategoryInvoice.setText("");
+		textSupplierInvoice.setText("");
+		textPartNotesInvoice.setText("");
+		invoicePartsTable.removeAll();
+		@SuppressWarnings("unused")				// this adds a new, empty TableItem at the end of the Invoice Line Items
+		TableItem tableItem = new InvoicePartTableItem(invoicePartsTable, SWT.NONE);	// so we can add parts		
+	}
+
 	private void customersTab(TabFolder tabFolder) {
 		TabItem tbtmCustomers = new TabItem(tabFolder, SWT.NONE);
 		tbtmCustomers.setText("Customers");
