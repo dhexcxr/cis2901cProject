@@ -545,13 +545,13 @@ public class RepairOrderDialog extends Dialog {
 			}
 		});
 		
-		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
-
 		customerSearchListener = new CustomerSearchListener(txtCustomerRepairOrder);
 		txtCustomerRepairOrder.addMouseListener(customerSearchListener);
+		txtCustomerRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtCustomerRepairOrder));
 
 		unitSearchListener = new UnitSearchListener(txtUnitRepairOrder);
 		txtUnitRepairOrder.addMouseListener(unitSearchListener);
+		txtUnitRepairOrder.addModifyListener(new RequiredTextBoxModifyListener(txtUnitRepairOrder));
 		// END RO Controls
 		
 		// Job Controls
