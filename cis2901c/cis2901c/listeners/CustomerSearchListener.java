@@ -31,6 +31,9 @@ public class CustomerSearchListener extends MouseAdapter{
 			// open normal, empty Customer Search Dialog
 			selectedCustomer = (Customer) customerSearchDialog.open();
 		}
+		if (selectedCustomer == null) {
+			return;
+		}
 //		if (selectedCustomer instanceof Customer) {
 			// get only last name if there is no first name
 			StringBuilder customerData = new StringBuilder(selectedCustomer.getLastName());
