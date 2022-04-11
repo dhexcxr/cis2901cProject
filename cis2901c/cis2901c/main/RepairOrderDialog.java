@@ -654,11 +654,29 @@ public class RepairOrderDialog extends Dialog {
 				job.setLabor(jobLabor);
 
 				// find and build Parts
-				List<JobPart> jobPart = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
-				jobPart.removeAll(Collections.singleton(null));
+				List<JobPart> jobParts = new ArrayList<>(Arrays.asList((JobPart[]) DbServices.searchForObjectsByPk(new JobPart(job.getJobId()))));
+				jobParts.removeAll(Collections.singleton(null));
 				// TODO check each jobPart and see if current jobPart.quantity > jobPart.getPart.getOnHand, if so inform user
 					// with warning dialog and change quantity to onHand
-				job.setJobParts(jobPart);
+				boolean partsOnHandChanged = false;
+				Map<String, List<JobPart>> changedParts = new HashMap<>();
+				
+				for (JobPart jobPart : jobParts) {
+					if (jobPart.getQuantity() > jobPart.getPart().getOnHand()) {
+						partsOnHandChanged = true;
+						
+//						changedParts.put(job.getJobName(), Long.parseLong(jobPart.getPartNumber()), jobPart.getDescription());
+						changedParts.computeIfAbsent(job.getJobName(), jp -> new ArrayList<>()).add(jobPart);
+						jobPart.setQuantity(jobPart.getPart().getOnHand());
+					}
+				}
+				if (partsOnHandChanged) {
+					PartQuantityWarning partQuantityWarning = new PartQuantityWarning(shlRepairOrder, getStyle());
+					partQuantityWarning.setParts(changedParts);
+					partQuantityWarning.open();
+				}
+				
+				job.setJobParts(jobParts);
 				roJobs.add(job);
 				jobTableItem.setData(job);
 			}
