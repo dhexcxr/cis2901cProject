@@ -96,7 +96,7 @@ public class Gui extends Composite {
 
 		// Table for RO search results
 		RepairOrderTable roTable = new RepairOrderTable(repairOrdersComposite, SWT.BORDER | SWT.FULL_SELECTION);
-		roTable.setBounds(10, 74, 976, 631);
+		roTable.setBounds(10, 42, 976, 663);
 		roTable.setHeaderVisible(true);
 		roTable.setLinesVisible(true);
 		roTable.addMouseListener(new OpenExistingObjectMouseListener(roTable, shell));
@@ -151,28 +151,6 @@ public class Gui extends Composite {
 		btnNewRepairOrder.setBounds(846, 10, 140, 26);
 		btnNewRepairOrder.setText("New Repair Order");
 		btnNewRepairOrder.addMouseListener(new CreateNewObjectListener(roTable, roSearchBox, shell));
-
-		Button btnNewEstimate = new Button(repairOrdersComposite, SWT.NONE);
-		btnNewEstimate.setText("New Estimate");
-		btnNewEstimate.setBounds(846, 42, 140, 26);
-
-		Button btnDeleteRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
-		btnDeleteRepairOrder.setText("Delete Repair Order");
-		btnDeleteRepairOrder.setBounds(700, 42, 140, 26);
-		btnDeleteRepairOrder.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// delete Repair Order
-			}
-		});
-
-		Button btnShowCashiered = new Button(repairOrdersComposite, SWT.CHECK);
-		btnShowCashiered.setText("Show Cashiered");
-		btnShowCashiered.setBounds(10, 42, 129, 20);
-
-		Button btnShowEstimates = new Button(repairOrdersComposite, SWT.CHECK);
-		btnShowEstimates.setText("Show Estimates");
-		btnShowEstimates.setBounds(145, 42, 127, 20);
 	}
 	
 	private void partsTab(TabFolder tabFolder) {
