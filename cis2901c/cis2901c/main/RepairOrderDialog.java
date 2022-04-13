@@ -798,7 +798,12 @@ public class RepairOrderDialog extends Dialog {
 		}
 		
 		if (txtUnitRepairOrder.getData() != null && ((Unit) txtUnitRepairOrder.getData()).getUnitId() != -1) {
-			repairOrder.setUnitId(((Unit) txtUnitRepairOrder.getData()).getUnitId());
+			Unit thisUnit = (Unit) txtUnitRepairOrder.getData();
+			repairOrder.setUnitId(thisUnit.getUnitId());
+			repairOrder.setUnitYear(Integer.toString(thisUnit.getYear()));
+			repairOrder.setUnitMake(thisUnit.getMake());
+			repairOrder.setUnitModel(thisUnit.getModel());
+			repairOrder.setUnitVin(thisUnit.getVin());
 		} else {
 			// if we haven't selected a Unit, complain - an RO Unit is required
 			MessageBox customerRequiredBox = new MessageBox(shlRepairOrder, SWT.ICON_INFORMATION);
