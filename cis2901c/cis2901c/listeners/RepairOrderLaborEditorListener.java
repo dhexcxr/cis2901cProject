@@ -1,6 +1,7 @@
 package cis2901c.listeners;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.logging.Level;
 
 import org.eclipse.swt.SWT;
@@ -73,7 +74,7 @@ public class RepairOrderLaborEditorListener implements Listener {
 	private void calculateJobTotal() {
 		BigDecimal hours = new BigDecimal(selectedTableItem.getText(JobLaborTable.HOURS_COLUMN));
 		BigDecimal rate = new BigDecimal(selectedTableItem.getText(JobLaborTable.RATE_COLUMN));
-		selectedTableItem.setText(JobLaborTable.TOTAL_COLUMN, (hours.multiply(rate).toString()));
+		selectedTableItem.setText(JobLaborTable.TOTAL_COLUMN, (hours.multiply(rate).setScale(2, RoundingMode.CEILING).toString()));
 	}
 	
 	private void setTotalLabor() {
