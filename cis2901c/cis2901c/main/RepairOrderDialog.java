@@ -539,6 +539,7 @@ public class RepairOrderDialog extends Dialog {
 				if (cashieredNow) {
 					Main.getLogger().log(Level.INFO, "RO Cashiered");
 					currentRepairOrder.setClosedDate(Timestamp.from(Instant.now()));
+					cashiered = true;
 					saveRo(currentRepairOrder);
 					shlRepairOrder.close();
 				}
