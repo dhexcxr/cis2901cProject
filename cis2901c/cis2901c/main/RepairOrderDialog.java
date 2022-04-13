@@ -832,6 +832,7 @@ public class RepairOrderDialog extends Dialog {
 		roId = repairOrder.getRepairOrderId();
 		textRoNum.setText(Long.toString(roId));
 		detailsToDelete = new HashMap<>();
+		currentRepairOrder = repairOrder;
 		result = repairOrder;
 	}
 }
