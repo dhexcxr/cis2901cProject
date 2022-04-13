@@ -28,6 +28,8 @@ public class RepairOrderCloseListener implements Listener {
 		boolean close = true;
 		if (!skipCloseConfirm && !roDialog.cashiered()) {
 			ConfirmDialog confirmDialogBox = new ConfirmDialog (shell, SWT.APPLICATION_MODAL);
+			confirmDialogBox.setTitle("Close Repair Order?");
+			confirmDialogBox.setMessage("Close the Repair Order?");
 			boolean[] response = confirmDialogBox.open();
 			close = response[0];
 			skipCloseConfirm = response[1];

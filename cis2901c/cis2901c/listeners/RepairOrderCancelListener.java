@@ -27,8 +27,8 @@ public class RepairOrderCancelListener extends MouseAdapter {
 		boolean cancelChanges = true;
 		if (!skipCancelConfirm) {
 			ConfirmDialog confirmDialogBox = new ConfirmDialog (shell, SWT.APPLICATION_MODAL);
-			confirmDialogBox.setText("Cancle Repair Order Changes?");
-			confirmDialogBox.setMessage("Undo all changes?");
+			confirmDialogBox.setTitle("Discard Changes?");
+			confirmDialogBox.setMessage("Discard unsaved changes?");
 			boolean[] response = confirmDialogBox.open();
 			cancelChanges = response[0];
 			skipCancelConfirm = response[1];

@@ -17,7 +17,8 @@ public class ConfirmDialog extends Dialog {
 	protected boolean[] result = {false, false};
 	protected Shell shlClose;
 	private Button btnDoNotAsk;
-	private String message = "Close the Repair Order?";
+	private String message = "";
+	private String titlebarText = "";
 
 	/**
 	 * Create the dialog.
@@ -52,7 +53,7 @@ public class ConfirmDialog extends Dialog {
 	private void createContents() {
 		shlClose = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		shlClose.setSize(224, 144);
-		shlClose.setText("Close?");
+		shlClose.setText(titlebarText);
 		
 		Gui.setDialogAtCenter(shlClose);
 		
@@ -97,5 +98,9 @@ public class ConfirmDialog extends Dialog {
 	
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public void setTitle(String text) {
+		this.titlebarText = text;
 	}
 }
