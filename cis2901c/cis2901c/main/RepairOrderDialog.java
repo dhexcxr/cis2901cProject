@@ -638,15 +638,19 @@ public class RepairOrderDialog extends Dialog {
 			}
 			
 			if (repairOrder.getCustomerId() != 0) {
-				// TODO make custom setData method for this txt object that pulls info from Customer automagiacally 
 				txtCustomerRepairOrder.setData(DbServices.searchForObjectByPk(new Customer(repairOrder.getCustomerId())));
 				txtCustomerRepairOrder.setText(repairOrder.getCustomerName() + "\n" + repairOrder.getCustomerData());
 			}
 
 			if (repairOrder.getUnitId() != 0) {
-				txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
-						repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-				txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
+				Unit roUnit = (Unit) DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId()));
+				txtUnitRepairOrder.setData(roUnit);
+				txtUnitRepairOrder.setText(roUnit.getYear() + " " + roUnit.getMake() + "\n" +
+						roUnit.getModel() + "\nVin: " + roUnit.getVin() + "\nColor: " +
+						roUnit.getColor() + "\n" + "Mileage: " + roUnit.getMileage());
+//				txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
+//						repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
+//				txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
 			}
 
 			List<Job> roJobs = loadRoJobsFromDb();
