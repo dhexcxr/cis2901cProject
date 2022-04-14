@@ -38,8 +38,6 @@ public class NewUnitDialog extends Dialog {
 	private MyText txtNotes;
 	private Button btnSaveUnit;
 	private Button btnCancel;
-	// TODO i think this is a hack way to do this, unitId is used in Mouse Down listener for Save button
-		// to determine if we need to call addNew... or saveExisting....
 	private long unitId = -1;
 	private long customerId = -1;
 	private Unit unit;
@@ -65,9 +63,7 @@ public class NewUnitDialog extends Dialog {
 	public Object open(Unit unit) {
 		createContents();
 
-		// set txtBoxes when opening a current Unit for editing
-		// TODO remove all these null checks
-			// and make sure unit checks for a null in getters with ternaries, i.e. make == null ? "" : make 
+		// set txtBoxes when opening a current Unit for editing 
 		if (unit.getOwner() != null) {
 			txtOwner.setText(unit.getOwner());
 			txtOwner.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
@@ -244,9 +240,7 @@ public class NewUnitDialog extends Dialog {
 			ownerRequirementBox.open();
 			return;
 		}
-		
-		// TODO we could add an "&& !txtMake.getText().equals(txtMake.startingText)" so that we wouldn't unnecessarily save this
-			// if it hasn't changed, but that would be a lot of extra code for no real benefit
+	
 		if (txtMake.getText().length() > 0) {
 			unit.setMake(txtMake.getText());
 		} else {
@@ -257,11 +251,9 @@ public class NewUnitDialog extends Dialog {
 			makeRequirementBox.open();
 			return;
 		}
-		
-//		if (txtModelName.isModified()) {
-			unit.setModelName(txtModelName.getText());
-//		}
-		
+
+		unit.setModelName(txtModelName.getText());
+
 		if (txtMileage.isModified()) {
 			try {
 				unit.setMileage(Integer.parseInt(txtMileage.getText()));
@@ -269,14 +261,12 @@ public class NewUnitDialog extends Dialog {
 				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
-		
-//		if (txtVinNumber.isModified()) {
-			unit.setVin(txtVinNumber.getText());
-//		}
 
-//		if (txtModel.isModified()) {
-			unit.setModel(txtModel.getText());
-//		}
+
+		unit.setVin(txtVinNumber.getText());
+
+
+		unit.setModel(txtModel.getText());
 
 		if (txtYear.isModified()) {
 			try {
@@ -285,10 +275,8 @@ public class NewUnitDialog extends Dialog {
 				Main.getLogger().log(Level.FINER, e.getMessage(), e);
 			}
 		}
-		
-//		if (txtColor.isModified()) {
-			unit.setColor(txtColor.getText());
-//		}
+
+		unit.setColor(txtColor.getText());
 		
 		if (txtNotes.isModified()) {
 			unit.setNotes(txtNotes.getText());

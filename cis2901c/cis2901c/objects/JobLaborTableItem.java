@@ -11,16 +11,13 @@ public class JobLaborTableItem extends TableItem {
 
 	public JobLaborTableItem(Table parent, int style) {
 		super(parent, style);
-		this.setText(HOURS_COLUMN, "0");		// TODO choose a good default
-		// TODO set default labor rate in settings
+		this.setText(HOURS_COLUMN, "0");
 		this.setText(RATE_COLUMN, "100");
 	}
 
 	public JobLaborTableItem(Table parent, int style, int index) {
 		super(parent, style, index);
 	}
-	
-	// TODO create setData(Job job)
 	
 	public void setData(String technician, String description, BigDecimal hours, BigDecimal rate) {
 		if (this.getData() == null) {

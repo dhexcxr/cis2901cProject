@@ -64,7 +64,6 @@ public class InvoicePartEditorListener implements Listener {
 
 	@Override
 	public void handleEvent(Event event) {
-		// TODO streamline all these ignoreFocusOuts
 		if (ignoreFocusOut) {
 			return;
 		}
@@ -149,7 +148,7 @@ public class InvoicePartEditorListener implements Listener {
 		
 		if (duplicatePartPresent(editedLineItem)) {
 			return;
-		}					// TODO I'm pretty sure we can just use selectedTableItem.getData() here
+		}
 		if ((InvoicePart) partInvoiceTable.getItem(selectedTableItemIndex).getData() == null) {
 			// if we're editing an empty TableItem line item
 			@SuppressWarnings("unused")		// this adds another new, empty TableItem at the end of the Invoice Line Items so we can continue selecting and adding parts
@@ -212,7 +211,7 @@ public class InvoicePartEditorListener implements Listener {
 		return quantity;
 	}
 
-	private void setPartPrice(TableItem item) {							   // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
+	private void setPartPrice(TableItem item) {
 		ignoreFocusOut = true;
 		InvoicePart selectedInvoicePart = (InvoicePart) selectedTableItem.getData();
 		String partPrice = editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ?
@@ -227,7 +226,7 @@ public class InvoicePartEditorListener implements Listener {
 	}
 
 	private void calculateInvoiceTotal() {
-		BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
+		BigDecimal taxRate = BigDecimal.valueOf(0.065);
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = partInvoiceTable.getItems();
 		for (TableItem item : items) {

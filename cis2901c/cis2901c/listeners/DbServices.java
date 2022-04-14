@@ -33,9 +33,6 @@ import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
 public class DbServices {
-	// TODO add status icon somewhere to show when we're connected to DB
-		// set icon in initial connectToDb method call
-		// maybe check isConnected before every getDbConnection call, and set icon then too
 	
 	private static Connection mainDbConnection = null;
 	private static final int SQL_FAILURE = -1;
@@ -64,9 +61,6 @@ public class DbServices {
 	}
 	
 	public static void connectToDb() {
-		// TODO decide if I want to setAutoCommit to false before returning Connection, every call would have to connection.commit
-			// or rollback if an exception is caught
-		// TODO offer some customization options in application like actual DB options
 		Main.getLogger().log(Level.INFO, "Connecting to Database");
 		String url = Main.getSettings().getDatabase();
 		String user = "TestUser";
@@ -96,8 +90,8 @@ public class DbServices {
 			dbConnectionError.setMessage("Unable to connect to database...");
 			dbConnectionError.open();
 		}
-		// TODO enable splash delay in release 
-//		while (System.currentTimeMillis() - splashTime < 2000) {};		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
+		
+		while (System.currentTimeMillis() - splashTime < 2000);		// leave splash screen open for at least 2 seconds, but no more than 2 seconds
 		connectingToDb.close();
 	}
 	
@@ -121,13 +115,12 @@ public class DbServices {
 		if (dbObject == null) {
 			return 0;		// no object passed in, so no object deleted
 		}
-		StringBuilder queryString = new StringBuilder();		// TODO this query (below) is potentially dangerous, i'm not sanitizing getDbPk() with PrepareStatement
+		StringBuilder queryString = new StringBuilder();
 		queryString.append("DELETE FROM cis2901c." + dbObject.getTableName() + " WHERE " + dbObject.getPkName() + " = " + dbObject.getDbPk());
 		return sendQueryToDb(queryString);
 	}
 	
 	public static void saveObject(DbObjectSavable dbObject) {
-		// TODO have saveObject also return updateCount from sendQueryToDb
 		if (!isConnected()) {
 			connectToDb();
 		}
@@ -154,7 +147,7 @@ public class DbServices {
 			dbObject.setDbPk(getLastSavedDbObject(dbObject));
 		}
 		
-		if (dbObject instanceof Invoice) {		// TODO turn off auto commit until all invoice queries have completed
+		if (dbObject instanceof Invoice) {
 			saveInvoiceLineItems(dbObject);
 		} else if (dbObject instanceof RepairOrder) {
 			if (dbObject.getDbPk() == -1 ) {
@@ -331,7 +324,7 @@ public class DbServices {
 				} else {
 					updateQueryHelper(queryString, entry.getKey(), "?");
 				}
-				results.add(entry.getValue().trim());		// TODO if we're always saving with .trim() there will be no spaces, trim() isn't necessary here
+				results.add(entry.getValue().trim());
 			}
 		}
 		return results;
@@ -389,7 +382,6 @@ public class DbServices {
 			updateCount = statement.getUpdateCount();
 			Main.getLogger().log(Level.INFO, "Delete from {0}. Count: {1}", new Object[] {tableName, updateCount});
 		} catch (SQLException e) {
-			// TODO print deleteQuery or statement
 			e.printStackTrace();
 		}
 		return updateCount;
@@ -405,14 +397,12 @@ public class DbServices {
 		return searchForObjectsByPk(object)[0];
 	}
 	
-	// TODO rename to searchForManyObjectsByPk
 	public static Object[] searchForObjectsByPk(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
 		}
 		
-		Object[] results = new Object[1];		// TODO we can move this into each DbSearchableObjects in our application, make an object.getSelectedIdQuery()
-											// this will allow us to make a polymorphic select by Primary Key search - MOSTLY DONE
+		Object[] results = new Object[1];
 		try (PreparedStatement statement = DbServices.getDbConnection().prepareStatement(object.getSearchQuery())) {
 			statement.setLong(1, Long.parseLong(object.getSearchString()));
 			ResultSet queryResultSet = statement.executeQuery();
@@ -423,7 +413,6 @@ public class DbServices {
 		return results;	
 	}
 	
-	// TODO rename to searchByQueryString
 	public static Object[] searchForObject(DbObjectSearchable object) {
 		if (!isConnected()) {
 			connectToDb();
@@ -438,7 +427,7 @@ public class DbServices {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return results;		// TODO make sure everything that calls this handles the null return condition
+		return results;
 	}
 	
 	private static void fillStatementParameters(PreparedStatement statement, DbObjectSearchable object) throws SQLException {
@@ -565,7 +554,6 @@ public class DbServices {
 			String firstname = queryResultSet.getString(4);
 			invoice.setCustomerName(lastname, firstname);
 			
-			// TODO see if we can use TextBlocks here
 			String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
 					queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
 						queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);
@@ -575,7 +563,6 @@ public class DbServices {
 			invoice.setTax(queryResultSet.getBigDecimal(13));
 			invoice.setCashiereDateTime(queryResultSet.getTimestamp(14));
 			invoice.setCashiered(queryResultSet.getBoolean(15));
-			// TODO populate invoice.parts[]
 			int lineItemCount = queryResultSet.getInt(16);
 			invoice.setParts(new Part[lineItemCount]);
 			
@@ -598,7 +585,6 @@ public class DbServices {
 			String firstname = queryResultSet.getString(4);
 			repairOrder.setCustomerName(lastname, firstname);
 			
-			// TODO see if we can use TextBlocks here
 			String customerData = queryResultSet.getString(5) + "\n" + queryResultSet.getString(6) + ", " +
 					queryResultSet.getString(7) + " " + queryResultSet.getString(8) + "\n" + queryResultSet.getString(9) + "\n" +
 					queryResultSet.getString(10) + "\n" + queryResultSet.getString(11);

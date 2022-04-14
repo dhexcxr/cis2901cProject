@@ -24,26 +24,22 @@ public class JobLaborTable extends MyTable {
 
 	@Override
 	public void paint(Object object) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 	@Override
 	public void paint(Object object, int selectedItemIndex) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 	@Override
 	public void paint(Object[] objects) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 	@Override
 	public void sort(int i) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 	
 	public void setTotalLabor(RepairOrderJobTable tableJobsRepairOrder) {
@@ -56,7 +52,6 @@ public class JobLaborTable extends MyTable {
 	}
 	
 	private BigDecimal calculateLaborTotal() {
-//		BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = this.getItems();
 		for (TableItem item : items) {

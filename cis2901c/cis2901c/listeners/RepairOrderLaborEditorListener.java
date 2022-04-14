@@ -60,7 +60,6 @@ public class RepairOrderLaborEditorListener implements Listener {
 		if (selectedColumnIndex == JobLaborTable.TECHNICIAN_COLUMN || selectedColumnIndex == JobLaborTable.DESCRIPTION_COLUMN) {
 			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText());
 		} else if (selectedColumnIndex == JobLaborTable.HOURS_COLUMN || selectedColumnIndex == JobLaborTable.RATE_COLUMN) {
-																			 // TODO fix this,   v   , probably needs to be ONLY_DECIMALS
 			selectedTableItem.setText(selectedColumnIndex, editorTxtBox.getText().replaceAll("[^.0-9]", "").equals("") ? "0" :
 				editorTxtBox.getText().replaceAll(ONLY_DECIMALS, ""));
 			calculateJobTotal();
@@ -87,7 +86,6 @@ public class RepairOrderLaborEditorListener implements Listener {
 	}
 	
 	private BigDecimal calculateLaborTotal() {
-//		BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
 		BigDecimal total = BigDecimal.valueOf(0);
 		TableItem[] items = jobLaborTable.getItems();
 		for (TableItem item : items) {

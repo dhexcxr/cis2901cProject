@@ -14,13 +14,7 @@ public class DeleteEnableListener implements MenuDetectListener {
 	}
 
 	@Override
-	public void menuDetected(MenuDetectEvent e) {
-//		if (table.getItemCount() > 0 && table.getSelectionCount() == 1) {
-//			table.getMenu().getItem(MyTable.DELETE_MENU_ITEM).setEnabled(true);
-//		} else {
-//			table.getMenu().getItem(MyTable.DELETE_MENU_ITEM).setEnabled(false);
-//		}
-		
+	public void menuDetected(MenuDetectEvent e) {		
 		table.getMenu().getItem(MyTable.DELETE_MENU_ITEM).setEnabled(table.getItemCount() > 0 && table.getSelectionCount() == 1);
 	}
 

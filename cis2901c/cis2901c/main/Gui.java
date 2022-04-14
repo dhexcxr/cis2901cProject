@@ -433,7 +433,7 @@ public class Gui extends Composite {
 				// open invoice search dialog
 				InvoiceSearchDialog invoiceSearchDialog = new InvoiceSearchDialog(Display.getDefault().getActiveShell(), SWT.NONE);
 				@SuppressWarnings("unused")
-				Invoice invoiceToEdit = (Invoice) invoiceSearchDialog.open();		// TODO check all casts
+				Invoice invoiceToEdit = (Invoice) invoiceSearchDialog.open();
 				// populate all invoice tab fields with data from invoice to edit
 			}
 		});

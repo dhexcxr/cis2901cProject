@@ -40,7 +40,6 @@ public class RepairOrderCancelListener extends MouseAdapter {
 		}
 		
 		if (cancelChanges) {
-			// TODO remove customer and unit
 			roDialog.getTxtCustomerRepairOrder().setText("");
 			roDialog.getTxtCustomerRepairOrder().setData(null);
 			roDialog.getTxtUnitRepairOrder().setText("");

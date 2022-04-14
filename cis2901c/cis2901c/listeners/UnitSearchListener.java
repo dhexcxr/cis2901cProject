@@ -30,13 +30,15 @@ public class UnitSearchListener extends MouseAdapter{
 			// open normal, empty Unit Search Dialog
 				selectedUnit = (Unit) unitSearchDialog.open();
 		}
-		if (selectedUnit instanceof Unit) {
-			StringBuilder unitData = new StringBuilder(selectedUnit.getYear() + " " + selectedUnit.getMake() + "\n" +
-														selectedUnit.getModel() + "\nVin: " + 
-														selectedUnit.getVin() + "\nColor: " + selectedUnit.getColor() + "\n" +
-														"Mileage: " + selectedUnit.getMileage());
-			txtBox.setText(unitData.toString());
-			txtBox.setData(selectedUnit);
+		if (selectedUnit == null) {
+			return;
 		}
+
+		StringBuilder unitData = new StringBuilder(selectedUnit.getYear() + " " + selectedUnit.getMake() + "\n" +
+				selectedUnit.getModel() + "\nVin: " + 
+				selectedUnit.getVin() + "\nColor: " + selectedUnit.getColor() + "\n" +
+				"Mileage: " + selectedUnit.getMileage());
+		txtBox.setText(unitData.toString());
+		txtBox.setData(selectedUnit);
 	}
 }

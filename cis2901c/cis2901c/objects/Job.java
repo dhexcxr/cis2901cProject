@@ -16,13 +16,12 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 	
 	private List<JobPart> jobParts = new ArrayList<>();
 	private List<Part> parts = new ArrayList<>();
-	// TODO change this to TableLineItems, probabaly make a new Object that extends InvoiceTableLineItem so we can override dataMap and searchQuery to provide correct DB tables 
 	private List<JobLabor> labor;
 	
 	private Map<String, String> dataMap = new HashMap<>();
 
 	public Job() {
-		// TODO Auto-generated constructor stub
+		// empty
 	}
 	
 	public Job(long roId) {
@@ -92,8 +91,7 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		this.reccomendations = reccomendations;
 	}
 	
-	public List<Part> getParts() {		// TODO this is a Big F-n Kludge, maybe try to refactor the calls to this method to getJobParts and have
-											// the calling methods handle it, or maybe this is more elegant
+	public List<Part> getParts() {
 		if (jobParts == null) {
 			parts = new ArrayList<>();
 		} else {
@@ -105,10 +103,6 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 		}
 		return parts;
 	}
-
-//	public void setParts(List<Part> parts) {
-//		this.parts = parts;
-//	}
 	
 	public void addPart(Part part) {
 		if (part == null) {
@@ -118,10 +112,6 @@ public class Job extends DbObjectSearchable implements DbObjectSavable {
 			addJobPart(new JobPart(part));
 		}
 	}
-	
-//	public void deletePart(Part part) {
-//		this.parts.remove(part);
-//	}
 
 	public List<JobPart> getJobParts() {
 		return jobParts;

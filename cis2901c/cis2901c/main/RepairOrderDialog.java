@@ -118,9 +118,6 @@ public class RepairOrderDialog extends Dialog {
 	
 	private static final String ONLY_DECIMALS = "[^0-9.]";		// find a better name
 	
-	// TODO create isModified variable in this RepairOrderDialog object to track if ANYTHING in the underlying repairOrder has been modified
-		// so we can ask the user if they want to save before closing RepairOrderDialog
-	
 	// RO getters
 	public Shell getRoDialogShell() {
 		return shlRepairOrder;
@@ -188,7 +185,7 @@ public class RepairOrderDialog extends Dialog {
 	// END RO getters
 
 	public RepairOrderDialog(Shell parent, int style) {
-		super(parent, style);		// TODO set customer name or RO number in setText
+		super(parent, style);
 		setText("Repair Order Details");
 	}
 
@@ -522,7 +519,6 @@ public class RepairOrderDialog extends Dialog {
 		});
 		
 		btnCashierRo.addMouseListener(new MouseAdapter() {
-			// TODO refactor into it's own class
 			@Override
 			public void mouseDown(MouseEvent e) {
 				// spawn amount due dialog box
@@ -569,7 +565,6 @@ public class RepairOrderDialog extends Dialog {
 		btnDeleteLaborLine.addMouseListener(new RepairOrderLaborDeleteListener(this));
 
 		tabFolderJobsRepairOrder.addSelectionListener(new SelectionAdapter() {
-			// TODO refactor into it's own class
 			@Override		// set visibility of Tab function buttons
 			public void widgetSelected(SelectionEvent e) {
 				if (tabFolderJobsRepairOrder.getSelectionIndex() == 0) {		// Job Details tab
@@ -648,9 +643,6 @@ public class RepairOrderDialog extends Dialog {
 				txtUnitRepairOrder.setText(roUnit.getYear() + " " + roUnit.getMake() + "\n" +
 						roUnit.getModel() + "\nVin: " + roUnit.getVin() + "\nColor: " +
 						roUnit.getColor() + "\n" + "Mileage: " + roUnit.getMileage());
-//				txtUnitRepairOrder.setText(repairOrder.getUnitYear() + " " + repairOrder.getUnitMake() + "\n" +
-//						repairOrder.getUnitModel() + "\n" + repairOrder.getUnitVin());
-//				txtUnitRepairOrder.setData(DbServices.searchForObjectByPk(new Unit(repairOrder.getUnitId())));
 			}
 
 			List<Job> roJobs = loadRoJobsFromDb();
@@ -818,7 +810,6 @@ public class RepairOrderDialog extends Dialog {
 			return;
 		}
 		
-		// TODO do something with the returned updateCount
 		DbServices.deleteDetailsFromRo(detailsToDelete);
 		
 		if (tableJobsRepairOrder.getItemCount() > 0) {

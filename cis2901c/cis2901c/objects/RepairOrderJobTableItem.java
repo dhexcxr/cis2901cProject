@@ -42,12 +42,10 @@ public class RepairOrderJobTableItem extends TableItem {
 	@Override
 	public void setData(Object data) {
 		super.setData(data);
-		// TODO set TableItem columns from data attributes
 		Job thisJob = (Job) data;
 		this.setText(JOB_NAME_COLUMN, thisJob.getJobName());
 		
 		partTotal = BigDecimal.valueOf(0);
-		// TODO i'm pretty sure this usage of getParts() instead of getJobParts() will be problematic
 		for (Part part : thisJob.getParts()) {
 			if (part == null) {
 				Main.getLogger().log(Level.INFO, "Null part in ROJobTableItem.setData");

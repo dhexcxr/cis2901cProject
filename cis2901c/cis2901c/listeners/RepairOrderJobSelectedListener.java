@@ -106,7 +106,6 @@ public class RepairOrderJobSelectedListener extends SelectionAdapter {
 	private void setupJobPartsTable(Job selectedJob) {
 		jobPartsTable.removeAll();
 		for (JobPart jobPart : selectedJob.getJobParts()) {
-			// TODO see how I stored quantity in Invoice, or figure out how to store quantity
 			if (jobPart == null) {
 				break;
 			}

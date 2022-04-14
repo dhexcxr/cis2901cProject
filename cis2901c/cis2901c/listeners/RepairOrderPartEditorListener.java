@@ -18,7 +18,6 @@ import cis2901c.objects.RepairOrderJobTableItem;
 public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	
 	private InvoicePartTable partInvoiceTable;
-//	private int selectedTableItemIndex;
 	private Text editorTxtBox;
 	private List<MyText> invoiceDetailText;
 	private RepairOrderJobTable tableJobsRepairOrder;
@@ -30,7 +29,6 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 				RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex,
 					RepairOrderDialog repairOrderDialog) {
 		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText, parent);
-		// TODO connect Job Part total
 		this.partInvoiceTable = partInvoiceTable;
 		super.selectedTableItemIndex = selectedTableItemIndex;
 		this.editorTxtBox = editorTxtBox;

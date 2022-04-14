@@ -19,8 +19,6 @@ public class JobNameModifiedListener extends InfoTextBoxModifyListener {
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 	}
 	
-	// TODO probably add all Job Details text things in here
-	
 	@Override
 	public void modifyText(ModifyEvent e) {
 		// help track if text box has been modified

@@ -19,7 +19,6 @@ import cis2901c.objects.Part;
 import cis2901c.objects.RepairOrder;
 import cis2901c.objects.Unit;
 
-// TODO rename this something better (or refactor more), 'cause we're not just creating objects here
 public class CreateNewObjectListener extends MouseAdapter{
 	
 	MyTable table = null;
@@ -36,7 +35,6 @@ public class CreateNewObjectListener extends MouseAdapter{
 	@Override
 	public void mouseDown(MouseEvent e) {
 		
-		// TODO change this to pass in a new Object instead of checking table type, like in Object searches
 		Main.getLogger().log(Level.INFO, "Mouse down event on a table, first column: {0}", table.getColumn(0).getText());
 		
 		Object newObject = null;

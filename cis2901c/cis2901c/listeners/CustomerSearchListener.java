@@ -34,27 +34,24 @@ public class CustomerSearchListener extends MouseAdapter{
 		if (selectedCustomer == null) {
 			return;
 		}
-//		if (selectedCustomer instanceof Customer) {
-			// get only last name if there is no first name
-			StringBuilder customerData = new StringBuilder(selectedCustomer.getLastName());
-			if (selectedCustomer.getFirstName() != null) {
-				customerData.append(selectedCustomer.getFirstName().equals("") ? "" :", " + selectedCustomer.getFirstName());
+		// get only last name if there is no first name
+		StringBuilder customerData = new StringBuilder(selectedCustomer.getLastName());
+		if (selectedCustomer.getFirstName() != null) {
+			customerData.append(selectedCustomer.getFirstName().equals("") ? "" :", " + selectedCustomer.getFirstName());
+		}
+		if (txtBoxStartingText.equals("")) {		// Owner text box in New Unit dialog
+			txtBox.setText(customerData.toString());
+		} else if (txtBoxStartingText.equals("Customer...")) {		// Customer text box in Repair Order, and Part Invoice tab
+			customerData.append("\n" + selectedCustomer.getAddress() + "\n");
+			if (selectedCustomer.getCity().equals("") || (selectedCustomer.getState().equals("") && selectedCustomer.getZipCode().equals(""))) {
+				customerData.append(selectedCustomer.getCity() + " " + selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
+			} else {
+				customerData.append(selectedCustomer.getCity() + ", " +	selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
 			}
-			// TODO we could test for txtBoxStartingText.getEditable
-			if (txtBoxStartingText.equals("")) {		// Owner text box in New Unit dialog
-				txtBox.setText(customerData.toString());
-			} else if (txtBoxStartingText.equals("Customer...")) {		// Customer text box in Repair Order, and Part Invoice tab
-				customerData.append("\n" + selectedCustomer.getAddress() + "\n");
-				if (selectedCustomer.getCity().equals("") || (selectedCustomer.getState().equals("") && selectedCustomer.getZipCode().equals(""))) {
-					customerData.append(selectedCustomer.getCity() + " " + selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
-				} else {
-					customerData.append(selectedCustomer.getCity() + ", " +	selectedCustomer.getState() + " " + selectedCustomer.getZipCode());
-				}
-				txtBox.setText(customerData + "\n" + selectedCustomer.getHomePhone() + "\n" + 
-						selectedCustomer.getCellPhone() + "\n" + selectedCustomer.getEmail());
-			}
-			txtBox.setData(selectedCustomer);
-//		}
+			txtBox.setText(customerData + "\n" + selectedCustomer.getHomePhone() + "\n" + 
+					selectedCustomer.getCellPhone() + "\n" + selectedCustomer.getEmail());
+		}
+		txtBox.setData(selectedCustomer);
 	}
 
 }

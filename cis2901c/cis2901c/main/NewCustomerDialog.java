@@ -38,8 +38,6 @@ public class NewCustomerDialog extends Dialog {
 	private MyText txtEmail;
 	private Button btnSaveCustomerButton;
 	private Button btnCancel;
-	// TODO i think this is a hack way to do this, customerId is used in Mouse Down listener for Save button
-		// to determine if we need to call addNew... or saveExisting....
 	private long customerId = -1;
 	private Customer customer;
 
@@ -272,8 +270,8 @@ public class NewCustomerDialog extends Dialog {
 			customer.setCellPhone(txtCellPhone.getText());
 		}
 		
-		if (txtEmail.isModified()) {	// TODO make dialog box, if txtEmail.isModified, check its format
-			customer.setEmail(txtEmail.getText());					// vs regex to ensure (name)@(domain).(tld)
+		if (txtEmail.isModified()) {
+			customer.setEmail(txtEmail.getText());
 		}
 
 		DbServices.saveObject(customer);
