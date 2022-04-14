@@ -22,20 +22,10 @@ public class PartQuantityWarning extends Dialog {
 	protected Object result;
 	protected Shell shlSellQuantityMore;
 	private String affectedPartsList = "";
-
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public PartQuantityWarning(Shell parent, int style) {
 		super(parent, style);
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public Object open() {
 		createContents();
 		shlSellQuantityMore.open();
@@ -49,9 +39,6 @@ public class PartQuantityWarning extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlSellQuantityMore = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		shlSellQuantityMore.setSize(488, 344);

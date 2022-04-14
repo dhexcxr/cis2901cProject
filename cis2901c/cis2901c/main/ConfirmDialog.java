@@ -20,20 +20,11 @@ public class ConfirmDialog extends Dialog {
 	private String message = "";
 	private String titlebarText = "";
 
-	/**
-	 * Create the dialog.
-	 * @param parent
-	 * @param style
-	 */
 	public ConfirmDialog(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
 	}
 
-	/**
-	 * Open the dialog.
-	 * @return the result
-	 */
 	public boolean[] open() {
 		createContents();
 		shlClose.open();
@@ -47,9 +38,6 @@ public class ConfirmDialog extends Dialog {
 		return result;
 	}
 
-	/**
-	 * Create contents of the dialog.
-	 */
 	private void createContents() {
 		shlClose = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		shlClose.setSize(224, 144);

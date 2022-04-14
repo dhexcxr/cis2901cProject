@@ -3,7 +3,6 @@ package cis2901c.listeners;
 import java.math.BigDecimal;
 
 import org.eclipse.swt.events.MouseEvent;
-//import org.eclipse.swt.widgets.Text;
 
 import cis2901c.main.RepairOrderDialog;
 import cis2901c.objects.Job;
@@ -24,14 +23,7 @@ public class RepairOrderPartDeleteLineItemListener extends InvoicePartDeleteLine
 		this.repairOrderPartTableInvoice = repairOrderPartTableInvoice;
 		this.tableJobsRepairOrder = tableJobsRepairOrder;
 		this.repairOrderDialog = repairOrderDialog;
-		// TODO Auto-generated constructor stub
 	}
-
-//	public RepairOrderPartDeleteLineItemListener(MyTable repairOrderPartTableInvoice, Text txtPartsTotalInvoice,
-//			Text txtTaxInvoice, Text txtFinalTotal) {
-//		super(repairOrderPartTableInvoice, txtPartsTotalInvoice, txtTaxInvoice, txtFinalTotal);
-//		// TODO Auto-generated constructor stub
-//	}
 	
 	@Override
 	public void mouseDown(MouseEvent event) {

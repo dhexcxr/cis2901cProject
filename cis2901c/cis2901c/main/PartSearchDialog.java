@@ -18,9 +18,7 @@ import cis2901c.objects.PartInventoryTable;
 
 public class PartSearchDialog extends Dialog{
 
-	// TODO make a SearchDialog class, extend PartSearch and CustomerSearch from that class
-
-	protected Object result;		// TODO probably change this to Part, wouldn't need cast for results
+	protected Object result;
 	protected Shell shlPartSearch;
 	private PartInventoryTable partTableSearchDialog;
 	private MyText partSearchTextBox;

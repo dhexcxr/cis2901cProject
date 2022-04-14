@@ -17,12 +17,9 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Control;
 
-// TODO copy most of Customer tab into here, i.e. search and table display, when a selection is made in table
-		// return Customer object to insert data into RO or unit info 
-
 public class CustomerSearchDialog extends Dialog {
 
-	protected Object result;		// TODO probably change this to Customer, wouldn't need cast for results
+	protected Object result;
 	protected Shell shlCustomerSearch;
 	private CustomerTable customerTable;
 	private MyText customerSearchTextBox;

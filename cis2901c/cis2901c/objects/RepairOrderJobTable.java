@@ -11,31 +11,27 @@ public class RepairOrderJobTable extends MyTable {
 
 	public RepairOrderJobTable(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void paint(Object object) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 	@Override
 	public void paint(Object object, int selectedItemIndex) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 	@Override
 	public void paint(Object[] objects) {
-		// TODO Auto-generated method stub
+		// empty
 
 	}
 
 	@Override
 	public void sort(int i) {
-		// TODO Auto-generated method stub
-
+		// empty
 	}
 
 }

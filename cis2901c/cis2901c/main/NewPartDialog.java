@@ -62,8 +62,6 @@ public class NewPartDialog extends Dialog {
 	public Object open(Part part) {
 		createContents();
 
-		// TODO decide if I want to include checks for the presence of part number, supplier, and description
-			// technically, there should never be a part in existance that does not have those attributes
 		this.partId = part.getPartId();
 		this.txtPartNumber.setText(part.getPartNumber());
 		txtPartNumber.setBackground(SWTResourceManager.getColor(255, 255, 255));		// WHITE
@@ -226,9 +224,7 @@ public class NewPartDialog extends Dialog {
 			return;
 		}
 		
-		if (txtCategory.isModified()) {
-			part.setCategory(txtCategory.getText());
-		}
+		part.setCategory(txtCategory.getText());
 		
 		if (txtDescription.getText().length() > 0) {
 			part.setDescription(txtDescription.getText());
@@ -241,9 +237,7 @@ public class NewPartDialog extends Dialog {
 			return;
 		}
 		
-		if (txtNotes.isModified()) {
-			part.setNotes(txtNotes.getText());
-		}
+		part.setNotes(txtNotes.getText());
 		
 		if (txtRetail.isModified()) {
 			try {
