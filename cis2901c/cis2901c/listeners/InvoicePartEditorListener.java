@@ -37,6 +37,7 @@ public class InvoicePartEditorListener implements Listener {
 	private Text textSupplierInvoice;
 	private Text textNotesInvoice;
 	private Shell parent;
+	private InvoicePartTableListener invoicePartTableListener;
 
 	// this allows us to ignore the FocusOut listener so we don't call PartSearchDialog twice
 	// if there is text in Part Number column when we "double" click to open Search box
@@ -45,7 +46,7 @@ public class InvoicePartEditorListener implements Listener {
 	private static final String ONLY_DECIMALS = "[^-0-9.]"; // find a better name
 
 	public InvoicePartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex, int selectedColumnIndex,
-										Text editorTxtBox, List<MyText> invoiceDetailText, Shell parent) {
+										Text editorTxtBox, List<MyText> invoiceDetailText, Shell parent, InvoicePartTableListener invoicePartTableListener) {
 		this.partInvoiceTable = partInvoiceTable;
 		this.selectedTableItem = partInvoiceTable.getItem(selectedTableItemIndex);
 		this.selectedTableItemIndex = selectedTableItemIndex;
@@ -60,6 +61,7 @@ public class InvoicePartEditorListener implements Listener {
 		this.textNotesInvoice = invoiceDetailText.get(5);
 		
 		this.parent = parent;
+		this.invoicePartTableListener = invoicePartTableListener;
 	}
 
 	@Override
@@ -85,6 +87,9 @@ public class InvoicePartEditorListener implements Listener {
 			setColumnData();
 		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_ESCAPE) {
 			editorTxtBox.dispose();
+		} else if (event.type == SWT.Traverse && event.detail == SWT.TRAVERSE_TAB_NEXT) {
+			setColumnData();
+			invoicePartTableListener.tabbed(selectedColumnIndex);
 		} else if (event.type == SWT.Traverse) {
 			setColumnData();
 		}

@@ -24,12 +24,12 @@ public class RepairOrderPartEditorListener extends InvoicePartEditorListener {
 	private RepairOrderJobTable tableJobsRepairOrder;
 	private int currentJobTableItemIndex;
 	private RepairOrderDialog repairOrderDialog;
-
+	
 	public RepairOrderPartEditorListener(InvoicePartTable partInvoiceTable, int selectedTableItemIndex,
 			int selectedColumnIndex, Text editorTxtBox, List<MyText> invoiceDetailText, Shell parent,
-				RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex,
+				InvoicePartTableListener invoicePartTableListener, RepairOrderJobTable tableJobsRepairOrder, int currentJobTableItemIndex,
 					RepairOrderDialog repairOrderDialog) {
-		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText, parent);
+		super(partInvoiceTable, selectedTableItemIndex, selectedColumnIndex, editorTxtBox, invoiceDetailText, parent, invoicePartTableListener);
 		// TODO connect Job Part total
 		this.partInvoiceTable = partInvoiceTable;
 		super.selectedTableItemIndex = selectedTableItemIndex;

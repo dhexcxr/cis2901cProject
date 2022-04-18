@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import cis2901c.listeners.CustomerSearchListener;
 import cis2901c.listeners.DbServices;
+import cis2901c.listeners.InvoicePartTableListener;
 import cis2901c.listeners.JobDetailsModifiedListener;
 import cis2901c.listeners.JobNameModifiedListener;
 import cis2901c.listeners.RepairOrderCancelListener;
@@ -18,7 +19,6 @@ import cis2901c.listeners.RepairOrderLaborAddListener;
 import cis2901c.listeners.RepairOrderLaborDeleteListener;
 import cis2901c.listeners.RepairOrderLaborTableListener;
 import cis2901c.listeners.RepairOrderPartDeleteLineItemListener;
-import cis2901c.listeners.RepairOrderPartTableListener;
 import cis2901c.listeners.RequiredTextBoxModifyListener;
 import cis2901c.listeners.TextBoxFocusListener;
 import cis2901c.listeners.UnitSearchListener;
@@ -107,7 +107,7 @@ public class RepairOrderDialog extends Dialog {
 	private CustomerSearchListener customerSearchListener;
 	private UnitSearchListener unitSearchListener;
 	private JobNameModifiedListener jobNameModifiedListener;
-	private RepairOrderPartTableListener repairOrderPartTableListener;
+	private InvoicePartTableListener repairOrderPartTableListener;
 	private RepairOrderLaborTableListener repairOrderLaborTableListener;
 	private JobDetailsModifiedListener jobDetailsModifiedListener;
 	private TextBoxFocusListener jobNameFocusListener;
@@ -604,7 +604,7 @@ public class RepairOrderDialog extends Dialog {
 		reccomendationsFocusListener = new TextBoxFocusListener(txtReccomendations);
 		txtReccomendations.addFocusListener(reccomendationsFocusListener);
 
-		repairOrderPartTableListener = new RepairOrderPartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder);
+		repairOrderPartTableListener = new InvoicePartTableListener(jobPartsTable, tableJobsRepairOrder, this, shlRepairOrder);
 		jobPartsTable.addListener(SWT.MouseDown, repairOrderPartTableListener);
 
 		repairOrderLaborTableListener = new RepairOrderLaborTableListener(jobLaborTable, tableJobsRepairOrder, this);
