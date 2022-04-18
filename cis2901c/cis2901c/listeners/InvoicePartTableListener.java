@@ -97,17 +97,7 @@ public class InvoicePartTableListener implements Listener {
     			}
     			final int selectedColumnIndex = i;
     			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
-    			Listener textListener;
-    			if (editingInvoice) {
-        			textListener = new InvoicePartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
-							editorTxtBox, invoiceDetailText, parent, this);
-    			} else {
-    				int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
-        			textListener = new RepairOrderPartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
-							editorTxtBox, invoiceDetailText, parent, this,
-							tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
-    			}
-
+    			Listener textListener = editorListener(currentTableItemIndex, selectedColumnIndex, editorTxtBox);
     			editor.setEditor(editorTxtBox, selectedTableItem, i);
     			editorTxtBox.addListener(SWT.FocusOut, textListener);
     			editorTxtBox.addListener(SWT.Traverse, textListener);
@@ -122,6 +112,18 @@ public class InvoicePartTableListener implements Listener {
     		}
     	}
     	return false;
+	}
+	
+	private Listener editorListener(int currentTableItemIndex, int selectedColumnIndex, Text editorTxtBox) {
+		if (editingInvoice) {
+			return new InvoicePartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
+					editorTxtBox, invoiceDetailText, parent, this);
+		} else {
+			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
+			return new RepairOrderPartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
+					editorTxtBox, invoiceDetailText, parent, this,
+					tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
+		}
 	}
 	
 	public void tabbed(int currentColumn) {
