@@ -140,6 +140,7 @@ public class InvoicePartTableListener implements Listener {
 			tabbedEvent.x = selectedTableItem.getBounds(InvoicePartTableItem.PART_NUMBER_COLUMN).x + 1;
 			tabbedEvent.y = tabbedEvent.y + selectedTableItem.getBounds().height;
 			invoicePartTable.setSelection(invoicePartTable.getSelectionIndex() + 1);
+			invoicePartTable.notifyListeners(SWT.MouseDown, new Event());
 			break;
 		default:
 			return;

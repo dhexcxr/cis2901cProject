@@ -45,7 +45,7 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 			
 			selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
 			invoicePartsTable.setSelection(selectedIndex);
-			invoicePartsTable.notifyListeners(SWT.Selection, new Event());
+			invoicePartsTable.notifyListeners(SWT.MouseDown, new Event());
 			
 			// TODO the following copied from InvoicePartEditorEventListener, need to find a better way to calc invoice total
 					// we could do this by making InvoicePartEditorEventListener.calculateInvoiceTotal a method of the invoicePartTable
