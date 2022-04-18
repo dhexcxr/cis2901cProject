@@ -18,7 +18,7 @@ import cis2901c.objects.MyTable;
 
 public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 	
-	private MyTable partTableInvoice;
+	private MyTable invoicePartsTable;
 	protected Text txtPartsTotalInvoice;
 	private Text txtTaxInvoice;
 	private Text txtFinalTotal;
@@ -27,10 +27,10 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 		this(partTableInvoice, new Text(new Shell(), 0), new Text(new Shell(), 0), new Text(new Shell(), 0));
 	}
 	
-	public InvoicePartDeleteLineItemListener(MyTable partTableInvoice, Text txtPartsTotalInvoice, Text txtTaxInvoice,
+	public InvoicePartDeleteLineItemListener(MyTable invoicePartsTable, Text txtPartsTotalInvoice, Text txtTaxInvoice,
 			Text txtFinalTotal) {
 		super();
-		this.partTableInvoice = partTableInvoice;
+		this.invoicePartsTable = invoicePartsTable;
 		this.txtPartsTotalInvoice = txtPartsTotalInvoice;
 		this.txtTaxInvoice = txtTaxInvoice;
 		this.txtFinalTotal = txtFinalTotal;
@@ -38,21 +38,21 @@ public class InvoicePartDeleteLineItemListener extends MouseAdapter{
 	
 	@Override
 	public void mouseDown(MouseEvent e) {
-		if (partTableInvoice.getSelectionIndex() >= 0 && partTableInvoice.getSelectionIndex() < partTableInvoice.getItemCount() &&
-													partTableInvoice.getItem(partTableInvoice.getSelectionIndex()).getData() != null) {
-			int selectedIndex = partTableInvoice.getSelectionIndex();
-			partTableInvoice.remove(selectedIndex);
+		if (invoicePartsTable.getSelectionIndex() >= 0 && invoicePartsTable.getSelectionIndex() < invoicePartsTable.getItemCount() &&
+													invoicePartsTable.getItem(invoicePartsTable.getSelectionIndex()).getData() != null) {
+			int selectedIndex = invoicePartsTable.getSelectionIndex();
+			invoicePartsTable.remove(selectedIndex);
 			
 			selectedIndex = selectedIndex == 0 ? 0 : selectedIndex - 1;
-			partTableInvoice.setSelection(selectedIndex);
-			partTableInvoice.notifyListeners(SWT.Selection, new Event());
+			invoicePartsTable.setSelection(selectedIndex);
+			invoicePartsTable.notifyListeners(SWT.Selection, new Event());
 			
 			// TODO the following copied from InvoicePartEditorEventListener, need to find a better way to calc invoice total
 					// we could do this by making InvoicePartEditorEventListener.calculateInvoiceTotal a method of the invoicePartTable
 					// but that would require some re-figuring for txtPartsTotalInvoice, txtTaxInvoice, and txtFinalTotal
 			BigDecimal taxRate = BigDecimal.valueOf(0.065);		// TODO set tax rate in application settings
 			BigDecimal total = BigDecimal.valueOf(0);
-			TableItem[] items = partTableInvoice.getItems();
+			TableItem[] items = invoicePartsTable.getItems();
 			for (TableItem item : items) {
 				if (item.getText(InvoicePartTable.EXTENDED_PRICE_COLUMN).equals("")) {
 					// ignore new TableItem at end of list with no part data set 

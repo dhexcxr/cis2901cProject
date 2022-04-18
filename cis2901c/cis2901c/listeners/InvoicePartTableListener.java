@@ -21,7 +21,7 @@ import cis2901c.objects.InvoicePartTableItem;
 
 public class InvoicePartTableListener implements Listener {
 		
-	private InvoicePartTable partInvoiceTable;
+	private InvoicePartTable invoicePartTable;
 	private TableEditor editor;
 	private List<MyText> invoiceDetailText;
 	private Shell parent;
@@ -35,11 +35,11 @@ public class InvoicePartTableListener implements Listener {
 	private boolean editingInvoice;
 	
 	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText, Shell parent) {
-		this.partInvoiceTable = invoicePartTable;
+		this.invoicePartTable = invoicePartTable;
 		this.invoiceDetailText = invoiceDetailText;
 		this.parent = parent;
 		
-		this.editor = new TableEditor(partInvoiceTable);
+		this.editor = new TableEditor(this.invoicePartTable);
 		editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
 	    
@@ -60,10 +60,10 @@ public class InvoicePartTableListener implements Listener {
 	}
 
 	public InvoicePartTableListener(InvoicePartTable invoicePartTable, List<MyText> invoiceDetailText) {
-		this.partInvoiceTable = invoicePartTable;
+		this.invoicePartTable = invoicePartTable;
 		this.invoiceDetailText = invoiceDetailText;
 		
-		this.editor = new TableEditor(partInvoiceTable);
+		this.editor = new TableEditor(this.invoicePartTable);
 		editor.horizontalAlignment = SWT.LEFT;
 	    editor.grabHorizontal = true;
 	    
@@ -73,9 +73,9 @@ public class InvoicePartTableListener implements Listener {
 	@Override
 	public void handleEvent(Event event) {
 		originalEvent = event;
-        int currentTableItemIndex = partInvoiceTable.getSelectionIndex();
+        int currentTableItemIndex = invoicePartTable.getSelectionIndex();
         Point clickPoint = new Point(event.x, event.y);
-        while (currentTableItemIndex < partInvoiceTable.getItemCount() && currentTableItemIndex >= 0) {		// scan through Invoice Part's TableItems
+        while (currentTableItemIndex < invoicePartTable.getItemCount() && currentTableItemIndex >= 0) {		// scan through Invoice Part's TableItems
         	if (findColumn(currentTableItemIndex, clickPoint)) {
         		return;
         	}
@@ -86,8 +86,8 @@ public class InvoicePartTableListener implements Listener {
 	}
 	
 	private boolean findColumn(int currentTableItemIndex, Point clickPoint) {
-		final TableItem selectedTableItem = partInvoiceTable.getItem(currentTableItemIndex);
-    	for (int i = 0; i < partInvoiceTable.getColumnCount(); i++) {		// find selected column
+		final TableItem selectedTableItem = invoicePartTable.getItem(currentTableItemIndex);
+    	for (int i = 0; i < invoicePartTable.getColumnCount(); i++) {		// find selected column
     		Rectangle selectedTableItemColumnBounds = selectedTableItem.getBounds(i);
     		if (selectedTableItemColumnBounds.contains(clickPoint) &&
     				(i == InvoicePartTable.PART_NUMBER_COLUMN || i == InvoicePartTable.QUANTITY_COLUMN || i == InvoicePartTable.PART_PRICE_COLUMN)) {
@@ -96,7 +96,7 @@ public class InvoicePartTableListener implements Listener {
     				return true;		// this IF is what finally did it, the whole not editing QTY or Price without an associated Part
     			}
     			final int selectedColumnIndex = i;
-    			Text editorTxtBox = new Text(partInvoiceTable, SWT.NONE);
+    			Text editorTxtBox = new Text(invoicePartTable, SWT.NONE);
     			Listener textListener = editorListener(currentTableItemIndex, selectedColumnIndex, editorTxtBox);
     			editor.setEditor(editorTxtBox, selectedTableItem, i);
     			editorTxtBox.addListener(SWT.FocusOut, textListener);
@@ -107,7 +107,7 @@ public class InvoicePartTableListener implements Listener {
     			editorTxtBox.setFocus();
     			return true;
     		}
-    		if (!visible && selectedTableItemColumnBounds.intersects(partInvoiceTable.getClientArea())) {
+    		if (!visible && selectedTableItemColumnBounds.intersects(invoicePartTable.getClientArea())) {
     			visible = true;
     		}
     	}
@@ -116,11 +116,11 @@ public class InvoicePartTableListener implements Listener {
 	
 	private Listener editorListener(int currentTableItemIndex, int selectedColumnIndex, Text editorTxtBox) {
 		if (editingInvoice) {
-			return new InvoicePartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
+			return new InvoicePartEditorListener(invoicePartTable, currentTableItemIndex, selectedColumnIndex,
 					editorTxtBox, invoiceDetailText, parent, this);
 		} else {
 			int currentJobTableItemIndex = tableJobsRepairOrder.getSelectionIndex();
-			return new RepairOrderPartEditorListener(partInvoiceTable, currentTableItemIndex, selectedColumnIndex,
+			return new RepairOrderPartEditorListener(invoicePartTable, currentTableItemIndex, selectedColumnIndex,
 					editorTxtBox, invoiceDetailText, parent, this,
 					tableJobsRepairOrder, currentJobTableItemIndex, repairOrderDialog);
 		}
@@ -128,7 +128,7 @@ public class InvoicePartTableListener implements Listener {
 	
 	public void tabbed(int currentColumn) {
 		Event tabbedEvent = originalEvent;
-		InvoicePartTableItem selectedTableItem = (InvoicePartTableItem) partInvoiceTable.getSelection()[0];
+		InvoicePartTableItem selectedTableItem = (InvoicePartTableItem) invoicePartTable.getSelection()[0];
 		switch (currentColumn) {
 		case InvoicePartTable.PART_NUMBER_COLUMN:
 			tabbedEvent.x = selectedTableItem.getBounds(InvoicePartTableItem.QUANTITY_COLUMN).x + 1;
@@ -139,7 +139,7 @@ public class InvoicePartTableListener implements Listener {
 		case InvoicePartTable.PART_PRICE_COLUMN:
 			tabbedEvent.x = selectedTableItem.getBounds(InvoicePartTableItem.PART_NUMBER_COLUMN).x + 1;
 			tabbedEvent.y = tabbedEvent.y + selectedTableItem.getBounds().height;
-			partInvoiceTable.setSelection(partInvoiceTable.getSelectionIndex() + 1);
+			invoicePartTable.setSelection(invoicePartTable.getSelectionIndex() + 1);
 			break;
 		default:
 			return;
