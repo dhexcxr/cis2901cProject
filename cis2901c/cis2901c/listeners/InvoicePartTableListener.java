@@ -137,7 +137,10 @@ public class InvoicePartTableListener implements Listener {
 			tabbedEvent.x = selectedTableItem.getBounds(InvoicePartTableItem.PART_PRICE_COLUMN).x + 1;
 			break;
 		case InvoicePartTable.PART_PRICE_COLUMN:
-			// TODO add tab to next line
+			tabbedEvent.x = selectedTableItem.getBounds(InvoicePartTableItem.PART_NUMBER_COLUMN).x + 1;
+			tabbedEvent.y = tabbedEvent.y + selectedTableItem.getBounds().height;
+			partInvoiceTable.setSelection(partInvoiceTable.getSelectionIndex() + 1);
+			break;
 		default:
 			return;
 		}
