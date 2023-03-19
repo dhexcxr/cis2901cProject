@@ -87,6 +87,9 @@ public class RepairOrderTable extends MyTable {
 
 	@Override
 	public void sort(int sortColumn) {
+		// TODO change currentSortedColumn to a TableColumn, then we can pass that TableColumn to initialSortOnPaint
+			// and avoid the TableColumn column = this.getColumn(sortColumn); in initialSortOnPaint
+			// as well as the for loop in TableColumnSortListener.widgetSelected()
 		if (currentSortedColumn == sortColumn && currentSortDirection == SWT.UP) {
 			currentSortDirection = SWT.DOWN;
 		} else if (currentSortedColumn == sortColumn && currentSortDirection == SWT.DOWN) {

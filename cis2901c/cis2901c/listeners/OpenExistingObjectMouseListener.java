@@ -34,10 +34,14 @@ public class OpenExistingObjectMouseListener extends MouseAdapter {
 	@Override
 	public void mouseDown(MouseEvent e) {
 		if (e.getSource() instanceof Button) {
-			mouseDoubleClick(e);
+			 ;
 		}
 	}
 
+	
+	// TODO refactor this whole open[Object] code pipe line
+		// start with table.getSelection()[0].getData();, do an instanceof to determine what object it is here in mouseDoubleClick()
+		// then cast that object (maybe in that one step quick shot casting if that SonarLint has turned me on to) and pass it to the open[Object] methods
 	@Override
 	public void mouseDoubleClick(MouseEvent e) {
 		// open saved object for editing

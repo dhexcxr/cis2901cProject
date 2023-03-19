@@ -19,6 +19,7 @@ public class TableColumnSortListener extends SelectionAdapter{
 	
 	@Override
 	public void widgetSelected(SelectionEvent e) {
+		// TODO pass this.column to table.sort() after changing MyTable.currentSortedColumn to a TableColumn...hopefully this makes sense later
 		for (int i = 0; i < table.getColumnCount(); i++) {
 			if (column == table.getColumn(i)) {
 				table.sort(i);

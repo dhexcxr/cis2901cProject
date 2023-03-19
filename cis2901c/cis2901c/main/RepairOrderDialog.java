@@ -210,6 +210,9 @@ public class RepairOrderDialog extends Dialog {
 		createContents();
 		setupListeners();
 		
+		// TODO at this point in code, I'm pretty sure the DB has already built us a complete RO object and we
+			// don't need to load anything fro the DB again, maybe from here make a method that just sets everything from the current RO
+			// object and only call loadRoFromDb() when hitting the Cancel button and we need to reset to the last known saved state
 		loadRoFromDb(repairOrder);
 		
 		shlRepairOrder.open();

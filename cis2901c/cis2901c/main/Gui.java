@@ -156,6 +156,7 @@ public class Gui extends Composite {
 		btnNewEstimate.setText("New Estimate");
 		btnNewEstimate.setBounds(846, 42, 140, 26);
 
+		// TODO remove this button, we made "Delete" a function of a Right Click
 		Button btnDeleteRepairOrder = new Button(repairOrdersComposite, SWT.NONE);
 		btnDeleteRepairOrder.setText("Delete Repair Order");
 		btnDeleteRepairOrder.setBounds(700, 42, 140, 26);

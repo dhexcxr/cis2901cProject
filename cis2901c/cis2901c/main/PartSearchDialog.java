@@ -42,6 +42,8 @@ public class PartSearchDialog extends Dialog{
 		return result;
 	}
 	
+	// TODO create an open(Part[]) that allows us to pass in the partResults found in InvoicePartEditorListener.findPartNumber
+		// so we don't have to hit the DB twice, first in findPartNumber then here when we search the queryString on open
 	public Object open(String queryString) {
 		createContents();
 		

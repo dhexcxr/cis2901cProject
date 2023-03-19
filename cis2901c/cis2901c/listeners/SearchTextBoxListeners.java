@@ -20,6 +20,7 @@ public class SearchTextBoxListeners implements ModifyListener {
 	private String textBoxStartingText;
 	
 	public SearchTextBoxListeners(MyText textBox, MyTable table) {
+		// TODO remove this, nothing calls it 
 		this.searchBox = textBox;
 		this.table = table;
 	}
